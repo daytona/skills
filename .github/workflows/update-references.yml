@@ -1,0 +1,49 @@
+name: Update references
+
+on:
+  schedule:
+    # Every Monday at 9am UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch: # allows manual trigger from GitHub UI
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Regenerate references
+        run: .github/scripts/update-references.sh
+
+      - name: Check for changes
+        id: diff
+        run: |
+          git diff --quiet skills/ && echo "changed=false" >> "$GITHUB_OUTPUT" || echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Create PR
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="auto/update-references-$(date +%Y%m%d)"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add skills/
+          git commit -m "Update skill references from upstream Daytona docs"
+          git push -u origin "$BRANCH"
+          gh pr create \
+            --title "Update skill references $(date +%Y-%m-%d)" \
+            --body "Automated update of skill reference docs from upstream Daytona repository." \
+            --base main
