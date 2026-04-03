@@ -1,0 +1,588 @@
+# Computer Use API
+
+## GET `/computeruse/display/info` {#daytona-toolbox/tag/computer-use/GET/computeruse/display/info}
+
+**Get display information**
+
+Get information about all available displays
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | DisplayInfoResponse |
+
+---
+
+## GET `/computeruse/display/windows` {#daytona-toolbox/tag/computer-use/GET/computeruse/display/windows}
+
+**Get windows information**
+
+Get information about all open windows
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | WindowsResponse |
+
+---
+
+## POST `/computeruse/keyboard/hotkey` {#daytona-toolbox/tag/computer-use/POST/computeruse/keyboard/hotkey}
+
+**Press hotkey**
+
+Press a hotkey combination (e.g., ctrl+c, cmd+v)
+
+### Request Body
+
+Hotkey press request
+
+Schema: **KeyboardHotkeyRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `keys` | string | No | e.g., "ctrl+c", "cmd+v" |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | Empty |
+
+---
+
+## POST `/computeruse/keyboard/key` {#daytona-toolbox/tag/computer-use/POST/computeruse/keyboard/key}
+
+**Press key**
+
+Press a key with optional modifiers
+
+### Request Body
+
+Key press request
+
+Schema: **KeyboardPressRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `key` | string | No |  |
+| `modifiers` | array of string | No | ctrl, alt, shift, cmd |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | Empty |
+
+---
+
+## POST `/computeruse/keyboard/type` {#daytona-toolbox/tag/computer-use/POST/computeruse/keyboard/type}
+
+**Type text**
+
+Type text with optional delay between keystrokes
+
+### Request Body
+
+Text typing request
+
+Schema: **KeyboardTypeRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `delay` | integer | No | milliseconds between keystrokes |
+| `text` | string | No |  |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | Empty |
+
+---
+
+## POST `/computeruse/mouse/click` {#daytona-toolbox/tag/computer-use/POST/computeruse/mouse/click}
+
+**Click mouse button**
+
+Click the mouse button at the specified coordinates
+
+### Request Body
+
+Mouse click request
+
+Schema: **MouseClickRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `button` | string | No | left, right, middle |
+| `double` | boolean | No |  |
+| `x` | integer | No |  |
+| `y` | integer | No |  |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | MouseClickResponse |
+
+---
+
+## POST `/computeruse/mouse/drag` {#daytona-toolbox/tag/computer-use/POST/computeruse/mouse/drag}
+
+**Drag mouse**
+
+Drag the mouse from start to end coordinates
+
+### Request Body
+
+Mouse drag request
+
+Schema: **MouseDragRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `button` | string | No |  |
+| `endX` | integer | No |  |
+| `endY` | integer | No |  |
+| `startX` | integer | No |  |
+| `startY` | integer | No |  |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | MouseDragResponse |
+
+---
+
+## POST `/computeruse/mouse/move` {#daytona-toolbox/tag/computer-use/POST/computeruse/mouse/move}
+
+**Move mouse cursor**
+
+Move the mouse cursor to the specified coordinates
+
+### Request Body
+
+Mouse move request
+
+Schema: **MouseMoveRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `x` | integer | No |  |
+| `y` | integer | No |  |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | MousePositionResponse |
+
+---
+
+## GET `/computeruse/mouse/position` {#daytona-toolbox/tag/computer-use/GET/computeruse/mouse/position}
+
+**Get mouse position**
+
+Get the current mouse cursor position
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | MousePositionResponse |
+
+---
+
+## POST `/computeruse/mouse/scroll` {#daytona-toolbox/tag/computer-use/POST/computeruse/mouse/scroll}
+
+**Scroll mouse wheel**
+
+Scroll the mouse wheel at the specified coordinates
+
+### Request Body
+
+Mouse scroll request
+
+Schema: **MouseScrollRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `amount` | integer | No |  |
+| `direction` | string | No | up, down |
+| `x` | integer | No |  |
+| `y` | integer | No |  |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | ScrollResponse |
+
+---
+
+## GET `/computeruse/process-status` {#daytona-toolbox/tag/computer-use/GET/computeruse/process-status}
+
+**Get computer use process status**
+
+Get the status of all computer use processes
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | ComputerUseStatusResponse |
+
+---
+
+## GET `/computeruse/process/{processName}/errors` {#daytona-toolbox/tag/computer-use/GET/computeruse/process/{processName}/errors}
+
+**Get process errors**
+
+Get errors for a specific computer use process
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `processName` | path | string | Yes | Process name to get errors for |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | ProcessErrorsResponse |
+
+---
+
+## GET `/computeruse/process/{processName}/logs` {#daytona-toolbox/tag/computer-use/GET/computeruse/process/{processName}/logs}
+
+**Get process logs**
+
+Get logs for a specific computer use process
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `processName` | path | string | Yes | Process name to get logs for |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | ProcessLogsResponse |
+
+---
+
+## POST `/computeruse/process/{processName}/restart` {#daytona-toolbox/tag/computer-use/POST/computeruse/process/{processName}/restart}
+
+**Restart specific process**
+
+Restart a specific computer use process
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `processName` | path | string | Yes | Process name to restart |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | ProcessRestartResponse |
+
+---
+
+## GET `/computeruse/process/{processName}/status` {#daytona-toolbox/tag/computer-use/GET/computeruse/process/{processName}/status}
+
+**Get specific process status**
+
+Check if a specific computer use process is running
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `processName` | path | string | Yes | Process name to check |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | ProcessStatusResponse |
+
+---
+
+## GET `/computeruse/recordings` {#daytona-toolbox/tag/computer-use/GET/computeruse/recordings}
+
+**List all recordings**
+
+Get a list of all recordings (active and completed)
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | ListRecordingsResponse |
+| 500 | Internal Server Error | object |
+
+---
+
+## POST `/computeruse/recordings/start` {#daytona-toolbox/tag/computer-use/POST/computeruse/recordings/start}
+
+**Start a new recording**
+
+Start a new screen recording session
+
+### Request Body
+
+Recording options
+
+Schema: **StartRecordingRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `label` | string | No |  |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 201 | Created | Recording |
+| 400 | Bad Request | object |
+| 500 | Internal Server Error | object |
+
+---
+
+## POST `/computeruse/recordings/stop` {#daytona-toolbox/tag/computer-use/POST/computeruse/recordings/stop}
+
+**Stop a recording**
+
+Stop an active screen recording session
+
+### Request Body
+
+Recording ID to stop
+
+Schema: **StopRecordingRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | string | Yes |  |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | Recording |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+
+---
+
+## GET `/computeruse/recordings/{id}` {#daytona-toolbox/tag/computer-use/GET/computeruse/recordings/{id}}
+
+**Get recording details**
+
+Get details of a specific recording by ID
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `id` | path | string | Yes | Recording ID |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | Recording |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
+---
+
+## DELETE `/computeruse/recordings/{id}` {#daytona-toolbox/tag/computer-use/DELETE/computeruse/recordings/{id}}
+
+**Delete a recording**
+
+Delete a recording file by ID
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `id` | path | string | Yes | Recording ID |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 204 | No Content |  |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
+---
+
+## GET `/computeruse/recordings/{id}/download` {#daytona-toolbox/tag/computer-use/GET/computeruse/recordings/{id}/download}
+
+**Download a recording**
+
+Download a recording by providing its ID
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `id` | path | string | Yes | Recording ID |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | string |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+
+---
+
+## GET `/computeruse/screenshot` {#daytona-toolbox/tag/computer-use/GET/computeruse/screenshot}
+
+**Take a screenshot**
+
+Take a screenshot of the entire screen
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `showCursor` | query | boolean | No | Whether to show cursor in screenshot |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | ScreenshotResponse |
+
+---
+
+## GET `/computeruse/screenshot/compressed` {#daytona-toolbox/tag/computer-use/GET/computeruse/screenshot/compressed}
+
+**Take a compressed screenshot**
+
+Take a compressed screenshot of the entire screen
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `showCursor` | query | boolean | No | Whether to show cursor in screenshot |
+| `format` | query | string | No | Image format (png or jpeg) |
+| `quality` | query | integer | No | JPEG quality (1-100) |
+| `scale` | query | number | No | Scale factor (0.1-1.0) |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | ScreenshotResponse |
+
+---
+
+## GET `/computeruse/screenshot/region` {#daytona-toolbox/tag/computer-use/GET/computeruse/screenshot/region}
+
+**Take a region screenshot**
+
+Take a screenshot of a specific region of the screen
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `x` | query | integer | Yes | X coordinate of the region |
+| `y` | query | integer | Yes | Y coordinate of the region |
+| `width` | query | integer | Yes | Width of the region |
+| `height` | query | integer | Yes | Height of the region |
+| `showCursor` | query | boolean | No | Whether to show cursor in screenshot |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | ScreenshotResponse |
+
+---
+
+## GET `/computeruse/screenshot/region/compressed` {#daytona-toolbox/tag/computer-use/GET/computeruse/screenshot/region/compressed}
+
+**Take a compressed region screenshot**
+
+Take a compressed screenshot of a specific region of the screen
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `x` | query | integer | Yes | X coordinate of the region |
+| `y` | query | integer | Yes | Y coordinate of the region |
+| `width` | query | integer | Yes | Width of the region |
+| `height` | query | integer | Yes | Height of the region |
+| `showCursor` | query | boolean | No | Whether to show cursor in screenshot |
+| `format` | query | string | No | Image format (png or jpeg) |
+| `quality` | query | integer | No | JPEG quality (1-100) |
+| `scale` | query | number | No | Scale factor (0.1-1.0) |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | ScreenshotResponse |
+
+---
+
+## POST `/computeruse/start` {#daytona-toolbox/tag/computer-use/POST/computeruse/start}
+
+**Start computer use processes**
+
+Start all computer use processes and return their status
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | ComputerUseStartResponse |
+
+---
+
+## GET `/computeruse/status` {#daytona-toolbox/tag/computer-use/GET/computeruse/status}
+
+**Get computer use status**
+
+Get the current status of the computer use system
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | ComputerUseStatusResponse |
+
+---
+
+## POST `/computeruse/stop` {#daytona-toolbox/tag/computer-use/POST/computeruse/stop}
+
+**Stop computer use processes**
+
+Stop all computer use processes and return their status
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | ComputerUseStopResponse |
+
+---

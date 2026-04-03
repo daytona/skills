@@ -1,0 +1,721 @@
+# Sandbox API
+
+## GET `/sandbox` {#daytona/tag/sandbox/GET/sandbox}
+
+**List all sandboxes**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `verbose` | query | boolean | No | Include verbose output |
+| `labels` | query | string | No | JSON encoded labels to filter by |
+| `includeErroredDeleted` | query | boolean | No | Include errored and deleted sandboxes |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | List of all sandboxes | array of Sandbox |
+
+---
+
+## POST `/sandbox` {#daytona/tag/sandbox/POST/sandbox}
+
+**Create a new sandbox**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+
+### Request Body
+
+Schema: **CreateSandbox**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | No | The name of the sandbox. If not provided, the sandbox ID will be used as the name |
+| `snapshot` | string | No | The ID or name of the snapshot used for the sandbox |
+| `user` | string | No | The user associated with the project |
+| `env` | object | No | Environment variables for the sandbox |
+| `labels` | object | No | Labels for the sandbox |
+| `public` | boolean | No | Whether the sandbox http preview is publicly accessible |
+| `networkBlockAll` | boolean | No | Whether to block all network access for the sandbox |
+| `networkAllowList` | string | No | Comma-separated list of allowed CIDR network addresses for the sandbox |
+| `class` | string | No | The sandbox class type |
+| `target` | string | No | The target (region) where the sandbox will be created |
+| `cpu` | integer | No | CPU cores allocated to the sandbox |
+| `gpu` | integer | No | GPU units allocated to the sandbox |
+| `memory` | integer | No | Memory allocated to the sandbox in GB |
+| `disk` | integer | No | Disk space allocated to the sandbox in GB |
+| `autoStopInterval` | integer | No | Auto-stop interval in minutes (0 means disabled) |
+| `autoArchiveInterval` | integer | No | Auto-archive interval in minutes (0 means the maximum interval will be used) |
+| `autoDeleteInterval` | integer | No | Auto-delete interval in minutes (negative value means disabled, 0 means delete immediately upon stopping) |
+| `volumes` | array of [SandboxVolume](#schema-sandboxvolume) | No | Array of volumes to attach to the sandbox |
+| `buildInfo` | object | No | Build information for the sandbox |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | The sandbox has been successfully created. | Sandbox |
+
+---
+
+## GET `/sandbox/paginated` {#daytona/tag/sandbox/GET/sandbox/paginated}
+
+**List all sandboxes paginated**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `page` | query | number | No | Page number of the results |
+| `limit` | query | number | No | Number of results per page |
+| `id` | query | string | No | Filter by partial ID match |
+| `name` | query | string | No | Filter by partial name match |
+| `labels` | query | string | No | JSON encoded labels to filter by |
+| `includeErroredDeleted` | query | boolean | No | Include results with errored state and deleted desired state |
+| `states` | query | array | No | List of states to filter by |
+| `snapshots` | query | array | No | List of snapshot names to filter by |
+| `regions` | query | array | No | List of regions to filter by |
+| `minCpu` | query | number | No | Minimum CPU |
+| `maxCpu` | query | number | No | Maximum CPU |
+| `minMemoryGiB` | query | number | No | Minimum memory in GiB |
+| `maxMemoryGiB` | query | number | No | Maximum memory in GiB |
+| `minDiskGiB` | query | number | No | Minimum disk space in GiB |
+| `maxDiskGiB` | query | number | No | Maximum disk space in GiB |
+| `lastEventAfter` | query | string (date-time) | No | Include items with last event after this timestamp |
+| `lastEventBefore` | query | string (date-time) | No | Include items with last event before this timestamp |
+| `sort` | query | string | No | Field to sort by |
+| `order` | query | string | No | Direction to sort by |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Paginated list of all sandboxes | PaginatedSandboxes |
+
+---
+
+## GET `/sandbox/for-runner` {#daytona/tag/sandbox/GET/sandbox/for-runner}
+
+**Get sandboxes for the authenticated runner**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `states` | query | string | No | Comma-separated list of sandbox states to filter by |
+| `skipReconcilingSandboxes` | query | boolean | No | Skip sandboxes where state differs from desired state |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | List of sandboxes for the authenticated runner | array of Sandbox |
+
+---
+
+## GET `/sandbox/{sandboxIdOrName}` {#daytona/tag/sandbox/GET/sandbox/{sandboxIdOrName}}
+
+**Get sandbox details**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes | ID or name of the sandbox |
+| `verbose` | query | boolean | No | Include verbose output |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Sandbox details | Sandbox |
+
+---
+
+## DELETE `/sandbox/{sandboxIdOrName}` {#daytona/tag/sandbox/DELETE/sandbox/{sandboxIdOrName}}
+
+**Delete sandbox**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes | ID or name of the sandbox |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Sandbox has been deleted | Sandbox |
+
+---
+
+## POST `/sandbox/{sandboxIdOrName}/recover` {#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/recover}
+
+**Recover sandbox from error state**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes | ID or name of the sandbox |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Recovery initiated | Sandbox |
+
+---
+
+## POST `/sandbox/{sandboxIdOrName}/start` {#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/start}
+
+**Start sandbox**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes | ID or name of the sandbox |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Sandbox has been started or is being restored from archived state | Sandbox |
+
+---
+
+## POST `/sandbox/{sandboxIdOrName}/stop` {#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/stop}
+
+**Stop sandbox**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes | ID or name of the sandbox |
+| `force` | query | boolean | No | Force stop the sandbox using SIGKILL instead of SIGTERM |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Sandbox has been stopped | Sandbox |
+
+---
+
+## POST `/sandbox/{sandboxIdOrName}/resize` {#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/resize}
+
+**Resize sandbox resources**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes | ID or name of the sandbox |
+
+### Request Body
+
+Schema: **ResizeSandbox**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `cpu` | integer | No | CPU cores to allocate to the sandbox (minimum: 1) |
+| `memory` | integer | No | Memory in GB to allocate to the sandbox (minimum: 1) |
+| `disk` | integer | No | Disk space in GB to allocate to the sandbox (can only be increased) |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Sandbox has been resized | Sandbox |
+
+---
+
+## PUT `/sandbox/{sandboxIdOrName}/labels` {#daytona/tag/sandbox/PUT/sandbox/{sandboxIdOrName}/labels}
+
+**Replace sandbox labels**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes | ID or name of the sandbox |
+
+### Request Body
+
+Schema: **SandboxLabels**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `labels` | object | Yes | Key-value pairs of labels |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Labels have been successfully replaced | SandboxLabels |
+
+---
+
+## PUT `/sandbox/{sandboxId}/state` {#daytona/tag/sandbox/PUT/sandbox/{sandboxId}/state}
+
+**Update sandbox state**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxId` | path | string | Yes | ID of the sandbox |
+
+### Request Body
+
+Schema: **UpdateSandboxStateDto**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `state` | string | Yes | The new state for the sandbox |
+| `errorReason` | string | No | Optional error message when reporting an error state |
+| `recoverable` | boolean | No | Whether the sandbox is recoverable |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Sandbox state has been successfully updated |  |
+
+---
+
+## POST `/sandbox/{sandboxIdOrName}/backup` {#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/backup}
+
+**Create sandbox backup**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes | ID or name of the sandbox |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Sandbox backup has been initiated | Sandbox |
+
+---
+
+## POST `/sandbox/{sandboxIdOrName}/public/{isPublic}` {#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/public/{isPublic}}
+
+**Update public status**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes | ID or name of the sandbox |
+| `isPublic` | path | boolean | Yes | Public status to set |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Public status has been successfully updated | Sandbox |
+
+---
+
+## POST `/sandbox/{sandboxId}/last-activity` {#daytona/tag/sandbox/POST/sandbox/{sandboxId}/last-activity}
+
+**Update sandbox last activity**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxId` | path | string | Yes | ID of the sandbox |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 201 | Last activity has been updated |  |
+
+---
+
+## POST `/sandbox/{sandboxIdOrName}/autostop/{interval}` {#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/autostop/{interval}}
+
+**Set sandbox auto-stop interval**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes | ID or name of the sandbox |
+| `interval` | path | number | Yes | Auto-stop interval in minutes (0 to disable) |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Auto-stop interval has been set | Sandbox |
+
+---
+
+## POST `/sandbox/{sandboxIdOrName}/autoarchive/{interval}` {#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/autoarchive/{interval}}
+
+**Set sandbox auto-archive interval**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes | ID or name of the sandbox |
+| `interval` | path | number | Yes | Auto-archive interval in minutes (0 means the maximum interval will be used) |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Auto-archive interval has been set | Sandbox |
+
+---
+
+## POST `/sandbox/{sandboxIdOrName}/autodelete/{interval}` {#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/autodelete/{interval}}
+
+**Set sandbox auto-delete interval**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes | ID or name of the sandbox |
+| `interval` | path | number | Yes | Auto-delete interval in minutes (negative value means disabled, 0 means delete immediately upon stopping) |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Auto-delete interval has been set | Sandbox |
+
+---
+
+## POST `/sandbox/{sandboxIdOrName}/archive` {#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/archive}
+
+**Archive sandbox**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes |  |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Sandbox has been archived | Sandbox |
+
+---
+
+## GET `/sandbox/{sandboxIdOrName}/ports/{port}/preview-url` {#daytona/tag/sandbox/GET/sandbox/{sandboxIdOrName}/ports/{port}/preview-url}
+
+**Get preview URL for a sandbox port**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes | ID or name of the sandbox |
+| `port` | path | number | Yes | Port number to get preview URL for |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Preview URL for the specified port | PortPreviewUrl |
+
+---
+
+## GET `/sandbox/{sandboxIdOrName}/ports/{port}/signed-preview-url` {#daytona/tag/sandbox/GET/sandbox/{sandboxIdOrName}/ports/{port}/signed-preview-url}
+
+**Get signed preview URL for a sandbox port**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes | ID or name of the sandbox |
+| `port` | path | integer | Yes | Port number to get signed preview URL for |
+| `expiresInSeconds` | query | integer | No | Expiration time in seconds (default: 60 seconds) |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Signed preview URL for the specified port | SignedPortPreviewUrl |
+
+---
+
+## POST `/sandbox/{sandboxIdOrName}/ports/{port}/signed-preview-url/{token}/expire` {#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/ports/{port}/signed-preview-url/{token}/expire}
+
+**Expire signed preview URL for a sandbox port**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes | ID or name of the sandbox |
+| `port` | path | integer | Yes | Port number to expire signed preview URL for |
+| `token` | path | string | Yes | Token to expire signed preview URL for |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Signed preview URL has been expired |  |
+
+---
+
+## GET `/sandbox/{sandboxIdOrName}/build-logs` {#daytona/tag/sandbox/GET/sandbox/{sandboxIdOrName}/build-logs}
+
+**Get build logs**
+
+This endpoint is deprecated. Use `getBuildLogsUrl` instead.
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes | ID or name of the sandbox |
+| `follow` | query | boolean | No | Whether to follow the logs stream |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Build logs stream |  |
+
+---
+
+## GET `/sandbox/{sandboxIdOrName}/build-logs-url` {#daytona/tag/sandbox/GET/sandbox/{sandboxIdOrName}/build-logs-url}
+
+**Get build logs URL**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes | ID or name of the sandbox |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Build logs URL | Url |
+
+---
+
+## POST `/sandbox/{sandboxIdOrName}/ssh-access` {#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/ssh-access}
+
+**Create SSH access for sandbox**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes | ID or name of the sandbox |
+| `expiresInMinutes` | query | number | No | Expiration time in minutes (default: 60) |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | SSH access has been created | SshAccessDto |
+
+---
+
+## DELETE `/sandbox/{sandboxIdOrName}/ssh-access` {#daytona/tag/sandbox/DELETE/sandbox/{sandboxIdOrName}/ssh-access}
+
+**Revoke SSH access for sandbox**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes | ID or name of the sandbox |
+| `token` | query | string | No | SSH access token to revoke. If not provided, all SSH access for the sandbox will be revoked. |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | SSH access has been revoked | Sandbox |
+
+---
+
+## GET `/sandbox/ssh-access/validate` {#daytona/tag/sandbox/GET/sandbox/ssh-access/validate}
+
+**Validate SSH access for sandbox**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `token` | query | string | Yes | SSH access token to validate |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | SSH access validation result | SshAccessValidationDto |
+
+---
+
+## GET `/sandbox/{sandboxId}/toolbox-proxy-url` {#daytona/tag/sandbox/GET/sandbox/{sandboxId}/toolbox-proxy-url}
+
+**Get toolbox proxy URL for a sandbox**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxId` | path | string | Yes | ID of the sandbox |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Toolbox proxy URL for the specified sandbox | ToolboxProxyUrl |
+
+---
+
+## GET `/sandbox/{sandboxId}/telemetry/logs` {#daytona/tag/sandbox/GET/sandbox/{sandboxId}/telemetry/logs}
+
+**Get sandbox logs**
+
+Retrieve OTEL logs for a sandbox within a time range
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxId` | path | string | Yes | ID of the sandbox |
+| `from` | query | string (date-time) | Yes | Start of time range (ISO 8601) |
+| `to` | query | string (date-time) | Yes | End of time range (ISO 8601) |
+| `page` | query | number | No | Page number (1-indexed) |
+| `limit` | query | number | No | Number of items per page |
+| `severities` | query | array | No | Filter by severity levels (DEBUG, INFO, WARN, ERROR) |
+| `search` | query | string | No | Search in log body |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Paginated list of log entries | PaginatedLogs |
+
+---
+
+## GET `/sandbox/{sandboxId}/telemetry/traces` {#daytona/tag/sandbox/GET/sandbox/{sandboxId}/telemetry/traces}
+
+**Get sandbox traces**
+
+Retrieve OTEL traces for a sandbox within a time range
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxId` | path | string | Yes | ID of the sandbox |
+| `from` | query | string (date-time) | Yes | Start of time range (ISO 8601) |
+| `to` | query | string (date-time) | Yes | End of time range (ISO 8601) |
+| `page` | query | number | No | Page number (1-indexed) |
+| `limit` | query | number | No | Number of items per page |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Paginated list of trace summaries | PaginatedTraces |
+
+---
+
+## GET `/sandbox/{sandboxId}/telemetry/traces/{traceId}` {#daytona/tag/sandbox/GET/sandbox/{sandboxId}/telemetry/traces/{traceId}}
+
+**Get trace spans**
+
+Retrieve all spans for a specific trace
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxId` | path | string | Yes | ID of the sandbox |
+| `traceId` | path | string | Yes | ID of the trace |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | List of spans in the trace | array of TraceSpan |
+
+---
+
+## GET `/sandbox/{sandboxId}/telemetry/metrics` {#daytona/tag/sandbox/GET/sandbox/{sandboxId}/telemetry/metrics}
+
+**Get sandbox metrics**
+
+Retrieve OTEL metrics for a sandbox within a time range
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxId` | path | string | Yes | ID of the sandbox |
+| `from` | query | string (date-time) | Yes | Start of time range (ISO 8601) |
+| `to` | query | string (date-time) | Yes | End of time range (ISO 8601) |
+| `metricNames` | query | array | No | Filter by metric names |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Metrics time series data | MetricsResponse |
+
+---
