@@ -37,5 +37,5 @@ skills/daytona/
     ├── typescript-sdk/     # TypeScript SDK reference documentation
     ├── go-sdk/             # Go SDK reference documentation
     ├── ruby-sdk/           # Ruby SDK reference documentation
-    ├── cli.md              # CLI reference documentation
+    └── cli.md              # CLI reference documentation
 ```
