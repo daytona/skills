@@ -1,0 +1,17 @@
+{
+  "name": "daytona",
+  "owner": {
+    "name": "Daytona"
+  },
+  "metadata": {
+    "name": "daytona",
+    "description": "An agent skill for creating and running sandboxes on the Daytona platform"
+  },
+  "plugins": [
+    {
+      "name": "daytona",
+      "source": "./skills/daytona",
+      "description": "An agent skill for creating and running sandboxes on the Daytona platform"
+    }
+  ]
+}
