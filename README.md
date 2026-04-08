@@ -4,6 +4,17 @@ An agent skill for creating and running sandboxes on the Daytona platform. Inclu
 
 ## Installation
 
+### Claude Code (Plugin)
+
+```bash
+claude plugin marketplace add daytona/skills
+claude plugin install daytona@daytona --scope user
+```
+
+Scope options: `user` (all projects), `project` (shared via git), `local` (gitignored).
+
+### Manual
+
 Clone this repository:
 
 ```bash
