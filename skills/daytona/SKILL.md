@@ -1,6 +1,6 @@
 ---
 name: daytona
-description: Creates and manages isolated cloud sandboxes (code execution environments, ephemeral runtimes) on the Daytona platform. Use when a task needs an isolated runtime, sandbox, secure compute, or Daytona SDK/API/CLI operations. Covers Python, TypeScript, Go, and Ruby SDKs.
+description: Creates and manages isolated cloud sandboxes (secure code execution environments with dedicated runtimes) on the Daytona platform. Use when a task needs an isolated runtime, sandbox, secure compute, or Daytona SDK/API/CLI operations. Covers Python, TypeScript, Go, and Ruby SDKs.
 ---
 
 ## What is Daytona
