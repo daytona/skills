@@ -232,8 +232,10 @@ report = sandbox.fs.download_file("/home/daytona/test.log")
 
 Sandboxes expose HTTP services via preview URLs. Previews are token-authenticated by default, or public if `public=True` (Python) / `public: true` (TypeScript) at sandbox creation.
 
-- **Token-authenticated:** `sandbox.get_preview_link(port)` — returns `.url` and `.token` (send as `x-daytona-preview-token` header)
-- **Signed URL (shareable):** `sandbox.create_signed_preview_url(port, expires_in_seconds=3600)` — token embedded in URL
+- **Token-authenticated** — returns `.url` and `.token` (send as `x-daytona-preview-token` header)
+  - Python: `sandbox.get_preview_link(port)` | TypeScript: `sandbox.getPreviewLink(port)` | Go: `sandbox.GetPreviewLink(port)` | Ruby: `sandbox.get_preview_link(port)`
+- **Signed URL (shareable)** — token embedded in URL, no headers needed
+  - Python: `sandbox.create_signed_preview_url(port, expires_in_seconds=3600)` | TypeScript: `sandbox.getSignedPreviewUrl(port, 3600)` | Go: `sandbox.GetSignedPreviewLink(port, 3600)` | Ruby: `sandbox.create_signed_preview_url(port, expires_in_seconds: 3600)`
 
 For details, see `./references/<lang>-sdk/preview.md`.
 
