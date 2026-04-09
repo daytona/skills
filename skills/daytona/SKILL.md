@@ -1,6 +1,6 @@
 ---
 name: daytona
-description: Daytona platform skill for creating and managing cloud sandboxes. Covers Python, TypeScript, Go, and Ruby SDKs for sandbox lifecycle, process execution, file operations, git, snapshots, volumes, and more.
+description: Creates and manages isolated cloud sandboxes (secure code execution environments with dedicated runtimes) on the Daytona platform. Use when a task needs an isolated runtime, sandbox, secure compute, or Daytona SDK/API/CLI operations. Covers Python, TypeScript, Go, and Ruby SDKs.
 ---
 
 ## What is Daytona
@@ -8,6 +8,8 @@ description: Daytona platform skill for creating and managing cloud sandboxes. C
 Daytona provides **full composable computers** — **sandboxes** — for AI agents. Each sandbox is an isolated runtime environment with its own kernel, filesystem, network stack, and dedicated vCPU, RAM, and disk. Agents can install packages, run servers, compile code, and manage processes inside sandboxes.
 
 Sandboxes are built from OCI-compliant images or snapshots. Any language or tool that runs on Linux works.
+
+**Scope:** This skill covers Daytona Cloud (`app.daytona.io`). For self-hosted Daytona OSS deployment, see `./references/platform/oss-deployment.md`.
 
 ## Before You Start
 
@@ -105,220 +107,15 @@ sandbox.start()
 sandbox.delete()
 ```
 
-### Error handling
-
-```python
-from daytona import Daytona, DaytonaError
-
-try:
-    daytona = Daytona()
-    sandbox = daytona.create()
-    response = sandbox.process.exec("some-command")
-except DaytonaError as e:
-    print(f"Daytona error: {e}")
-```
-
-### Async API
-
-```python
-import asyncio
-from daytona import AsyncDaytona
-
-async def main():
-    async with AsyncDaytona() as daytona:
-        sandbox = await daytona.create()
-        response = await sandbox.process.exec("echo 'Hello!'")
-        print(response.result)
-
-asyncio.run(main())
-```
-
-For full Python SDK reference, see [python-sdk/README.md](./references/python-sdk/README.md).
+Wrap Daytona calls with `DaytonaError` for error handling. For async, use `AsyncDaytona` (async context manager). For full Python SDK reference, see [python-sdk/README.md](./references/python-sdk/README.md).
 
 ## SDK Essentials — TypeScript
 
-### Installation
+The TypeScript SDK (`@daytonaio/sdk`) mirrors the Python API. Key differences: `executeCommand` instead of `exec`, `codeRun` instead of `code_run`, `uploadFile`/`downloadFile`/`listFiles` for file ops, `DaytonaError` for error handling. Install with `npm install @daytonaio/sdk`.
 
-```bash
-npm install @daytonaio/sdk
-```
-
-### Create client and sandbox
-
-```typescript
-import { Daytona } from '@daytonaio/sdk'
-
-// Uses DAYTONA_API_KEY env var
-const daytona = new Daytona()
-
-// Create a sandbox with defaults (1 vCPU, 1GB RAM, 3GB disk)
-const sandbox = await daytona.create()
-```
-
-```typescript
-import { Daytona, Image } from '@daytonaio/sdk'
-
-const daytona = new Daytona()
-
-// Create with a custom image, name, and resources
-const sandbox = await daytona.create({
-  image: Image.debianSlim('3.12'),
-  name: 'my-sandbox',
-  resources: { cpu: 2, memory: 4, disk: 8 },
-})
-```
-
-### Execute commands
-
-Both `executeCommand` and `codeRun` return an `ExecuteResponse` with `.result` (stdout) and `.exitCode`.
-`codeRun` executes in the sandbox's language runtime (set at creation via `language:` param, defaults to `"python"`). Supported: `python`, `typescript`, `javascript`.
-
-```typescript
-// Run a shell command
-const response = await sandbox.process.executeCommand('echo "Hello, World!"')
-console.log(response.result)    // "Hello, World!"
-console.log(response.exitCode)  // 0
-
-// Run code (stateless) — runs Python by default
-const codeResponse = await sandbox.process.codeRun(`
-def greet(name):
-    return "Hello, " + name + "!"
-
-print(greet("Daytona"))
-`)
-console.log(codeResponse.result)
-console.log(codeResponse.exitCode)  // 0 on success, non-zero on error
-```
-
-### File operations
-
-```typescript
-// Write a file
-await sandbox.fs.uploadFile(Buffer.from('Hello, Daytona!'), '/home/daytona/data.txt')
-
-// Read a file
-const content = await sandbox.fs.downloadFile('/home/daytona/data.txt')
-console.log(content.toString())
-
-// List files
-const files = await sandbox.fs.listFiles('workspace')
-files.forEach(f => console.log(`${f.name} (${f.isDir ? 'dir' : f.size})`))
-```
-
-### Sandbox lifecycle
-
-```typescript
-// Pause and resume later
-await sandbox.stop()          // frees CPU/RAM, keeps disk
-await sandbox.start()         // resume where you left off
-
-// Long-term storage (must be stopped first)
-await sandbox.stop()
-await sandbox.archive()       // cold storage, no quota impact
-
-// Resume a previous sandbox by ID or name
-const sandbox = await daytona.get('sandbox-id-or-name')
-await sandbox.start()
-
-// Permanently remove
-await sandbox.delete()
-```
-
-### Error handling
-
-```typescript
-import { Daytona, DaytonaError } from '@daytonaio/sdk'
-
-try {
-  const daytona = new Daytona()
-  const sandbox = await daytona.create()
-  const response = await sandbox.process.executeCommand('some-command')
-} catch (error) {
-  if (error instanceof DaytonaError) {
-    console.error('Daytona error:', error.message)
-  }
-  throw error
-}
-```
-
-For full TypeScript SDK reference, see [typescript-sdk/README.md](./references/typescript-sdk/README.md).
-
-### Preview URLs
-
-Sandboxes can expose HTTP services via preview URLs. Previews are token-authenticated by default, or public if `public` is set to true at sandbox creation (`public=True` in Python, `public: true` in TypeScript).
-
-```python
-# Token-authenticated (programmatic access)
-preview = sandbox.get_preview_link(3000)
-# preview.url — the URL; preview.token — send as x-daytona-preview-token header
-
-# Signed URL (shareable, token embedded in URL)
-signed = sandbox.create_signed_preview_url(3000, expires_in_seconds=3600)
-# signed.url — no headers needed
-```
-
-```typescript
-// Token-authenticated (programmatic access)
-const preview = await sandbox.getPreviewLink(3000)
-// preview.url — the URL; preview.token — send as x-daytona-preview-token header
-
-// Signed URL (shareable, token embedded in URL)
-const signed = await sandbox.getSignedPreviewUrl(3000, 3600)
-// signed.url — no headers needed
-```
-
-For more details, see `./references/<lang>-sdk/preview.md`.
+For full TypeScript SDK reference and examples, see [typescript-sdk/README.md](./references/typescript-sdk/README.md).
 
 ## Common Patterns
-
-### Code execution pattern
-
-```python
-from daytona import Daytona
-
-daytona = Daytona()
-sandbox = daytona.create()
-
-try:
-    # Run code in the sandbox
-    response = sandbox.process.code_run('''
-    import math
-    result = math.factorial(20)
-    print(f"20! = {result}")
-    ''')
-    print(response.result)
-finally:
-    sandbox.delete()
-```
-
-### File processing pattern
-
-```python
-from daytona import Daytona
-
-daytona = Daytona()
-sandbox = daytona.create()
-
-try:
-    # Upload input file
-    sandbox.fs.upload_file(input_data, "/home/daytona/input.csv")
-
-    # Process it
-    sandbox.process.code_run('''
-    import csv
-    with open("/home/daytona/input.csv") as f:
-        reader = csv.reader(f)
-        rows = list(reader)
-    with open("/home/daytona/output.json", "w") as f:
-        import json
-        json.dump(rows, f)
-    ''')
-
-    # Download result
-    result = sandbox.fs.download_file("/home/daytona/output.json")
-finally:
-    sandbox.delete()
-```
 
 ### Custom environments and snapshots
 
@@ -431,6 +228,17 @@ print(response.result)
 report = sandbox.fs.download_file("/home/daytona/test.log")
 ```
 
+### Preview URLs
+
+Sandboxes expose HTTP services via preview URLs. Previews are token-authenticated by default, or public if `public=True` (Python) / `public: true` (TypeScript) at sandbox creation.
+
+- **Token-authenticated** — returns `.url` and `.token` (send as `x-daytona-preview-token` header)
+  - Python: `sandbox.get_preview_link(port)` | TypeScript: `sandbox.getPreviewLink(port)` | Go: `sandbox.GetPreviewLink(port)` | Ruby: `sandbox.get_preview_link(port)`
+- **Signed URL (shareable)** — token embedded in URL, no headers needed
+  - Python: `sandbox.create_signed_preview_url(port, expires_in_seconds=3600)` | TypeScript: `sandbox.getSignedPreviewUrl(port, 3600)` | Go: `sandbox.GetSignedPreviewLink(port, 3600)` | Ruby: `sandbox.create_signed_preview_url(port, expires_in_seconds: 3600)`
+
+For details, see `./references/<lang>-sdk/preview.md`.
+
 ## Sandbox Limits & Constraints
 
 | Constraint | Default | Maximum |
@@ -508,13 +316,9 @@ Async versions mirror the sync API: [python-sdk/async/](./references/python-sdk/
 
 Flat structure (no sync/async split like Python): [typescript-sdk/README.md](./references/typescript-sdk/README.md). Files: `daytona.md`, `sandbox.md`, `process.md`, `file-system.md`, `git.md`, `snapshot.md`, `volume.md`, `code-interpreter.md`, `computer-use.md`, `lsp-server.md`, `object-storage.md`, `execute-response.md`, `pty-handle.md`, `errors.md`, `image.md`.
 
-### Go SDK
+### Go SDK & Ruby SDK
 
-Compact structure — most APIs are in one file: [go-sdk/README.md](./references/go-sdk/README.md). Files: `daytona.md` (client + all services), `types.md`, `options.md`, `errors.md`.
-
-### Ruby SDK
-
-Same structure as TypeScript: [ruby-sdk/README.md](./references/ruby-sdk/README.md). Files: `daytona.md`, `sandbox.md`, `process.md`, `file-system.md`, `git.md`, `snapshot.md`, `volume.md`, `volume-service.md`, `computer-use.md`, `lsp-server.md`, `object-storage.md`, `config.md`, `errors.md`, `image.md`.
+Both follow the same patterns. Go uses a compact single-file structure: [go-sdk/README.md](./references/go-sdk/README.md). Ruby mirrors TypeScript: [ruby-sdk/README.md](./references/ruby-sdk/README.md).
 
 ## Feature Guides (per-SDK)
 
