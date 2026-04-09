@@ -644,6 +644,69 @@ def append_see_also_platform(content: str, doc_name: str) -> str:
     return content.rstrip() + "\n".join(lines) + "\n"
 
 
+def generate_toc(content: str, min_lines: int = 100) -> str:
+    """
+    Prepend a table of contents to files longer than min_lines.
+
+    Extracts ## headings, builds a flat TOC, and inserts it after the
+    first # heading (or at the top if none).  Skips files that are short
+    or have fewer than 3 sections.
+    """
+    if content.count("\n") < min_lines:
+        return content
+
+    lines = content.split("\n")
+    headings = []
+    in_code_block = False
+
+    for line in lines:
+        stripped = line.strip()
+        if stripped.startswith("```"):
+            in_code_block = not in_code_block
+        if in_code_block:
+            continue
+        # Only ## level headings for a scannable TOC
+        if stripped.startswith("## ") and not stripped.startswith("### "):
+            headings.append(stripped)
+
+    if len(headings) < 3:
+        return content
+
+    toc_lines = ["## Contents", ""]
+    for h in headings:
+        text = h[3:]
+        # Strip trailing anchor syntax {#...}
+        text = re.sub(r"\s*\{#[^}]*\}", "", text)
+        display = text.strip()
+        toc_lines.append(f"- {display}")
+
+    toc_lines.append("")
+    toc_block = "\n".join(toc_lines)
+
+    # Insert after the first # heading line (not ## or ###)
+    insert_pos = None
+    in_code = False
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        if stripped.startswith("```"):
+            in_code = not in_code
+        if in_code:
+            continue
+        if stripped.startswith("# ") and not stripped.startswith("## "):
+            insert_pos = i + 1
+            break
+
+    if insert_pos is not None:
+        # Skip blank lines immediately after the title
+        while insert_pos < len(lines) and not lines[insert_pos].strip():
+            insert_pos += 1
+        lines.insert(insert_pos, "\n" + toc_block)
+    else:
+        lines.insert(0, toc_block + "\n")
+
+    return "\n".join(lines)
+
+
 def clean_content(content: str) -> str:
     """Clean up common artifacts after transformations."""
     # Remove excessive blank lines (more than 2 consecutive)
@@ -689,6 +752,7 @@ def iter_sdk_mdx(directory: Path, strip_prefix: str = None):
 
 def write_md(path: Path, content: str):
     """Write markdown file, creating directories as needed."""
+    content = generate_toc(content)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content, encoding="utf-8")
     print(f"  -> {path.relative_to(REPO_ROOT)}")

@@ -1,6 +1,6 @@
 {
   "name": "daytona",
-  "description": "An agent skill for creating and running sandboxes on the Daytona platform",
+  "description": "Creates and manages isolated cloud sandboxes (code execution environments, ephemeral runtimes) on the Daytona platform",
   "version": "1.0.0",
   "author": {
     "name": "Daytona"

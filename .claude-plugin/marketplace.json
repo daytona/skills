@@ -5,13 +5,13 @@
   },
   "metadata": {
     "name": "daytona",
-    "description": "An agent skill for creating and running sandboxes on the Daytona platform"
+    "description": "Creates and manages isolated cloud sandboxes (code execution environments, ephemeral runtimes) on the Daytona platform"
   },
   "plugins": [
     {
       "name": "daytona",
       "source": "./skills/daytona",
-      "description": "An agent skill for creating and running sandboxes on the Daytona platform"
+      "description": "Creates and manages isolated cloud sandboxes (code execution environments, ephemeral runtimes) on the Daytona platform"
     }
   ]
 }
