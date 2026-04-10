@@ -50,3 +50,7 @@ skills/daytona/
     ├── ruby-sdk/           # Ruby SDK reference documentation
     └── cli.md              # CLI reference documentation
 ```
+
+## License
+
+This project is licensed under the Apache License 2.0 — see [LICENSE](LICENSE) for details.
