@@ -1,3 +1,15 @@
+## Contents
+
+- Access from Dashboard
+- Access via CLI
+- Access via token
+- Connect with VS Code
+- Connect with JetBrains IDEs
+- Token management
+- Related
+- See Also
+
+
 
 
 Daytona provides SSH access to your sandboxes using token-based authentication. This allows you to connect from local terminals, IDEs, and development tools without installing additional software.
@@ -42,7 +54,7 @@ daytona ssh <sandbox> --expires 60
 You can create SSH access tokens programmatically. The token can then be used to connect manually:
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk'
+import { Daytona } from '@daytona/sdk'
 
 const daytona = new Daytona()
 const sandbox = await daytona.get('sandbox-abc123')

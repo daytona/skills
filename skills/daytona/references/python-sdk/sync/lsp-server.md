@@ -1,3 +1,10 @@
+## Contents
+
+- LspServer
+- LspLanguageId
+- LspCompletionPosition
+
+
 > For the async version, see [async/lsp-server.md](../async/lsp-server.md)
 
 

@@ -1,5 +1,22 @@
 # File System API
 
+
+## Contents
+
+- GET `/files`
+- DELETE `/files`
+- POST `/files/bulk-download`
+- POST `/files/bulk-upload`
+- GET `/files/download`
+- GET `/files/find`
+- POST `/files/folder`
+- GET `/files/info`
+- POST `/files/move`
+- POST `/files/permissions`
+- POST `/files/replace`
+- GET `/files/search`
+- POST `/files/upload`
+
 ## GET `/files` {#daytona-toolbox/tag/file-system/GET/files}
 
 **List files and directories**
@@ -45,7 +62,7 @@ Delete a file or directory at the specified path
 
 **Download multiple files**
 
-Download multiple files by providing their paths
+Download multiple files by providing their paths. Successful files are returned as multipart parts named `file`. Per-file failures are returned as multipart parts named `error` with JSON payloads shaped like ErrorResponse.
 
 ### Request Body
 
@@ -61,7 +78,7 @@ Schema: **FilesDownloadRequest**
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | gin.H |
+| 200 | Multipart response with file parts and JSON error parts | gin.H |
 
 ---
 

@@ -1,3 +1,18 @@
+## Contents
+
+- Snapshot lifecycle
+- Create Snapshots
+- Get a Snapshot by name
+- List Snapshots
+- Activate Snapshots
+- Deactivate Snapshots
+- Delete Snapshots
+- Run Docker in a Sandbox
+- Run Kubernetes in a Sandbox
+- Default Snapshots
+- See Also
+
+
 
 
 Snapshots are sandbox templates created from [Docker](https://www.docker.com/) or [OCI](https://opencontainers.org/) compatible images. Sandboxes can use a [default snapshot](#default-snapshots) or custom snapshots to provide a consistent and reproducible sandbox environments for your dependencies, settings, and resources.
@@ -337,7 +352,7 @@ To view your available resources and limits, see [limits](../platform/limits.md)
 Snapshot resources can be customized using the `Resources` class.
 
 ```typescript
-import { Daytona, Image } from '@daytonaio/sdk'
+import { Daytona, Image } from '@daytona/sdk'
 
 const daytona = new Daytona()
 
@@ -363,7 +378,7 @@ When creating a snapshot, you can specify the [region](./regions.md) in which it
 When you later create a sandbox from this snapshot, you can use the snapshot's region as the target region for the sandbox.
 
 ```typescript
-import { Daytona, Image } from "@daytonaio/sdk";
+import { Daytona, Image } from "@daytona/sdk";
 
 const daytona = new Daytona();
 
@@ -499,7 +514,7 @@ Docker Compose allows you to define and run multi-container applications. With D
 First, create a Docker-in-Docker snapshot using the [Daytona Dashboard ↗](https://app.daytona.io/dashboard/snapshots) or [CLI](../cli.md#daytona-snapshot-create) with one of the [pre-built images](#using-pre-built-images) (e.g., `docker:28.3.3-dind`). Then use the following snippet to run Docker Compose services inside a sandbox:
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk'
+import { Daytona } from '@daytona/sdk'
 
 // Initialize the Daytona client
 const daytona = new Daytona()
@@ -538,7 +553,7 @@ Daytona Sandboxes can run a Kubernetes cluster inside the sandbox. Kubernetes ru
 The following snippet installs and starts a k3s cluster inside a sandbox and lists all running pods.
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk'
+import { Daytona } from '@daytona/sdk'
 import { setTimeout } from 'timers/promises'
 
 // Initialize the Daytona client

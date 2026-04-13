@@ -1,3 +1,10 @@
+## Contents
+
+- Sandbox
+- PaginatedSandboxes
+- Resources
+
+
 > For the async version, see [async/sandbox.md](../async/sandbox.md)
 
 
@@ -360,7 +367,7 @@ Interactions using Sandbox Previews are not included.
 
 **Raises**:
 
-- `DaytonaError` - If interval is negative
+- `DaytonaValidationError` - If interval is negative
 
 
 **Example**:
@@ -392,7 +399,7 @@ The Sandbox will automatically archive after being continuously stopped for the 
 
 **Raises**:
 
-- `DaytonaError` - If interval is negative
+- `DaytonaValidationError` - If interval is negative
 
 
 **Example**:

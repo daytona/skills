@@ -1,3 +1,11 @@
+## Contents
+
+- Current usage
+- Limits
+- Best practices
+- See Also
+
+
 
 
 [Daytona Limits ↗](https://app.daytona.io/dashboard/limits) provide an overview of your organization's [current usage](#current-usage), [resources](#resources), [sandbox limits](#sandbox-limits), and [rate limits](#rate-limits). Daytona uses a [tier-based](#tier-upgrade) system where organizations are placed into tiers based on verification status, with each tier providing access to a specific compute pool and rate limits. For information on spending and wallet management, see [billing](./billing.md).

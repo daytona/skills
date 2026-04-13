@@ -1,3 +1,11 @@
+## Contents
+
+- Installation
+- Getting Started
+- Configuration
+- Multiple runtime support
+
+
 
 The Daytona TypeScript SDK provides a powerful interface for programmatically interacting with Daytona Sandboxes.
 
@@ -6,13 +14,13 @@ The Daytona TypeScript SDK provides a powerful interface for programmatically in
 Install the Daytona TypeScript SDK using npm:
 
 ```bash
-npm install @daytonaio/sdk
+npm install @daytona/sdk
 ```
 
 Or using yarn:
 
 ```bash
-yarn add @daytonaio/sdk
+yarn add @daytona/sdk
 ```
 
 ## Getting Started
@@ -22,7 +30,7 @@ yarn add @daytonaio/sdk
 Create a Daytona Sandbox to run your code securely in an isolated environment. The following snippet is an example “Hello World” program that runs securely inside a Daytona Sandbox.
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk'
+import { Daytona } from '@daytona/sdk'
 
 async function main() {
   // Initialize the SDK (uses environment variables by default)
@@ -47,7 +55,7 @@ main().catch(console.error)
 The Daytona SDK can be configured using environment variables or by passing options to the constructor:
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk';
+import { Daytona } from '@daytona/sdk';
 
 // Using environment variables (DAYTONA_API_KEY, DAYTONA_API_URL, DAYTONA_TARGET)
 const daytona = new Daytona();

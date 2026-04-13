@@ -1,3 +1,10 @@
+## Contents
+
+- AsyncSandbox
+- AsyncPaginatedSandboxes
+- Resources
+
+
 > For the sync version, see [sync/sandbox.md](../sync/sandbox.md)
 
 
@@ -48,8 +55,11 @@ Represents a Daytona Sandbox.
 #### AsyncSandbox.\_\_init\_\_
 
 ```python
-def __init__(sandbox_dto: SandboxDto, toolbox_api: ApiClient,
-             sandbox_api: SandboxApi, code_toolbox: SandboxCodeToolbox)
+def __init__(sandbox_dto: SandboxDto,
+             toolbox_api: ApiClient,
+             sandbox_api: SandboxApi,
+             code_toolbox: SandboxCodeToolbox,
+             pool_tracker: AsyncPoolSaturationTracker | None = None)
 ```
 
 Initialize a new Sandbox instance.
@@ -60,6 +70,7 @@ Initialize a new Sandbox instance.
 - `toolbox_api` _ApiClient_ - API client for toolbox operations.
 - `sandbox_api` _SandboxApi_ - API client for Sandbox operations.
 - `code_toolbox` _SandboxCodeToolbox_ - Language-specific toolbox implementation.
+- `pool_tracker` _AsyncPoolSaturationTracker | None_ - Tracker for connection pool saturation.
 
 #### AsyncSandbox.refresh\_data
 
@@ -360,7 +371,7 @@ Interactions using Sandbox Previews are not included.
 
 **Raises**:
 
-- `DaytonaError` - If interval is negative
+- `DaytonaValidationError` - If interval is negative
 
 
 **Example**:
@@ -392,7 +403,7 @@ The Sandbox will automatically archive after being continuously stopped for the 
 
 **Raises**:
 
-- `DaytonaError` - If interval is negative
+- `DaytonaValidationError` - If interval is negative
 
 
 **Example**:

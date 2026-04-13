@@ -2,6 +2,18 @@
 
 # errors
 
+
+## Contents
+
+- Index
+- func ConvertAPIError
+- func ConvertToolboxError
+- type DaytonaError
+- type DaytonaNotFoundError
+- type DaytonaRateLimitError
+- type DaytonaTimeoutError
+- See Also
+
 ```go
 import "github.com/daytonaio/daytona/libs/sdk-go/pkg/errors"
 ```

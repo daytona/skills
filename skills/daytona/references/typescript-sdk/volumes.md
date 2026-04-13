@@ -1,3 +1,16 @@
+## Contents
+
+- Create volumes
+- Mount volumes
+- Work with volumes
+- Get a volume by name
+- List volumes
+- Delete volumes
+- Limitations
+- Pricing & Limits
+- See Also
+
+
 
 
 Volumes are FUSE-based mounts that provide shared file access across Daytona Sandboxes. They enable sandboxes to read from large files instantly - no need to upload files manually to each sandbox. Volume data is stored in an S3-compatible object store.
@@ -33,7 +46,7 @@ Daytona provides an option to mount a volume to a sandbox. Once a volume is crea
 The following snippets demonstrate how to mount a volume to a sandbox:
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk'
+import { Daytona } from '@daytona/sdk'
 import path from 'path'
 
 const daytona = new Daytona()

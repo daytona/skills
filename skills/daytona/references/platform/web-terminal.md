@@ -1,3 +1,13 @@
+## Contents
+
+- Access from Dashboard
+- Access via CLI
+- Access via URL
+- Security
+- Related
+- See Also
+
+
 
 
 Daytona provides a browser-based web terminal for interacting with your sandboxes. The web terminal allows you to run commands, view files, and debug directly from your browser without installing any local tools.

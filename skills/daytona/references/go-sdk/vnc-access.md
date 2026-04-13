@@ -1,3 +1,12 @@
+## Contents
+
+- Access VNC from Dashboard
+- Programmatic VNC management
+- Automating desktop interactions
+- Required packages
+- See Also
+
+
 
 
 VNC (Virtual Network Computing) access provides a graphical desktop environment for your Daytona Sandbox directly in the browser. This allows you to interact with GUI applications, desktop tools, and visual interfaces running inside your sandbox.

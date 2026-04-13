@@ -434,7 +434,7 @@ if __name__ == "__main__":
 **TypeScript:**
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk';
+import { Daytona } from '@daytona/sdk';
 
 // Configuration
 const DAYTONA_API_KEY = "YOUR_API_KEY"; // Replace with your API key

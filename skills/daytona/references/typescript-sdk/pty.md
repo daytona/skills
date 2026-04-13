@@ -1,3 +1,20 @@
+## Contents
+
+- Create PTY session
+- Connect to PTY session
+- List PTY sessions
+- Get PTY session info
+- Kill PTY session
+- Resize PTY session
+- Interactive commands
+- Long-running processes
+- Resource management
+- PtyHandle methods
+- Error handling
+- Troubleshooting
+- See Also
+
+
 
 
 Daytona provides powerful pseudo terminal (PTY) capabilities through the `process` module in sandboxes. PTY sessions allow you to create interactive terminal sessions that can execute commands, handle user input, and manage terminal operations.
@@ -143,7 +160,7 @@ await ptyHandle.resize(150, 40) // cols, rows
 Daytona provides methods to handle interactive commands with PTY sessions, allowing you to handle interactive commands that require user input and can be resized during execution.
 
 ```typescript
-import { Daytona, Sandbox } from '@daytonaio/sdk'
+import { Daytona, Sandbox } from '@daytona/sdk'
 
 // Create PTY session
 const ptyHandle = await sandbox.process.createPty({
@@ -188,7 +205,7 @@ console.log(`Session completed with exit code: ${result.exitCode}`)
 Daytona provides methods to manage long-running processes with PTY sessions, allowing you to manage long-running processes that need to be monitored or terminated.
 
 ```typescript
-import { Daytona, Sandbox } from '@daytonaio/sdk'
+import { Daytona, Sandbox } from '@daytona/sdk'
 
 // Create PTY session
 const ptyHandle = await sandbox.process.createPty({

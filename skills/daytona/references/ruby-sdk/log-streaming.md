@@ -1,3 +1,10 @@
+## Contents
+
+- Stream logs with callbacks
+- Retrieve all existing logs
+- See Also
+
+
 
 Log streaming allows you to access and process logs as they are being produced, while the process is still running. When executing long-running processes in a sandbox, you often want to access and process their logs in **real-time**.
 

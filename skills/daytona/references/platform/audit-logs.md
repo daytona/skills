@@ -1,3 +1,15 @@
+## Contents
+
+- Access from Dashboard
+- Real-time updates
+- Programmatic management
+- Log Structure
+- Actions
+- Targets
+- Outcomes
+- See Also
+
+
 
 Daytona audit logs provide a detailed record of user and system activity across your organization. Use this feature to track sandbox lifecycle events, user access, system changes, and more.
 

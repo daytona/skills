@@ -1,3 +1,10 @@
+## Contents
+
+- Basic operations
+- Advanced operations
+- See Also
+
+
 
 
 Daytona provides comprehensive file system operations through the `fs` module in sandboxes.
@@ -102,13 +109,20 @@ Daytona provides methods to download files from sandboxes.
 Daytona provides methods to download a single file from sandboxes by providing the path to the file to download.
 
 ```python
-content = sandbox.fs.download_file("file1.txt")
+from daytona import DaytonaNotFoundError
 
-with open("local_file.txt", "wb") as f:
-    f.write(content)
+try:
+    content = sandbox.fs.download_file("file1.txt")
+except DaytonaNotFoundError as error:
+    print(f"Missing file: {error}")
+else:
+    with open("local_file.txt", "wb") as f:
+        f.write(content)
 
-print(content.decode('utf-8'))
+    print(content.decode("utf-8"))
 ```
+
+In the Python and TypeScript SDKs, `download_file` and `downloadFile` raise typed Daytona exceptions when the daemon returns structured per-file error metadata. Missing files map to not-found errors, invalid paths such as directories map to validation errors, and permission failures map to authorization errors.
 
 #### Download multiple files
 
@@ -126,9 +140,21 @@ results = sandbox.fs.download_files(files_to_download)
 for result in results:
     if result.error:
         print(f"Error downloading {result.source}: {result.error}")
+        if result.error_details:
+            print(
+                f"  status={result.error_details.status_code} "
+                f"code={result.error_details.error_code}"
+            )
     elif result.result:
         print(f"Downloaded {result.source} to {result.result}")
 ```
+
+Bulk downloads keep the existing `error` string for compatibility and now also include structured metadata on each failed item:
+
+- Python: `result.error_details.message`, `result.error_details.status_code`, `result.error_details.error_code`
+- TypeScript: `result.errorDetails.message`, `result.errorDetails.statusCode`, `result.errorDetails.errorCode`
+
+The toolbox bulk-download API returns successful files as multipart `file` parts and per-file failures as multipart `error` parts with JSON payloads containing `message`, `statusCode`, and `code`.
 
 ### Delete files
 

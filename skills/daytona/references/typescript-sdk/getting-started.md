@@ -1,3 +1,16 @@
+## Contents
+
+- Dashboard
+- SDKs
+- CLI
+- API
+- MCP server
+- Multiple runtime support
+- Guides
+- Examples
+- See Also
+
+
 
 
 This section introduces core concepts, common workflows, and next steps for using Daytona.
@@ -147,7 +160,7 @@ The examples are based on the Daytona [Python SDK](../python-sdk/sync/process.md
 Create a [sandbox](./sandboxes.md) with default settings.
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk';
+import { Daytona } from '@daytona/sdk';
 
 const daytona = new Daytona();
 const sandbox = await daytona.create();
@@ -159,7 +172,7 @@ console.log(`Sandbox ID: ${sandbox.id}`);
 Create a [sandbox](./sandboxes.md) and run code securely in it.
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk';
+import { Daytona } from '@daytona/sdk';
 
 const daytona = new Daytona();
 const sandbox = await daytona.create();
@@ -173,7 +186,7 @@ await sandbox.delete();
 Create a sandbox with [custom resources](./sandboxes.md#resources) (CPU, memory, disk).
 
 ```typescript
-import { Daytona, Image } from '@daytonaio/sdk';
+import { Daytona, Image } from '@daytona/sdk';
 
 const daytona = new Daytona();
 const sandbox = await daytona.create({
@@ -187,7 +200,7 @@ const sandbox = await daytona.create({
 Create an [ephemeral sandbox](./sandboxes.md#ephemeral-sandboxes) that is automatically deleted when stopped.
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk';
+import { Daytona } from '@daytona/sdk';
 
 const daytona = new Daytona();
 const sandbox = await daytona.create({
@@ -201,7 +214,7 @@ const sandbox = await daytona.create({
 Create a sandbox from a pre-built [snapshot](./snapshots.md) for faster sandbox creation with pre-installed dependencies.
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk';
+import { Daytona } from '@daytona/sdk';
 
 const daytona = new Daytona();
 const sandbox = await daytona.create({
@@ -215,7 +228,7 @@ const sandbox = await daytona.create({
 Create a sandbox with a [declarative image](./declarative-builder.md) that defines dependencies programmatically.
 
 ```typescript
-import { Daytona, Image } from '@daytonaio/sdk';
+import { Daytona, Image } from '@daytona/sdk';
 
 const daytona = new Daytona();
 const image = Image.debianSlim('3.12')
@@ -232,7 +245,7 @@ const sandbox = await daytona.create(
 Create a sandbox with a [volume](./volumes.md) mounted to share data across sandboxes.
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk';
+import { Daytona } from '@daytona/sdk';
 
 const daytona = new Daytona();
 const volume = await daytona.volume.get('my-volume', true);
@@ -246,7 +259,7 @@ const sandbox = await daytona.create({
 Create a sandbox with a [Git repository](./git.md) cloned to manage version control.
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk';
+import { Daytona } from '@daytona/sdk';
 
 const daytona = new Daytona();
 const sandbox = await daytona.create();

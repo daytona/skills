@@ -1,5 +1,15 @@
 # Docker Registry API
 
+
+## Contents
+
+- GET `/docker-registry`
+- POST `/docker-registry`
+- GET `/docker-registry/registry-push-access`
+- GET `/docker-registry/{id}`}
+- PATCH `/docker-registry/{id}`}
+- DELETE `/docker-registry/{id}`}
+
 ## GET `/docker-registry` {#daytona/tag/docker-registry/GET/docker-registry}
 
 **List registries**
@@ -39,8 +49,6 @@ Schema: **CreateDockerRegistry**
 | `username` | string | Yes | Registry username |
 | `password` | string | Yes | Registry password |
 | `project` | string | No | Registry project |
-| `registryType` | string | Yes | Registry type |
-| `isDefault` | boolean | No | Set as default registry |
 
 ### Responses
 
@@ -135,24 +143,5 @@ Schema: **UpdateDockerRegistry**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 204 | The docker registry has been successfully deleted. |  |
-
----
-
-## POST `/docker-registry/{id}/set-default` {#daytona/tag/docker-registry/POST/docker-registry/{id}/set-default}
-
-**Set default registry**
-
-### Parameters
-
-| Name | In | Type | Required | Description |
-|------|-----|------|----------|-------------|
-| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
-| `id` | path | string | Yes | ID of the docker registry |
-
-### Responses
-
-| Status | Description | Schema |
-|--------|-------------|--------|
-| 200 | The docker registry has been set as default. | DockerRegistry |
 
 ---

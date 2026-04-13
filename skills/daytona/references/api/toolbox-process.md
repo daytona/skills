@@ -1,5 +1,26 @@
 # Process API
 
+
+## Contents
+
+- POST `/process/execute`
+- GET `/process/pty`
+- POST `/process/pty`
+- GET `/process/pty/{sessionId}`}
+- DELETE `/process/pty/{sessionId}`}
+- GET `/process/pty/{sessionId}/connect`/connect}
+- POST `/process/pty/{sessionId}/resize`/resize}
+- GET `/process/session`
+- POST `/process/session`
+- GET `/process/session/entrypoint`
+- GET `/process/session/entrypoint/logs`
+- GET `/process/session/{sessionId}`}
+- DELETE `/process/session/{sessionId}`}
+- GET `/process/session/{sessionId}/command/{commandId}`/command/{commandId}}
+- POST `/process/session/{sessionId}/command/{commandId}/input`/command/{commandId}/input}
+- GET `/process/session/{sessionId}/command/{commandId}/logs`/command/{commandId}/logs}
+- POST `/process/session/{sessionId}/exec`/exec}
+
 ## POST `/process/execute` {#daytona-toolbox/tag/process/POST/process/execute}
 
 **Execute a command**

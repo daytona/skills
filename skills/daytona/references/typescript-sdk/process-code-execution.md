@@ -1,3 +1,14 @@
+## Contents
+
+- Code execution
+- Command execution
+- Session operations
+- Resource management
+- Error handling
+- Common issues
+- See Also
+
+
 
 
 Daytona provides process and code execution capabilities through the `process` module in sandboxes.
@@ -50,7 +61,7 @@ console.log(response.result);
 Daytona provides methods to run code with persistent state using the code interpreter. You can maintain variables and imports between calls, create isolated contexts, and control environment variables.
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk'
+import { Daytona } from '@daytona/sdk'
 
 const daytona = new Daytona()
 
@@ -211,7 +222,7 @@ try {
 Daytona provides methods to handle errors when executing processes. You should handle process exceptions properly, log error details for debugging, and use try-catch blocks for error handling.
 
 ```typescript
-import { DaytonaError } from '@daytonaio/sdk'
+import { DaytonaError } from '@daytona/sdk'
 
 try {
     const response = await sandbox.process.codeRun("invalid typescript code");

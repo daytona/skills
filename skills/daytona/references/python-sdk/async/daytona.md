@@ -1,3 +1,13 @@
+## Contents
+
+- AsyncDaytona
+- CodeLanguage
+- DaytonaConfig
+- CreateSandboxBaseParams
+- CreateSandboxFromImageParams
+- CreateSandboxFromSnapshotParams
+
+
 > For the sync version, see [sync/daytona.md](../sync/daytona.md)
 
 
@@ -427,7 +437,7 @@ Configuration options for initializing the Daytona client.
 - `target` _str | None_ - Target runner location for the Sandbox. Default region for the organization is used
   if not set here or in the environment variable `DAYTONA_TARGET`.
 - `connection_pool_maxsize` _int | None_ - Maximum number of simultaneous HTTP connections
-  the SDK will open. Defaults to 100. Set to `None` to remove the limit, which is
+  the SDK will open. Defaults to 250. Set to `None` to remove the limit, which is
   recommended when running many concurrent long-lived operations like `process.exec`.
 - `_experimental` _dict[str, any] | None_ - Configuration for experimental features.
 

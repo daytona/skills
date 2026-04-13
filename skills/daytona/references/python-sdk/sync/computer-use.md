@@ -1,3 +1,15 @@
+## Contents
+
+- ComputerUse
+- Mouse
+- Keyboard
+- Screenshot
+- Display
+- RecordingService
+- ScreenshotRegion
+- ScreenshotOptions
+
+
 > For the async version, see [async/computer-use.md](../async/computer-use.md)
 
 

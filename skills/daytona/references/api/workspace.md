@@ -1,5 +1,23 @@
 # Workspace API
 
+
+## Contents
+
+- GET `/workspace`
+- POST `/workspace`
+- GET `/workspace/{workspaceId}`}
+- DELETE `/workspace/{workspaceId}`}
+- POST `/workspace/{workspaceId}/start`/start}
+- POST `/workspace/{workspaceId}/stop`/stop}
+- PUT `/workspace/{workspaceId}/labels`/labels}
+- POST `/workspace/{workspaceId}/backup`/backup}
+- POST `/workspace/{workspaceId}/public/{isPublic}`/public/{isPublic}}
+- POST `/workspace/{workspaceId}/autostop/{interval}`/autostop/{interval}}
+- POST `/workspace/{workspaceId}/autoarchive/{interval}`/autoarchive/{interval}}
+- POST `/workspace/{workspaceId}/archive`/archive}
+- GET `/workspace/{workspaceId}/ports/{port}/preview-url`/ports/{port}/preview-url}
+- GET `/workspace/{workspaceId}/build-logs`/build-logs}
+
 ## GET `/workspace` {#daytona/tag/workspace/GET/workspace}
 
 **[DEPRECATED] List all workspaces**

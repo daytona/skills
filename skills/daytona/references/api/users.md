@@ -12,62 +12,6 @@
 
 ---
 
-## GET `/users` {#daytona/tag/users/GET/users}
-
-**List all users**
-
-### Responses
-
-| Status | Description | Schema |
-|--------|-------------|--------|
-| 200 |  |  |
-
----
-
-## POST `/users` {#daytona/tag/users/POST/users}
-
-**Create user**
-
-### Request Body
-
-Schema: **CreateUser**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `id` | string | Yes |  |
-| `name` | string | Yes |  |
-| `email` | string | No |  |
-| `personalOrganizationQuota` | [CreateOrganizationQuota](#schema-createorganizationquota) | No |  |
-| `personalOrganizationDefaultRegionId` | string | No |  |
-| `role` | string | No |  |
-| `emailVerified` | boolean | No |  |
-
-### Responses
-
-| Status | Description | Schema |
-|--------|-------------|--------|
-| 201 |  |  |
-
----
-
-## POST `/users/{id}/regenerate-key-pair` {#daytona/tag/users/POST/users/{id}/regenerate-key-pair}
-
-**Regenerate user key pair**
-
-### Parameters
-
-| Name | In | Type | Required | Description |
-|------|-----|------|----------|-------------|
-| `id` | path | string | Yes |  |
-
-### Responses
-
-| Status | Description | Schema |
-|--------|-------------|--------|
-| 201 |  |  |
-
----
-
 ## GET `/users/account-providers` {#daytona/tag/users/GET/users/account-providers}
 
 **Get available account providers**
@@ -129,23 +73,5 @@ Schema: **CreateLinkedAccount**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | SMS MFA enrollment URL | string |
-
----
-
-## GET `/users/{id}` {#daytona/tag/users/GET/users/{id}}
-
-**Get user by ID**
-
-### Parameters
-
-| Name | In | Type | Required | Description |
-|------|-----|------|----------|-------------|
-| `id` | path | string | Yes |  |
-
-### Responses
-
-| Status | Description | Schema |
-|--------|-------------|--------|
-| 200 | User details | User |
 
 ---

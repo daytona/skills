@@ -1,5 +1,13 @@
 # Daytona API Reference
 
+
+## Contents
+
+- Base URL
+- Authentication
+- Daytona API
+- Toolbox API
+
 ## Base URL
 
 ```
@@ -30,7 +38,6 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `GET` | `/api-keys/{name}` | [Get API key](./api-keys.md#daytona/tag/api-keys/GET/api-keys/{name}) | [api-keys](./api-keys.md) |
 | `DELETE` | `/api-keys/{name}` | [Delete API key](./api-keys.md#daytona/tag/api-keys/DELETE/api-keys/{name}) | [api-keys](./api-keys.md) |
 | `DELETE` | `/api-keys/{userId}/{name}` | [Delete API key for user](./api-keys.md#daytona/tag/api-keys/DELETE/api-keys/{userId}/{name}) | [api-keys](./api-keys.md) |
-| `GET` | `/audit` | [Get all audit logs](./audit.md#daytona/tag/audit/GET/audit) | [audit](./audit.md) |
 | `GET` | `/audit/organizations/{organizationId}` | [Get audit logs for organization](./audit.md#daytona/tag/audit/GET/audit/organizations/{organizationId}) | [audit](./audit.md) |
 | `GET` | `/config` | [Get config](./config.md#daytona/tag/config/GET/config) | [config](./config.md) |
 | `GET` | `/docker-registry` | [List registries](./docker-registry.md#daytona/tag/docker-registry/GET/docker-registry) | [docker-registry](./docker-registry.md) |
@@ -39,7 +46,6 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `GET` | `/docker-registry/{id}` | [Get registry](./docker-registry.md#daytona/tag/docker-registry/GET/docker-registry/{id}) | [docker-registry](./docker-registry.md) |
 | `PATCH` | `/docker-registry/{id}` | [Update registry](./docker-registry.md#daytona/tag/docker-registry/PATCH/docker-registry/{id}) | [docker-registry](./docker-registry.md) |
 | `DELETE` | `/docker-registry/{id}` | [Delete registry](./docker-registry.md#daytona/tag/docker-registry/DELETE/docker-registry/{id}) | [docker-registry](./docker-registry.md) |
-| `POST` | `/docker-registry/{id}/set-default` | [Set default registry](./docker-registry.md#daytona/tag/docker-registry/POST/docker-registry/{id}/set-default) | [docker-registry](./docker-registry.md) |
 | `GET` | `/jobs` | [List jobs for the runner](./jobs.md#daytona/tag/jobs/GET/jobs) | [jobs](./jobs.md) |
 | `GET` | `/jobs/poll` | [Long poll for jobs](./jobs.md#daytona/tag/jobs/GET/jobs/poll) | [jobs](./jobs.md) |
 | `GET` | `/jobs/{jobId}` | [Get job details](./jobs.md#daytona/tag/jobs/GET/jobs/{jobId}) | [jobs](./jobs.md) |
@@ -60,8 +66,6 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `POST` | `/organizations/{organizationId}/leave` | [Leave organization](./organizations.md#daytona/tag/organizations/POST/organizations/{organizationId}/leave) | [organizations](./organizations.md) |
 | `POST` | `/organizations/{organizationId}/suspend` | [Suspend organization](./organizations.md#daytona/tag/organizations/POST/organizations/{organizationId}/suspend) | [organizations](./organizations.md) |
 | `POST` | `/organizations/{organizationId}/unsuspend` | [Unsuspend organization](./organizations.md#daytona/tag/organizations/POST/organizations/{organizationId}/unsuspend) | [organizations](./organizations.md) |
-| `GET` | `/organizations/by-sandbox-id/{sandboxId}` | [Get organization by sandbox ID](./organizations.md#daytona/tag/organizations/GET/organizations/by-sandbox-id/{sandboxId}) | [organizations](./organizations.md) |
-| `GET` | `/organizations/region-quota/by-sandbox-id/{sandboxId}` | [Get region quota by sandbox ID](./organizations.md#daytona/tag/organizations/GET/organizations/region-quota/by-sandbox-id/{sandboxId}) | [organizations](./organizations.md) |
 | `GET` | `/organizations/otel-config/by-sandbox-auth-token/{authToken}` | [Get organization OTEL config by sandbox auth token](./organizations.md#daytona/tag/organizations/GET/organizations/otel-config/by-sandbox-auth-token/{authToken}) | [organizations](./organizations.md) |
 | `POST` | `/organizations/{organizationId}/sandbox-default-limited-network-egress` | [Update sandbox default limited network egress](./organizations.md#daytona/tag/organizations/POST/organizations/{organizationId}/sandbox-default-limited-network-egress) | [organizations](./organizations.md) |
 | `PUT` | `/organizations/{organizationId}/experimental-config` | [Update experimental configuration](./organizations.md#daytona/tag/organizations/PUT/organizations/{organizationId}/experimental-config) | [organizations](./organizations.md) |
@@ -128,16 +132,16 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `DELETE` | `/sandbox/{sandboxIdOrName}/ssh-access` | [Revoke SSH access for sandbox](./sandbox.md#daytona/tag/sandbox/DELETE/sandbox/{sandboxIdOrName}/ssh-access) | [sandbox](./sandbox.md) |
 | `GET` | `/sandbox/ssh-access/validate` | [Validate SSH access for sandbox](./sandbox.md#daytona/tag/sandbox/GET/sandbox/ssh-access/validate) | [sandbox](./sandbox.md) |
 | `GET` | `/sandbox/{sandboxId}/toolbox-proxy-url` | [Get toolbox proxy URL for a sandbox](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxId}/toolbox-proxy-url) | [sandbox](./sandbox.md) |
+| `GET` | `/sandbox/{sandboxId}/organization` | [Get organization by sandbox ID](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxId}/organization) | [sandbox](./sandbox.md) |
+| `GET` | `/sandbox/{sandboxId}/region-quota` | [Get region quota by sandbox ID](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxId}/region-quota) | [sandbox](./sandbox.md) |
 | `GET` | `/sandbox/{sandboxId}/telemetry/logs` | [Get sandbox logs](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxId}/telemetry/logs) | [sandbox](./sandbox.md) |
 | `GET` | `/sandbox/{sandboxId}/telemetry/traces` | [Get sandbox traces](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxId}/telemetry/traces) | [sandbox](./sandbox.md) |
 | `GET` | `/sandbox/{sandboxId}/telemetry/traces/{traceId}` | [Get trace spans](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxId}/telemetry/traces/{traceId}) | [sandbox](./sandbox.md) |
 | `GET` | `/sandbox/{sandboxId}/telemetry/metrics` | [Get sandbox metrics](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxId}/telemetry/metrics) | [sandbox](./sandbox.md) |
 | `GET` | `/snapshots` | [List all snapshots](./snapshots.md#daytona/tag/snapshots/GET/snapshots) | [snapshots](./snapshots.md) |
 | `POST` | `/snapshots` | [Create a new snapshot](./snapshots.md#daytona/tag/snapshots/POST/snapshots) | [snapshots](./snapshots.md) |
-| `GET` | `/snapshots/can-cleanup-image` | [Check if an image can be cleaned up](./snapshots.md#daytona/tag/snapshots/GET/snapshots/can-cleanup-image) | [snapshots](./snapshots.md) |
 | `GET` | `/snapshots/{id}` | [Get snapshot by ID or name](./snapshots.md#daytona/tag/snapshots/GET/snapshots/{id}) | [snapshots](./snapshots.md) |
 | `DELETE` | `/snapshots/{id}` | [Delete snapshot](./snapshots.md#daytona/tag/snapshots/DELETE/snapshots/{id}) | [snapshots](./snapshots.md) |
-| `PATCH` | `/snapshots/{id}/general` | [Set snapshot general status](./snapshots.md#daytona/tag/snapshots/PATCH/snapshots/{id}/general) | [snapshots](./snapshots.md) |
 | `GET` | `/snapshots/{id}/build-logs` | [Get snapshot build logs](./snapshots.md#daytona/tag/snapshots/GET/snapshots/{id}/build-logs) | [snapshots](./snapshots.md) |
 | `GET` | `/snapshots/{id}/build-logs-url` | [Get snapshot build logs URL](./snapshots.md#daytona/tag/snapshots/GET/snapshots/{id}/build-logs-url) | [snapshots](./snapshots.md) |
 | `POST` | `/snapshots/{id}/activate` | [Activate a snapshot](./snapshots.md#daytona/tag/snapshots/POST/snapshots/{id}/activate) | [snapshots](./snapshots.md) |
@@ -211,25 +215,17 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `GET` | `/toolbox/{sandboxId}/toolbox/computeruse/display/info` | [[DEPRECATED] Get display info](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/computeruse/display/info) | [toolbox](./toolbox.md) |
 | `GET` | `/toolbox/{sandboxId}/toolbox/computeruse/display/windows` | [[DEPRECATED] Get windows](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/computeruse/display/windows) | [toolbox](./toolbox.md) |
 | `GET` | `/users/me` | [Get authenticated user](./users.md#daytona/tag/users/GET/users/me) | [users](./users.md) |
-| `GET` | `/users` | [List all users](./users.md#daytona/tag/users/GET/users) | [users](./users.md) |
-| `POST` | `/users` | [Create user](./users.md#daytona/tag/users/POST/users) | [users](./users.md) |
-| `POST` | `/users/{id}/regenerate-key-pair` | [Regenerate user key pair](./users.md#daytona/tag/users/POST/users/{id}/regenerate-key-pair) | [users](./users.md) |
 | `GET` | `/users/account-providers` | [Get available account providers](./users.md#daytona/tag/users/GET/users/account-providers) | [users](./users.md) |
 | `POST` | `/users/linked-accounts` | [Link account](./users.md#daytona/tag/users/POST/users/linked-accounts) | [users](./users.md) |
 | `DELETE` | `/users/linked-accounts/{provider}/{providerUserId}` | [Unlink account](./users.md#daytona/tag/users/DELETE/users/linked-accounts/{provider}/{providerUserId}) | [users](./users.md) |
 | `POST` | `/users/mfa/sms/enroll` | [Enroll in SMS MFA](./users.md#daytona/tag/users/POST/users/mfa/sms/enroll) | [users](./users.md) |
-| `GET` | `/users/{id}` | [Get user by ID](./users.md#daytona/tag/users/GET/users/{id}) | [users](./users.md) |
 | `GET` | `/volumes` | [List all volumes](./volumes.md#daytona/tag/volumes/GET/volumes) | [volumes](./volumes.md) |
 | `POST` | `/volumes` | [Create a new volume](./volumes.md#daytona/tag/volumes/POST/volumes) | [volumes](./volumes.md) |
 | `GET` | `/volumes/{volumeId}` | [Get volume details](./volumes.md#daytona/tag/volumes/GET/volumes/{volumeId}) | [volumes](./volumes.md) |
 | `DELETE` | `/volumes/{volumeId}` | [Delete volume](./volumes.md#daytona/tag/volumes/DELETE/volumes/{volumeId}) | [volumes](./volumes.md) |
 | `GET` | `/volumes/by-name/{name}` | [Get volume details by name](./volumes.md#daytona/tag/volumes/GET/volumes/by-name/{name}) | [volumes](./volumes.md) |
 | `POST` | `/webhooks/organizations/{organizationId}/app-portal-access` | [Get Svix Consumer App Portal access for an organization](./webhooks.md#daytona/tag/webhooks/POST/webhooks/organizations/{organizationId}/app-portal-access) | [webhooks](./webhooks.md) |
-| `POST` | `/webhooks/organizations/{organizationId}/send` | [Send a webhook message to an organization](./webhooks.md#daytona/tag/webhooks/POST/webhooks/organizations/{organizationId}/send) | [webhooks](./webhooks.md) |
-| `GET` | `/webhooks/organizations/{organizationId}/messages/{messageId}/attempts` | [Get delivery attempts for a webhook message](./webhooks.md#daytona/tag/webhooks/GET/webhooks/organizations/{organizationId}/messages/{messageId}/attempts) | [webhooks](./webhooks.md) |
-| `GET` | `/webhooks/status` | [Get webhook service status](./webhooks.md#daytona/tag/webhooks/GET/webhooks/status) | [webhooks](./webhooks.md) |
 | `GET` | `/webhooks/organizations/{organizationId}/initialization-status` | [Get webhook initialization status for an organization](./webhooks.md#daytona/tag/webhooks/GET/webhooks/organizations/{organizationId}/initialization-status) | [webhooks](./webhooks.md) |
-| `POST` | `/webhooks/organizations/{organizationId}/initialize` | [Initialize webhooks for an organization](./webhooks.md#daytona/tag/webhooks/POST/webhooks/organizations/{organizationId}/initialize) | [webhooks](./webhooks.md) |
 | `GET` | `/workspace` | [[DEPRECATED] List all workspaces](./workspace.md#daytona/tag/workspace/GET/workspace) | [workspace](./workspace.md) |
 | `POST` | `/workspace` | [[DEPRECATED] Create a new workspace](./workspace.md#daytona/tag/workspace/POST/workspace) | [workspace](./workspace.md) |
 | `GET` | `/workspace/{workspaceId}` | [[DEPRECATED] Get workspace details](./workspace.md#daytona/tag/workspace/GET/workspace/{workspaceId}) | [workspace](./workspace.md) |
@@ -249,21 +245,21 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 
 - [Health](./Health.md) (2 endpoints) {#daytona/tag/Health}
 - [api-keys](./api-keys.md) (6 endpoints) {#daytona/tag/api-keys}
-- [audit](./audit.md) (2 endpoints) {#daytona/tag/audit}
+- [audit](./audit.md) (1 endpoints) {#daytona/tag/audit}
 - [config](./config.md) (1 endpoints) {#daytona/tag/config}
-- [docker-registry](./docker-registry.md) (7 endpoints) {#daytona/tag/docker-registry}
+- [docker-registry](./docker-registry.md) (6 endpoints) {#daytona/tag/docker-registry}
 - [jobs](./jobs.md) (4 endpoints) {#daytona/tag/jobs}
 - [object-storage](./object-storage.md) (1 endpoints) {#daytona/tag/object-storage}
-- [organizations](./organizations.md) (39 endpoints) {#daytona/tag/organizations}
+- [organizations](./organizations.md) (37 endpoints) {#daytona/tag/organizations}
 - [preview](./preview.md) (4 endpoints) {#daytona/tag/preview}
 - [regions](./regions.md) (1 endpoints) {#daytona/tag/regions}
 - [runners](./runners.md) (11 endpoints) {#daytona/tag/runners}
-- [sandbox](./sandbox.md) (32 endpoints) {#daytona/tag/sandbox}
-- [snapshots](./snapshots.md) (10 endpoints) {#daytona/tag/snapshots}
+- [sandbox](./sandbox.md) (34 endpoints) {#daytona/tag/sandbox}
+- [snapshots](./snapshots.md) (8 endpoints) {#daytona/tag/snapshots}
 - [toolbox](./toolbox.md) (68 endpoints) {#daytona/tag/toolbox}
-- [users](./users.md) (9 endpoints) {#daytona/tag/users}
+- [users](./users.md) (5 endpoints) {#daytona/tag/users}
 - [volumes](./volumes.md) (5 endpoints) {#daytona/tag/volumes}
-- [webhooks](./webhooks.md) (6 endpoints) {#daytona/tag/webhooks}
+- [webhooks](./webhooks.md) (2 endpoints) {#daytona/tag/webhooks}
 - [workspace](./workspace.md) (14 endpoints) {#daytona/tag/workspace}
 
 ---

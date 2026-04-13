@@ -1,3 +1,11 @@
+## Contents
+
+- Snapshot
+- SnapshotService
+- PaginatedSnapshots
+- CreateSnapshotParams
+
+
 > For the async version, see [async/snapshot.md](../async/snapshot.md)
 
 

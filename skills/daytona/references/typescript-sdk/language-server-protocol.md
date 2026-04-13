@@ -1,3 +1,15 @@
+## Contents
+
+- Create LSP servers
+- Start LSP servers
+- Stop LSP servers
+- Code completions
+- File notifications
+- Document symbols
+- Sandbox symbols
+- See Also
+
+
 
 
 Daytona provides Language Server Protocol (LSP) support through sandbox instances. This enables advanced language features like code completion, diagnostics, and more.
@@ -7,7 +19,7 @@ Daytona provides Language Server Protocol (LSP) support through sandbox instance
 Daytona provides methods to create LSP servers. The `path_to_project` argument is relative to the current sandbox working directory when no leading `/` is used. The working directory is specified by WORKDIR when it is present in the Dockerfile, and otherwise falls back to the user's home directory.
 
 ```typescript
-import { Daytona, LspLanguageId } from '@daytonaio/sdk'
+import { Daytona, LspLanguageId } from '@daytona/sdk'
 
 // Create sandbox
 const daytona = new Daytona()

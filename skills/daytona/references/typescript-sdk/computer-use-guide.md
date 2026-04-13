@@ -1,3 +1,20 @@
+## Contents
+
+- Start Computer Use
+- Stop Computer Use
+- Get status
+- Get process status
+- Restart process
+- Get process logs
+- Get process errors
+- Mouse operations
+- Keyboard operations
+- Screenshot operations
+- Screen Recording
+- Display operations
+- See Also
+
+
 
 
 Computer Use enables programmatic control of desktop environments within sandboxes. It provides mouse, keyboard, screenshot, screen recording, and display operations for automating GUI interactions and testing desktop applications.
@@ -243,7 +260,7 @@ Computer Use supports screen recording capabilities, allowing you to capture des
 By default, recordings are saved to `~/.daytona/recordings`. You can specify a custom directory by passing the `DAYTONA_RECORDINGS_DIR` environment variable when creating a sandbox:
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk';
+import { Daytona } from '@daytona/sdk';
 
 const daytona = new Daytona();
 const sandbox = await daytona.create({

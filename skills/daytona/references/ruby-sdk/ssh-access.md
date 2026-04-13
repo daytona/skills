@@ -1,3 +1,15 @@
+## Contents
+
+- Access from Dashboard
+- Access via CLI
+- Access via token
+- Connect with VS Code
+- Connect with JetBrains IDEs
+- Token management
+- Related
+- See Also
+
+
 
 
 Daytona provides SSH access to your sandboxes using token-based authentication. This allows you to connect from local terminals, IDEs, and development tools without installing additional software.

@@ -1,5 +1,15 @@
 # Api Keys API
 
+
+## Contents
+
+- GET `/api-keys`
+- POST `/api-keys`
+- GET `/api-keys/current`
+- GET `/api-keys/{name}`}
+- DELETE `/api-keys/{name}`}
+- DELETE `/api-keys/{userId}/{name}`/{name}}
+
 ## GET `/api-keys` {#daytona/tag/api-keys/GET/api-keys}
 
 **List API keys**

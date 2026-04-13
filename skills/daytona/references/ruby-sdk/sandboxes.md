@@ -1,3 +1,19 @@
+## Contents
+
+- Sandbox lifecycle
+- Multiple runtime support
+- Create Sandboxes
+- Start Sandboxes
+- List Sandboxes
+- Stop Sandboxes
+- Archive Sandboxes
+- Recover Sandboxes
+- Resize Sandboxes
+- Delete Sandboxes
+- Automated lifecycle management
+- See Also
+
+
 
 
 Daytona provides **full composable computers** — **sandboxes** — for AI agents. Sandboxes are isolated runtime environments you can manage programmatically to run code. Each sandbox runs in isolation, giving it a dedicated kernel, filesystem, network stack, and allocated vCPU, RAM, and disk. Agents get access to a full composable computer environment where they can install packages, run servers, compile code, and manage processes.
