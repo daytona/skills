@@ -16,7 +16,7 @@ To configure your environment in code, use the `DaytonaConfig` class. The `Dayto
 - `target`: Target region to create the Sandboxes on (`us` / `eu`)
 
 ```typescript
-import { DaytonaConfig } from '@daytonaio/sdk'
+import { DaytonaConfig } from '@daytona/sdk'
 
 const config: DaytonaConfig = {
   apiKey: 'your-api-key',

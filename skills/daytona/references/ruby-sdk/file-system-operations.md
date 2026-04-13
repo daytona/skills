@@ -1,3 +1,10 @@
+## Contents
+
+- Basic operations
+- Advanced operations
+- See Also
+
+
 
 
 Daytona provides comprehensive file system operations through the `fs` module in sandboxes.
@@ -109,6 +116,8 @@ size_mb = File.size("local_copy.txt") / 1024.0 / 1024.0
 puts "Size of the downloaded file: #{size_mb} MB"
 ```
 
+In the Python and TypeScript SDKs, `download_file` and `downloadFile` raise typed Daytona exceptions when the daemon returns structured per-file error metadata. Missing files map to not-found errors, invalid paths such as directories map to validation errors, and permission failures map to authorization errors.
+
 #### Download multiple files
 
 Daytona provides methods to download multiple files from sandboxes by providing the paths to the files to download.
@@ -130,6 +139,13 @@ files_to_download.each do |f|
   end
 end
 ```
+
+Bulk downloads keep the existing `error` string for compatibility and now also include structured metadata on each failed item:
+
+- Python: `result.error_details.message`, `result.error_details.status_code`, `result.error_details.error_code`
+- TypeScript: `result.errorDetails.message`, `result.errorDetails.statusCode`, `result.errorDetails.errorCode`
+
+The toolbox bulk-download API returns successful files as multipart `file` parts and per-file failures as multipart `error` parts with JSON payloads containing `message`, `statusCode`, and `code`.
 
 ### Delete files
 

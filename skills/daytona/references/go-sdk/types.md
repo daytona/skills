@@ -2,6 +2,48 @@
 
 # types
 
+
+## Contents
+
+- Index
+- type Chart
+- type ChartType
+- type CodeLanguage
+- type CodeRunParams
+- type CreateSnapshotParams
+- type DaytonaConfig
+- type ExecuteResponse
+- type ExecutionArtifacts
+- type ExecutionError
+- type ExecutionResult
+- type ExperimentalConfig
+- type FileDownloadRequest
+- type FileDownloadResponse
+- type FileInfo
+- type FileStatus
+- type FileUpload
+- type GitCommitResponse
+- type GitStatus
+- type ImageParams
+- type LspLanguageID
+- type OutputMessage
+- type PaginatedSnapshots
+- type Position
+- type PreviewLink
+- type PtyResult
+- type PtySessionInfo
+- type PtySize
+- type Resources
+- type SandboxBaseParams
+- type ScreenshotOptions
+- type ScreenshotRegion
+- type ScreenshotResponse
+- type SignedPreviewLink
+- type Snapshot
+- type SnapshotParams
+- type Volume
+- type VolumeMount
+
 ```go
 import "github.com/daytonaio/daytona/libs/sdk-go/pkg/types"
 ```

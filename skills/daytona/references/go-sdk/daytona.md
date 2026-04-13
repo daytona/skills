@@ -2,6 +2,34 @@
 
 # daytona
 
+
+## Contents
+
+- Index
+- Variables
+- type Client
+- type CodeInterpreterService
+- type ComputerUseService
+- type DisplayService
+- type DockerImage
+- type DockerImageContext
+- type FileSystemService
+- type GitService
+- type KeyboardService
+- type LspServerService
+- type MouseService
+- type OutputChannels
+- type PaginatedSandboxes
+- type ProcessService
+- type PtyHandle
+- type PushAccessCredentials
+- type RecordingService
+- type Sandbox
+- type ScreenshotService
+- type SnapshotService
+- type VolumeService
+- See Also
+
 ```go
 import "github.com/daytonaio/daytona/libs/sdk-go/pkg/daytona"
 ```

@@ -1,5 +1,17 @@
 # Snapshots API
 
+
+## Contents
+
+- GET `/snapshots`
+- POST `/snapshots`
+- GET `/snapshots/{id}`}
+- DELETE `/snapshots/{id}`}
+- GET `/snapshots/{id}/build-logs`/build-logs}
+- GET `/snapshots/{id}/build-logs-url`/build-logs-url}
+- POST `/snapshots/{id}/activate`/activate}
+- POST `/snapshots/{id}/deactivate`/deactivate}
+
 ## GET `/snapshots` {#daytona/tag/snapshots/GET/snapshots}
 
 **List all snapshots**
@@ -42,7 +54,6 @@ Schema: **CreateSnapshot**
 | `name` | string | Yes | The name of the snapshot |
 | `imageName` | string | No | The image name of the snapshot |
 | `entrypoint` | array of string | No | The entrypoint command for the snapshot |
-| `general` | boolean | No | Whether the snapshot is general |
 | `cpu` | integer | No | CPU cores allocated to the resulting sandbox |
 | `gpu` | integer | No | GPU units allocated to the resulting sandbox |
 | `memory` | integer | No | Memory allocated to the resulting sandbox in GB |
@@ -56,25 +67,6 @@ Schema: **CreateSnapshot**
 |--------|-------------|--------|
 | 200 | The snapshot has been successfully created. | SnapshotDto |
 | 400 | Bad request - Snapshots with tag ":latest" are not allowed |  |
-
----
-
-## GET `/snapshots/can-cleanup-image` {#daytona/tag/snapshots/GET/snapshots/can-cleanup-image}
-
-**Check if an image can be cleaned up**
-
-### Parameters
-
-| Name | In | Type | Required | Description |
-|------|-----|------|----------|-------------|
-| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
-| `imageName` | query | string | Yes | Image name with tag to check |
-
-### Responses
-
-| Status | Description | Schema |
-|--------|-------------|--------|
-| 200 | Boolean indicating if image can be cleaned up | boolean |
 
 ---
 
@@ -114,33 +106,6 @@ Schema: **CreateSnapshot**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | Snapshot has been deleted |  |
-
----
-
-## PATCH `/snapshots/{id}/general` {#daytona/tag/snapshots/PATCH/snapshots/{id}/general}
-
-**Set snapshot general status**
-
-### Parameters
-
-| Name | In | Type | Required | Description |
-|------|-----|------|----------|-------------|
-| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
-| `id` | path | string | Yes | Snapshot ID |
-
-### Request Body
-
-Schema: **SetSnapshotGeneralStatusDto**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `general` | boolean | Yes | Whether the snapshot is general |
-
-### Responses
-
-| Status | Description | Schema |
-|--------|-------------|--------|
-| 200 | Snapshot general status has been set | SnapshotDto |
 
 ---
 

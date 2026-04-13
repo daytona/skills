@@ -1,3 +1,16 @@
+## Contents
+
+- Create volumes
+- Mount volumes
+- Work with volumes
+- Get a volume by name
+- List volumes
+- Delete volumes
+- Limitations
+- Pricing & Limits
+- See Also
+
+
 
 
 Volumes are FUSE-based mounts that provide shared file access across Daytona Sandboxes. They enable sandboxes to read from large files instantly - no need to upload files manually to each sandbox. Volume data is stored in an S3-compatible object store.

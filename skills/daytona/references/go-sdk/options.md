@@ -2,6 +2,60 @@
 
 # options
 
+
+## Contents
+
+- Index
+- func Apply
+- func WithAllowEmpty
+- func WithBranch
+- func WithCodeRunParams
+- func WithCodeRunTimeout
+- func WithCommandEnv
+- func WithCommitId
+- func WithCreatePtyEnv
+- func WithCreatePtySize
+- func WithCustomContext
+- func WithCwd
+- func WithEnv
+- func WithExecuteTimeout
+- func WithExtraIndexURLs
+- func WithExtraOptions
+- func WithFindLinks
+- func WithForce
+- func WithGroup
+- func WithIndexURL
+- func WithInterpreterTimeout
+- func WithLogChannel
+- func WithMode
+- func WithOwner
+- func WithPassword
+- func WithPermissionMode
+- func WithPre
+- func WithPtyEnv
+- func WithPtySize
+- func WithPullPassword
+- func WithPullUsername
+- func WithPushPassword
+- func WithPushUsername
+- func WithTimeout
+- func WithUsername
+- func WithWaitForStart
+- type CodeRun
+- type CreateFolder
+- type CreatePty
+- type CreateSandbox
+- type ExecuteCommand
+- type GitClone
+- type GitCommit
+- type GitDeleteBranch
+- type GitPull
+- type GitPush
+- type PipInstall
+- type PtySession
+- type RunCode
+- type SetFilePermissions
+
 ```go
 import "github.com/daytonaio/daytona/libs/sdk-go/pkg/options"
 ```

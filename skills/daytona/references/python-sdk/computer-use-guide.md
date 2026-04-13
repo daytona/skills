@@ -1,3 +1,20 @@
+## Contents
+
+- Start Computer Use
+- Stop Computer Use
+- Get status
+- Get process status
+- Restart process
+- Get process logs
+- Get process errors
+- Mouse operations
+- Keyboard operations
+- Screenshot operations
+- Screen Recording
+- Display operations
+- See Also
+
+
 
 
 Computer Use enables programmatic control of desktop environments within sandboxes. It provides mouse, keyboard, screenshot, screen recording, and display operations for automating GUI interactions and testing desktop applications.

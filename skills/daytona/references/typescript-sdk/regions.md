@@ -14,7 +14,7 @@ As a result, you're able to:
 Regions are geographic or logical groupings of runners that execute sandbox workloads. The sandbox region is specified by setting the `target` parameter on initialization:
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk';
+import { Daytona } from '@daytona/sdk';
 
 // Configure Daytona to use the EU region
 const daytona: Daytona = new Daytona({

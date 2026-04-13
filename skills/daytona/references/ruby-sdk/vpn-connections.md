@@ -1,3 +1,10 @@
+## Contents
+
+- Tailscale
+- OpenVPN
+- See Also
+
+
 
 
 VPN connections are a way to connect your Daytona Sandboxes to private networks. By establishing a VPN connection, your sandbox can access network resources using private IP addresses and can be accessed by other devices on the same VPN network.
@@ -259,7 +266,7 @@ if __name__ == "__main__":
 **TypeScript:**
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk';
+import { Daytona } from '@daytona/sdk';
 
 // Configuration
 const DAYTONA_API_KEY = "YOUR_API_KEY"; // Replace with your API key

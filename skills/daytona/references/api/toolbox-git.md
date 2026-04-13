@@ -1,5 +1,20 @@
 # Git API
 
+
+## Contents
+
+- POST `/git/add`
+- GET `/git/branches`
+- POST `/git/branches`
+- DELETE `/git/branches`
+- POST `/git/checkout`
+- POST `/git/clone`
+- POST `/git/commit`
+- GET `/git/history`
+- POST `/git/pull`
+- POST `/git/push`
+- GET `/git/status`
+
 ## POST `/git/add` {#daytona-toolbox/tag/git/POST/git/add}
 
 **Add files to Git staging**

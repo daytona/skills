@@ -1,3 +1,11 @@
+## Contents
+
+- Build declarative images
+- Create pre-built Snapshots
+- Image configuration
+- See Also
+
+
 
 
 Declarative Builder provides a powerful, code-first approach to defining dependencies for Daytona Sandboxes. Instead of importing images from a container registry, you can programmatically define them using the Daytona SDK.

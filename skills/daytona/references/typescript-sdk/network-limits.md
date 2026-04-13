@@ -1,3 +1,16 @@
+## Contents
+
+- Tier-based network restrictions
+- Create sandboxes with network restrictions
+- Network allow list format
+- Organization configuration
+- Test network access
+- Security benefits
+- Essential services
+- Troubleshooting
+- See Also
+
+
 
 
 Daytona provides network egress limiting for sandboxes to control internet access. This feature can be automatically applied based on your [organization's limits](../platform/limits.md) or manually configured for specific sandboxes.
@@ -18,7 +31,7 @@ Network limits are automatically applied to sandboxes based on your organization
 Daytona provides methods to control network access when [creating sandboxes](./sandboxes.md#create-sandboxes) by using the `networkAllowList` and `networkBlockAll` parameters:
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk'
+import { Daytona } from '@daytona/sdk'
 
 const daytona = new Daytona()
 

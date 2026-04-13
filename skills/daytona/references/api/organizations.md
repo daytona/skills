@@ -1,5 +1,46 @@
 # Organizations API
 
+
+## Contents
+
+- GET `/organizations/invitations`
+- GET `/organizations/invitations/count`
+- POST `/organizations/invitations/{invitationId}/accept`/accept}
+- POST `/organizations/invitations/{invitationId}/decline`/decline}
+- GET `/organizations`
+- POST `/organizations`
+- PATCH `/organizations/{organizationId}/default-region`/default-region}
+- GET `/organizations/{organizationId}`}
+- DELETE `/organizations/{organizationId}`}
+- GET `/organizations/{organizationId}/usage`/usage}
+- PATCH `/organizations/{organizationId}/quota`/quota}
+- PATCH `/organizations/{organizationId}/quota/{regionId}`/quota/{regionId}}
+- POST `/organizations/{organizationId}/leave`/leave}
+- POST `/organizations/{organizationId}/suspend`/suspend}
+- POST `/organizations/{organizationId}/unsuspend`/unsuspend}
+- GET `/organizations/otel-config/by-sandbox-auth-token/{authToken}`}
+- POST `/organizations/{organizationId}/sandbox-default-limited-network-egress`/sandbox-default-limited-network-egress}
+- PUT `/organizations/{organizationId}/experimental-config`/experimental-config}
+- GET `/organizations/{organizationId}/roles`/roles}
+- POST `/organizations/{organizationId}/roles`/roles}
+- PUT `/organizations/{organizationId}/roles/{roleId}`/roles/{roleId}}
+- DELETE `/organizations/{organizationId}/roles/{roleId}`/roles/{roleId}}
+- GET `/organizations/{organizationId}/users`/users}
+- POST `/organizations/{organizationId}/users/{userId}/access`/users/{userId}/access}
+- DELETE `/organizations/{organizationId}/users/{userId}`/users/{userId}}
+- GET `/organizations/{organizationId}/invitations`/invitations}
+- POST `/organizations/{organizationId}/invitations`/invitations}
+- PUT `/organizations/{organizationId}/invitations/{invitationId}`/invitations/{invitationId}}
+- POST `/organizations/{organizationId}/invitations/{invitationId}/cancel`/invitations/{invitationId}/cancel}
+- GET `/regions`
+- POST `/regions`
+- GET `/regions/{id}`}
+- PATCH `/regions/{id}`}
+- DELETE `/regions/{id}`}
+- POST `/regions/{id}/regenerate-proxy-api-key`/regenerate-proxy-api-key}
+- POST `/regions/{id}/regenerate-ssh-gateway-api-key`/regenerate-ssh-gateway-api-key}
+- POST `/regions/{id}/regenerate-snapshot-manager-credentials`/regenerate-snapshot-manager-credentials}
+
 ## GET `/organizations/invitations` {#daytona/tag/organizations/GET/organizations/invitations}
 
 **List organization invitations for authenticated user**
@@ -301,42 +342,6 @@ Schema: **OrganizationSuspension**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 204 | Organization unsuspended successfully |  |
-
----
-
-## GET `/organizations/by-sandbox-id/{sandboxId}` {#daytona/tag/organizations/GET/organizations/by-sandbox-id/{sandboxId}}
-
-**Get organization by sandbox ID**
-
-### Parameters
-
-| Name | In | Type | Required | Description |
-|------|-----|------|----------|-------------|
-| `sandboxId` | path | string | Yes | Sandbox ID |
-
-### Responses
-
-| Status | Description | Schema |
-|--------|-------------|--------|
-| 200 | Organization | Organization |
-
----
-
-## GET `/organizations/region-quota/by-sandbox-id/{sandboxId}` {#daytona/tag/organizations/GET/organizations/region-quota/by-sandbox-id/{sandboxId}}
-
-**Get region quota by sandbox ID**
-
-### Parameters
-
-| Name | In | Type | Required | Description |
-|------|-----|------|----------|-------------|
-| `sandboxId` | path | string | Yes | Sandbox ID |
-
-### Responses
-
-| Status | Description | Schema |
-|--------|-------------|--------|
-| 200 | Region quota | RegionQuota |
 
 ---
 

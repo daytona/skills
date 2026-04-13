@@ -1,3 +1,19 @@
+## Contents
+
+- Sandbox lifecycle
+- Multiple runtime support
+- Create Sandboxes
+- Start Sandboxes
+- List Sandboxes
+- Stop Sandboxes
+- Archive Sandboxes
+- Recover Sandboxes
+- Resize Sandboxes
+- Delete Sandboxes
+- Automated lifecycle management
+- See Also
+
+
 
 
 Daytona provides **full composable computers** — **sandboxes** — for AI agents. Sandboxes are isolated runtime environments you can manage programmatically to run code. Each sandbox runs in isolation, giving it a dedicated kernel, filesystem, network stack, and allocated vCPU, RAM, and disk. Agents get access to a full composable computer environment where they can install packages, run servers, compile code, and manage processes.
@@ -73,7 +89,7 @@ You can specify [programming language runtime](./sandboxes.md#multiple-runtime-s
 10. Click the **Create** button to create a sandbox
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk';
+import { Daytona } from '@daytona/sdk';
 
 const daytona = new Daytona();
 
@@ -97,7 +113,7 @@ Sandboxes have **1 vCPU**, **1GB RAM**, and **3GiB disk** by default. Organizati
 To set custom sandbox resources (CPU, memory, and disk space), use the `Resources` class:
 
 ```typescript
-import { Daytona, Image } from "@daytonaio/sdk";
+import { Daytona, Image } from "@daytona/sdk";
 
 async function main() {
   const daytona = new Daytona();
@@ -133,7 +149,7 @@ Ephemeral Sandboxes are automatically deleted once they are stopped. They are us
 To create an ephemeral Sandbox, set the `ephemeral` parameter to `True` when creating a sandbox:
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk';
+import { Daytona } from '@daytona/sdk';
 
 const daytona = new Daytona();
 
@@ -294,7 +310,7 @@ if (sandbox.recoverable) {
 Daytona provides methods to resize [sandbox resources](#resources) after creation. On a running sandbox, you can increase CPU and memory without interruption. To decrease CPU or memory, or to increase disk capacity, stop the sandbox first. Disk size can only be increased and cannot be decreased.
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk';
+import { Daytona } from '@daytona/sdk';
 
 const daytona = new Daytona();
 const sandbox = await daytona.create();

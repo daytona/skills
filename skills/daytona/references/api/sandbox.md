@@ -1,5 +1,43 @@
 # Sandbox API
 
+
+## Contents
+
+- GET `/sandbox`
+- POST `/sandbox`
+- GET `/sandbox/paginated`
+- GET `/sandbox/for-runner`
+- GET `/sandbox/{sandboxIdOrName}`}
+- DELETE `/sandbox/{sandboxIdOrName}`}
+- POST `/sandbox/{sandboxIdOrName}/recover`/recover}
+- POST `/sandbox/{sandboxIdOrName}/start`/start}
+- POST `/sandbox/{sandboxIdOrName}/stop`/stop}
+- POST `/sandbox/{sandboxIdOrName}/resize`/resize}
+- PUT `/sandbox/{sandboxIdOrName}/labels`/labels}
+- PUT `/sandbox/{sandboxId}/state`/state}
+- POST `/sandbox/{sandboxIdOrName}/backup`/backup}
+- POST `/sandbox/{sandboxIdOrName}/public/{isPublic}`/public/{isPublic}}
+- POST `/sandbox/{sandboxId}/last-activity`/last-activity}
+- POST `/sandbox/{sandboxIdOrName}/autostop/{interval}`/autostop/{interval}}
+- POST `/sandbox/{sandboxIdOrName}/autoarchive/{interval}`/autoarchive/{interval}}
+- POST `/sandbox/{sandboxIdOrName}/autodelete/{interval}`/autodelete/{interval}}
+- POST `/sandbox/{sandboxIdOrName}/archive`/archive}
+- GET `/sandbox/{sandboxIdOrName}/ports/{port}/preview-url`/ports/{port}/preview-url}
+- GET `/sandbox/{sandboxIdOrName}/ports/{port}/signed-preview-url`/ports/{port}/signed-preview-url}
+- POST `/sandbox/{sandboxIdOrName}/ports/{port}/signed-preview-url/{token}/expire`/ports/{port}/signed-preview-url/{token}/expire}
+- GET `/sandbox/{sandboxIdOrName}/build-logs`/build-logs}
+- GET `/sandbox/{sandboxIdOrName}/build-logs-url`/build-logs-url}
+- POST `/sandbox/{sandboxIdOrName}/ssh-access`/ssh-access}
+- DELETE `/sandbox/{sandboxIdOrName}/ssh-access`/ssh-access}
+- GET `/sandbox/ssh-access/validate`
+- GET `/sandbox/{sandboxId}/toolbox-proxy-url`/toolbox-proxy-url}
+- GET `/sandbox/{sandboxId}/organization`/organization}
+- GET `/sandbox/{sandboxId}/region-quota`/region-quota}
+- GET `/sandbox/{sandboxId}/telemetry/logs`/telemetry/logs}
+- GET `/sandbox/{sandboxId}/telemetry/traces`/telemetry/traces}
+- GET `/sandbox/{sandboxId}/telemetry/traces/{traceId}`/telemetry/traces/{traceId}}
+- GET `/sandbox/{sandboxId}/telemetry/metrics`/telemetry/metrics}
+
 ## GET `/sandbox` {#daytona/tag/sandbox/GET/sandbox}
 
 **List all sandboxes**
@@ -619,6 +657,44 @@ This endpoint is deprecated. Use `getBuildLogsUrl` instead.
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | Toolbox proxy URL for the specified sandbox | ToolboxProxyUrl |
+
+---
+
+## GET `/sandbox/{sandboxId}/organization` {#daytona/tag/sandbox/GET/sandbox/{sandboxId}/organization}
+
+**Get organization by sandbox ID**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxId` | path | string | Yes | ID of the sandbox |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Organization | Organization |
+
+---
+
+## GET `/sandbox/{sandboxId}/region-quota` {#daytona/tag/sandbox/GET/sandbox/{sandboxId}/region-quota}
+
+**Get region quota by sandbox ID**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxId` | path | string | Yes | ID of the sandbox |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Region quota | RegionQuota |
 
 ---
 

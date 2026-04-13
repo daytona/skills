@@ -1,3 +1,43 @@
+## Contents
+
+- daytona
+- daytona archive
+- daytona autocomplete
+- daytona create
+- daytona delete
+- daytona docs
+- daytona exec
+- daytona info
+- daytona list
+- daytona login
+- daytona logout
+- daytona mcp
+- daytona mcp config
+- daytona mcp init
+- daytona mcp start
+- daytona organization
+- daytona organization create
+- daytona organization delete
+- daytona organization list
+- daytona organization use
+- daytona preview-url
+- daytona snapshot
+- daytona snapshot create
+- daytona snapshot delete
+- daytona snapshot list
+- daytona snapshot push
+- daytona ssh
+- daytona start
+- daytona stop
+- daytona version
+- daytona volume
+- daytona volume create
+- daytona volume delete
+- daytona volume get
+- daytona volume list
+- See Also
+
+
 
 The `daytona` command-line tool provides access to Daytona's core features including managing Snapshots and the lifecycle of Daytona Sandboxes. View the installation instructions by clicking [here](./python-sdk/getting-started.md#cli).
 

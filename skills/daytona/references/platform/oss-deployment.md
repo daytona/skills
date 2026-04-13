@@ -1,3 +1,16 @@
+## Contents
+
+- Overview
+- Quick Start
+- DNS Setup for Proxy URLs
+- Development Notes
+- Security Considerations
+- Additional Network Options
+- Environment Variables
+- [OPTIONAL] Configure Auth0 for Authentication
+- See Also
+
+
 
 This guide will walk you through running Daytona Open Source locally using Docker Compose.
 
@@ -262,6 +275,7 @@ Below is a full list of environment variables with their default values:
 | `SNAPSHOT_ERROR_CACHE_RETENTION`        | string  | `10m`                             | Snapshot error cache retention duration (minimum: 5m) |
 | `CONTAINER_NETWORK`                     | string  | (none)                            | Custom docker network for sandboxes                   |
 | `INTER_SANDBOX_NETWORK_ENABLED`         | boolean | `false`                           | Enable or disable inter-sandbox network connectivity  |
+| `BUILD_ENGINE`                          | string  | `buildkit`                        | Docker image build engine (`buildkit` or `legacy`)    |
 
 ### SSH Gateway
 

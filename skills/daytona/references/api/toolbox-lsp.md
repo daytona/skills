@@ -1,5 +1,16 @@
 # Lsp API
 
+
+## Contents
+
+- POST `/lsp/completions`
+- POST `/lsp/did-close`
+- POST `/lsp/did-open`
+- GET `/lsp/document-symbols`
+- POST `/lsp/start`
+- POST `/lsp/stop`
+- GET `/lsp/workspacesymbols`
+
 ## POST `/lsp/completions` {#daytona-toolbox/tag/lsp/POST/lsp/completions}
 
 **Get code completions**

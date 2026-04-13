@@ -1,3 +1,13 @@
+## Contents
+
+- Basic operations
+- Branch operations
+- Stage changes
+- Commit changes
+- Remote operations
+- See Also
+
+
 
 
 Daytona provides built-in Git support through the `git` module in sandboxes.

@@ -1,3 +1,18 @@
+## Contents
+
+- Snapshot lifecycle
+- Create Snapshots
+- Get a Snapshot by name
+- List Snapshots
+- Activate Snapshots
+- Deactivate Snapshots
+- Delete Snapshots
+- Run Docker in a Sandbox
+- Run Kubernetes in a Sandbox
+- Default Snapshots
+- See Also
+
+
 
 
 Snapshots are sandbox templates created from [Docker](https://www.docker.com/) or [OCI](https://opencontainers.org/) compatible images. Sandboxes can use a [default snapshot](#default-snapshots) or custom snapshots to provide a consistent and reproducible sandbox environments for your dependencies, settings, and resources.
@@ -537,7 +552,7 @@ Daytona Sandboxes can run a Kubernetes cluster inside the sandbox. Kubernetes ru
 The following snippet installs and starts a k3s cluster inside a sandbox and lists all running pods.
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk'
+import { Daytona } from '@daytona/sdk'
 import { setTimeout } from 'timers/promises'
 
 // Initialize the Daytona client

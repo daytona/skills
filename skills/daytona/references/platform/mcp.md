@@ -1,3 +1,15 @@
+## Contents
+
+- Install Daytona CLI
+- Authenticate with Daytona
+- Initialize MCP server
+- Configure MCP server
+- Start MCP server
+- Available tools
+- Troubleshooting
+- See Also
+
+
 
 
 Daytona Model Context Protocol (MCP) server enables AI agents to interact with [Daytona Sandboxes](../python-sdk/sandboxes.md) programmatically. This guide covers how to set up and use the MCP server with various AI agents.

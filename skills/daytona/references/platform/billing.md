@@ -1,3 +1,11 @@
+## Contents
+
+- Wallet
+- Spending
+- Cancellation & post-cancellation
+- See Also
+
+
 
 Daytona provides an overview of your organization's [wallet](#wallet) and [spending](#spending). Daytona uses a pay-as-you-go billing model where you are charged based on the resources your sandboxes consume. For information on resource quotas, rate limits, and tier-based access, see [limits](./limits.md).
 

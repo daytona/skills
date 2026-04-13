@@ -1,5 +1,37 @@
 # Computer Use API
 
+
+## Contents
+
+- GET `/computeruse/display/info`
+- GET `/computeruse/display/windows`
+- POST `/computeruse/keyboard/hotkey`
+- POST `/computeruse/keyboard/key`
+- POST `/computeruse/keyboard/type`
+- POST `/computeruse/mouse/click`
+- POST `/computeruse/mouse/drag`
+- POST `/computeruse/mouse/move`
+- GET `/computeruse/mouse/position`
+- POST `/computeruse/mouse/scroll`
+- GET `/computeruse/process-status`
+- GET `/computeruse/process/{processName}/errors`/errors}
+- GET `/computeruse/process/{processName}/logs`/logs}
+- POST `/computeruse/process/{processName}/restart`/restart}
+- GET `/computeruse/process/{processName}/status`/status}
+- GET `/computeruse/recordings`
+- POST `/computeruse/recordings/start`
+- POST `/computeruse/recordings/stop`
+- GET `/computeruse/recordings/{id}`}
+- DELETE `/computeruse/recordings/{id}`}
+- GET `/computeruse/recordings/{id}/download`/download}
+- GET `/computeruse/screenshot`
+- GET `/computeruse/screenshot/compressed`
+- GET `/computeruse/screenshot/region`
+- GET `/computeruse/screenshot/region/compressed`
+- POST `/computeruse/start`
+- GET `/computeruse/status`
+- POST `/computeruse/stop`
+
 ## GET `/computeruse/display/info` {#daytona-toolbox/tag/computer-use/GET/computeruse/display/info}
 
 **Get display information**

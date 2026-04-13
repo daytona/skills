@@ -1,3 +1,10 @@
+## Contents
+
+- Tailscale
+- OpenVPN
+- See Also
+
+
 
 
 VPN connections are a way to connect your Daytona Sandboxes to private networks. By establishing a VPN connection, your sandbox can access network resources using private IP addresses and can be accessed by other devices on the same VPN network.
@@ -32,7 +39,7 @@ The process involves installing Tailscale, starting the daemon, initiating the l
 The following snippet demonstrates connecting to a Tailscale network using a browser login.
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk'
+import { Daytona } from '@daytona/sdk'
 
 // Configuration
 const DAYTONA_API_KEY = 'YOUR_API_KEY' // Replace with your API key
@@ -207,7 +214,7 @@ curl -fsSL https://tailscale.com/install.sh | sh && sudo tailscale up --auth-key
 Copy the auth key from the generated script and use it to connect your Daytona Sandbox to Tailscale:
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk'
+import { Daytona } from '@daytona/sdk'
 
 // Configuration
 const DAYTONA_API_KEY = 'YOUR_API_KEY' // Replace with your API key
@@ -498,7 +505,7 @@ if __name__ == "__main__":
 **TypeScript:**
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk';
+import { Daytona } from '@daytona/sdk';
 
 // Configuration
 const DAYTONA_API_KEY = "YOUR_API_KEY"; // Replace with your API key

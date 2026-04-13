@@ -1,5 +1,77 @@
 # Toolbox API
 
+
+## Contents
+
+- GET `/toolbox/{sandboxId}/toolbox/project-dir`/toolbox/project-dir}
+- GET `/toolbox/{sandboxId}/toolbox/user-home-dir`/toolbox/user-home-dir}
+- GET `/toolbox/{sandboxId}/toolbox/work-dir`/toolbox/work-dir}
+- GET `/toolbox/{sandboxId}/toolbox/files`/toolbox/files}
+- DELETE `/toolbox/{sandboxId}/toolbox/files`/toolbox/files}
+- GET `/toolbox/{sandboxId}/toolbox/files/download`/toolbox/files/download}
+- POST `/toolbox/{sandboxId}/toolbox/files/bulk-download`/toolbox/files/bulk-download}
+- GET `/toolbox/{sandboxId}/toolbox/files/find`/toolbox/files/find}
+- POST `/toolbox/{sandboxId}/toolbox/files/folder`/toolbox/files/folder}
+- GET `/toolbox/{sandboxId}/toolbox/files/info`/toolbox/files/info}
+- POST `/toolbox/{sandboxId}/toolbox/files/move`/toolbox/files/move}
+- POST `/toolbox/{sandboxId}/toolbox/files/permissions`/toolbox/files/permissions}
+- POST `/toolbox/{sandboxId}/toolbox/files/replace`/toolbox/files/replace}
+- GET `/toolbox/{sandboxId}/toolbox/files/search`/toolbox/files/search}
+- POST `/toolbox/{sandboxId}/toolbox/files/upload`/toolbox/files/upload}
+- POST `/toolbox/{sandboxId}/toolbox/files/bulk-upload`/toolbox/files/bulk-upload}
+- POST `/toolbox/{sandboxId}/toolbox/git/add`/toolbox/git/add}
+- GET `/toolbox/{sandboxId}/toolbox/git/branches`/toolbox/git/branches}
+- POST `/toolbox/{sandboxId}/toolbox/git/branches`/toolbox/git/branches}
+- DELETE `/toolbox/{sandboxId}/toolbox/git/branches`/toolbox/git/branches}
+- POST `/toolbox/{sandboxId}/toolbox/git/clone`/toolbox/git/clone}
+- POST `/toolbox/{sandboxId}/toolbox/git/commit`/toolbox/git/commit}
+- GET `/toolbox/{sandboxId}/toolbox/git/history`/toolbox/git/history}
+- POST `/toolbox/{sandboxId}/toolbox/git/pull`/toolbox/git/pull}
+- POST `/toolbox/{sandboxId}/toolbox/git/push`/toolbox/git/push}
+- POST `/toolbox/{sandboxId}/toolbox/git/checkout`/toolbox/git/checkout}
+- GET `/toolbox/{sandboxId}/toolbox/git/status`/toolbox/git/status}
+- POST `/toolbox/{sandboxId}/toolbox/process/execute`/toolbox/process/execute}
+- GET `/toolbox/{sandboxId}/toolbox/process/session`/toolbox/process/session}
+- POST `/toolbox/{sandboxId}/toolbox/process/session`/toolbox/process/session}
+- GET `/toolbox/{sandboxId}/toolbox/process/session/{sessionId}`/toolbox/process/session/{sessionId}}
+- DELETE `/toolbox/{sandboxId}/toolbox/process/session/{sessionId}`/toolbox/process/session/{sessionId}}
+- POST `/toolbox/{sandboxId}/toolbox/process/session/{sessionId}/exec`/toolbox/process/session/{sessionId}/exec}
+- GET `/toolbox/{sandboxId}/toolbox/process/session/{sessionId}/command/{commandId}`/toolbox/process/session/{sessionId}/command/{commandId}}
+- GET `/toolbox/{sandboxId}/toolbox/process/session/{sessionId}/command/{commandId}/logs`/toolbox/process/session/{sessionId}/command/{commandId}/logs}
+- GET `/toolbox/{sandboxId}/toolbox/process/pty`/toolbox/process/pty}
+- POST `/toolbox/{sandboxId}/toolbox/process/pty`/toolbox/process/pty}
+- GET `/toolbox/{sandboxId}/toolbox/process/pty/{sessionId}`/toolbox/process/pty/{sessionId}}
+- DELETE `/toolbox/{sandboxId}/toolbox/process/pty/{sessionId}`/toolbox/process/pty/{sessionId}}
+- POST `/toolbox/{sandboxId}/toolbox/process/pty/{sessionId}/resize`/toolbox/process/pty/{sessionId}/resize}
+- POST `/toolbox/{sandboxId}/toolbox/lsp/completions`/toolbox/lsp/completions}
+- POST `/toolbox/{sandboxId}/toolbox/lsp/did-close`/toolbox/lsp/did-close}
+- POST `/toolbox/{sandboxId}/toolbox/lsp/did-open`/toolbox/lsp/did-open}
+- GET `/toolbox/{sandboxId}/toolbox/lsp/document-symbols`/toolbox/lsp/document-symbols}
+- POST `/toolbox/{sandboxId}/toolbox/lsp/start`/toolbox/lsp/start}
+- POST `/toolbox/{sandboxId}/toolbox/lsp/stop`/toolbox/lsp/stop}
+- GET `/toolbox/{sandboxId}/toolbox/lsp/workspace-symbols`/toolbox/lsp/workspace-symbols}
+- POST `/toolbox/{sandboxId}/toolbox/computeruse/start`/toolbox/computeruse/start}
+- POST `/toolbox/{sandboxId}/toolbox/computeruse/stop`/toolbox/computeruse/stop}
+- GET `/toolbox/{sandboxId}/toolbox/computeruse/status`/toolbox/computeruse/status}
+- GET `/toolbox/{sandboxId}/toolbox/computeruse/process/{processName}/status`/toolbox/computeruse/process/{processName}/status}
+- POST `/toolbox/{sandboxId}/toolbox/computeruse/process/{processName}/restart`/toolbox/computeruse/process/{processName}/restart}
+- GET `/toolbox/{sandboxId}/toolbox/computeruse/process/{processName}/logs`/toolbox/computeruse/process/{processName}/logs}
+- GET `/toolbox/{sandboxId}/toolbox/computeruse/process/{processName}/errors`/toolbox/computeruse/process/{processName}/errors}
+- GET `/toolbox/{sandboxId}/toolbox/computeruse/mouse/position`/toolbox/computeruse/mouse/position}
+- POST `/toolbox/{sandboxId}/toolbox/computeruse/mouse/move`/toolbox/computeruse/mouse/move}
+- POST `/toolbox/{sandboxId}/toolbox/computeruse/mouse/click`/toolbox/computeruse/mouse/click}
+- POST `/toolbox/{sandboxId}/toolbox/computeruse/mouse/drag`/toolbox/computeruse/mouse/drag}
+- POST `/toolbox/{sandboxId}/toolbox/computeruse/mouse/scroll`/toolbox/computeruse/mouse/scroll}
+- POST `/toolbox/{sandboxId}/toolbox/computeruse/keyboard/type`/toolbox/computeruse/keyboard/type}
+- POST `/toolbox/{sandboxId}/toolbox/computeruse/keyboard/key`/toolbox/computeruse/keyboard/key}
+- POST `/toolbox/{sandboxId}/toolbox/computeruse/keyboard/hotkey`/toolbox/computeruse/keyboard/hotkey}
+- GET `/toolbox/{sandboxId}/toolbox/computeruse/screenshot`/toolbox/computeruse/screenshot}
+- GET `/toolbox/{sandboxId}/toolbox/computeruse/screenshot/region`/toolbox/computeruse/screenshot/region}
+- GET `/toolbox/{sandboxId}/toolbox/computeruse/screenshot/compressed`/toolbox/computeruse/screenshot/compressed}
+- GET `/toolbox/{sandboxId}/toolbox/computeruse/screenshot/region/compressed`/toolbox/computeruse/screenshot/region/compressed}
+- GET `/toolbox/{sandboxId}/toolbox/computeruse/display/info`/toolbox/computeruse/display/info}
+- GET `/toolbox/{sandboxId}/toolbox/computeruse/display/windows`/toolbox/computeruse/display/windows}
+
 ## GET `/toolbox/{sandboxId}/toolbox/project-dir` {#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/project-dir}
 
 **[DEPRECATED] Get sandbox project dir**

@@ -1,3 +1,20 @@
+## Contents
+
+- Create PTY session
+- Connect to PTY session
+- List PTY sessions
+- Get PTY session info
+- Kill PTY session
+- Resize PTY session
+- Interactive commands
+- Long-running processes
+- Resource management
+- PtyHandle methods
+- Error handling
+- Troubleshooting
+- See Also
+
+
 
 
 Daytona provides powerful pseudo terminal (PTY) capabilities through the `process` module in sandboxes. PTY sessions allow you to create interactive terminal sessions that can execute commands, handle user input, and manage terminal operations.

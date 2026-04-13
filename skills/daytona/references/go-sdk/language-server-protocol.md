@@ -1,3 +1,15 @@
+## Contents
+
+- Create LSP servers
+- Start LSP servers
+- Stop LSP servers
+- Code completions
+- File notifications
+- Document symbols
+- Sandbox symbols
+- See Also
+
+
 
 
 Daytona provides Language Server Protocol (LSP) support through sandbox instances. This enables advanced language features like code completion, diagnostics, and more.

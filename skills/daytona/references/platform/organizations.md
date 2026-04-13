@@ -1,3 +1,19 @@
+## Contents
+
+- Personal vs Collaborative
+- Create organization
+- List organizations
+- Leave organization
+- Delete organization
+- Roles
+- Members
+- Invitations
+- Regions
+- Organization settings
+- Advanced operations
+- See Also
+
+
 
 
 Daytona provides organizations as a way to group resources and enable collaboration. Users can work individually in their personal organization or together in a collaborative organization.

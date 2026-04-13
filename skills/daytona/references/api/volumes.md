@@ -1,5 +1,14 @@
 # Volumes API
 
+
+## Contents
+
+- GET `/volumes`
+- POST `/volumes`
+- GET `/volumes/{volumeId}`}
+- DELETE `/volumes/{volumeId}`}
+- GET `/volumes/by-name/{name}`}
+
 ## GET `/volumes` {#daytona/tag/volumes/GET/volumes}
 
 **List all volumes**
