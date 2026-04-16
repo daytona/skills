@@ -29,6 +29,7 @@ Copy the `daytona` subdirectory into your agent's `skills` directory:
 | Cursor       | `~/.cursor/skills/`          |
 | OpenCode     | `~/.config/opencode/skills/` |
 | OpenAI Codex | `~/.codex/skills/`           |
+| Windsurf     | `~/.windsurf/skills/`        |
 
 ## Usage
 
