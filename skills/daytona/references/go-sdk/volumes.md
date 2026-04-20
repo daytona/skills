@@ -20,13 +20,19 @@ Volumes are FUSE-based mounts that provide shared file access across Daytona San
 
 ## Create volumes
 
-Daytona provides volumes as a shared storage solution for sandboxes. To create a volume:
+Daytona provides methods to create volumes using the [Daytona Dashboard ↗](https://app.daytona.io/dashboard/volumes) or programmatically using the Daytona [Python](../python-sdk/sync/volume.md), [TypeScript](../typescript-sdk/volume.md), [Ruby](../ruby-sdk/volume.md), [Go](./daytona.md#type-volumeservice) **SDKs**, [CLI](../cli.md#daytona-create), or [API](../api/README.md#daytona/tag/sandbox).
+
+For persistent per-user, per-tenant, or per-workspace storage, use one shared volume per use case, environment, or project (for example a volume for staging and another for production), and set a dedicated `subpath` when you create each sandbox. The sandbox sees only that prefix inside the volume; it cannot access sibling subpaths.
+
+This is the default pattern we recommend because it:
+
+- stays within the per-organization volume [limits](#pricing--limits)
+- avoids mounting a separate volume for every user or sandbox
+- continues to provide strong isolation at the mount boundary
 
 1. Navigate to [Daytona Volumes ↗](https://app.daytona.io/dashboard/volumes)
 2. Click the **Create Volume** button
 3. Enter the volume name
-
-The following snippets demonstrate how to create a volume using the Daytona SDK:
 
 ```go
 client, err := daytona.NewClient()
@@ -41,15 +47,17 @@ if err != nil {
 
 ## Mount volumes
 
-Daytona provides an option to mount a volume to a sandbox. Once a volume is created, it can be mounted to a sandbox by specifying it in the `CreateSandboxFromSnapshotParams` object. Volume mount paths must meet the following requirements:
+Daytona provides an option to mount a volume to a sandbox. Once a volume is created, it can be mounted to a sandbox by specifying it in the `CreateSandboxFromSnapshotParams` object. For per-user or multi-tenant data, pass `subpath` so only the specified folder inside the volume is visible at `mount_path`.
 
-- **Must be absolute paths**: Mount paths must start with `/` (e.g., `/home/daytona/volume`)
-- **Cannot be root directory**: Cannot mount to `/` or `//`
-- **No relative path components**: Cannot contain `/../`, `/./`, or end with `/..` or `/.`
-- **No consecutive slashes**: Cannot contain multiple consecutive slashes like `//` (except at the beginning)
-- **Cannot mount to system directories**: The following system directories are prohibited: `/proc`, `/sys`, `/dev`, `/boot`, `/etc`, `/bin`, `/sbin`, `/lib`, `/lib64`
+Mount the entire volume (omit `subpath`) when every sandbox that uses that volume should see the same tree, for example shared assets or single-tenant workloads.
 
-The following snippets demonstrate how to mount a volume to a sandbox:
+Volume mount paths must meet the following requirements:
+
+- **Must be absolute paths**: mount paths must start with `/` (e.g., `/home/daytona/volume`)
+- **Cannot be root directory**: cannot mount to `/` or `//`
+- **No relative path components**: cannot contain `/../`, `/./`, or end with `/..` or `/.`
+- **No consecutive slashes**: cannot contain multiple consecutive slashes like `//` (except at the beginning)
+- **Cannot mount to system directories**: the following system directories are prohibited: `/proc`, `/sys`, `/dev`, `/boot`, `/etc`, `/bin`, `/sbin`, `/lib`, `/lib64`
 
 ```go
 import (
@@ -75,14 +83,15 @@ if err != nil {
 	}
 }
 
-// Mount the volume to the sandbox
 mountDir := "/home/daytona/volume"
 
-sandbox1, err := client.Create(context.Background(), types.SnapshotParams{
+// Recommended for per-user / per-tenant data: one volume, unique subpath per sandbox
+subpath := "users/alice"
+sandbox, err := client.Create(context.Background(), types.SnapshotParams{
 	SandboxBaseParams: types.SandboxBaseParams{
 		Language: types.CodeLanguagePython,
 		Volumes: []types.VolumeMount{
-			{VolumeID: volume.ID, MountPath: mountDir},
+			{VolumeID: volume.ID, MountPath: mountDir, Subpath: &subpath},
 		},
 	},
 })
@@ -90,14 +99,12 @@ if err != nil {
 	log.Fatal(err)
 }
 
-// Mount a specific subpath within the volume
-// This is useful for isolating data or implementing multi-tenancy
-subpath := "users/alice"
-sandbox2, err := client.Create(context.Background(), types.SnapshotParams{
+// Entire volume at mount path (omit Subpath) when all sandboxes should share the same tree
+_, err = client.Create(context.Background(), types.SnapshotParams{
 	SandboxBaseParams: types.SandboxBaseParams{
 		Language: types.CodeLanguagePython,
 		Volumes: []types.VolumeMount{
-			{VolumeID: volume.ID, MountPath: mountDir, Subpath: &subpath},
+			{VolumeID: volume.ID, MountPath: mountDir},
 		},
 	},
 })
@@ -119,14 +126,14 @@ import (
 )
 
 // Write to a file in the mounted volume
-err := sandbox1.FileSystem.UploadFile(context.Background(), []byte("Hello from Daytona volume!"), "/home/daytona/volume/example.txt")
+err := sandbox.FileSystem.UploadFile(context.Background(), []byte("Hello from Daytona volume!"), "/home/daytona/volume/example.txt")
 if err != nil {
     log.Fatal(err)
 }
 
 // When you're done with the sandbox, you can remove it
 // The volume will persist even after the sandbox is removed
-err = sandbox1.Delete(context.Background())
+err = sandbox.Delete(context.Background())
 if err != nil {
     log.Fatal(err)
 }

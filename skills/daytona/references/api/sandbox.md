@@ -16,6 +16,11 @@
 - PUT `/sandbox/{sandboxIdOrName}/labels`/labels}
 - PUT `/sandbox/{sandboxId}/state`/state}
 - POST `/sandbox/{sandboxIdOrName}/backup`/backup}
+- POST `/sandbox/{sandboxIdOrName}/snapshot`/snapshot}
+- POST `/sandbox/{sandboxIdOrName}/fork`/fork}
+- GET `/sandbox/{sandboxIdOrName}/forks`/forks}
+- GET `/sandbox/{sandboxIdOrName}/parent`/parent}
+- GET `/sandbox/{sandboxIdOrName}/ancestors`/ancestors}
 - POST `/sandbox/{sandboxIdOrName}/public/{isPublic}`/public/{isPublic}}
 - POST `/sandbox/{sandboxId}/last-activity`/last-activity}
 - POST `/sandbox/{sandboxIdOrName}/autostop/{interval}`/autostop/{interval}}
@@ -358,6 +363,118 @@ Schema: **UpdateSandboxStateDto**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | Sandbox backup has been initiated | Sandbox |
+
+---
+
+## POST `/sandbox/{sandboxIdOrName}/snapshot` {#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/snapshot}
+
+**Create a snapshot from a sandbox**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes |  |
+
+### Request Body
+
+Schema: **CreateSandboxSnapshot**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | Yes | Name for the new snapshot |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Snapshot creation has been initiated | Sandbox |
+
+---
+
+## POST `/sandbox/{sandboxIdOrName}/fork` {#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/fork}
+
+**Fork a sandbox**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes |  |
+
+### Request Body
+
+Schema: **ForkSandbox**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | No | The name for the forked sandbox. If not provided, a unique name will be generated. |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Fork operation has been initiated | Sandbox |
+
+---
+
+## GET `/sandbox/{sandboxIdOrName}/forks` {#daytona/tag/sandbox/GET/sandbox/{sandboxIdOrName}/forks}
+
+**Get sandbox fork children**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes |  |
+| `includeDestroyed` | query | boolean | No |  |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 |  | array of Sandbox |
+
+---
+
+## GET `/sandbox/{sandboxIdOrName}/parent` {#daytona/tag/sandbox/GET/sandbox/{sandboxIdOrName}/parent}
+
+**Get sandbox fork parent**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes |  |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 |  | Sandbox |
+
+---
+
+## GET `/sandbox/{sandboxIdOrName}/ancestors` {#daytona/tag/sandbox/GET/sandbox/{sandboxIdOrName}/ancestors}
+
+**Get sandbox fork ancestor chain**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes |  |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 |  | array of Sandbox |
 
 ---
 

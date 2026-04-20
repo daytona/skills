@@ -8,7 +8,7 @@ Sandbox class for Daytona SDK.
 #### new Sandbox()
 
 ```ruby
-def initialize(code_toolbox:, sandbox_dto:, config:, sandbox_api:, otel_state:)
+def initialize(sandbox_dto:, config:, sandbox_api:, otel_state:)
 
 ```
 
@@ -316,17 +316,6 @@ def daemon_version()
 **Returns**:
 
 - `String` - The version of the daemon running in the sandbox
-
-#### code_toolbox()
-
-```ruby
-def code_toolbox()
-
-```
-
-**Returns**:
-
-- `Daytona:SandboxPythonCodeToolbox, Daytona:SandboxTsCodeToolbox`
 
 #### config()
 
@@ -891,6 +880,45 @@ Treats destroyed as stopped to cover ephemeral sandboxes that are automatically 
 **Parameters**:
 
 - `timeout` _Numeric_ - Maximum wait time in seconds (defaults to 60 s).
+
+**Returns**:
+
+- `void`
+
+#### experimental_fork()
+
+```ruby
+def experimental_fork(name:, timeout:)
+
+```
+
+Forks the Sandbox, creating a new Sandbox with an identical filesystem.
+The forked Sandbox is a copy-on-write clone of the original. It starts
+with the same disk contents but operates independently from that point on.
+
+**Parameters**:
+
+- `name` _String, nil_ - Optional name for the forked Sandbox
+- `timeout` _Numeric_ - Maximum wait time in seconds (defaults to 60 s)
+
+**Returns**:
+
+- `Daytona:Sandbox` - The forked Sandbox
+
+#### experimental_create_snapshot()
+
+```ruby
+def experimental_create_snapshot(name:, timeout:)
+
+```
+
+Creates a snapshot from the current state of the Sandbox.
+The Sandbox will temporarily enter a 'snapshotting' state and return to its previous state when complete.
+
+**Parameters**:
+
+- `name` _String_ - Name for the new snapshot
+- `timeout` _Numeric_ - Maximum wait time in seconds (defaults to 60 s)
 
 **Returns**:
 

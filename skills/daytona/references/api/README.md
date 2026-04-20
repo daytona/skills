@@ -67,6 +67,7 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `POST` | `/organizations/{organizationId}/suspend` | [Suspend organization](./organizations.md#daytona/tag/organizations/POST/organizations/{organizationId}/suspend) | [organizations](./organizations.md) |
 | `POST` | `/organizations/{organizationId}/unsuspend` | [Unsuspend organization](./organizations.md#daytona/tag/organizations/POST/organizations/{organizationId}/unsuspend) | [organizations](./organizations.md) |
 | `GET` | `/organizations/otel-config/by-sandbox-auth-token/{authToken}` | [Get organization OTEL config by sandbox auth token](./organizations.md#daytona/tag/organizations/GET/organizations/otel-config/by-sandbox-auth-token/{authToken}) | [organizations](./organizations.md) |
+| `GET` | `/organizations/{organizationId}/otel-config` | [Get organization OTEL config by organization ID](./organizations.md#daytona/tag/organizations/GET/organizations/{organizationId}/otel-config) | [organizations](./organizations.md) |
 | `POST` | `/organizations/{organizationId}/sandbox-default-limited-network-egress` | [Update sandbox default limited network egress](./organizations.md#daytona/tag/organizations/POST/organizations/{organizationId}/sandbox-default-limited-network-egress) | [organizations](./organizations.md) |
 | `PUT` | `/organizations/{organizationId}/experimental-config` | [Update experimental configuration](./organizations.md#daytona/tag/organizations/PUT/organizations/{organizationId}/experimental-config) | [organizations](./organizations.md) |
 | `GET` | `/organizations/{organizationId}/roles` | [List organization roles](./organizations.md#daytona/tag/organizations/GET/organizations/{organizationId}/roles) | [organizations](./organizations.md) |
@@ -117,6 +118,11 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `PUT` | `/sandbox/{sandboxIdOrName}/labels` | [Replace sandbox labels](./sandbox.md#daytona/tag/sandbox/PUT/sandbox/{sandboxIdOrName}/labels) | [sandbox](./sandbox.md) |
 | `PUT` | `/sandbox/{sandboxId}/state` | [Update sandbox state](./sandbox.md#daytona/tag/sandbox/PUT/sandbox/{sandboxId}/state) | [sandbox](./sandbox.md) |
 | `POST` | `/sandbox/{sandboxIdOrName}/backup` | [Create sandbox backup](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/backup) | [sandbox](./sandbox.md) |
+| `POST` | `/sandbox/{sandboxIdOrName}/snapshot` | [Create a snapshot from a sandbox](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/snapshot) | [sandbox](./sandbox.md) |
+| `POST` | `/sandbox/{sandboxIdOrName}/fork` | [Fork a sandbox](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/fork) | [sandbox](./sandbox.md) |
+| `GET` | `/sandbox/{sandboxIdOrName}/forks` | [Get sandbox fork children](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxIdOrName}/forks) | [sandbox](./sandbox.md) |
+| `GET` | `/sandbox/{sandboxIdOrName}/parent` | [Get sandbox fork parent](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxIdOrName}/parent) | [sandbox](./sandbox.md) |
+| `GET` | `/sandbox/{sandboxIdOrName}/ancestors` | [Get sandbox fork ancestor chain](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxIdOrName}/ancestors) | [sandbox](./sandbox.md) |
 | `POST` | `/sandbox/{sandboxIdOrName}/public/{isPublic}` | [Update public status](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/public/{isPublic}) | [sandbox](./sandbox.md) |
 | `POST` | `/sandbox/{sandboxId}/last-activity` | [Update sandbox last activity](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxId}/last-activity) | [sandbox](./sandbox.md) |
 | `POST` | `/sandbox/{sandboxIdOrName}/autostop/{interval}` | [Set sandbox auto-stop interval](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/autostop/{interval}) | [sandbox](./sandbox.md) |
@@ -250,11 +256,11 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 - [docker-registry](./docker-registry.md) (6 endpoints) {#daytona/tag/docker-registry}
 - [jobs](./jobs.md) (4 endpoints) {#daytona/tag/jobs}
 - [object-storage](./object-storage.md) (1 endpoints) {#daytona/tag/object-storage}
-- [organizations](./organizations.md) (37 endpoints) {#daytona/tag/organizations}
+- [organizations](./organizations.md) (38 endpoints) {#daytona/tag/organizations}
 - [preview](./preview.md) (4 endpoints) {#daytona/tag/preview}
 - [regions](./regions.md) (1 endpoints) {#daytona/tag/regions}
 - [runners](./runners.md) (11 endpoints) {#daytona/tag/runners}
-- [sandbox](./sandbox.md) (34 endpoints) {#daytona/tag/sandbox}
+- [sandbox](./sandbox.md) (39 endpoints) {#daytona/tag/sandbox}
 - [snapshots](./snapshots.md) (8 endpoints) {#daytona/tag/snapshots}
 - [toolbox](./toolbox.md) (68 endpoints) {#daytona/tag/toolbox}
 - [users](./users.md) (5 endpoints) {#daytona/tag/users}
@@ -338,6 +344,7 @@ The Toolbox API runs inside sandboxes and provides file system, git, process, an
 | `GET` | `/lsp/workspacesymbols` | [Get workspace symbols](./toolbox-lsp.md#daytona-toolbox/tag/lsp/GET/lsp/workspacesymbols) | [lsp](./toolbox-lsp.md) |
 | `GET` | `/port` | [Get active ports](./toolbox-port.md#daytona-toolbox/tag/port/GET/port) | [port](./toolbox-port.md) |
 | `GET` | `/port/{port}/in-use` | [Check if port is in use](./toolbox-port.md#daytona-toolbox/tag/port/GET/port/{port}/in-use) | [port](./toolbox-port.md) |
+| `POST` | `/process/code-run` | [Execute code](./toolbox-process.md#daytona-toolbox/tag/process/POST/process/code-run) | [process](./toolbox-process.md) |
 | `POST` | `/process/execute` | [Execute a command](./toolbox-process.md#daytona-toolbox/tag/process/POST/process/execute) | [process](./toolbox-process.md) |
 | `GET` | `/process/pty` | [List all PTY sessions](./toolbox-process.md#daytona-toolbox/tag/process/GET/process/pty) | [process](./toolbox-process.md) |
 | `POST` | `/process/pty` | [Create a new PTY session](./toolbox-process.md#daytona-toolbox/tag/process/POST/process/pty) | [process](./toolbox-process.md) |
@@ -366,5 +373,5 @@ The Toolbox API runs inside sandboxes and provides file system, git, process, an
 - [interpreter](./toolbox-interpreter.md) (4 endpoints) {#daytona-toolbox/tag/interpreter}
 - [lsp](./toolbox-lsp.md) (7 endpoints) {#daytona-toolbox/tag/lsp}
 - [port](./toolbox-port.md) (2 endpoints) {#daytona-toolbox/tag/port}
-- [process](./toolbox-process.md) (17 endpoints) {#daytona-toolbox/tag/process}
+- [process](./toolbox-process.md) (18 endpoints) {#daytona-toolbox/tag/process}
 - [server](./toolbox-server.md) (1 endpoints) {#daytona-toolbox/tag/server}

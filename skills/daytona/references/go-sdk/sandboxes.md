@@ -6,9 +6,12 @@
 - Start Sandboxes
 - List Sandboxes
 - Stop Sandboxes
+- Pause Sandboxes
 - Archive Sandboxes
 - Recover Sandboxes
 - Resize Sandboxes
+- Fork Sandboxes
+- Create Snapshot from Sandbox
 - Delete Sandboxes
 - Automated lifecycle management
 - See Also
@@ -245,6 +248,14 @@ Common use cases for force stop include:
 
 Avoid force stop for normal shutdowns where the process should flush buffers, write final state, or run cleanup hooks.
 
+## Pause Sandboxes
+> **Caution: Experimental**
+> This feature is experimental. To request access, contact [support@daytona.io](mailto:support@daytona.io).
+
+Daytona provides methods to pause sandboxes. Pausing a sandbox keeps both filesystem state and memory persistence, so sandboxes can resume from in-memory runtime state. Compared to regular stop behavior, pause is useful for workloads with active in-memory context and state continuity.
+
+Daytona supports pause functionality through VM-based runners. Pause is handled through the existing stop action. This means stop behaves as pause and preserves memory state, while force stop performs a full shutdown without preserving memory state.
+
 ## Archive Sandboxes
 
 Daytona provides methods to archive sandboxes in [Daytona Dashboard ↗](https://app.daytona.io/dashboard/) or programmatically using the [Python SDK](../python-sdk/README.md), [TypeScript SDK](../typescript-sdk/README.md), and [Ruby SDK](../ruby-sdk/README.md).
@@ -285,6 +296,51 @@ err := sandbox.Resize(ctx, &types.Resources{CPU: 2, Memory: 4})
 err = sandbox.Stop(ctx)
 err = sandbox.Resize(ctx, &types.Resources{CPU: 4, Memory: 8, Disk: 20})
 err = sandbox.Start(ctx)
+```
+
+## Fork Sandboxes
+> **Caution: Experimental**
+> This feature is experimental. To request access, contact [support@daytona.io](mailto:support@daytona.io).
+
+Daytona provides methods to fork sandboxes. Forking creates a duplicate of your sandbox's filesystem and memory, and copies it into a new sandbox. The new sandbox is fully independent: it can be started, stopped, and deleted without affecting the original. The sandbox must be in started state before forking.
+
+Daytona tracks the parent-child relationship in a fork tree, so you can always trace a fork's lineage back to the sandbox it was created from. You can fork a fork, building out branches as needed. The parent sandbox cannot be deleted while it has active fork children.
+
+1. Navigate to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+2. Click the three-dot menu (**⋮**) next to the sandbox you want to fork
+3. Select **Fork**
+
+```go
+// Fork sandbox through the Sandbox instance
+name := "my-forked-sandbox"
+forkedSandbox, err := sandbox.ExperimentalFork(ctx, &name)
+if err != nil {
+    return err
+}
+```
+
+### View Forks
+
+Daytona provides methods to view forks. You can view the fork tree for a sandbox and all its related sandboxes.
+
+1. Navigate to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+2. Click the three-dot menu (**⋮**) next to a forked sandbox
+3. Select **View Forks**
+
+The fork tree displays each sandbox in the hierarchy along with its current state and creation time, allowing you to trace the lineage of any fork back to its origin.
+
+## Create Snapshot from Sandbox
+> **Caution: Experimental**
+> This feature is experimental. To request access, contact [support@daytona.io](mailto:support@daytona.io).
+
+Daytona provides methods to create [snapshots](./snapshots.md) from sandboxes. Snapshots are immutable copies of a sandbox's filesystem that can be used to create new sandboxes.
+
+```go
+// Create snapshot from sandbox
+err := sandbox.ExperimentalCreateSnapshot(ctx, "my-sandbox-snapshot")
+if err != nil {
+    return err
+}
 ```
 
 ## Delete Sandboxes

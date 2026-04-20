@@ -6,8 +6,8 @@
 ## Contents
 
 - Index
+- Constants
 - type Chart
-- type ChartType
 - type CodeLanguage
 - type CodeRunParams
 - type CreateSnapshotParams
@@ -50,8 +50,8 @@ import "github.com/daytonaio/daytona/libs/sdk-go/pkg/types"
 
 ## Index
 
+- [Constants](https://www.daytona.io/docs/en<#constants>)
 - [type Chart](https://www.daytona.io/docs/en<#Chart>)
-- [type ChartType](https://www.daytona.io/docs/en<#ChartType>)
 - [type CodeLanguage](https://www.daytona.io/docs/en<#CodeLanguage>)
 - [type CodeRunParams](https://www.daytona.io/docs/en<#CodeRunParams>)
 - [type CreateSnapshotParams](https://www.daytona.io/docs/en<#CreateSnapshotParams>)
@@ -89,40 +89,20 @@ import "github.com/daytonaio/daytona/libs/sdk-go/pkg/types"
 - [type VolumeMount](https://www.daytona.io/docs/en<#VolumeMount>)
 
 
+## Constants
+
+<a name="CodeToolboxLanguageLabel"></a>
+
+```go
+const CodeToolboxLanguageLabel = "code-toolbox-language"
+```
+
 <a name="Chart"></a>
 ## type Chart
 
-Chart represents a chart
 
 ```go
-type Chart struct {
-    Type     ChartType
-    Title    string
-    Elements any
-    PNG      *string // Optional base64-encoded PNG representation
-}
-```
-
-<a name="ChartType"></a>
-## type ChartType
-
-
-```go
-type ChartType string
-```
-
-<a name="ChartTypeLine"></a>
-
-```go
-const (
-    ChartTypeLine           ChartType = "line"
-    ChartTypeScatter        ChartType = "scatter"
-    ChartTypeBar            ChartType = "bar"
-    ChartTypePie            ChartType = "pie"
-    ChartTypeBoxAndWhisker  ChartType = "box_and_whisker"
-    ChartTypeCompositeChart ChartType = "composite_chart"
-    ChartTypeUnknown        ChartType = "unknown"
-)
+type Chart = toolbox.Chart
 ```
 
 <a name="CodeLanguage"></a>

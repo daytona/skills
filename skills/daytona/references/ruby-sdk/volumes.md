@@ -20,13 +20,19 @@ Volumes are FUSE-based mounts that provide shared file access across Daytona San
 
 ## Create volumes
 
-Daytona provides volumes as a shared storage solution for sandboxes. To create a volume:
+Daytona provides methods to create volumes using the [Daytona Dashboard ↗](https://app.daytona.io/dashboard/volumes) or programmatically using the Daytona [Python](../python-sdk/sync/volume.md), [TypeScript](../typescript-sdk/volume.md), [Ruby](./volume.md), [Go](../go-sdk/daytona.md#type-volumeservice) **SDKs**, [CLI](../cli.md#daytona-create), or [API](../api/README.md#daytona/tag/sandbox).
+
+For persistent per-user, per-tenant, or per-workspace storage, use one shared volume per use case, environment, or project (for example a volume for staging and another for production), and set a dedicated `subpath` when you create each sandbox. The sandbox sees only that prefix inside the volume; it cannot access sibling subpaths.
+
+This is the default pattern we recommend because it:
+
+- stays within the per-organization volume [limits](#pricing--limits)
+- avoids mounting a separate volume for every user or sandbox
+- continues to provide strong isolation at the mount boundary
 
 1. Navigate to [Daytona Volumes ↗](https://app.daytona.io/dashboard/volumes)
 2. Click the **Create Volume** button
 3. Enter the volume name
-
-The following snippets demonstrate how to create a volume using the Daytona SDK:
 
 ```ruby
 daytona = Daytona::Daytona.new
@@ -35,36 +41,27 @@ volume = daytona.volume.create("my-awesome-volume")
 
 ## Mount volumes
 
-Daytona provides an option to mount a volume to a sandbox. Once a volume is created, it can be mounted to a sandbox by specifying it in the `CreateSandboxFromSnapshotParams` object. Volume mount paths must meet the following requirements:
+Daytona provides an option to mount a volume to a sandbox. Once a volume is created, it can be mounted to a sandbox by specifying it in the `CreateSandboxFromSnapshotParams` object. For per-user or multi-tenant data, pass `subpath` so only the specified folder inside the volume is visible at `mount_path`.
 
-- **Must be absolute paths**: Mount paths must start with `/` (e.g., `/home/daytona/volume`)
-- **Cannot be root directory**: Cannot mount to `/` or `//`
-- **No relative path components**: Cannot contain `/../`, `/./`, or end with `/..` or `/.`
-- **No consecutive slashes**: Cannot contain multiple consecutive slashes like `//` (except at the beginning)
-- **Cannot mount to system directories**: The following system directories are prohibited: `/proc`, `/sys`, `/dev`, `/boot`, `/etc`, `/bin`, `/sbin`, `/lib`, `/lib64`
+Mount the entire volume (omit `subpath`) when every sandbox that uses that volume should see the same tree, for example shared assets or single-tenant workloads.
 
-The following snippets demonstrate how to mount a volume to a sandbox:
+Volume mount paths must meet the following requirements:
+
+- **Must be absolute paths**: mount paths must start with `/` (e.g., `/home/daytona/volume`)
+- **Cannot be root directory**: cannot mount to `/` or `//`
+- **No relative path components**: cannot contain `/../`, `/./`, or end with `/..` or `/.`
+- **No consecutive slashes**: cannot contain multiple consecutive slashes like `//` (except at the beginning)
+- **Cannot mount to system directories**: the following system directories are prohibited: `/proc`, `/sys`, `/dev`, `/boot`, `/etc`, `/bin`, `/sbin`, `/lib`, `/lib64`
 
 ```ruby
 require 'daytona'
 
 daytona = Daytona::Daytona.new
-
-# Create a new volume or get an existing one
 volume = daytona.volume.get('my-volume', create: true)
-
-# Mount the volume to the sandbox
 mount_dir = '/home/daytona/volume'
 
+# Recommended for per-user / per-tenant data: one volume, unique subpath per sandbox
 params = Daytona::CreateSandboxFromSnapshotParams.new(
-  language: Daytona::CodeLanguage::PYTHON,
-  volumes: [DaytonaApiClient::SandboxVolume.new(volume_id: volume.id, mount_path: mount_dir)]
-)
-sandbox = daytona.create(params)
-
-# Mount a specific subpath within the volume
-# This is useful for isolating data or implementing multi-tenancy
-params2 = Daytona::CreateSandboxFromSnapshotParams.new(
   language: Daytona::CodeLanguage::PYTHON,
   volumes: [DaytonaApiClient::SandboxVolume.new(
     volume_id: volume.id,
@@ -72,7 +69,14 @@ params2 = Daytona::CreateSandboxFromSnapshotParams.new(
     subpath: 'users/alice'
   )]
 )
-sandbox2 = daytona.create(params2)
+sandbox = daytona.create(params)
+
+# Entire volume at mount path (omit subpath) when all sandboxes should share the same tree
+params_shared = Daytona::CreateSandboxFromSnapshotParams.new(
+  language: Daytona::CodeLanguage::PYTHON,
+  volumes: [DaytonaApiClient::SandboxVolume.new(volume_id: volume.id, mount_path: mount_dir)]
+)
+sandbox_shared = daytona.create(params_shared)
 ```
 
 ## Work with volumes
