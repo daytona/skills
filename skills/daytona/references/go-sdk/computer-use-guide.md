@@ -390,6 +390,7 @@ err = sandbox.ComputerUse.Recording().Download(ctx, recording.GetId(), downloadP
 > - **TypeScript**: Uses Node.js `pipeline()` with backpressure handling
 > - **Ruby**: Uses Typhoeus streaming with `on_body` callbacks
 > - **Go**: Uses `io.Copy()` with 32KB internal buffer
+> - **Java**: The OpenAPI client streams the response body into a temporary file via OkHttp
 
 ### Recording Dashboard
 
@@ -438,6 +439,5 @@ fmt.Printf("Open windows: %v\n", result["windows"])
 ```
 
 ## See Also
-- [Go SDK - README](./README.md)
 - [Python SDK - computer-use-guide](../python-sdk/computer-use-guide.md)
 - [TypeScript SDK - computer-use-guide](../typescript-sdk/computer-use-guide.md)

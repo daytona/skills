@@ -7,7 +7,6 @@
 - File notifications
 - Document symbols
 - Sandbox symbols
-- See Also
 
 
 
@@ -113,7 +112,3 @@ symbols = lsp_server.sandbox_symbols("MyClass")
 for symbol in symbols:
     print(f"Found: {symbol.name} at {symbol.location}")
 ```
-
-## See Also
-- [Python SDK - README](./README.md)
-- [Python SDK - lsp-server#lsplanguageid](./sync/lsp-server.md#lsplanguageid)

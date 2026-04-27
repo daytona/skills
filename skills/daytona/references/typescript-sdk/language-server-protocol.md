@@ -119,6 +119,4 @@ symbols.forEach((symbol) => {
 ```
 
 ## See Also
-- [TypeScript SDK - README](./README.md)
-- [TypeScript SDK - lsp-server#lsplanguageid](./lsp-server.md#lsplanguageid)
 - [Python SDK - language-server-protocol](../python-sdk/language-server-protocol.md)

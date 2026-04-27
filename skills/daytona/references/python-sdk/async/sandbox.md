@@ -49,6 +49,7 @@ Represents a Daytona Sandbox.
 - `build_info` _str_ - Build information for the Sandbox if it was created from dynamic build.
 - `created_at` _str_ - When the Sandbox was created.
 - `updated_at` _str_ - When the Sandbox was last updated.
+- `last_activity_at` _str_ - When the Sandbox last had activity.
 - `network_block_all` _bool_ - Whether to block all network access for the Sandbox.
 - `network_allow_list` _str_ - Comma-separated list of allowed CIDR network addresses for the Sandbox.
 
@@ -58,8 +59,9 @@ Represents a Daytona Sandbox.
 def __init__(sandbox_dto: SandboxDto,
              toolbox_api: ApiClient,
              sandbox_api: SandboxApi,
-             code_toolbox: SandboxCodeToolbox,
-             pool_tracker: AsyncPoolSaturationTracker | None = None)
+             language: str,
+             pool_tracker: AsyncPoolSaturationTracker | None = None,
+             ws_handshake_semaphore: asyncio.Semaphore | None = None)
 ```
 
 Initialize a new Sandbox instance.
@@ -69,7 +71,7 @@ Initialize a new Sandbox instance.
 - `sandbox_dto` _SandboxDto_ - The sandbox data from the API.
 - `toolbox_api` _ApiClient_ - API client for toolbox operations.
 - `sandbox_api` _SandboxApi_ - API client for Sandbox operations.
-- `code_toolbox` _SandboxCodeToolbox_ - Language-specific toolbox implementation.
+- `language` _str_ - Language code for the Sandbox code_run.
 - `pool_tracker` _AsyncPoolSaturationTracker | None_ - Tracker for connection pool saturation.
 
 #### AsyncSandbox.refresh\_data
@@ -443,6 +445,38 @@ sandbox.set_auto_delete_interval(60)
 sandbox.set_auto_delete_interval(0)
 # Or disable auto-delete
 sandbox.set_auto_delete_interval(-1)
+```
+
+#### AsyncSandbox.update\_network\_settings
+
+```python
+@intercept_errors(message_prefix="Failed to update network settings: ")
+@with_instrumentation()
+async def update_network_settings(
+        *,
+        network_block_all: bool | None = None,
+        network_allow_list: str | None = None) -> None
+```
+
+Updates outbound network policy on the runner (block all, restore access, or CIDR allow list).
+
+**Arguments**:
+
+- `network_block_all` - When ``True``, blocks all outbound traffic. When ``False``, restores general
+  outbound access (and clears a stored allow list).
+- `network_allow_list` - Comma-separated IPv4 CIDRs to allow; implies not blocking all.
+
+
+**Raises**:
+
+- `DaytonaValidationError` - If neither argument is set.
+
+
+**Example**:
+
+```python
+await sandbox.update_network_settings(network_block_all=True)
+await sandbox.update_network_settings(network_block_all=False)
 ```
 
 #### AsyncSandbox.get\_preview\_link

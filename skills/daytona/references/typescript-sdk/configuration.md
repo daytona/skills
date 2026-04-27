@@ -19,8 +19,8 @@ To configure your environment in code, use the `DaytonaConfig` class. The `Dayto
 import { DaytonaConfig } from '@daytona/sdk'
 
 const config: DaytonaConfig = {
-  apiKey: 'your-api-key',
-  apiUrl: 'your-api-url',
+  apiKey: 'YOUR_API_KEY',
+  apiUrl: 'YOUR_API_URL',
   target: 'us',
 }
 ```
@@ -75,5 +75,4 @@ If no configuration is provided, Daytona will use its built-in default values:
 | Target     | Default region for the organization |
 
 ## See Also
-- [TypeScript SDK - daytona](./daytona.md)
 - [Python SDK - configuration](../python-sdk/configuration.md)

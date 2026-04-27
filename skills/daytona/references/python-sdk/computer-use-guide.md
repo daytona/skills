@@ -12,7 +12,6 @@
 - Screenshot operations
 - Screen Recording
 - Display operations
-- See Also
 
 
 
@@ -348,6 +347,7 @@ sandbox.computer_use.recording.download(recording.id, download_path)
 > - **TypeScript**: Uses Node.js `pipeline()` with backpressure handling
 > - **Ruby**: Uses Typhoeus streaming with `on_body` callbacks
 > - **Go**: Uses `io.Copy()` with 32KB internal buffer
+> - **Java**: The OpenAPI client streams the response body into a temporary file via OkHttp
 
 ### Recording Dashboard
 
@@ -391,6 +391,3 @@ print(f"Found {windows.count} open windows:")
 for window in windows.windows:
     print(f"- {window.title} (ID: {window.id})")
 ```
-
-## See Also
-- [Python SDK - computer-use](./sync/computer-use.md)

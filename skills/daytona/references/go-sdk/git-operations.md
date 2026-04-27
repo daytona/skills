@@ -212,6 +212,5 @@ if err != nil {
 ```
 
 ## See Also
-- [Go SDK - README](./README.md)
 - [Python SDK - git-operations](../python-sdk/git-operations.md)
 - [TypeScript SDK - git-operations](../typescript-sdk/git-operations.md)

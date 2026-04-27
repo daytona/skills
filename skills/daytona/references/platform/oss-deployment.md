@@ -15,9 +15,8 @@
 This guide will walk you through running Daytona Open Source locally using Docker Compose.
 
 The compose file can be found in the [docker](https://github.com/daytonaio/daytona/tree/main/docker) folder of the Daytona repository.
-> **Caution:**
-> - This setup is still in development and is **not safe to use in production**
-> - For a fully licensed stable version, [contact sales](https://www.daytona.io/contact)
+> **Note:**
+> Daytona is open source under the AGPL 3.0 license. You are free to deploy and run it in any environment. If you modify Daytona, and make it available over a network, AGPL 3.0 license requires you to release your modifications under the same license. Self-hosted deployments are community-supported via GitHub and Slack. For self-hosted deployments with dedicated support, contact [support@daytona.io](mailto:support@daytona.io).
 
 ## Overview
 
@@ -201,6 +200,7 @@ Below is a full list of environment variables with their default values:
 | `RUNNER_AVAILABILITY_SCORE_THRESHOLD`      | number  | `10`                                                 | Runner availability score threshold                                                                  |
 | `RUNNER_HEALTH_TIMEOUT_SECONDS`            | number  | `3`                                                  | Runner health-check timeout in seconds                                                               |
 | `RUNNER_START_SCORE_THRESHOLD`             | number  | `3`                                                  | Runner start score threshold                                                                         |
+| `BUILD_INFO_MAX_SANDBOXES_PER_RUNNER`      | number  | `30`                                                 | Max active sandboxes per runner for the same declarative build (`0` disables the cap)                |
 | `RUN_MIGRATIONS`                           | boolean | `true`                                               | Enable database migrations on startup                                                                |
 | `ADMIN_API_KEY`                            | string  | (empty)                                              | Admin API key, auto-generated if empty, used only upon initial setup, not recommended for production |
 | `ADMIN_TOTAL_CPU_QUOTA`                    | number  | `0`                                                  | Admin total CPU quota, used only upon initial setup                                                  |
@@ -233,7 +233,7 @@ Below is a full list of environment variables with their default values:
 | `CLICKHOUSE_USERNAME`                      | string  | (empty)                                              | ClickHouse username                                                                                  |
 | `CLICKHOUSE_PASSWORD`                      | string  | (empty)                                              | ClickHouse password                                                                                  |
 | `CLICKHOUSE_PROTOCOL`                      | string  | `https`                                              | ClickHouse protocol (e.g., `http` or `https`)                                                        |
-| `SANDBOX_OTEL_ENDPOINT_URL`                | string  | (empty)                                              | OpenTelemetry endpoint URL for sandbox traces                                                        |
+| `OTEL_COLLECTOR_ENDPOINT_URL`              | string  | (empty)                                              | OpenTelemetry collector endpoint URL for sandbox telemetry and organization metrics (also accepts `SANDBOX_OTEL_ENDPOINT_URL` for backward compatibility) |
 | `HEALTH_CHECK_API_KEY`                     | string  | `supersecretkey`                                     | Authentication key for the readiness health-check route.                                             |
 | `NOTIFICATION_GATEWAY_DISABLED`            | boolean | `false`                                              | Disable notification gateway service                                                                 |
 | `FAILED_SNAPSHOT_RUNNER_RETENTION_HOURS`   | number  | `3`                                                  | Hours to retain failed snapshot runner records before cleanup                                        |
@@ -254,6 +254,9 @@ Below is a full list of environment variables with their default values:
 | `API_PORT`                              | number  | `3003`                            | Runner API service port                               |
 | `LOG_FILE_PATH`                         | string  | `/home/daytona/runner/runner.log` | Path to runner log file                               |
 | `RESOURCE_LIMITS_DISABLED`              | boolean | `true`                            | Disable resource limits for sandboxes                 |
+| `BUILD_TIMEOUT_MIN`                     | number  | `120`                             | Build timeout in minutes (minimum: 1)                 |
+| `BUILD_CPU_CORES`                       | number  | `4`                               | CPU cores allocated per build (minimum: 1)            |
+| `BUILD_MEMORY_GB`                       | number  | `8`                               | Memory in GB allocated per build (minimum: 1)         |
 | `AWS_ENDPOINT_URL`                      | string  | `http://minio:9000`               | AWS S3-compatible storage endpoint                    |
 | `AWS_REGION`                            | string  | `us-east-1`                       | AWS region                                            |
 | `AWS_ACCESS_KEY_ID`                     | string  | `minioadmin`                      | AWS access key ID                                     |

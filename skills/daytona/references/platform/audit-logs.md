@@ -17,7 +17,7 @@ Daytona audit logs provide a detailed record of user and system activity across 
 - **Debugging**: understand sandbox lifecycle issues (e.g. failed starts)
 - **Compliance Export**: export logs for internal or external audits (coming soon)
 
-Audit logs are available to [admins](./organizations.md#organization-roles) with full access and [members](./organizations.md#organization-roles) with audit log permissions. Contact your organization administrator if you cannot access audit logs.
+Audit logs are available to [administrators](./organizations.md#roles) with full access and [members](./organizations.md#roles) with audit log permissions. Contact your organization administrator to get access to audit logs.
 
 ## Access from Dashboard
 
@@ -48,10 +48,6 @@ curl https://app.daytona.io/api/audit \
   --header 'Authorization: Bearer YOUR_API_KEY'
 ```
 
-For more information, see the [API](../api/README.md#daytona/tag/audit) reference:
-
-> [**Get all audit logs (API)**](../api/README.md#daytona/tag/audit/GET/audit-logs)
-
 ### Get audit logs for organization
 
 To get audit logs for a specific organization, use the following API endpoint:
@@ -60,10 +56,6 @@ To get audit logs for a specific organization, use the following API endpoint:
 curl https://app.daytona.io/api/audit/organizations/{organizationId} \
   --header 'Authorization: Bearer YOUR_API_KEY'
 ```
-
-For more information, see the [API](../api/README.md#daytona/tag/audit) reference:
-
-> [**Get audit logs for organization (API)**](../api/README.md#daytona/tag/audit/GET/audit/organizations/{organizationId})
 
 ## Log Structure
 
@@ -99,6 +91,7 @@ regenerate_key_pair, update_scheduling,
 start, stop, replace_labels, create_backup,
 update_public_status, set_auto_stop_interval,
 set_auto_archive_interval, set_auto_delete_interval, archive,
+snapshot, fork,
 get_port_preview_url, set_general_status, activate, deactivate,
 update_network_settings,
 send_webhook_message, initialize_webhooks,

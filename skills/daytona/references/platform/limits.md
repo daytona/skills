@@ -8,7 +8,7 @@
 
 
 
-[Daytona Limits ↗](https://app.daytona.io/dashboard/limits) provide an overview of your organization's [current usage](#current-usage), [resources](#resources), [sandbox limits](#sandbox-limits), and [rate limits](#rate-limits). Daytona uses a [tier-based](#tier-upgrade) system where organizations are placed into tiers based on verification status, with each tier providing access to a specific compute pool and rate limits. For information on spending and wallet management, see [billing](./billing.md).
+[Daytona Limits ↗](https://app.daytona.io/dashboard/limits) provide an overview of your organization's [current usage](#current-usage), [resources](#resources), [sandbox limits](#sandbox-limits), and [rate limits](#rate-limits). Daytona uses a [tier-based](#tiers) system where organizations are placed into tiers based on verification status, with each tier providing access to a specific compute pool and rate limits. For information on spending and wallet management, see [billing](./billing.md).
 
 ## Current usage
 
@@ -80,7 +80,7 @@ The rate limit error response is a JSON object with the following properties:
 }
 ```
 
-All errors include [**`headers`**](#rate-limit-headers) and [**`statusCode`**](#example-rate-limit-error-response) properties, allowing access to rate limit headers directly from the error object. Headers support case-insensitive access:
+All errors include [**`headers`**](#rate-limit-headers) and status code properties, allowing access to rate limit headers directly from the error object. Headers support case-insensitive access:
 
 **TypeScript:**
 
@@ -127,16 +127,6 @@ if err != nil {
   }
 }
 ```
-
-For more information, see the [Python SDK](../python-sdk/errors.md) and [TypeScript SDK](../typescript-sdk/errors.md) references.
-
-> [**DaytonaRateLimitError (Python SDK)**](../python-sdk/errors.md#daytonaratelimiteerror)
->
-> [**DaytonaRateLimitError (TypeScript SDK)**](../typescript-sdk/errors.md#daytonaratelimiterror)
->
-> [**Daytona::Sdk::Error (Ruby SDK)**](./ruby-sdk/README.md)
->
-> [**DaytonaRateLimitError (Go SDK)**](../go-sdk/errors.md#daytonaratelimiterror)
 
 ### Tiers
 

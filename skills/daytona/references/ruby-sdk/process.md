@@ -8,7 +8,7 @@ Initialize a new Process instance
 #### new Process()
 
 ```ruby
-def initialize(code_toolbox:, sandbox_id:, toolbox_api:, get_preview_link:, otel_state:)
+def initialize(sandbox_id:, toolbox_api:, get_preview_link:, language:, otel_state:)
 
 ```
 
@@ -16,10 +16,10 @@ Initialize a new Process instance
 
 **Parameters**:
 
-- `code_toolbox` _Daytona:SandboxPythonCodeToolbox, Daytona:SandboxTsCodeToolbox_ -
 - `sandbox_id` _String_ - The ID of the Sandbox
 - `toolbox_api` _DaytonaToolboxApiClient:ProcessApi_ - API client for Sandbox operations
 - `get_preview_link` _Proc_ - Function to get preview link for a port
+- `language` _String_ - The language for code execution
 - `otel_state` _Daytona:OtelState, nil_ -
 
 **Returns**:
@@ -27,17 +27,6 @@ Initialize a new Process instance
 - `Process` - a new instance of Process
 
 ### Methods
-
-#### code_toolbox()
-
-```ruby
-def code_toolbox()
-
-```
-
-**Returns**:
-
-- `Daytona:SandboxPythonCodeToolbox, ` - Daytona::SandboxPythonCodeToolbox,
 
 #### sandbox_id()
 
@@ -71,6 +60,17 @@ def get_preview_link()
 **Returns**:
 
 - `Proc` - Function to get preview link for a port
+
+#### language()
+
+```ruby
+def language()
+
+```
+
+**Returns**:
+
+- `String` - The language for code execution (e.g. 'python', 'typescript', 'javascript')
 
 #### exec()
 

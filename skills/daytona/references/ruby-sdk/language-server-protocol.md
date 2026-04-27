@@ -120,7 +120,6 @@ end
 ```
 
 ## See Also
-- [Ruby SDK - lsp-server](./lsp-server.md)
 - [Python SDK - language-server-protocol](../python-sdk/language-server-protocol.md)
 - [TypeScript SDK - language-server-protocol](../typescript-sdk/language-server-protocol.md)
 - [Go SDK - language-server-protocol](../go-sdk/language-server-protocol.md)

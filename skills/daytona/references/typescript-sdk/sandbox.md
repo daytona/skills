@@ -2,7 +2,6 @@
 
 - Sandbox
 - PaginatedSandboxes
-- SandboxCodeToolbox
 - See Also
 
 
@@ -116,6 +115,13 @@ Represents a Daytona Sandbox.
 
     ```ts
     SandboxDto.labels
+    ```
+- `lastActivityAt?` _string_ - When the Sandbox last had activity
+
+    ##### Implementation of
+
+    ```ts
+    SandboxDto.lastActivityAt
     ```
 - `memory` _number_ - Amount of memory allocated to the Sandbox in GiB
 
@@ -232,8 +238,7 @@ new Sandbox(
    sandboxDto: Sandbox,
    clientConfig: Configuration,
    axiosInstance: AxiosInstance,
-   sandboxApi: SandboxApi,
-   codeToolbox: SandboxCodeToolbox): Sandbox
+   sandboxApi: SandboxApi): Sandbox
 ```
 
 Creates a new Sandbox instance
@@ -243,8 +248,7 @@ Creates a new Sandbox instance
 - `sandboxDto` _Sandbox_ - The API Sandbox instance
 - `clientConfig` _Configuration_
 - `axiosInstance` _AxiosInstance_
-- `sandboxApi` _SandboxApi_ - API client for Sandbox operations
-- `codeToolbox` _SandboxCodeToolbox_ - Language-specific toolbox implementation
+- `sandboxApi` _SandboxApi_
 
 
 **Returns**:
@@ -252,6 +256,86 @@ Creates a new Sandbox instance
 - `Sandbox`
 
 ### Methods
+
+#### \_experimental\_createSnapshot()
+
+```ts
+_experimental_createSnapshot(name: string, timeout?: number): Promise<void>
+```
+
+Creates a snapshot from the current state of the Sandbox.
+
+This captures the Sandbox's filesystem into a reusable snapshot that can be
+used to create new Sandboxes. The Sandbox will temporarily enter a
+'snapshotting' state and return to its previous state when complete.
+
+**Parameters**:
+
+- `name` _string_ - Name for the new snapshot
+- `timeout?` _number = 60_ - Maximum time to wait in seconds. 0 means no timeout.
+    Defaults to 60-second timeout.
+
+
+**Returns**:
+
+- `Promise<void>`
+
+**Throws**:
+
+- If timeout is a negative number
+
+- If the snapshot operation fails or times out
+
+**Example:**
+
+```ts
+const sandbox = await daytona.get('my-sandbox');
+await sandbox._experimental_createSnapshot('my-snapshot');
+console.log('Snapshot created successfully');
+```
+
+***
+
+#### \_experimental\_fork()
+
+```ts
+_experimental_fork(params?: {
+  name: string;
+}, timeout?: number): Promise<Sandbox>
+```
+
+Forks the Sandbox, creating a new Sandbox with an identical filesystem.
+
+The forked Sandbox is a copy-on-write clone of the original. It starts
+with the same disk contents but operates independently from that point on.
+
+**Parameters**:
+
+- `params?` _Fork parameters_
+- `name?` _string_ - Optional name for the forked Sandbox. If not provided, a unique name will be generated.
+- `timeout?` _number = 60_ - Maximum time to wait in seconds. 0 means no timeout.
+    Defaults to 60-second timeout.
+
+
+**Returns**:
+
+- `Promise<Sandbox>` - The forked Sandbox.
+
+**Throws**:
+
+- If timeout is a negative number
+
+- If the fork operation fails or times out
+
+**Example:**
+
+```ts
+const sandbox = await daytona.get('my-sandbox');
+const forked = await sandbox._experimental_fork({ name: 'my-fork' });
+console.log(`Forked sandbox: ${forked.id}`);
+```
+
+***
 
 #### archive()
 
@@ -809,6 +893,39 @@ console.log('Sandbox stopped successfully');
 
 ***
 
+#### updateNetworkSettings()
+
+```ts
+updateNetworkSettings(settings: UpdateSandboxNetworkSettings): Promise<void>
+```
+
+Updates outbound network policy for this sandbox on the runner (for example block all traffic,
+restore general internet access, or apply a CIDR allow list) without stopping the sandbox.
+
+This maps to the same mechanism as creating a sandbox with `networkBlockAll` / `networkAllowList`:
+the runner applies iptables rules to the sandbox container.
+
+**Parameters**:
+
+- `settings` _UpdateSandboxNetworkSettings_ - At least one of `networkBlockAll` or `networkAllowList` must be set.
+    Set `networkBlockAll` to `false` to restore outbound access after a block (and clear a stored allow list).
+
+
+**Returns**:
+
+- `Promise<void>`
+
+**Example:**
+
+```ts
+// Pause internet (outbound blocked)
+await sandbox.updateNetworkSettings({ networkBlockAll: true });
+// Resume internet
+await sandbox.updateNetworkSettings({ networkBlockAll: false });
+```
+
+***
+
 #### validateSshAccess()
 
 ```ts
@@ -915,34 +1032,11 @@ or encounters an error.
     - _Inherited from_: `PaginatedSandboxes.page`
 - `total` _number_
     - _Inherited from_: `PaginatedSandboxes.total`
-- `totalPages` _number_
+- `totalPages` _number_ - PaginatedSandboxes
     - _Inherited from_: `PaginatedSandboxes.totalPages`
 
 
 - `Omit`\<`PaginatedSandboxesDto`, `"items"`\>
-## SandboxCodeToolbox
-
-Interface defining methods that a code toolbox must implement
-
-### Methods
-
-#### getRunCommand()
-
-```ts
-getRunCommand(code: string, params?: CodeRunParams): string
-```
-
-Generates a command to run the provided code
-
-**Parameters**:
-
-- `code` _string_
-- `params?` _CodeRunParams_
-
-
-**Returns**:
-
-- `string`
 
 ## See Also
 - [Python SDK - sandbox](../python-sdk/sync/sandbox.md)

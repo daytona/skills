@@ -284,6 +284,5 @@ if err != nil {
 ```
 
 ## See Also
-- [Go SDK - README](./README.md)
 - [Python SDK - file-system-operations](../python-sdk/file-system-operations.md)
 - [TypeScript SDK - file-system-operations](../typescript-sdk/file-system-operations.md)

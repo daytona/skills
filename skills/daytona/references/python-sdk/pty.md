@@ -317,6 +317,4 @@ if result.exit_code != 0:
 - **Process management**: use explicit `kill()` calls and proper timeout handling for long-running processes
 
 ## See Also
-- [Python SDK - README](./README.md)
-- [Python SDK - process](./sync/process.md)
 - [TypeScript SDK - pty](../typescript-sdk/pty.md)

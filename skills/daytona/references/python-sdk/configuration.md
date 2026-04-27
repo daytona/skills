@@ -19,8 +19,8 @@ To configure your environment in code, use the `DaytonaConfig` class. The `Dayto
 from daytona import DaytonaConfig
 
 config = DaytonaConfig(
-    api_key="your-api-key",
-    api_url="your-api-url",
+    api_key="YOUR_API_KEY",
+    api_url="YOUR_API_URL",
     target="us"
 )
 ```
@@ -73,6 +73,3 @@ If no configuration is provided, Daytona will use its built-in default values:
 | ---------- | ----------------------------------- |
 | API URL    | https://app.daytona.io/api          |
 | Target     | Default region for the organization |
-
-## See Also
-- [Python SDK - daytona](https://www.daytona.io/docs/en/python-sdk/daytona)

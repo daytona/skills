@@ -60,10 +60,6 @@ curl 'https://app.daytona.io/api/organizations' \
 }'
 ```
 
-For more information, see the [API](../api/README.md#daytona/tag/organizations) reference:
-
-> [**Create organization (API)**](../api/README.md#daytona/tag/organizations/POST/organizations)
-
 ## List organizations
 
 Daytona provides methods to list all organizations the authenticated user belongs to.
@@ -75,10 +71,6 @@ curl 'https://app.daytona.io/api/organizations' \
   --header 'Authorization: Bearer YOUR_API_KEY'
 ```
 
-For more information, see the [API](../api/README.md#daytona/tag/organizations) reference:
-
-> [**List organizations (API)**](../api/README.md#daytona/tag/organizations/GET/organizations)
-
 ### Get by ID
 
 Daytona provides a method to get an organization by ID.
@@ -89,10 +81,6 @@ Daytona provides a method to get an organization by ID.
 curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID' \
   --header 'Authorization: Bearer YOUR_API_KEY'
 ```
-
-For more information, see the [API](../api/README.md#daytona/tag/organizations) reference:
-
-> [**Get organization by ID (API)**](../api/README.md#daytona/tag/organizations/GET/organizations/{organizationId})
 
 ## Leave organization
 
@@ -113,10 +101,6 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/leave' \
   --header 'Authorization: Bearer YOUR_API_KEY'
 ```
 
-For more information, see the [API](../api/README.md#daytona/tag/organizations) reference:
-
-> [**Leave organization (API)**](../api/README.md#daytona/tag/organizations/POST/organizations/{organizationId}/leave)
-
 ## Delete organization
 
 Daytona provides options to delete an organization in [Daytona Dashboard ↗](https://app.daytona.io/dashboard/) or programmatically using the [API](../api/README.md#daytona/tag/organizations).
@@ -135,10 +119,6 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID' \
   --request DELETE \
   --header 'Authorization: Bearer YOUR_API_KEY'
 ```
-
-For more information, see the [API](../api/README.md#daytona/tag/organizations) reference:
-
-> [**Delete organization (API)**](../api/README.md#daytona/tag/organizations/DELETE/organizations/{organizationId})
 
 ## Roles
 
@@ -181,10 +161,6 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/roles' \
 }'
 ```
 
-For more information, see the [API](../api/README.md#daytona/tag/organizations) reference:
-
-> [**Create organization role (API)**](../api/README.md#daytona/tag/organizations/POST/organizations/{organizationId}/roles)
-
 ### List roles
 
 Daytona provides a method to list all roles in an organization.
@@ -195,10 +171,6 @@ Daytona provides a method to list all roles in an organization.
 curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/roles' \
   --header 'Authorization: Bearer YOUR_API_KEY'
 ```
-
-For more information, see the [API](../api/README.md#daytona/tag/organizations) reference:
-
-> [**List organization roles (API)**](../api/README.md#daytona/tag/organizations/GET/organizations/{organizationId}/roles)
 
 ### Update role
 
@@ -218,10 +190,6 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/roles/ROLE_ID' \
 }'
 ```
 
-For more information, see the [API](../api/README.md#daytona/tag/organizations) reference:
-
-> [**Update organization role (API)**](../api/README.md#daytona/tag/organizations/PUT/organizations/{organizationId}/roles/{roleId})
-
 ### Delete role
 
 Daytona provides a method to delete a role in an organization.
@@ -233,10 +201,6 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/roles/ROLE_ID' \
   --request DELETE \
   --header 'Authorization: Bearer YOUR_API_KEY'
 ```
-
-For more information, see the [API](../api/README.md#daytona/tag/organizations) reference:
-
-> [**Delete organization role (API)**](../api/README.md#daytona/tag/organizations/DELETE/organizations/{organizationId}/roles/{roleId})
 
 ## Members
 
@@ -252,10 +216,6 @@ Daytona provides a method to list all members in an organization.
 curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/users' \
   --header 'Authorization: Bearer YOUR_API_KEY'
 ```
-
-For more information, see the [API](../api/README.md#daytona/tag/organizations) reference:
-
-> [**List organization members (API)**](../api/README.md#daytona/tag/organizations/GET/organizations/{organizationId}/users)
 
 ### Invite members
 
@@ -280,10 +240,6 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/invitations' \
 }'
 ```
 
-For more information, see the [API](../api/README.md#daytona/tag/organizations) reference:
-
-> [**Create organization invitation (API)**](../api/README.md#daytona/tag/organizations/POST/organizations/{organizationId}/invitations)
-
 ### Remove members
 
 Daytona provides a method to remove a user from an organization.
@@ -299,10 +255,6 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/users/USER_ID' \
   --request DELETE \
   --header 'Authorization: Bearer YOUR_API_KEY'
 ```
-
-For more information, see the [API](../api/README.md#daytona/tag/organizations) reference:
-
-> [**Delete organization member (API)**](../api/README.md#daytona/tag/organizations/DELETE/organizations/{organizationId}/users/{userId})
 
 ### Update access
 
@@ -326,10 +278,6 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/users/USER_ID/acc
 }'
 ```
 
-For more information, see the [API](../api/README.md#daytona/tag/organizations) reference:
-
-> [**Update access for organization member (API)**](../api/README.md#daytona/tag/organizations/POST/organizations/{organizationId}/users/{userId}/access)
-
 ## Invitations
 
 Daytona provides methods to manage invitations in an organization.
@@ -344,10 +292,6 @@ curl 'https://app.daytona.io/api/organizations/invitations' \
   --header 'Authorization: Bearer YOUR_API_KEY'
 ```
 
-For more information, see the [API](../api/README.md#daytona/tag/organizations) reference:
-
-> [**List organization invitations (API)**](../api/README.md#daytona/tag/organizations/GET/organizations/invitations)
-
 ### Get invitations count
 
 Daytona provides a method to get the number of invitations in an organization.
@@ -358,10 +302,6 @@ Daytona provides a method to get the number of invitations in an organization.
 curl 'https://app.daytona.io/api/organizations/invitations/count' \
   --header 'Authorization: Bearer YOUR_API_KEY'
 ```
-
-For more information, see the [API](../api/README.md#daytona/tag/organizations) reference:
-
-> [**Get organization invitations count (API)**](../api/README.md#daytona/tag/organizations/GET/organizations/invitations/count)
 
 ### Accept invitation
 
@@ -382,10 +322,6 @@ curl 'https://app.daytona.io/api/organizations/invitations/INVITATION_ID/accept'
 
 Once a user accepts an invitation to join an organization, they get access to resource quotas assigned to that organization and they may proceed by issuing a new [API key](../../SKILL.md#authentication) and creating sandboxes.
 
-For more information, see the [API](../api/README.md#daytona/tag/organizations) reference:
-
-> [**Accept organization invitation (API)**](../api/README.md#daytona/tag/organizations/POST/organizations/invitations/{invitationId}/accept)
-
 ### Decline invitation
 
 Daytona provides options to decline a pending organization invitation in [Daytona Dashboard ↗](https://app.daytona.io/dashboard/user/invitations) or programmatically using the [API](../api/README.md#daytona/tag/organizations).
@@ -404,10 +340,6 @@ curl 'https://app.daytona.io/api/organizations/invitations/INVITATION_ID/decline
   --header 'Authorization: Bearer YOUR_API_KEY'
 ```
 
-For more information, see the [API](../api/README.md#daytona/tag/organizations) reference:
-
-> [**Decline organization invitation (API)**](../api/README.md#daytona/tag/organizations/POST/organizations/invitations/{invitationId}/decline)
-
 ### List pending
 
 Daytona provides a method to list pending invitations for an organization.
@@ -418,10 +350,6 @@ Daytona provides a method to list pending invitations for an organization.
 curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/invitations' \
   --header 'Authorization: Bearer YOUR_API_KEY'
 ```
-
-For more information, see the [API](../api/README.md#daytona/tag/organizations) reference:
-
-> [**List pending organization invitations (API)**](../api/README.md#daytona/tag/organizations/GET/organizations/{organizationId}/invitations)
 
 ### Update invitation
 
@@ -447,10 +375,6 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/invitations/INVIT
 }'
 ```
 
-For more information, see the [API](../api/README.md#daytona/tag/organizations) reference:
-
-> [**Update organization invitation (API)**](../api/README.md#daytona/tag/organizations/PUT/organizations/{organizationId}/invitations/{invitationId})
-
 ### Cancel invitation
 
 Daytona provides options to cancel an invitation for an organization in [Daytona Dashboard ↗](https://app.daytona.io/dashboard/members) or programmatically using the [API](../api/README.md#daytona/tag/organizations).
@@ -468,10 +392,6 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/invitations/INVIT
   --request POST \
   --header 'Authorization: Bearer YOUR_API_KEY'
 ```
-
-For more information, see the [API](../api/README.md#daytona/tag/organizations) reference:
-
-> [**Cancel organization invitation (API)**](../api/README.md#daytona/tag/organizations/POST/organizations/{organizationId}/invitations/{invitationId}/cancel)
 
 ## Regions
 
@@ -495,10 +415,6 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/default-region' \
 }'
 ```
 
-For more information, see the [API](../api/README.md#daytona/tag/organizations) reference:
-
-> [**Set default region for organization (API)**](../api/README.md#daytona/tag/organizations/PATCH/organizations/{organizationId}/default-region)
-
 ## Organization settings
 
 The settings page in the [Daytona Dashboard ↗](https://app.daytona.io/dashboard/settings) allows you to view the organization ID and name, and optionally delete the organization if you don't need it anymore. This action is irreversible, so please proceed with caution. Personal organizations are there by default and cannot be deleted.
@@ -518,10 +434,6 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/usage' \
   --header 'Authorization: Bearer YOUR_API_KEY'
 ```
 
-For more information, see the [API](../api/README.md#daytona/tag/organizations) reference:
-
-> [**Get organization current usage overview (API)**](../api/README.md#daytona/tag/organizations/GET/organizations/{organizationId}/usage)
-
 ### Update sandbox default limited network egress
 
 Daytona provides a method to update the sandbox default limited network egress for an organization.
@@ -537,10 +449,6 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/sandbox-default-l
   "sandboxDefaultLimitedNetworkEgress": true
 }'
 ```
-
-For more information, see the [API](../api/README.md#daytona/tag/organizations) reference:
-
-> [**Update sandbox default limited network egress (API)**](../api/README.md#daytona/tag/organizations/POST/organizations/{organizationId}/sandbox-default-limited-network-egress)
 
 ### Update experimental configuration
 
@@ -562,10 +470,6 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/experimental-conf
   }
 }'
 ```
-
-For more information, see the [API](../api/README.md#daytona/tag/organizations) reference:
-
-> [**Update experimental configuration (API)**](../api/README.md#daytona/tag/organizations/PUT/organizations/{organizationId}/experimental-config)
 
 ## See Also
 

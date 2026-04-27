@@ -21,24 +21,22 @@ Daytona supports running [Docker](#run-docker-in-a-sandbox) and [Kubernetes](#ru
 
 ## Snapshot lifecycle
 
-Throughout the snapshot lifecycle, a snapshot can have the following states:
+A snapshot can have several different states. Each state reflects the current status of your snapshot.
 
-| **State**          | **Description**                                 |
-| ------------------ | ----------------------------------------------- |
-| **`pending`**      | Snapshot creation requested                     |
-| **`building`**     | Snapshot is being built                         |
-| **`pulling`**      | Snapshot image is being pulled from a registry  |
-| **`active`**       | Snapshot is ready to use for creating sandboxes |
-| **`inactive`**     | Snapshot is deactivated                         |
-| **`error`**        | Snapshot creation failed                        |
-| **`build_failed`** | Snapshot build process failed                   |
-| **`removing`**     | Snapshot is being deleted                       |
+- **Pending**: the snapshot creation has been requested
+- **Building**: the snapshot is being built
+- **Pulling**: the snapshot image is being pulled from a registry
+- **Active**: the snapshot is ready to use for creating sandboxes
+- **Inactive**: the snapshot is deactivated
+- **Error**: the snapshot creation failed
+- **Build Failed**: the snapshot build process failed
+- **Removing**: the snapshot is being deleted
 > **Note:**
 > Inactive snapshots cannot be used to create sandboxes. They must be explicitly [re-activated](#activate-snapshots) before use. When activated, the snapshot returns to `pending` state and is re-processed before becoming `active` again.
 
 ## Create Snapshots
 
-Daytona provides methods to create snapshots using the [Daytona Dashboard ↗](https://app.daytona.io/dashboard/snapshots) or programmatically using the Daytona [Python](../python-sdk/sync/snapshot.md), [TypeScript](./snapshot.md), [Ruby](../ruby-sdk/snapshot.md), [Go](../go-sdk/daytona.md#SnapshotService) **SDKs**, [CLI](../cli.md#daytona-snapshot), or [API](../api/README.md#daytona/tag/snapshots).
+Daytona provides methods to create snapshots using the [Daytona Dashboard ↗](https://app.daytona.io/dashboard/snapshots) or programmatically using the Daytona [Python](../python-sdk/sync/snapshot.md), [TypeScript](./snapshot.md), [Ruby](../ruby-sdk/snapshot.md), [Go](../go-sdk/daytona.md#SnapshotService), [Java](https://www.daytona.io/docs/en/java-sdk/snapshot) **SDKs**, [CLI](../cli.md#daytona-snapshot), or [API](../api/README.md#daytona/tag/snapshots).
 
 Snapshots can be created using:
 
@@ -59,54 +57,75 @@ Snapshots can be created using:
 **Python:**
 
 ```python
-image = Image.debian_slim('3.12').pip_install('numpy')
-daytona.snapshot.create(
-    CreateSnapshotParams(name='my-awesome-snapshot', image=image),
-    on_logs=lambda chunk: print(chunk, end=""),
+from daytona import Daytona, CreateSnapshotParams
+
+daytona = Daytona()
+snapshot = daytona.snapshot.create(
+    CreateSnapshotParams(name="my-awesome-snapshot", image="python:3.12"),
 )
 ```
 
 **TypeScript:**
 
 ```typescript
-const image = Image.debianSlim('3.12').pipInstall('numpy');
-await daytona.snapshot.create({ name: 'my-awesome-snapshot', image: image }, { onLogs: console.log });
+import { Daytona } from "@daytona/sdk";
+
+const daytona = new Daytona();
+const snapshot = await daytona.snapshot.create({
+  name: "my-awesome-snapshot",
+  image: "python:3.12",
+});
 ```
 
 **Ruby:**
 
 ```ruby
-image = Image.debian_slim('3.12').pip_install('numpy')
-params = CreateSnapshotParams.new(name: 'my-awesome-snapshot', image: image)
-snapshot = daytona.snapshot.create(params) do |chunk|
-  print chunk
-end
+require 'daytona'
+
+daytona = Daytona::Daytona.new
+snapshot = daytona.snapshot.create(
+  Daytona::CreateSnapshotParams.new(name: 'my-awesome-snapshot', image: 'python:3.12')
+)
 ```
 
 **Go:**
 
 ```go
-// Create from Docker Hub image
-snapshot, logChan, err := client.Snapshots.Create(ctx, &types.CreateSnapshotParams{
-    Name:  "my-awesome-snapshot",
-    Image: "python:3.11-slim",
-})
-if err != nil {
-    return err
-}
+package main
 
-// Stream build logs
-for log := range logChan {
-    fmt.Println(log)
-}
+import (
+	"context"
 
-// Create with custom image and resources
-image := daytona.Base("python:3.11").PipInstall([]string{"numpy"})
-snapshot, logChan, err := client.Snapshots.Create(ctx, &types.CreateSnapshotParams{
-    Name:  "my-awesome-snapshot",
-    Image: image,
-    Resources: &types.Resources{CPU: 2, Memory: 4096},
-})
+	"github.com/daytonaio/daytona/libs/sdk-go/pkg/daytona"
+	"github.com/daytonaio/daytona/libs/sdk-go/pkg/types"
+)
+
+func main() {
+	client, _ := daytona.NewClient()
+	ctx := context.Background()
+	snapshot, logCh, _ := client.Snapshot.Create(ctx, &types.CreateSnapshotParams{
+		Name:  "my-awesome-snapshot",
+		Image: "python:3.12",
+	})
+	for range logCh {
+	}
+	_ = snapshot
+}
+```
+
+**Java:**
+
+```java
+import io.daytona.sdk.Daytona;
+import io.daytona.sdk.model.Snapshot;
+
+final class CreateSnapshot {
+    public static void main(String[] args) {
+        try (Daytona daytona = new Daytona()) {
+            Snapshot snapshot = daytona.snapshot().create("my-awesome-snapshot", "python:3.12");
+        }
+    }
+}
 ```
 
 **CLI:**
@@ -143,8 +162,11 @@ Once the snapshot is pulled, validated, and has an `Active` state, it is ready t
 **Python:**
 
 ```python
+from daytona import Daytona, CreateSnapshotParams
+
+daytona = Daytona()
 daytona.snapshot.create(
-    CreateSnapshotParams(name='my-awesome-snapshot', image='python:3.11-slim'),
+    CreateSnapshotParams(name="my-awesome-snapshot", image="python:3.11-slim"),
     on_logs=lambda chunk: print(chunk, end=""),
 )
 ```
@@ -152,13 +174,25 @@ daytona.snapshot.create(
 **TypeScript:**
 
 ```typescript
-await daytona.snapshot.create({ name: 'my-awesome-snapshot', image: 'python:3.11-slim' }, { onLogs: console.log });
+import { Daytona } from "@daytona/sdk";
+
+const daytona = new Daytona();
+await daytona.snapshot.create(
+  { name: "my-awesome-snapshot", image: "python:3.11-slim" },
+  { onLogs: console.log },
+);
 ```
 
 **Ruby:**
 
 ```ruby
-params = CreateSnapshotParams.new(name: 'my-awesome-snapshot', image: 'python:3.11-slim')
+require 'daytona'
+
+daytona = Daytona::Daytona.new
+params = Daytona::CreateSnapshotParams.new(
+  name: 'my-awesome-snapshot',
+  image: 'python:3.11-slim'
+)
 snapshot = daytona.snapshot.create(params) do |chunk|
   print chunk
 end
@@ -167,17 +201,39 @@ end
 **Go:**
 
 ```go
-snapshot, logChan, err := client.Snapshots.Create(ctx, &types.CreateSnapshotParams{
-    Name:  "my-awesome-snapshot",
-    Image: "python:3.11-slim",
-})
-if err != nil {
-    return err
-}
+package main
 
-// Stream build logs
-for log := range logChan {
-    fmt.Println(log)
+import (
+	"context"
+	"github.com/daytonaio/daytona/libs/sdk-go/pkg/daytona"
+	"github.com/daytonaio/daytona/libs/sdk-go/pkg/types"
+)
+
+func main() {
+	client, _ := daytona.NewClient()
+	ctx := context.Background()
+	snapshot, logChan, _ := client.Snapshot.Create(ctx, &types.CreateSnapshotParams{
+		Name:  "my-awesome-snapshot",
+		Image: "python:3.11-slim",
+	})
+	_ = snapshot
+	for range logChan {
+	}
+}
+```
+
+**Java:**
+
+```java
+import io.daytona.sdk.Daytona;
+import io.daytona.sdk.model.Snapshot;
+
+public class App {
+    public static void main(String[] args) {
+        try (Daytona daytona = new Daytona()) {
+            Snapshot snapshot = daytona.snapshot().create("my-awesome-snapshot", "python:3.11-slim");
+        }
+    }
 }
 ```
 
@@ -199,20 +255,6 @@ curl https://app.daytona.io/api/snapshots \
     "imageName": "python:3.11-slim"
   }'
 ```
-
-For more information, see the [Python SDK](../python-sdk/sync/snapshot.md), [TypeScript SDK](./snapshot.md), [Ruby SDK](../ruby-sdk/snapshot.md), [Go SDK](../go-sdk/daytona.md#SnapshotService.Create), [CLI](../cli.md#daytona-snapshot), and [API](../api/README.md#daytona/tag/snapshots) references.
-
-> [**create (Python SDK)**](../python-sdk/sync/snapshot.md#snapshotservicecreate)
->
-> [**create (TypeScript SDK)**](./snapshot.md#create)
->
-> [**create (Ruby SDK)**](../ruby-sdk/snapshot.md#create)
->
-> [**create (Go SDK)**](../go-sdk/daytona.md#SnapshotService.Create)
->
-> [**create (CLI)**](../cli.md#daytona-snapshot-create)
->
-> [**create (API)**](../api/README.md#daytona/tag/snapshots/POST/snapshots)
 
 ### Using local images
 
@@ -257,7 +299,7 @@ Step 1/5 : FROM alpine:latest
 
 ### Using images from private registries
 
-Daytona supports creating snapshots from images from [Docker Hub](#docker-hub), [Google Artifact Registry](#google-artifact-registry), [GitHub Container Registry](#github-container-registry) or other private container registries.
+Daytona supports creating snapshots from images from [Docker Hub](#docker-hub), [Google Artifact Registry](#google-artifact-registry), [GitHub Container Registry](#github-container-registry-ghcr) or other private container registries.
 
 1. Navigate to [Daytona Registries ↗](https://app.daytona.io/dashboard/registries)
 2. Click the **Add Registry** button
@@ -345,52 +387,34 @@ Daytona supports creating snapshots from images from Amazon Elastic Container Re
 
 ### Resources
 
-Snapshots can be customized with specific resource requirements. By default, Daytona Sandboxes use **1 vCPU**, **1GB RAM**, and **3GiB disk**. For more information, see [sandbox resources](./sandboxes.md#resources).
+Snapshots can be customized with specific [sandbox resources](./sandboxes.md#resources). By default, Daytona sandboxes use **1 vCPU**, **1GB RAM**, and **3GiB disk**. To view your available resources and limits, see [limits](../platform/limits.md) or navigate to [Daytona Limits ↗](https://app.daytona.io/dashboard/limits).
 
-To view your available resources and limits, see [limits](../platform/limits.md) or navigate to [Daytona Limits ↗](https://app.daytona.io/dashboard/limits).
-
-Snapshot resources can be customized using the `Resources` class.
+To set custom sandbox resources, use the `Resources` class.
 
 ```typescript
-import { Daytona, Image } from '@daytona/sdk'
+import { Daytona } from "@daytona/sdk";
 
-const daytona = new Daytona()
-
-// Create a snapshot with custom resources
-await daytona.snapshot.create(
-  {
-    name: 'my-awesome-snapshot',
-    image: Image.debianSlim('3.13'),
-    resources: {
-      cpu: 2,
-      memory: 4,
-      disk: 8,
-    },
-  },
-  { onLogs: console.log }
-)
+const daytona = new Daytona();
+const snapshot = await daytona.snapshot.create({
+  name: "my-awesome-snapshot1123",
+  image: "python:3.12",
+  resources: { cpu: 2, memory: 4, disk: 8 },
+});
 ```
 
 ### Regions
 
-When creating a snapshot, you can specify the [region](./regions.md) in which it will be available. If not specified, the snapshot will be created in your organization's default region.
-
-When you later create a sandbox from this snapshot, you can use the snapshot's region as the target region for the sandbox.
+When creating a snapshot, you can specify the [region](./regions.md) in which it will be available. If not specified, the snapshot will be created in your organization's default region. When you later create a sandbox from this snapshot, you can use the snapshot's region as the target region for the sandbox.
 
 ```typescript
-import { Daytona, Image } from "@daytona/sdk";
+import { Daytona } from "@daytona/sdk";
 
 const daytona = new Daytona();
-
-// Create a Snapshot in a specific region
-await daytona.snapshot.create(
-  {
-    name: "my-awesome-snapshot",
-    image: Image.debianSlim("3.13"),
-    regionId: "us",
-  },
-  { onLogs: console.log }
-);
+const snapshot = await daytona.snapshot.create({
+  name: "my-awesome-snapshotus",
+  image: "python:3.12",
+  regionId: "us",
+});
 ```
 
 ## Get a Snapshot by name
@@ -400,9 +424,7 @@ Daytona provides an option to get a snapshot by name.
 The following snippet returns the snapshot with the specified name:
 
 ```typescript
-const daytona = new Daytona()
-const snapshot = await daytona.snapshot.get('my-awesome-snapshot')
-console.log(`Snapshot ${snapshot.name} is in state ${snapshot.state}`)
+await daytona.snapshot.get('my-awesome-snapshot')
 ```
 
 ## List Snapshots
@@ -412,27 +434,8 @@ Daytona provides options to list snapshots and view their details.
 The following snippet lists all snapshots on the first page with a limit of 10 snapshots per page.
 
 ```typescript
-const daytona = new Daytona()
-const result = await daytona.snapshot.list(1, 10)
-console.log(`Found ${result.total} snapshots`)
-result.items.forEach(snapshot =>
-  console.log(`${snapshot.name} (${snapshot.imageName})`)
-)
+await daytona.snapshot.list(2, 10)
 ```
-
-For more information, see the [Python SDK](../python-sdk/sync/snapshot.md), [TypeScript SDK](./snapshot.md), [Ruby SDK](../ruby-sdk/snapshot.md), [Go SDK](../go-sdk/daytona.md#SnapshotService.List), [CLI](../cli.md#daytona-snapshot-list), and [API](../api/README.md#daytona/tag/snapshots) references.
-
-> [**list (Python SDK)**](../python-sdk/sync/snapshot.md#snapshotservicelist)
->
-> [**list (TypeScript SDK)**](./snapshot.md#list)
->
-> [**list (Ruby SDK)**](../ruby-sdk/snapshot.md#list)
->
-> [**list (Go SDK)**](../go-sdk/daytona.md#SnapshotService.List)
->
-> [**list (CLI)**](../cli.md#daytona-snapshot-list)
->
-> [**list (API)**](../api/README.md#daytona/tag/snapshots/GET/snapshots)
 
 ## Activate Snapshots
 
@@ -443,10 +446,7 @@ Snapshots automatically become inactive after 2 weeks of not being used. To acti
 3. Click the **Activate** button
 
 ```typescript
-const daytona = new Daytona()
-const snapshot = await daytona.snapshot.get("my-inactive-snapshot")
-const activatedSnapshot = await daytona.snapshot.activate(snapshot)
-console.log(`Snapshot ${activatedSnapshot.name} activated`)
+await daytona.snapshot.activate("my-awesome-snapshot")
 ```
 
 ## Deactivate Snapshots
@@ -466,10 +466,7 @@ Daytona provides options to delete snapshots. Deleted snapshots cannot be recove
 3. Click the **Delete** button
 
 ```typescript
-const daytona = new Daytona()
-const snapshot = await daytona.snapshot.get("my-awesome-snapshot")
-await daytona.snapshot.delete(snapshot)
-console.log("Snapshot deleted")
+await daytona.snapshot.delete(await daytona.snapshot.get("my-awesome-snapshot"))
 ```
 
 ## Run Docker in a Sandbox
@@ -637,9 +634,4 @@ All default snapshots are based on the `daytonaio/sandbox:<version>` image. For 
 - `typescript-language-server` (v5.1.3)
 
 ## See Also
-- [TypeScript SDK - README](./README.md)
-- [TypeScript SDK - snapshot](./snapshot.md)
-- [TypeScript SDK - snapshot#activate](./snapshot.md#activate)
-- [TypeScript SDK - snapshot#delete](./snapshot.md#delete)
-- [TypeScript SDK - snapshot#get](./snapshot.md#get)
 - [Python SDK - snapshots](../python-sdk/snapshots.md)

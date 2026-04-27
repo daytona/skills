@@ -139,7 +139,6 @@ sandbox.git.pull('workspace/repo')
 ```
 
 ## See Also
-- [Ruby SDK - git](./git.md)
 - [Python SDK - git-operations](../python-sdk/git-operations.md)
 - [TypeScript SDK - git-operations](../typescript-sdk/git-operations.md)
 - [Go SDK - git-operations](../go-sdk/git-operations.md)

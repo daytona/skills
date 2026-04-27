@@ -392,8 +392,4 @@ if (result.exitCode !== 0) {
 - **Process management**: use explicit `kill()` calls and proper timeout handling for long-running processes
 
 ## See Also
-- [TypeScript SDK - README](./README.md)
-- [TypeScript SDK - process](./process.md)
-- [TypeScript SDK - process#createpty](./process.md#createpty)
-- [TypeScript SDK - process#resizeptysession](./process.md#resizeptysession)
 - [Python SDK - pty](../python-sdk/pty.md)

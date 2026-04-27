@@ -88,9 +88,8 @@ To skip the warning page:
 
 - Send the `X-Daytona-Skip-Preview-Warning: true` header
 - Upgrade to [Tier 3](../platform/limits.md)
-- Deploy a [custom preview proxy](https://www.daytona.io/docs/en/custom-domain-authentication)
+- Deploy a [custom preview proxy](https://www.daytona.io/docs/en/custom-preview-proxy)
 
 ## See Also
-- [Go SDK - daytona](./daytona.md)
 - [Python SDK - preview](../python-sdk/preview.md)
 - [TypeScript SDK - preview](../typescript-sdk/preview.md)

@@ -50,18 +50,6 @@ result = sandbox.computer_use.start()
 print("VNC processes started:", result.message)
 ```
 
-For more information, see the [Computer Use](./computer-use-guide.md#start-computer-use) reference.
-
-> [**start (Python SDK)**](./sync/computer-use.md#computerusestart)
->
-> [**start (TypeScript SDK)**](../typescript-sdk/computer-use.md#start)
->
-> [**start (Ruby SDK)**](../ruby-sdk/computer-use.md#start)
->
-> [**Start (Go SDK)**](../go-sdk/daytona.md#ComputerUseService.Start)
->
-> [**Start Computer Use Processes (API)**](../api/README.md#daytona-toolbox/tag/computer-use/POST/computeruse/start)
-
 ### Stop VNC
 
 Stop all VNC processes in the sandbox.
@@ -71,18 +59,6 @@ result = sandbox.computer_use.stop()
 print("VNC processes stopped:", result.message)
 ```
 
-For more information, see the [Computer Use](./computer-use-guide.md#stop-computer-use) reference.
-
-> [**stop (Python SDK)**](./sync/computer-use.md#computerusestop)
->
-> [**stop (TypeScript SDK)**](../typescript-sdk/computer-use.md#stop)
->
-> [**stop (Ruby SDK)**](../ruby-sdk/computer-use.md#stop)
->
-> [**Stop (Go SDK)**](../go-sdk/daytona.md#ComputerUseService.Stop)
->
-> [**Stop Computer Use Processes (API)**](../api/README.md#daytona-toolbox/tag/computer-use/POST/computeruse/stop)
-
 ### Get VNC status
 
 Check the status of VNC processes to verify they are running.
@@ -91,18 +67,6 @@ Check the status of VNC processes to verify they are running.
 response = sandbox.computer_use.get_status()
 print("VNC status:", response.status)
 ```
-
-For more information, see the [Computer Use](./computer-use-guide.md#get-status) reference.
-
-> [**get_status (Python SDK)**](./sync/computer-use.md#computeruseget_status)
->
-> [**getStatus (TypeScript SDK)**](../typescript-sdk/computer-use.md#getstatus)
->
-> [**status (Ruby SDK)**](../ruby-sdk/computer-use.md#status)
->
-> [**GetStatus (Go SDK)**](../go-sdk/daytona.md#ComputerUseService.GetStatus)
->
-> [**Get Computer Use Status (API)**](../api/README.md#daytona-toolbox/tag/computer-use/GET/computeruse/status)
 
 For additional process management operations including restarting individual processes and viewing logs, see the [Computer Use](./computer-use-guide.md) reference.
 

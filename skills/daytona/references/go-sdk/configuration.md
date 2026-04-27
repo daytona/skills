@@ -24,13 +24,12 @@ import (
 
 func main() {
     config := daytona.Config{
-        APIKey: "your-api-key",
-        APIURL: "your-api-url",
+        APIKey: "YOUR_API_KEY",
+        APIURL: "YOUR_API_URL",
         Target: "us",
     }
 
     client := daytona.NewClient(&config)
-
     _ = client
 }
 ```
@@ -85,6 +84,5 @@ If no configuration is provided, Daytona will use its built-in default values:
 | Target     | Default region for the organization |
 
 ## See Also
-- [Go SDK - daytona](./daytona.md)
 - [Python SDK - configuration](../python-sdk/configuration.md)
 - [TypeScript SDK - configuration](../typescript-sdk/configuration.md)

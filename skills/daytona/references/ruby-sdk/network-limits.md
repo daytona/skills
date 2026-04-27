@@ -210,12 +210,11 @@ Daytona provides a list of essential services that are available on all tiers an
 
 If you encounter network access issues or need unrestricted network access:
 
-1. Verify your [organization tier](../platform/limits.md#tier-upgrade) in the [Daytona Dashboard ↗](https://app.daytona.io/dashboard/limits)
+1. Verify your [organization tier](../platform/limits.md#tiers) in the [Daytona Dashboard ↗](https://app.daytona.io/dashboard/limits)
 2. Verify your [network allow list](#network-allow-list-format) configuration
 3. Contact [support@daytona.io](mailto:support@daytona.io) for assistance
 
 ## See Also
-- [Ruby SDK - sandbox#network_allow_list](./sandbox.md#network_allow_list)
 - [Python SDK - network-limits](../python-sdk/network-limits.md)
 - [TypeScript SDK - network-limits](../typescript-sdk/network-limits.md)
 - [Go SDK - network-limits](../go-sdk/network-limits.md)

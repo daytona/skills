@@ -3,7 +3,6 @@
 - Build declarative images
 - Create pre-built Snapshots
 - Image configuration
-- See Also
 
 
 
@@ -12,8 +11,8 @@ Declarative Builder provides a powerful, code-first approach to defining depende
 
 The declarative builder system supports two primary workflows:
 
-1. [**Declarative images**](#declarative-image-building): build images with varying dependencies _on demand_ when creating sandboxes
-2. [**Pre-built Snapshots**](#creating-pre-built-snapshots): create and register _ready-to-use_ [Snapshots](./snapshots.md) that can be shared across multiple sandboxes
+1. [**Declarative images**](#build-declarative-images): build images with varying dependencies _on demand_ when creating sandboxes
+2. [**Pre-built Snapshots**](#create-pre-built-snapshots): create and register _ready-to-use_ [Snapshots](./snapshots.md) that can be shared across multiple sandboxes
 
 ## Build declarative images
 
@@ -36,6 +35,18 @@ sandbox = daytona.create(
   on_snapshot_create_logs=print,
 )
 ```
+> **Note:**
+> Use the following best practices when working with the declarative builder:
+>
+> - **Layer Optimization**: Group related operations to minimize Docker layers
+>
+> - **Cache Utilization**: Identical build commands and context will be cached and subsequent builds will be almost instant
+>
+> - **Security**: Create non-root users for application workloads
+>
+> - **Resource Efficiency**: Use slim base images when appropriate
+>
+> - **Context Minimization**: Only include necessary files in the build context
 
 ## Create pre-built Snapshots
 
@@ -72,7 +83,7 @@ CreateSandboxFromSnapshotParams(snapshot=snapshot_name)
 
 Daytona provides an option to define images programmatically using the Daytona SDK. You can specify base images, install packages, add files, set environment variables, and more.
 
-For a complete API reference and method signatures, see the [Python](./image.md), [TypeScript](../typescript-sdk/image.md), [Ruby](../ruby-sdk/image.md), and [Go](../go-sdk/daytona.md#type-DockerImage) SDK references.
+For a complete API reference and method signatures, see the [Python](./image.md), [TypeScript](../typescript-sdk/image.md), [Ruby](../ruby-sdk/image.md), [Go](../go-sdk/daytona.md#type-DockerImage), and [Java](https://www.daytona.io/docs/en/java-sdk/image) SDK references.
 
 ### Base image selection
 
@@ -163,6 +174,3 @@ image = Image.from_dockerfile("Dockerfile")
 # Extend an existing Dockerfile
 image = Image.from_dockerfile("app/Dockerfile").pip_install(["numpy"])
 ```
-
-## See Also
-- [Python SDK - README](./README.md)

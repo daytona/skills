@@ -56,18 +56,6 @@ defer sandbox.ComputerUse.Stop(ctx)
 fmt.Println("VNC processes started")
 ```
 
-For more information, see the [Computer Use](./computer-use-guide.md#start-computer-use) reference.
-
-> [**start (Python SDK)**](../python-sdk/sync/computer-use.md#computerusestart)
->
-> [**start (TypeScript SDK)**](../typescript-sdk/computer-use.md#start)
->
-> [**start (Ruby SDK)**](../ruby-sdk/computer-use.md#start)
->
-> [**Start (Go SDK)**](./daytona.md#ComputerUseService.Start)
->
-> [**Start Computer Use Processes (API)**](../api/README.md#daytona-toolbox/tag/computer-use/POST/computeruse/start)
-
 ### Stop VNC
 
 Stop all VNC processes in the sandbox.
@@ -81,18 +69,6 @@ if err != nil {
 fmt.Println("VNC processes stopped")
 ```
 
-For more information, see the [Computer Use](./computer-use-guide.md#stop-computer-use) reference.
-
-> [**stop (Python SDK)**](../python-sdk/sync/computer-use.md#computerusestop)
->
-> [**stop (TypeScript SDK)**](../typescript-sdk/computer-use.md#stop)
->
-> [**stop (Ruby SDK)**](../ruby-sdk/computer-use.md#stop)
->
-> [**Stop (Go SDK)**](./daytona.md#ComputerUseService.Stop)
->
-> [**Stop Computer Use Processes (API)**](../api/README.md#daytona-toolbox/tag/computer-use/POST/computeruse/stop)
-
 ### Get VNC status
 
 Check the status of VNC processes to verify they are running.
@@ -105,18 +81,6 @@ if err != nil {
 
 fmt.Printf("VNC status: %v\n", status["status"])
 ```
-
-For more information, see the [Computer Use](./computer-use-guide.md#get-status) reference.
-
-> [**get_status (Python SDK)**](../python-sdk/sync/computer-use.md#computeruseget_status)
->
-> [**getStatus (TypeScript SDK)**](../typescript-sdk/computer-use.md#getstatus)
->
-> [**status (Ruby SDK)**](../ruby-sdk/computer-use.md#status)
->
-> [**GetStatus (Go SDK)**](./daytona.md#ComputerUseService.GetStatus)
->
-> [**Get Computer Use Status (API)**](../api/README.md#daytona-toolbox/tag/computer-use/GET/computeruse/status)
 
 For additional process management operations including restarting individual processes and viewing logs, see the [Computer Use](./computer-use-guide.md) reference.
 
