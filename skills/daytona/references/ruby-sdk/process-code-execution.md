@@ -199,8 +199,6 @@ rescue StandardError => e
 end
 ```
 
-For more information, see the [Python SDK](../python-sdk/README.md), [TypeScript SDK](../typescript-sdk/README.md), [Ruby SDK](./README.md), and [Go SDK](../go-sdk/README.md) references.
-
 ## Common issues
 
 Daytona provides solutions for troubleshooting common issues related to process and code execution.
@@ -212,7 +210,6 @@ Daytona provides solutions for troubleshooting common issues related to process 
 | Resource limits          | • Monitor process memory usage<br/>• Handle process cleanup properly<br/>• Use appropriate resource constraints |
 
 ## See Also
-- [Ruby SDK - README](./README.md)
 - [Python SDK - process-code-execution](../python-sdk/process-code-execution.md)
 - [TypeScript SDK - process-code-execution](../typescript-sdk/process-code-execution.md)
 - [Go SDK - process-code-execution](../go-sdk/process-code-execution.md)

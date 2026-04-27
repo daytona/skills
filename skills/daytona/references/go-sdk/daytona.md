@@ -199,7 +199,7 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
 - [type OutputChannels](https://www.daytona.io/docs/en<#OutputChannels>)
 - [type PaginatedSandboxes](https://www.daytona.io/docs/en<#PaginatedSandboxes>)
 - [type ProcessService](https://www.daytona.io/docs/en<#ProcessService>)
-  - [func NewProcessService\(toolboxClient \*toolbox.APIClient, otel \*otelState\) \*ProcessService](https://www.daytona.io/docs/en<#NewProcessService>)
+  - [func NewProcessService\(toolboxClient \*toolbox.APIClient, otel \*otelState, language types.CodeLanguage\) \*ProcessService](https://www.daytona.io/docs/en<#NewProcessService>)
   - [func \(p \*ProcessService\) CodeRun\(ctx context.Context, code string, opts ...func\(\*options.CodeRun\)\) \(\*types.ExecuteResponse, error\)](https://www.daytona.io/docs/en<#ProcessService.CodeRun>)
   - [func \(p \*ProcessService\) ConnectPty\(ctx context.Context, sessionID string\) \(\*PtyHandle, error\)](https://www.daytona.io/docs/en<#ProcessService.ConnectPty>)
   - [func \(p \*ProcessService\) CreatePty\(ctx context.Context, id string, opts ...func\(\*options.CreatePty\)\) \(\*PtyHandle, error\)](https://www.daytona.io/docs/en<#ProcessService.CreatePty>)
@@ -208,13 +208,13 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(p \*ProcessService\) DeleteSession\(ctx context.Context, sessionID string\) error](https://www.daytona.io/docs/en<#ProcessService.DeleteSession>)
   - [func \(p \*ProcessService\) ExecuteCommand\(ctx context.Context, command string, opts ...func\(\*options.ExecuteCommand\)\) \(\*types.ExecuteResponse, error\)](https://www.daytona.io/docs/en<#ProcessService.ExecuteCommand>)
   - [func \(p \*ProcessService\) ExecuteSessionCommand\(ctx context.Context, sessionID, command string, runAsync bool, suppressInputEcho bool\) \(map\[string\]any, error\)](<#ProcessService.ExecuteSessionCommand>)
-  - [func \(p \*ProcessService\) GetEntrypointLogs\(ctx context.Context\) \(string, error\)](https://www.daytona.io/docs/en<#ProcessService.GetEntrypointLogs>)
+  - [func \(p \*ProcessService\) GetEntrypointLogs\(ctx context.Context\) \(\*toolbox.SessionCommandLogsResponse, error\)](https://www.daytona.io/docs/en<#ProcessService.GetEntrypointLogs>)
   - [func \(p \*ProcessService\) GetEntrypointLogsStream\(ctx context.Context, stdout, stderr chan\<\- string\) error](https://www.daytona.io/docs/en<#ProcessService.GetEntrypointLogsStream>)
   - [func \(p \*ProcessService\) GetEntrypointSession\(ctx context.Context\) \(\*toolbox.Session, error\)](https://www.daytona.io/docs/en<#ProcessService.GetEntrypointSession>)
   - [func \(p \*ProcessService\) GetPtySessionInfo\(ctx context.Context, sessionID string\) \(\*types.PtySessionInfo, error\)](https://www.daytona.io/docs/en<#ProcessService.GetPtySessionInfo>)
   - [func \(p \*ProcessService\) GetSession\(ctx context.Context, sessionID string\) \(map\[string\]any, error\)](<#ProcessService.GetSession>)
   - [func \(p \*ProcessService\) GetSessionCommand\(ctx context.Context, sessionID, commandID string\) \(map\[string\]any, error\)](<#ProcessService.GetSessionCommand>)
-  - [func \(p \*ProcessService\) GetSessionCommandLogs\(ctx context.Context, sessionID, commandID string\) \(map\[string\]any, error\)](<#ProcessService.GetSessionCommandLogs>)
+  - [func \(p \*ProcessService\) GetSessionCommandLogs\(ctx context.Context, sessionID, commandID string\) \(\*toolbox.SessionCommandLogsResponse, error\)](https://www.daytona.io/docs/en<#ProcessService.GetSessionCommandLogs>)
   - [func \(p \*ProcessService\) GetSessionCommandLogsStream\(ctx context.Context, sessionID, commandID string, stdout, stderr chan\<\- string\) error](https://www.daytona.io/docs/en<#ProcessService.GetSessionCommandLogsStream>)
   - [func \(p \*ProcessService\) KillPtySession\(ctx context.Context, sessionID string\) error](https://www.daytona.io/docs/en<#ProcessService.KillPtySession>)
   - [func \(p \*ProcessService\) ListPtySessions\(ctx context.Context\) \(\[\]\*types.PtySessionInfo, error\)](<#ProcessService.ListPtySessions>)
@@ -244,10 +244,14 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(r \*RecordingService\) Start\(ctx context.Context, label \*string\) \(\*toolbox.Recording, error\)](https://www.daytona.io/docs/en<#RecordingService.Start>)
   - [func \(r \*RecordingService\) Stop\(ctx context.Context, id string\) \(\*toolbox.Recording, error\)](https://www.daytona.io/docs/en<#RecordingService.Stop>)
 - [type Sandbox](https://www.daytona.io/docs/en<#Sandbox>)
-  - [func NewSandbox\(client \*Client, toolboxClient \*toolbox.APIClient, id string, name string, state apiclient.SandboxState, target string, autoArchiveInterval int, autoDeleteInterval int, networkBlockAll bool, networkAllowList \*string\) \*Sandbox](https://www.daytona.io/docs/en<#NewSandbox>)
+  - [func NewSandbox\(client \*Client, toolboxClient \*toolbox.APIClient, id string, name string, state apiclient.SandboxState, target string, autoArchiveInterval int, autoDeleteInterval int, networkBlockAll bool, networkAllowList \*string, language types.CodeLanguage\) \*Sandbox](https://www.daytona.io/docs/en<#NewSandbox>)
   - [func \(s \*Sandbox\) Archive\(ctx context.Context\) error](https://www.daytona.io/docs/en<#Sandbox.Archive>)
   - [func \(s \*Sandbox\) Delete\(ctx context.Context\) error](https://www.daytona.io/docs/en<#Sandbox.Delete>)
   - [func \(s \*Sandbox\) DeleteWithTimeout\(ctx context.Context, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.DeleteWithTimeout>)
+  - [func \(s \*Sandbox\) ExperimentalCreateSnapshot\(ctx context.Context, name string\) error](https://www.daytona.io/docs/en<#Sandbox.ExperimentalCreateSnapshot>)
+  - [func \(s \*Sandbox\) ExperimentalCreateSnapshotWithTimeout\(ctx context.Context, name string, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.ExperimentalCreateSnapshotWithTimeout>)
+  - [func \(s \*Sandbox\) ExperimentalFork\(ctx context.Context, name \*string\) \(\*Sandbox, error\)](https://www.daytona.io/docs/en<#Sandbox.ExperimentalFork>)
+  - [func \(s \*Sandbox\) ExperimentalForkWithTimeout\(ctx context.Context, name \*string, timeout time.Duration\) \(\*Sandbox, error\)](https://www.daytona.io/docs/en<#Sandbox.ExperimentalForkWithTimeout>)
   - [func \(s \*Sandbox\) ExpireSignedPreviewLink\(ctx context.Context, port int, token string\) error](https://www.daytona.io/docs/en<#Sandbox.ExpireSignedPreviewLink>)
   - [func \(s \*Sandbox\) GetPreviewLink\(ctx context.Context, port int\) \(\*types.PreviewLink, error\)](https://www.daytona.io/docs/en<#Sandbox.GetPreviewLink>)
   - [func \(s \*Sandbox\) GetSignedPreviewLink\(ctx context.Context, port int, expiresInSeconds int\) \(\*types.SignedPreviewLink, error\)](https://www.daytona.io/docs/en<#Sandbox.GetSignedPreviewLink>)
@@ -263,6 +267,7 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(s \*Sandbox\) StartWithTimeout\(ctx context.Context, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.StartWithTimeout>)
   - [func \(s \*Sandbox\) Stop\(ctx context.Context\) error](https://www.daytona.io/docs/en<#Sandbox.Stop>)
   - [func \(s \*Sandbox\) StopWithTimeout\(ctx context.Context, timeout time.Duration, force bool\) error](https://www.daytona.io/docs/en<#Sandbox.StopWithTimeout>)
+  - [func \(s \*Sandbox\) UpdateNetworkSettings\(ctx context.Context, settings apiclient.UpdateSandboxNetworkSettings\) error](https://www.daytona.io/docs/en<#Sandbox.UpdateNetworkSettings>)
   - [func \(s \*Sandbox\) WaitForResize\(ctx context.Context, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.WaitForResize>)
   - [func \(s \*Sandbox\) WaitForStart\(ctx context.Context, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.WaitForStart>)
   - [func \(s \*Sandbox\) WaitForStop\(ctx context.Context, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.WaitForStop>)
@@ -2582,7 +2587,7 @@ type ProcessService struct {
 ### func NewProcessService
 
 ```go
-func NewProcessService(toolboxClient *toolbox.APIClient, otel *otelState) *ProcessService
+func NewProcessService(toolboxClient *toolbox.APIClient, otel *otelState, language types.CodeLanguage) *ProcessService
 ```
 
 NewProcessService creates a new ProcessService with the provided toolbox client.
@@ -2596,14 +2601,38 @@ This is typically called internally by the SDK when creating a [Sandbox](https:/
 func (p *ProcessService) CodeRun(ctx context.Context, code string, opts ...func(*options.CodeRun)) (*types.ExecuteResponse, error)
 ```
 
-CodeRun executes code in a language\-specific way.
+CodeRun executes code in a language\-specific runtime and returns the result.
 
-NOTE: This method is currently unavailable as the toolbox\-api\-client\-go does not expose a CodeRun endpoint. For code execution, use [ProcessService.ExecuteCommand](https://www.daytona.io/docs/en<#ProcessService.ExecuteCommand>) or [CodeInterpreterService](https://www.daytona.io/docs/en<#CodeInterpreterService>).
+The code is executed directly by the daemon's code\-run endpoint using the specified language runtime \(Python, JavaScript, or TypeScript\). This is different from [ProcessService.ExecuteCommand](https://www.daytona.io/docs/en<#ProcessService.ExecuteCommand>) which runs shell commands.
+
+Parameters:
+
+- code: The source code to execute
+- language: The language runtime to use \(e.g. \[types.CodeLanguagePython\]\)
 
 Optional parameters can be configured using functional options:
 
-- \[options.WithCodeRunParams\]: Set code execution parameters
+- \[options.WithCodeRunParams\]: Set argv and environment variables
 - \[options.WithCodeRunTimeout\]: Set execution timeout
+
+Example:
+
+```
+// Run Python code
+result, err := sandbox.Process.CodeRun(ctx, "print('Hello')", types.CodeLanguagePython)
+fmt.Println(result.Result)
+
+// Run with options
+result, err := sandbox.Process.CodeRun(ctx, code, types.CodeLanguagePython,
+    options.WithCodeRunParams(types.CodeRunParams{
+        Argv: []string{"--verbose"},
+        Env:  map[string]string{"DEBUG": "1"},
+    }),
+    options.WithCodeRunTimeout(30*time.Second),
+)
+```
+
+Returns \[types.ExecuteResponse\] containing the output, exit code, and any artifacts \(such as charts\), or an error.
 
 <a name="ProcessService.ConnectPty"></a>
 ### func \(\*ProcessService\) ConnectPty
@@ -2857,7 +2886,7 @@ Returns command result including id, exitCode \(if completed\), stdout, and stde
 ### func \(\*ProcessService\) GetEntrypointLogs
 
 ```go
-func (p *ProcessService) GetEntrypointLogs(ctx context.Context) (string, error)
+func (p *ProcessService) GetEntrypointLogs(ctx context.Context) (*toolbox.SessionCommandLogsResponse, error)
 ```
 
 GetEntrypointLogs retrieves the output logs of the sandbox entrypoint.
@@ -3041,7 +3070,7 @@ Returns command status including id, command text, and exitCode \(if completed\)
 ### func \(\*ProcessService\) GetSessionCommandLogs
 
 ```go
-func (p *ProcessService) GetSessionCommandLogs(ctx context.Context, sessionID, commandID string) (map[string]any, error)
+func (p *ProcessService) GetSessionCommandLogs(ctx context.Context, sessionID, commandID string) (*toolbox.SessionCommandLogsResponse, error)
 ```
 
 GetSessionCommandLogs retrieves the output logs of a command.
@@ -3752,7 +3781,7 @@ type Sandbox struct {
 ### func NewSandbox
 
 ```go
-func NewSandbox(client *Client, toolboxClient *toolbox.APIClient, id string, name string, state apiclient.SandboxState, target string, autoArchiveInterval int, autoDeleteInterval int, networkBlockAll bool, networkAllowList *string) *Sandbox
+func NewSandbox(client *Client, toolboxClient *toolbox.APIClient, id string, name string, state apiclient.SandboxState, target string, autoArchiveInterval int, autoDeleteInterval int, networkBlockAll bool, networkAllowList *string, language types.CodeLanguage) *Sandbox
 ```
 
 NewSandbox creates a new Sandbox instance.
@@ -3810,6 +3839,83 @@ Example:
 
 ```
 err := sandbox.DeleteWithTimeout(ctx, 2*time.Minute)
+```
+
+<a name="Sandbox.ExperimentalCreateSnapshot"></a>
+### func \(\*Sandbox\) ExperimentalCreateSnapshot
+
+```go
+func (s *Sandbox) ExperimentalCreateSnapshot(ctx context.Context, name string) error
+```
+
+ExperimentalCreateSnapshot creates a snapshot from the current state of the sandbox with a default timeout of 60 seconds.
+
+This captures the sandbox's filesystem into a reusable snapshot that can be used to create new sandboxes. The sandbox will temporarily enter a 'snapshotting' state and return to its previous state when complete.
+
+Example:
+
+```
+err := sandbox.ExperimentalCreateSnapshot(ctx, "my-snapshot")
+if err != nil {
+    return err
+}
+```
+
+<a name="Sandbox.ExperimentalCreateSnapshotWithTimeout"></a>
+### func \(\*Sandbox\) ExperimentalCreateSnapshotWithTimeout
+
+```go
+func (s *Sandbox) ExperimentalCreateSnapshotWithTimeout(ctx context.Context, name string, timeout time.Duration) error
+```
+
+ExperimentalCreateSnapshotWithTimeout creates a snapshot from the current state of the sandbox with a custom timeout. 0 means no timeout.
+
+Example:
+
+```
+err := sandbox.ExperimentalCreateSnapshotWithTimeout(ctx, "my-snapshot", 2*time.Minute)
+```
+
+<a name="Sandbox.ExperimentalFork"></a>
+### func \(\*Sandbox\) ExperimentalFork
+
+```go
+func (s *Sandbox) ExperimentalFork(ctx context.Context, name *string) (*Sandbox, error)
+```
+
+ExperimentalFork forks the sandbox with a default timeout of 60 seconds, creating a new sandbox with an identical filesystem.
+
+The forked sandbox is a copy\-on\-write clone of the original. It starts with the same disk contents but operates independently from that point on. ExperimentalFork waits for the new sandbox to reach the "started" state before returning.
+
+Example:
+
+```
+forked, err := sandbox.ExperimentalFork(ctx, nil)
+if err != nil {
+    return err
+}
+fmt.Printf("Forked sandbox: %s\n", forked.ID)
+```
+
+<a name="Sandbox.ExperimentalForkWithTimeout"></a>
+### func \(\*Sandbox\) ExperimentalForkWithTimeout
+
+```go
+func (s *Sandbox) ExperimentalForkWithTimeout(ctx context.Context, name *string, timeout time.Duration) (*Sandbox, error)
+```
+
+ExperimentalForkWithTimeout forks the sandbox with a custom timeout, creating a new sandbox with an identical filesystem.
+
+The forked sandbox is a copy\-on\-write clone of the original. It starts with the same disk contents but operates independently from that point on. ExperimentalForkWithTimeout waits for the new sandbox to reach the "started" state before returning. 0 means no timeout.
+
+Example:
+
+```
+forked, err := sandbox.ExperimentalForkWithTimeout(ctx, nil, 2*time.Minute)
+if err != nil {
+    return err
+}
+fmt.Printf("Forked sandbox: %s\n", forked.ID)
 ```
 
 <a name="Sandbox.ExpireSignedPreviewLink"></a>
@@ -4120,6 +4226,15 @@ Example:
 ```
 err := sandbox.StopWithTimeout(ctx, 2*time.Minute, false)
 ```
+
+<a name="Sandbox.UpdateNetworkSettings"></a>
+### func \(\*Sandbox\) UpdateNetworkSettings
+
+```go
+func (s *Sandbox) UpdateNetworkSettings(ctx context.Context, settings apiclient.UpdateSandboxNetworkSettings) error
+```
+
+UpdateNetworkSettings updates outbound network policy for this sandbox on the runner \(for example block all traffic, restore general internet access, or apply a CIDR allow list\) without stopping the sandbox.
 
 <a name="Sandbox.WaitForResize"></a>
 ### func \(\*Sandbox\) WaitForResize

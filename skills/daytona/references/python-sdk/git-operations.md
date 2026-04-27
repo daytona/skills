@@ -5,7 +5,6 @@
 - Stage changes
 - Commit changes
 - Remote operations
-- See Also
 
 
 
@@ -162,6 +161,3 @@ sandbox.git.pull(
     password="github_token"
 )
 ```
-
-## See Also
-- [Python SDK - git](./sync/git.md)

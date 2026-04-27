@@ -95,7 +95,7 @@ Delete a branch from the Git repository
 
 Delete branch request
 
-Schema: **git.GitDeleteBranchRequest**
+Schema: **GitDeleteBranchRequest**
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|

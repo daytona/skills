@@ -3,6 +3,7 @@
 
 ## Contents
 
+- POST `/process/code-run`
 - POST `/process/execute`
 - GET `/process/pty`
 - POST `/process/pty`
@@ -21,6 +22,34 @@
 - GET `/process/session/{sessionId}/command/{commandId}/logs`/command/{commandId}/logs}
 - POST `/process/session/{sessionId}/exec`/exec}
 
+## POST `/process/code-run` {#daytona-toolbox/tag/process/POST/process/code-run}
+
+**Execute code**
+
+Execute Python, JavaScript, or TypeScript code and return output, exit code, and artifacts
+
+### Request Body
+
+Code execution request
+
+Schema: **CodeRunRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `argv` | array of string | No |  |
+| `code` | string | Yes |  |
+| `envs` | object | No |  |
+| `language` | string | Yes | python, javascript, typescript |
+| `timeout` | integer | No |  |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | CodeRunResponse |
+
+---
+
 ## POST `/process/execute` {#daytona-toolbox/tag/process/POST/process/execute}
 
 **Execute a command**
@@ -37,6 +66,7 @@ Schema: **ExecuteRequest**
 |-------|------|----------|-------------|
 | `command` | string | Yes |  |
 | `cwd` | string | No | Current working directory |
+| `envs` | object | No | Environment variables to set for the command |
 | `timeout` | integer | No | Timeout in seconds, defaults to 10 seconds |
 
 ### Responses
@@ -237,7 +267,7 @@ Get details of an entrypoint session including its commands
 
 **Get entrypoint logs**
 
-Get logs for a sandbox entrypoint session. Supports both HTTP and WebSocket streaming.
+Get logs for a sandbox entrypoint session. Returns JSON with separated stdout/stderr for SDK >= 0.161.0, plain text otherwise. Supports WebSocket streaming.
 
 ### Parameters
 
@@ -249,7 +279,7 @@ Get logs for a sandbox entrypoint session. Supports both HTTP and WebSocket stre
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | Entrypoint log content | string |
+| 200 | Entrypoint log content | SessionCommandLogsResponse |
 
 ---
 
@@ -349,7 +379,7 @@ Schema: **SessionSendInputRequest**
 
 **Get session command logs**
 
-Get logs for a specific command within a session. Supports both HTTP and WebSocket streaming.
+Get logs for a specific command within a session. Returns JSON with separated stdout/stderr for SDK >= 0.167.0, plain text otherwise. Supports WebSocket streaming.
 
 ### Parameters
 
@@ -363,7 +393,7 @@ Get logs for a specific command within a session. Supports both HTTP and WebSock
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | Log content | string |
+| 200 | Log content (JSON for new SDKs, plain text for old SDKs) | SessionCommandLogsResponse |
 
 ---
 

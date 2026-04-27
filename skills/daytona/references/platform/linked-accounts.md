@@ -4,7 +4,7 @@ Daytona supports linking user accounts from various identity providers. At the m
 - Google
 - GitHub
 > **Tip:**
-> GitHub account is one of the requirements to automatically [upgrade your organization to **Tier 2**](./limits.md#tiers--rate-limit-increases).
+> GitHub account is one of the requirements to automatically [upgrade your organization to **Tier 2**](./limits.md#tiers).
 
 ## Link account
 1. Navigate to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/user/account-settings) account settings.

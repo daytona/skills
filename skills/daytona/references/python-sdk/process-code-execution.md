@@ -6,7 +6,6 @@
 - Resource management
 - Error handling
 - Common issues
-- See Also
 
 
 
@@ -215,8 +214,6 @@ except DaytonaError as e:
     print(f"Execution failed: {e}")
 ```
 
-For more information, see the [Python SDK](./README.md), [TypeScript SDK](../typescript-sdk/README.md), [Ruby SDK](../ruby-sdk/README.md), and [Go SDK](../go-sdk/README.md) references.
-
 ## Common issues
 
 Daytona provides solutions for troubleshooting common issues related to process and code execution.
@@ -226,6 +223,3 @@ Daytona provides solutions for troubleshooting common issues related to process 
 | Process execution failed | • Check command syntax<br/>• Verify required dependencies<br/>• Ensure sufficient permissions                   |
 | Process timeout          | • Adjust timeout settings<br/>• Optimize long-running operations<br/>• Consider using background processes      |
 | Resource limits          | • Monitor process memory usage<br/>• Handle process cleanup properly<br/>• Use appropriate resource constraints |
-
-## See Also
-- [Python SDK - README](./README.md)

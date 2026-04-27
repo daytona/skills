@@ -1,10 +1,3 @@
-## Contents
-
-- Basic operations
-- Advanced operations
-- See Also
-
-
 
 
 Daytona provides comprehensive file system operations through the `fs` module in sandboxes.
@@ -228,6 +221,3 @@ sandbox.fs.move_files(
     "workspace/new_dir"
 )
 ```
-
-## See Also
-- [Python SDK - README](./README.md)

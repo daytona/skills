@@ -235,7 +235,6 @@ sandbox.fs.move_files(
 ```
 
 ## See Also
-- [Ruby SDK - README](./README.md)
 - [Python SDK - file-system-operations](../python-sdk/file-system-operations.md)
 - [TypeScript SDK - file-system-operations](../typescript-sdk/file-system-operations.md)
 - [Go SDK - file-system-operations](../go-sdk/file-system-operations.md)

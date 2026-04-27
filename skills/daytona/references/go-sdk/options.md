@@ -9,6 +9,7 @@
 - func Apply
 - func WithAllowEmpty
 - func WithBranch
+- func WithCodeRunLanguage
 - func WithCodeRunParams
 - func WithCodeRunTimeout
 - func WithCommandEnv
@@ -93,6 +94,7 @@ opts := options.Apply(
 - [func Apply\[T any\]\(opts ...func\(\*T\)\) \*T](<#Apply>)
 - [func WithAllowEmpty\(allowEmpty bool\) func\(\*GitCommit\)](https://www.daytona.io/docs/en<#WithAllowEmpty>)
 - [func WithBranch\(branch string\) func\(\*GitClone\)](https://www.daytona.io/docs/en<#WithBranch>)
+- [func WithCodeRunLanguage\(language types.CodeLanguage\) func\(\*CodeRun\)](https://www.daytona.io/docs/en<#WithCodeRunLanguage>)
 - [func WithCodeRunParams\(params types.CodeRunParams\) func\(\*CodeRun\)](https://www.daytona.io/docs/en<#WithCodeRunParams>)
 - [func WithCodeRunTimeout\(timeout time.Duration\) func\(\*CodeRun\)](https://www.daytona.io/docs/en<#WithCodeRunTimeout>)
 - [func WithCommandEnv\(env map\[string\]string\) func\(\*ExecuteCommand\)](<#WithCommandEnv>)
@@ -195,6 +197,14 @@ Example:
 err := sandbox.Git.Clone(ctx, url, path, options.WithBranch("develop"))
 ```
 
+<a name="WithCodeRunLanguage"></a>
+## func WithCodeRunLanguage
+
+```go
+func WithCodeRunLanguage(language types.CodeLanguage) func(*CodeRun)
+```
+
+
 <a name="WithCodeRunParams"></a>
 ## func WithCodeRunParams
 
@@ -219,15 +229,6 @@ result, err := sandbox.Process.CodeRun(ctx, code,
 func WithCodeRunTimeout(timeout time.Duration) func(*CodeRun)
 ```
 
-WithCodeRunTimeout sets the timeout for code execution.
-
-Example:
-
-```
-result, err := sandbox.Process.CodeRun(ctx, code,
-    options.WithCodeRunTimeout(30*time.Second),
-)
-```
 
 <a name="WithCommandEnv"></a>
 ## func WithCommandEnv
@@ -803,8 +804,9 @@ CodeRun holds optional parameters for \[daytona.ProcessService.CodeRun\].
 
 ```go
 type CodeRun struct {
-    Params  *types.CodeRunParams // Code execution parameters
-    Timeout *time.Duration       // Execution timeout
+    Params   *types.CodeRunParams // Code execution parameters
+    Timeout  *time.Duration       // Execution timeout
+    Language types.CodeLanguage   // Override the default language
 }
 ```
 

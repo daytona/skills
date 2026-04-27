@@ -20,36 +20,57 @@ Volumes are FUSE-based mounts that provide shared file access across Daytona San
 
 ## Create volumes
 
-Daytona provides volumes as a shared storage solution for sandboxes. To create a volume:
+Daytona provides methods to create volumes using the [Daytona Dashboard ↗](https://app.daytona.io/dashboard/volumes) or programmatically using the Daytona [Python](../python-sdk/sync/volume.md), [TypeScript](../typescript-sdk/volume.md), [Ruby](../ruby-sdk/volume.md), [Go](./daytona.md#type-volumeservice), [Java](https://www.daytona.io/docs/en/java-sdk/volume-service) **SDKs**, [CLI](../cli.md#daytona-create), or [API](../api/README.md#daytona/tag/sandbox).
+
+For persistent per-user, per-tenant, or per-workspace storage, use one shared volume per use case, environment, or project (for example a volume for staging and another for production), and set a dedicated `subpath` when you create each sandbox. The sandbox sees only that prefix inside the volume; it cannot access sibling subpaths.
+
+This is the default pattern we recommend because it:
+
+- stays within the per-organization volume [limits](#pricing--limits)
+- avoids mounting a separate volume for every user or sandbox
+- continues to provide strong isolation at the mount boundary
 
 1. Navigate to [Daytona Volumes ↗](https://app.daytona.io/dashboard/volumes)
 2. Click the **Create Volume** button
 3. Enter the volume name
 
-The following snippets demonstrate how to create a volume using the Daytona SDK:
-
 ```go
-client, err := daytona.NewClient()
-if err != nil {
-    log.Fatal(err)
-}
-volume, err := client.Volume.Create(context.Background(), "my-awesome-volume")
-if err != nil {
-    log.Fatal(err)
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	"github.com/daytonaio/daytona/libs/sdk-go/pkg/daytona"
+)
+
+func main() {
+	client, err := daytona.NewClient()
+	if err != nil {
+		log.Fatal(err)
+	}
+	volume, err := client.Volume.Create(context.Background(), "my-awesome-volume")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Volume ID: %s\n", volume.ID)
 }
 ```
 
 ## Mount volumes
 
-Daytona provides an option to mount a volume to a sandbox. Once a volume is created, it can be mounted to a sandbox by specifying it in the `CreateSandboxFromSnapshotParams` object. Volume mount paths must meet the following requirements:
+Daytona provides an option to mount a volume to a sandbox. Once a volume is created, it can be mounted to a sandbox by specifying it in the `CreateSandboxFromSnapshotParams` object. For per-user or multi-tenant data, pass `subpath` so only the specified folder inside the volume is visible at `mount_path`.
 
-- **Must be absolute paths**: Mount paths must start with `/` (e.g., `/home/daytona/volume`)
-- **Cannot be root directory**: Cannot mount to `/` or `//`
-- **No relative path components**: Cannot contain `/../`, `/./`, or end with `/..` or `/.`
-- **No consecutive slashes**: Cannot contain multiple consecutive slashes like `//` (except at the beginning)
-- **Cannot mount to system directories**: The following system directories are prohibited: `/proc`, `/sys`, `/dev`, `/boot`, `/etc`, `/bin`, `/sbin`, `/lib`, `/lib64`
+Mount the entire volume (omit `subpath`) when every sandbox that uses that volume should see the same tree, for example shared assets or single-tenant workloads.
 
-The following snippets demonstrate how to mount a volume to a sandbox:
+Volume mount paths must meet the following requirements:
+
+- **Must be absolute paths**: mount paths must start with `/` (e.g., `/home/daytona/volume`)
+- **Cannot be root directory**: cannot mount to `/` or `//`
+- **No relative path components**: cannot contain `/../`, `/./`, or end with `/..` or `/.`
+- **No consecutive slashes**: cannot contain multiple consecutive slashes like `//` (except at the beginning)
+- **Cannot mount to system directories**: the following system directories are prohibited: `/proc`, `/sys`, `/dev`, `/boot`, `/etc`, `/bin`, `/sbin`, `/lib`, `/lib64`
 
 ```go
 import (
@@ -66,23 +87,24 @@ if err != nil {
 }
 
 // Create a new volume or get an existing one
-volume, err := client.Volume.Get(context.Background(), "my-volume")
+volume, err := client.Volume.Get(context.Background(), "my-awesome-volume")
 if err != nil {
 	// If volume doesn't exist, create it
-	volume, err = client.Volume.Create(context.Background(), "my-volume")
+	volume, err = client.Volume.Create(context.Background(), "my-awesome-volume")
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-// Mount the volume to the sandbox
 mountDir := "/home/daytona/volume"
 
-sandbox1, err := client.Create(context.Background(), types.SnapshotParams{
+// Recommended for per-user / per-tenant data: one volume, unique subpath per sandbox
+subpath := "users/alice"
+sandbox, err := client.Create(context.Background(), types.SnapshotParams{
 	SandboxBaseParams: types.SandboxBaseParams{
 		Language: types.CodeLanguagePython,
 		Volumes: []types.VolumeMount{
-			{VolumeID: volume.ID, MountPath: mountDir},
+			{VolumeID: volume.ID, MountPath: mountDir, Subpath: &subpath},
 		},
 	},
 })
@@ -90,14 +112,12 @@ if err != nil {
 	log.Fatal(err)
 }
 
-// Mount a specific subpath within the volume
-// This is useful for isolating data or implementing multi-tenancy
-subpath := "users/alice"
-sandbox2, err := client.Create(context.Background(), types.SnapshotParams{
+// Entire volume at mount path (omit Subpath) when all sandboxes should share the same tree
+_, err = client.Create(context.Background(), types.SnapshotParams{
 	SandboxBaseParams: types.SandboxBaseParams{
 		Language: types.CodeLanguagePython,
 		Volumes: []types.VolumeMount{
-			{VolumeID: volume.ID, MountPath: mountDir, Subpath: &subpath},
+			{VolumeID: volume.ID, MountPath: mountDir},
 		},
 	},
 })
@@ -119,43 +139,25 @@ import (
 )
 
 // Write to a file in the mounted volume
-err := sandbox1.FileSystem.UploadFile(context.Background(), []byte("Hello from Daytona volume!"), "/home/daytona/volume/example.txt")
+err := sandbox.FileSystem.UploadFile(context.Background(), []byte("Hello from Daytona volume!"), "/home/daytona/volume/example.txt")
 if err != nil {
     log.Fatal(err)
 }
 
 // When you're done with the sandbox, you can remove it
 // The volume will persist even after the sandbox is removed
-err = sandbox1.Delete(context.Background())
+err = sandbox.Delete(context.Background())
 if err != nil {
-    log.Fatal(err)
+	log.Fatal(err)
 }
 ```
-
-For more information, see the [Python SDK](../python-sdk/README.md), [TypeScript SDK](../typescript-sdk/README.md), [Ruby SDK](../ruby-sdk/README.md), and [Go SDK](./README.md) references.
 
 ## Get a volume by name
 
 Daytona provides an option to get a volume by its name.
 
 ```go
-import (
-    "context"
-    "fmt"
-    "log"
-
-    "github.com/daytonaio/daytona/libs/sdk-go/pkg/daytona"
-)
-
-client, err := daytona.NewClient()
-if err != nil {
-    log.Fatal(err)
-}
-volume, err := client.Volume.Get(context.Background(), "my-awesome-volume")
-if err != nil {
-    log.Fatal(err)
-}
-fmt.Printf("Volume %s is in state %s\n", volume.Name, volume.State)
+volume, err := client.Volume.Get(ctx, "my-awesome-volume")
 ```
 
 ## List volumes
@@ -163,26 +165,7 @@ fmt.Printf("Volume %s is in state %s\n", volume.Name, volume.State)
 Daytona provides an option to list all volumes.
 
 ```go
-import (
-    "context"
-    "fmt"
-    "log"
-
-    "github.com/daytonaio/daytona/libs/sdk-go/pkg/daytona"
-)
-
-client, err := daytona.NewClient()
-if err != nil {
-    log.Fatal(err)
-}
-volumes, err := client.Volume.List(context.Background())
-if err != nil {
-    log.Fatal(err)
-}
-fmt.Printf("Found %d volumes\n", len(volumes))
-for _, vol := range volumes {
-    fmt.Printf("%s (%s)\n", vol.Name, vol.ID)
-}
+volumes, err := client.Volume.List(ctx)
 ```
 
 ## Delete volumes
@@ -192,39 +175,19 @@ Daytona provides an option to delete a volume. Deleted volumes cannot be recover
 The following snippet demonstrate how to delete a volume:
 
 ```go
-import (
-    "context"
-    "log"
-
-    "github.com/daytonaio/daytona/libs/sdk-go/pkg/daytona"
-)
-
-client, err := daytona.NewClient()
-if err != nil {
-    log.Fatal(err)
-}
-volume, err := client.Volume.Get(context.Background(), "my-volume")
-if err != nil {
-    log.Fatal(err)
-}
-err = client.Volume.Delete(context.Background(), volume)
-if err != nil {
-    log.Fatal(err)
-}
+err := client.Volume.Delete(ctx, volume)
 ```
 
 ## Limitations
 
-Since volumes are FUSE-based mounts, they can not be used for applications that require block storage access (like database tables).
-Volumes are generally slower for both read and write operations compared to the local sandbox file system.
+Since volumes are FUSE-based mounts, they can not be used for applications that require block storage access (like database tables). Volumes are generally slower for both read and write operations compared to the local sandbox file system.
 
 ## Pricing & Limits
 
-Daytona Volumes are included at no additional cost. Each organization can create up to 100 volumes, and volume data does not count against your storage quota.
+Daytona volumes are included at no additional cost. Each organization can create up to 100 volumes, and volume data does not count against your storage quota.
 
-You can view your current volume usage in the [Daytona Dashboard ↗](https://app.daytona.io/dashboard/volumes).
+You can view your current volume usage in the [Daytona Volumes ↗](https://app.daytona.io/dashboard/volumes).
 
 ## See Also
-- [Go SDK - README](./README.md)
 - [Python SDK - volumes](../python-sdk/volumes.md)
 - [TypeScript SDK - volumes](../typescript-sdk/volumes.md)

@@ -163,5 +163,4 @@ await git.pull(
 ```
 
 ## See Also
-- [TypeScript SDK - git](./git.md)
 - [Python SDK - git-operations](../python-sdk/git-operations.md)

@@ -140,6 +140,5 @@ for _, symbol := range symbols {
 ```
 
 ## See Also
-- [Go SDK - README](./README.md)
 - [Python SDK - language-server-protocol](../python-sdk/language-server-protocol.md)
 - [TypeScript SDK - language-server-protocol](../typescript-sdk/language-server-protocol.md)

@@ -338,9 +338,6 @@ end
 - **Process management**: use explicit `kill()` calls and proper timeout handling for long-running processes
 
 ## See Also
-- [Ruby SDK - README](./README.md)
-- [Ruby SDK - process](./process.md)
-- [Ruby SDK - process#delete_pty_session](./process.md#delete_pty_session)
 - [Python SDK - pty](../python-sdk/pty.md)
 - [TypeScript SDK - pty](../typescript-sdk/pty.md)
 - [Go SDK - pty](../go-sdk/pty.md)

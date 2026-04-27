@@ -461,6 +461,5 @@ if result.ExitCode != nil && *result.ExitCode != 0 {
 - **Process management**: use explicit `kill()` calls and proper timeout handling for long-running processes
 
 ## See Also
-- [Go SDK - daytona#type-processservice](./daytona.md#type-processservice)
 - [Python SDK - pty](../python-sdk/pty.md)
 - [TypeScript SDK - pty](../typescript-sdk/pty.md)

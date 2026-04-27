@@ -19,6 +19,7 @@
 - POST `/organizations/{organizationId}/suspend`/suspend}
 - POST `/organizations/{organizationId}/unsuspend`/unsuspend}
 - GET `/organizations/otel-config/by-sandbox-auth-token/{authToken}`}
+- GET `/organizations/{organizationId}/otel-config`/otel-config}
 - POST `/organizations/{organizationId}/sandbox-default-limited-network-egress`/sandbox-default-limited-network-egress}
 - PUT `/organizations/{organizationId}/experimental-config`/experimental-config}
 - GET `/organizations/{organizationId}/roles`/roles}
@@ -272,6 +273,10 @@ Schema: **UpdateOrganizationRegionQuota**
 | `totalCpuQuota` | number | Yes |  |
 | `totalMemoryQuota` | number | Yes |  |
 | `totalDiskQuota` | number | Yes |  |
+| `maxCpuPerSandbox` | number | No |  |
+| `maxMemoryPerSandbox` | number | No |  |
+| `maxDiskPerSandbox` | number | No |  |
+| `maxDiskPerNonEphemeralSandbox` | number | No |  |
 
 ### Responses
 
@@ -354,6 +359,24 @@ Schema: **OrganizationSuspension**
 | Name | In | Type | Required | Description |
 |------|-----|------|----------|-------------|
 | `authToken` | path | string | Yes | Sandbox Auth Token |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OTEL Config | OtelConfig |
+
+---
+
+## GET `/organizations/{organizationId}/otel-config` {#daytona/tag/organizations/GET/organizations/{organizationId}/otel-config}
+
+**Get organization OTEL config by organization ID**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `organizationId` | path | string | Yes | Organization ID |
 
 ### Responses
 

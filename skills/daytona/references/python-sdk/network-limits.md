@@ -8,7 +8,6 @@
 - Security benefits
 - Essential services
 - Troubleshooting
-- See Also
 
 
 
@@ -206,9 +205,6 @@ Daytona provides a list of essential services that are available on all tiers an
 
 If you encounter network access issues or need unrestricted network access:
 
-1. Verify your [organization tier](../platform/limits.md#tier-upgrade) in the [Daytona Dashboard ↗](https://app.daytona.io/dashboard/limits)
+1. Verify your [organization tier](../platform/limits.md#tiers) in the [Daytona Dashboard ↗](https://app.daytona.io/dashboard/limits)
 2. Verify your [network allow list](#network-allow-list-format) configuration
 3. Contact [support@daytona.io](mailto:support@daytona.io) for assistance
-
-## See Also
-- [Python SDK - daytona#createsandboxbaseparams](./sync/daytona.md#createsandboxbaseparams)

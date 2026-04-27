@@ -22,7 +22,7 @@ It serves as the primary point of control for managing your Daytona resources.
 
 ## SDKs
 
-Daytona provides [Python](../python-sdk/README.md), [TypeScript](./README.md), [Ruby](../ruby-sdk/README.md), and [Go](../go-sdk/README.md) SDKs to programmatically interact with sandboxes. They support sandbox lifecycle management, code execution, resource access, and more.
+Daytona provides [Python](../python-sdk/README.md), [TypeScript](./README.md), [Ruby](../ruby-sdk/README.md), [Go](../go-sdk/README.md), and [Java](https://www.daytona.io/docs/en/java-sdk) SDKs to programmatically interact with sandboxes. They support sandbox lifecycle management, code execution, resource access, and more.
 
 ## CLI
 
@@ -146,14 +146,12 @@ export default nextConfig
 
 ## Guides
 
-Daytona provides a comprehensive set of guides to help you get started. The guides cover a wide range of topics, from basic usage to advanced topics, and showcase various types of integrations between Daytona and other tools.
-
-For more information, see [guides](https://www.daytona.io/docs/en/guides).
+Daytona provides a comprehensive set of [guides](https://www.daytona.io/docs/en/guides) to help you get started. The guides cover a wide range of topics, from basic usage to advanced topics, and showcase various types of integrations between Daytona and other tools.
 
 ## Examples
 
 Daytona provides quick examples for common sandbox operations and best practices. <br />
-The examples are based on the Daytona [Python SDK](../python-sdk/sync/process.md), [TypeScript SDK](./process.md), [Go SDK](../go-sdk/daytona.md#type-processservice), [Ruby SDK](../ruby-sdk/process.md), [CLI](../cli.md), and [API](../api/README.md) references. More examples are available in the [GitHub repository ↗](https://github.com/daytonaio/daytona/tree/main/examples).
+The examples are based on the Daytona [Python](../python-sdk/README.md), [TypeScript](./README.md), [Go](../go-sdk/README.md), [Ruby](../ruby-sdk/README.md), [Java](https://www.daytona.io/docs/en/java-sdk) **SDKs**, [CLI](../cli.md), and [API](../api/README.md) references. More examples are available in our [GitHub repository](https://github.com/daytonaio/daytona/tree/main/examples).
 
 ### Create a sandbox
 

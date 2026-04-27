@@ -344,6 +344,7 @@ await sandbox.computerUse.recording.download(recording.id, downloadPath);
 > - **TypeScript**: Uses Node.js `pipeline()` with backpressure handling
 > - **Ruby**: Uses Typhoeus streaming with `on_body` callbacks
 > - **Go**: Uses `io.Copy()` with 32KB internal buffer
+> - **Java**: The OpenAPI client streams the response body into a temporary file via OkHttp
 
 ### Recording Dashboard
 
@@ -391,5 +392,4 @@ windows.windows.forEach(window => {
 ```
 
 ## See Also
-- [TypeScript SDK - computer-use](./computer-use.md)
 - [Python SDK - computer-use-guide](../python-sdk/computer-use-guide.md)

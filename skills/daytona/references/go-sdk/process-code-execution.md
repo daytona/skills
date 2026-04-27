@@ -274,8 +274,6 @@ if result != nil && result.ExitCode != 0 {
 }
 ```
 
-For more information, see the [Python SDK](../python-sdk/README.md), [TypeScript SDK](../typescript-sdk/README.md), [Ruby SDK](../ruby-sdk/README.md), and [Go SDK](./README.md) references.
-
 ## Common issues
 
 Daytona provides solutions for troubleshooting common issues related to process and code execution.
@@ -287,6 +285,5 @@ Daytona provides solutions for troubleshooting common issues related to process 
 | Resource limits          | • Monitor process memory usage<br/>• Handle process cleanup properly<br/>• Use appropriate resource constraints |
 
 ## See Also
-- [Go SDK - README](./README.md)
 - [Python SDK - process-code-execution](../python-sdk/process-code-execution.md)
 - [TypeScript SDK - process-code-execution](../typescript-sdk/process-code-execution.md)

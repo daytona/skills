@@ -22,7 +22,7 @@ Webhooks enable powerful automation and integration scenarios:
 - **Integration**: connect Daytona with existing tools like Slack, Discord, or custom applications
 - **Audit & compliance**: maintain detailed logs of all important changes
 > **Note:**
-> Webhooks are available to organization admins and members with appropriate permissions. If you don't see **Webhooks** in [Daytona Dashboard ↗](https://app.daytona.io/dashboard), contact [support@daytona.io](mailto:support@daytona.io) to enable webhooks for your organization. Provide your organization ID (found in your organization settings) when requesting access.
+> Webhooks are available to organization admins and members with appropriate permissions. If you don't see **Webhooks** in [Daytona Dashboard ↗](https://app.daytona.io/dashboard), contact [support@daytona.io](mailto:support@daytona.io) to enable webhooks for your organization.
 
 ## Accessing webhooks
 
@@ -101,12 +101,6 @@ Daytona provides a webhook management interface to delete webhook endpoints.
 ## Webhook events
 
 Daytona sends webhooks for lifecycle events across your infrastructure resources. You can subscribe to specific event types or receive all events and filter them in your application.
-
-For more information, see the [API](../api/README.md#daytona/tag/webhooks) reference:
-
-> [**Send a webhook message (API)**](../api/README.md#daytona/tag/webhooks/POST/webhooks/organizations/{organizationId}/send)
->
-> [**Get delivery attempts for a webhook message (API)**](../api/README.md#daytona/tag/webhooks/GET/webhooks/organizations/{organizationId}/messages/{messageId}/attempts)
 
 ### Sandbox events
 

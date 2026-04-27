@@ -19,8 +19,8 @@ To configure your environment in code, use the `DaytonaConfig` class. The `Dayto
 require 'daytona'
 
 config = Daytona::Config.new(
-  api_key: 'your-api-key',
-  api_url: 'your-api-url',
+  api_key: 'YOUR_API_KEY',
+  api_url: 'YOUR_API_URL',
   target: 'us'
 )
 ```
@@ -75,7 +75,6 @@ If no configuration is provided, Daytona will use its built-in default values:
 | Target     | Default region for the organization |
 
 ## See Also
-- [Ruby SDK - daytona](./daytona.md)
 - [Python SDK - configuration](../python-sdk/configuration.md)
 - [TypeScript SDK - configuration](../typescript-sdk/configuration.md)
 - [Go SDK - configuration](../go-sdk/configuration.md)

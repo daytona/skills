@@ -30,8 +30,6 @@ brew install daytonaio/cli/daytona
 powershell -Command "irm https://get.daytona.io/windows | iex"
 ```
 
-For more information, see the [CLI](../cli.md) reference.
-
 ## Authenticate with Daytona
 
 Authenticate with Daytona to enable MCP server access.
@@ -41,10 +39,6 @@ Authenticate with Daytona to enable MCP server access.
 ```bash
 daytona login
 ```
-
-For more information, see the [CLI](../cli.md#daytona-login) reference:
-
-> [**login (CLI)**](../cli.md#daytona-login)
 
 ## Initialize MCP server
 
@@ -64,10 +58,6 @@ daytona mcp init windsurf
 ```
 
 After initialization, open your AI agent application to begin using Daytona features.
-
-For more information, see the [CLI](../cli.md#daytona-mcp-init) reference:
-
-> [**mcp init (CLI)**](../cli.md#daytona-mcp-init)
 
 ## Configure MCP server
 
@@ -103,10 +93,6 @@ This command outputs a JSON configuration that you can copy into your agent's se
 > "APPDATA": "${APPDATA}"
 > ```
 
-For more information, see the [CLI](../cli.md#daytona-mcp-config) reference:
-
-> [**mcp config (CLI)**](../cli.md#daytona-mcp-config)
-
 ## Start MCP server
 
 Daytona provides methods to manually start the MCP server.
@@ -116,10 +102,6 @@ Daytona provides methods to manually start the MCP server.
 ```bash
 daytona mcp start
 ```
-
-For more information, see the [CLI](../cli.md#daytona-mcp-start) reference:
-
-> [**mcp start (CLI)**](../cli.md#daytona-mcp-start)
 
 ## Available tools
 

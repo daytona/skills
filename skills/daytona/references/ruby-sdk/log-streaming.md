@@ -6,6 +6,7 @@
 
 
 
+
 Log streaming allows you to access and process logs as they are being produced, while the process is still running. When executing long-running processes in a sandbox, you often want to access and process their logs in **real-time**.
 
 Real-time streaming is especially useful for **debugging**, **monitoring**, or integrating with **observability tools**.
@@ -27,7 +28,6 @@ This is ideal for:
 - Continuous monitoring
 - Debugging long-running jobs
 - Live log forwarding or visualizations
-
 
 ```ruby
 require 'daytona'
@@ -65,18 +65,6 @@ log_thread.join
 
 daytona.delete(sandbox)
 ```
-
-For more information, see the [Python SDK](../python-sdk/sync/process.md), [TypeScript SDK](../typescript-sdk/process.md), [Ruby SDK](./process.md), [Go SDK](../go-sdk/README.md), and [API](../api/README.md#daytona-toolbox/tag/process) references.
-
-> [**get_session_command_logs_async (Python SDK)**](../python-sdk/sync/process.md#processget_session_command_logs_async)
->
-> [**getSessionCommandLogs (TypeScript SDK)**](../typescript-sdk/process.md#getsessioncommandlogs)
->
-> [**get_session_command_logs_async (Ruby SDK)**](./process.md#get_session_command_logs_async)
->
-> [**GetSessionCommandLogsStream (Go SDK)**](../go-sdk/daytona.md#ProcessService.GetSessionCommandLogsStream)
->
-> [**get session command logs (API)**](../api/README.md#daytona-toolbox/tag/process/POST/process/session/{sessionId}/exec)
 
 ## Retrieve all existing logs
 
@@ -119,18 +107,6 @@ puts "[OUTPUT]: #{logs.output}"
 
 daytona.delete(sandbox)
 ```
-
-For more information, see the [Python SDK](../python-sdk/sync/process.md), [TypeScript SDK](../typescript-sdk/process.md), [Ruby SDK](./process.md), [Go SDK](../go-sdk/README.md), and [API](../api/README.md#daytona-toolbox/tag/process) references.
-
-> [**get_session_command_logs (Python SDK)**](../python-sdk/sync/process.md#processget_session_command_logs)
->
-> [**getSessionCommandLogs (TypeScript SDK)**](../typescript-sdk/process.md#getsessioncommandlogs)
->
-> [**get_session_command_logs (Ruby SDK)**](./process.md#get_session_command_logs)
->
-> [**GetSessionCommandLogs (Go SDK)**](../go-sdk/daytona.md#ProcessService.GetSessionCommandLogs)
->
-> [**get session command logs (API)**](../api/README.md#daytona-toolbox/tag/process/POST/process/session/{sessionId}/exec)
 
 ## See Also
 - [Python SDK - log-streaming](../python-sdk/log-streaming.md)
