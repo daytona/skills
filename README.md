@@ -4,6 +4,12 @@ An agent skill for creating and running sandboxes on the Daytona platform. Inclu
 
 ## Installation
 
+### Skills
+
+```bash
+npx skills add https://github.com/daytona/skills --skill daytona
+```
+
 ### Claude Code (Plugin)
 
 ```bash
