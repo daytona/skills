@@ -232,6 +232,47 @@ puts "Size of the downloaded file: #{size_mb} MB"
 
 ```
 
+#### download_file_stream()
+
+```ruby
+def download_file_stream(remote_path, timeout:)
+
+```
+
+Downloads a single file from the Sandbox as a stream without buffering the entire
+file into memory. Yields file content in chunks to the given block, or returns an
+Enumerator if no block is given.
+
+**Parameters**:
+
+- `remote_path` _String_ - Path to the file in the Sandbox. Relative paths are resolved
+based on the sandbox working directory.
+- `timeout` _Integer_ - Timeout for the download operation in seconds. 0 means no timeout.
+Default is 30 minutes.
+
+**Returns**:
+
+- `Enumerator, nil` - An Enumerator yielding chunks if no block given, nil otherwise
+
+**Raises**:
+
+- `Daytona:Sdk:Error` - If the file does not exist or the operation fails
+
+**Examples:**
+
+```ruby
+File.open("local_copy.bin", "wb") do |f|
+  sandbox.fs.download_file_stream("workspace/large-file.bin") { |chunk| f.write(chunk) }
+end
+
+```
+
+```ruby
+content = sandbox.fs.download_file_stream("workspace/data.json").reduce(:+)
+puts content
+
+```
+
 #### upload_file()
 
 ```ruby

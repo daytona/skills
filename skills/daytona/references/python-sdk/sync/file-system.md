@@ -149,6 +149,50 @@ size_mb = os.path.getsize(local_path) / 1024 / 1024
 print(f"Size of the downloaded file {local_path}: {size_mb} MB")
 ```
 
+#### FileSystem.download\_file\_stream
+
+```python
+@intercept_errors(message_prefix="Failed to download file: ")
+@with_instrumentation()
+def download_file_stream(remote_path: str,
+                         timeout: int = 30 * 60) -> Iterator[bytes]
+```
+
+Downloads a single file from the Sandbox as a stream without buffering the entire file
+into memory. Returns an iterator that yields file content in chunks, which can be piped
+directly to an HTTP response, written to a file incrementally, or processed on the fly.
+
+**Arguments**:
+
+- `remote_path` _str_ - Path to the file in the Sandbox. Relative paths are resolved based
+  on the sandbox working directory.
+- `timeout` _int_ - Timeout for the download operation in seconds. 0 means no timeout.
+  Default is 30 minutes.
+
+
+**Returns**:
+
+- `Iterator[bytes]` - An iterator yielding chunks of file content as bytes.
+
+
+**Raises**:
+
+- `DaytonaError` - If the file does not exist or access is denied.
+
+
+**Example**:
+
+```python
+# Stream to a local file without loading into memory
+with open("local_copy.bin", "wb") as f:
+    for chunk in sandbox.fs.download_file_stream("workspace/large-file.bin"):
+        f.write(chunk)
+
+# Stream to an HTTP response (Flask)
+return Response(sandbox.fs.download_file_stream("workspace/report.pdf"),
+                mimetype="application/pdf")
+```
+
 #### FileSystem.download\_files
 
 ```python
@@ -647,6 +691,16 @@ def create_file_download_error(response: FileDownloadResponse) -> DaytonaError
 ```
 
 Create the appropriate Daytona exception for a failed file download response.
+
+#### raise\_if\_stream\_error
+
+```python
+def raise_if_stream_error(remote_path: str, error_text: str | None,
+                          error_details: FileDownloadErrorDetails | None,
+                          received_file_data: bool) -> None
+```
+
+Raise the appropriate error after streaming a single-file multipart download.
 
 #### parse\_file\_download\_error\_payload
 

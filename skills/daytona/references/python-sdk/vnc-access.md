@@ -94,7 +94,7 @@ sandbox.computer_use.mouse.click(50, 50)
 
 # Type a URL
 sandbox.computer_use.keyboard.type("https://www.daytona.io/docs/")
-sandbox.computer_use.keyboard.press("Return")
+sandbox.computer_use.keyboard.press("enter")
 
 # Take a screenshot
 screenshot = sandbox.computer_use.screenshot.take_full_screen()

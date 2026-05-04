@@ -155,6 +155,7 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(f \*FileSystemService\) CreateFolder\(ctx context.Context, path string, opts ...func\(\*options.CreateFolder\)\) error](https://www.daytona.io/docs/en<#FileSystemService.CreateFolder>)
   - [func \(f \*FileSystemService\) DeleteFile\(ctx context.Context, path string, recursive bool\) error](https://www.daytona.io/docs/en<#FileSystemService.DeleteFile>)
   - [func \(f \*FileSystemService\) DownloadFile\(ctx context.Context, remotePath string, localPath \*string\) \(\[\]byte, error\)](<#FileSystemService.DownloadFile>)
+  - [func \(f \*FileSystemService\) DownloadFileStream\(ctx context.Context, remotePath string\) \(io.ReadCloser, error\)](https://www.daytona.io/docs/en<#FileSystemService.DownloadFileStream>)
   - [func \(f \*FileSystemService\) FindFiles\(ctx context.Context, path, pattern string\) \(any, error\)](https://www.daytona.io/docs/en<#FileSystemService.FindFiles>)
   - [func \(f \*FileSystemService\) GetFileInfo\(ctx context.Context, path string\) \(\*types.FileInfo, error\)](https://www.daytona.io/docs/en<#FileSystemService.GetFileInfo>)
   - [func \(f \*FileSystemService\) ListFiles\(ctx context.Context, path string\) \(\[\]\*types.FileInfo, error\)](<#FileSystemService.ListFiles>)
@@ -1437,6 +1438,45 @@ data, err := sandbox.FileSystem.DownloadFile(ctx, "/home/user/file.txt", &localP
 
 Returns an error if the file doesn't exist or cannot be read.
 
+<a name="FileSystemService.DownloadFileStream"></a>
+### func \(\*FileSystemService\) DownloadFileStream
+
+```go
+func (f *FileSystemService) DownloadFileStream(ctx context.Context, remotePath string) (io.ReadCloser, error)
+```
+
+DownloadFileStream downloads a single file from the sandbox as a stream without buffering the entire file into memory. The returned [io.ReadCloser](https://www.daytona.io/docs/en<https://pkg.go.dev/io#ReadCloser>) can be piped directly to an HTTP response, written to a file, or processed on the fly.
+
+The caller must close the returned [io.ReadCloser](https://www.daytona.io/docs/en<https://pkg.go.dev/io#ReadCloser>) when done.
+
+Parameters:
+
+- remotePath: Path to the file in the sandbox. Relative paths are resolved based on the sandbox working directory.
+
+Returns an [io.ReadCloser](https://www.daytona.io/docs/en<https://pkg.go.dev/io#ReadCloser>) streaming the file content.
+
+Example:
+
+```
+// Stream to an HTTP response
+stream, err := sandbox.FileSystem.DownloadFileStream(ctx, "workspace/report.pdf")
+if err != nil {
+    log.Fatal(err)
+}
+defer stream.Close()
+io.Copy(w, stream) // w is an http.ResponseWriter
+
+// Stream to a local file
+stream, err := sandbox.FileSystem.DownloadFileStream(ctx, "workspace/large-file.bin")
+if err != nil {
+    log.Fatal(err)
+}
+defer stream.Close()
+out, _ := os.Create("local-copy.bin")
+defer out.Close()
+io.Copy(out, stream)
+```
+
 <a name="FileSystemService.FindFiles"></a>
 ### func \(\*FileSystemService\) FindFiles
 
@@ -2076,7 +2116,7 @@ Hotkey executes a keyboard shortcut.
 
 Parameters:
 
-- keys: The hotkey combination as a string \(e.g., "ctrl\+c", "alt\+tab"\)
+- keys: A single atomic hotkey chord as a string \(e.g., "ctrl\+c", "alt\+tab", "cmd\+shift\+t", "ctrl \+ c", "shift"\). Uses the same normalized key contract as Press.
 
 Example:
 
@@ -2104,14 +2144,14 @@ Press simulates pressing a key with optional modifiers.
 
 Parameters:
 
-- key: The key to press \(e.g., "a", "Enter", "Tab", "F1"\)
-- modifiers: Modifier keys to hold \(e.g., "ctrl", "alt", "shift", "meta"\)
+- key: The key to press. Canonical names include "enter", "escape", "tab", letters, digits, unshifted punctuation, function keys, and grammar\-safe numpad names such as "num\_plus". Named keys are case\-insensitive, and common aliases such as "Return" and "Escape" are normalized.
+- modifiers: Canonical modifier names are "ctrl", "alt", "shift", and "cmd". Common aliases such as "control", "option", "meta", and "win" are normalized.
 
 Example:
 
 ```
 // Press Enter
-err := keyboard.Press(ctx, "Enter", nil)
+err := keyboard.Press(ctx, "enter", nil)
 
 // Press Ctrl+S
 err := keyboard.Press(ctx, "s", []string{"ctrl"})
@@ -2506,7 +2546,7 @@ Scroll performs a mouse scroll operation at the specified coordinates.
 Parameters:
 
 - x, y: Coordinates where the scroll occurs
-- direction: Scroll direction \("up", "down", "left", "right"\)
+- direction: Scroll direction \("up", "down"\)
 - amount: Scroll amount, nil for default
 
 Example:

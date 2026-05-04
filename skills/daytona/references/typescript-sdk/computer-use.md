@@ -319,7 +319,7 @@ Presses a hotkey combination
 
 **Parameters**:
 
-- `keys` _string_ - The hotkey combination (e.g., 'ctrl+c', 'alt+tab', 'cmd+shift+t')
+- `keys` _string_ - A single atomic hotkey chord (e.g., 'ctrl+c', 'alt+tab', 'cmd+shift+t', 'ctrl + c', 'shift'). Uses the same normalized key contract as `press()`.
 
 
 **Returns**:
@@ -370,8 +370,8 @@ Presses a key with optional modifiers
 
 **Parameters**:
 
-- `key` _string_ - The key to press (e.g., 'Enter', 'Escape', 'Tab', 'a', 'A')
-- `modifiers?` _string\[\] = \[\]_ - Modifier keys ('ctrl', 'alt', 'meta', 'shift')
+- `key` _string_ - The key to press. Canonical names include 'enter', 'escape', 'tab', letters, digits, unshifted punctuation, function keys, and grammar-safe numpad names such as 'num_plus'. Named keys are case-insensitive, and common aliases such as 'Return' and 'Escape' are normalized.
+- `modifiers?` _string\[\] = \[\]_ - Canonical modifier names are 'ctrl', 'alt', 'shift', and 'cmd'. Common aliases such as 'control', 'option', 'meta', and 'win' are normalized.
 
 
 **Returns**:
@@ -387,7 +387,7 @@ If the press operation fails
 ```typescript
 // Press Enter
 try {
-  await sandbox.computerUse.keyboard.press('Return');
+  await sandbox.computerUse.keyboard.press('enter');
   console.log('Operation success');
 } catch (e) {
   console.log('Operation failed:', e);
@@ -548,7 +548,7 @@ Drags the mouse from start coordinates to end coordinates
 
 ```typescript
 const result = await sandbox.computerUse.mouse.drag(50, 50, 150, 150);
-console.log(`Dragged from ${result.from.x},${result.from.y} to ${result.to.x},${result.to.y}`);
+console.log(`Drag ended at: ${result.x}, ${result.y}`);
 ```
 
 ***

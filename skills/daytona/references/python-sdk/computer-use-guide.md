@@ -95,7 +95,7 @@ print("X11VNC errors:", errors)
 
 ### Click
 
-Click the mouse at the specified coordinates.
+Click the mouse at the specified coordinates. `button` is one of `left`, `right`, or `middle` (case-insensitive; defaults to `left`); other values return an error.
 
 ```python
 # Single left click
@@ -123,12 +123,12 @@ Drag the mouse from start coordinates to end coordinates.
 
 ```python
 result = sandbox.computer_use.mouse.drag(50, 50, 150, 150)
-print(f"Dragged from {result.from_x},{result.from_y} to {result.to_x},{result.to_y}")
+print(f"Drag ended at {result.x}, {result.y}")
 ```
 
 ### Scroll
 
-Scroll the mouse wheel at the specified coordinates.
+Scroll the mouse wheel at the specified coordinates. `direction` is `up` or `down` (other values return an error). `amount` is the number of scroll wheel ticks to send — one tick is roughly one notch of a physical mouse wheel, which moves a few lines in most apps. Defaults to 1 if omitted.
 
 ```python
 # Scroll up
@@ -151,7 +151,7 @@ print(f"Mouse is at: {position.x}, {position.y}")
 
 ### Type
 
-Type the specified text.
+Types arbitrary text, including uppercase letters, symbols, and non-ASCII characters. Newlines (`\n`, `\r`, `\r\n`) are translated into Enter key presses; literal tab and other control characters are rejected.
 
 ```python
 sandbox.computer_use.keyboard.type("Hello, World!")
@@ -166,7 +166,7 @@ Press a key with optional modifiers.
 
 ```python
 # Press Enter
-sandbox.computer_use.keyboard.press("Return")
+sandbox.computer_use.keyboard.press("enter")
 
 # Press Ctrl+C
 sandbox.computer_use.keyboard.press("c", ["ctrl"])
@@ -189,6 +189,23 @@ sandbox.computer_use.keyboard.hotkey("ctrl+v")
 # Alt+Tab
 sandbox.computer_use.keyboard.hotkey("alt+tab")
 ```
+
+### Supported keys
+
+`keyboard.press()` and `keyboard.hotkey()` are case-insensitive for named keys. The following are supported:
+
+| Category           | Keys                                                                                                                            |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| Modifiers          | `ctrl`, `alt`, `shift`, `cmd`                                                                                                   |
+| Editing            | `enter`, `escape`, `tab`, `backspace`, `delete`, `space`                                                                        |
+| Navigation         | `home`, `end`, `pageup`, `pagedown`, `insert`, arrow keys (`up`, `down`, `left`, `right`)                                       |
+| Function keys      | `f1` through `f24`                                                                                                              |
+| Numpad             | `num0`–`num9`, `num_plus`, `num_minus`, `num_asterisk`, `num_slash`, `num_decimal`, `num_enter`, `num_equal`, `num_lock`        |
+| Letters and digits | `a`–`z` (case-insensitive), `0`–`9`                                                                                             |
+| Punctuation        | `` ` `` `-` `=` `[` `]` `\` `;` `'` `,` `.` `/`                                                                                 |
+| Other              | `capslock`, `menu`                                                                                                              |
+
+Common aliases like `Return` → `enter`, `control` → `ctrl`, `command` / `meta` / `win` → `cmd`, and `option` → `alt` are normalized automatically. Unsupported or malformed inputs return an error, sometimes with a suggested alternative.
 
 ## Screenshot operations
 

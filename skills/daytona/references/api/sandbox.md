@@ -215,6 +215,7 @@ Schema: **CreateSandbox**
 |------|-----|------|----------|-------------|
 | `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
 | `sandboxIdOrName` | path | string | Yes | ID or name of the sandbox |
+| `skipStart` | query | boolean | No | If true, the sandbox is left in STOPPED after recovery instead of being started. |
 
 ### Responses
 
