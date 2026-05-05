@@ -8,6 +8,7 @@
 - Index
 - func ConvertAPIError
 - func ConvertToolboxError
+- func NewDaytonaErrorFromBody
 - type DaytonaError
 - type DaytonaNotFoundError
 - type DaytonaRateLimitError
@@ -22,6 +23,7 @@ import "github.com/daytonaio/daytona/libs/sdk-go/pkg/errors"
 
 - [func ConvertAPIError\(err error, httpResp \*http.Response\) error](https://www.daytona.io/docs/en<#ConvertAPIError>)
 - [func ConvertToolboxError\(err error, httpResp \*http.Response\) error](https://www.daytona.io/docs/en<#ConvertToolboxError>)
+- [func NewDaytonaErrorFromBody\(body \[\]byte, statusCode int, headers http.Header\) error](<#NewDaytonaErrorFromBody>)
 - [type DaytonaError](https://www.daytona.io/docs/en<#DaytonaError>)
   - [func NewDaytonaError\(message string, statusCode int, headers http.Header\) \*DaytonaError](https://www.daytona.io/docs/en<#NewDaytonaError>)
   - [func \(e \*DaytonaError\) Error\(\) string](https://www.daytona.io/docs/en<#DaytonaError.Error>)
@@ -53,6 +55,15 @@ func ConvertToolboxError(err error, httpResp *http.Response) error
 ```
 
 ConvertToolboxError converts toolbox\-api\-client\-go errors to SDK error types
+
+<a name="NewDaytonaErrorFromBody"></a>
+## func NewDaytonaErrorFromBody
+
+```go
+func NewDaytonaErrorFromBody(body []byte, statusCode int, headers http.Header) error
+```
+
+NewDaytonaErrorFromBody parses a JSON response body and maps the status code to the appropriate SDK error type. Falls back to the raw body as the message.
 
 <a name="DaytonaError"></a>
 ## type DaytonaError

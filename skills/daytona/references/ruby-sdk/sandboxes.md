@@ -166,7 +166,8 @@ daytona.list
 [Daytona Dashboard ↗](https://app.daytona.io/dashboard/) provides a sandbox details page to view detailed information about a sandbox and interact with it directly.
 
 1. Navigate to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
-2. Click on a sandbox to open its details page
+2. Click on a sandbox you want to view the details of
+3. Click **View** to open the sandbox details page
 
 The sandbox details page provides a summary of the sandbox information and actions to perform on the sandbox:
 
@@ -181,6 +182,7 @@ The sandbox details page provides a summary of the sandbox information and actio
 - **Labels**: key-value pairs assigned to the sandbox
 - **Timestamps**: when the sandbox was created and when the last event occurred
 - [**Web terminal**](../platform/web-terminal.md): an embedded web terminal session directly in the browser
+- **Filesystem**: sandbox filesystem tree for viewing and managing files and directories: create, upload, download, copy, refresh, collapse, search, and delete capabilities
 - [**VNC**](./vnc-access.md): a graphical desktop session for sandboxes that have a desktop environment
 - [**Logs**](https://www.daytona.io/docs/en/experimental/otel-collection): a detailed record of user and system activity for the sandbox
 - **Metrics**: sandbox metrics data displayed as charts
@@ -297,7 +299,7 @@ The fork tree displays each sandbox in the hierarchy along with its current stat
 > **Caution: Experimental**
 > This feature is experimental. To request access, contact [support@daytona.io](mailto:support@daytona.io).
 
-Daytona provides methods to create [snapshots](./snapshots.md) from sandboxes. Snapshots are immutable copies of a sandbox's filesystem that can be used to create new sandboxes.
+Daytona provides methods to create [snapshots](./snapshots.md) from sandboxes. A snapshot captures an immutable, point-in-time copy of a sandbox's filesystem and memory that you can use as a base to create new sandboxes, effectively templating a known-good environment for reuse. You can think of it as a checkpoint you can restore from whenever you need a clean, identical starting point.
 
 ```ruby
 # Create snapshot from sandbox

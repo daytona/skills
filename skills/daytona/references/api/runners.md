@@ -23,6 +23,7 @@
 
 | Name | In | Type | Required | Description |
 |------|-----|------|----------|-------------|
+| `regionId` | query | string | No | Filter runners by region ID |
 | `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
 
 ### Responses

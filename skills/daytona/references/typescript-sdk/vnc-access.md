@@ -95,7 +95,7 @@ await sandbox.computerUse.mouse.click(50, 50);
 
 // Type a URL
 await sandbox.computerUse.keyboard.type('https://www.daytona.io/docs/');
-await sandbox.computerUse.keyboard.press('Return');
+await sandbox.computerUse.keyboard.press('enter');
 
 // Take a screenshot
 const screenshot = await sandbox.computerUse.screenshot.takeFullScreen();

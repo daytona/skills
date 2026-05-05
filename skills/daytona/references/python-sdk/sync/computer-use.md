@@ -336,7 +336,7 @@ Drags the mouse from start coordinates to end coordinates.
 
 ```python
 result = sandbox.computer_use.mouse.drag(50, 50, 150, 150)
-print(f"Dragged from {result.from_x},{result.from_y} to {result.to_x},{result.to_y}")
+print(f"Drag ended at {result.x}, {result.y}")
 ```
 
 #### Mouse.scroll
@@ -430,8 +430,14 @@ Presses a key with optional modifiers.
 
 **Arguments**:
 
-- `key` _str_ - The key to press (e.g., 'Enter', 'Escape', 'Tab', 'a', 'A').
-- `modifiers` _list[str]_ - Modifier keys ('ctrl', 'alt', 'meta', 'shift').
+- `key` _str_ - The key to press. Canonical names include 'enter', 'escape',
+  'tab', letters, digits, unshifted punctuation, function keys, and
+  grammar-safe numpad names such as 'num_plus'. Named keys are
+  case-insensitive, and common aliases such as 'Return' and 'Escape'
+  are normalized.
+- `modifiers` _list[str]_ - Canonical modifier names are 'ctrl', 'alt',
+  'shift', and 'cmd'. Common aliases such as 'control', 'option',
+  'meta', and 'win' are normalized.
 
 
 **Raises**:
@@ -444,7 +450,7 @@ Presses a key with optional modifiers.
 ```python
 # Press Enter
 try:
-    sandbox.computer_use.keyboard.press("Return")
+    sandbox.computer_use.keyboard.press("enter")
     print(f"Operation success")
 except Exception as e:
     print(f"Operation failed: {e}")
@@ -474,7 +480,9 @@ Presses a hotkey combination.
 
 **Arguments**:
 
-- `keys` _str_ - The hotkey combination (e.g., 'ctrl+c', 'alt+tab', 'cmd+shift+t').
+- `keys` _str_ - A single atomic hotkey chord (e.g., 'ctrl+c', 'alt+tab',
+  'cmd+shift+t', 'ctrl + c', 'shift'). Uses the same normalized key
+  contract as ``press()``.
 
 
 **Raises**:

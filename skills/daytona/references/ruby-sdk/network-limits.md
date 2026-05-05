@@ -2,6 +2,7 @@
 
 - Tier-based network restrictions
 - Create sandboxes with network restrictions
+- Update network settings while a sandbox is running
 - Network allow list format
 - Organization configuration
 - Test network access
@@ -52,9 +53,37 @@ sandbox = daytona.create(
 > **Note:**
 > If both `networkBlockAll` and `networkAllowList` are specified, `networkBlockAll` takes precedence and all network access will be blocked, ignoring the allow list.
 
+## Update network settings while a sandbox is running
+
+Daytona provides methods to update network settings for running sandboxes. Organizations on [Tier 3 and Tier 4](#tier-based-network-restrictions) can change outbound firewall policy after the sandbox is created. The API applies the new rules on the runner and persists them on the sandbox record. The sandbox keeps running; stop or start are not required.
+
+The request must include at least one of `networkBlockAll` or `networkAllowList`. Rules match create-time behavior and use the same [allow list format](#network-allow-list-format).
+
+- Sending `networkAllowList` as an empty string clears a stored allow list
+- Sending `networkBlockAll: true` blocks all outbound traffic and clears the allow list
+- Sending only `networkBlockAll: false` restores general outbound access (for your tier) and clears a stored allow list
+
+This operation requires the `WRITE_SANDBOXES` permission. Organizations on Tier 1 or Tier 2 cannot override network policy at the sandbox level, and the API returns an error in that case.
+
+```ruby
+# Block all outbound traffic (clears any allow list)
+sandbox.update_network_settings(network_block_all: true)
+
+# Restore general outbound access and clear the allow list
+sandbox.update_network_settings(network_block_all: false)
+
+# Apply or replace a CIDR allow list (implies not blocking all)
+sandbox.update_network_settings(
+  network_allow_list: '208.80.154.232/32,192.168.1.0/24'
+)
+
+# Clear the allow list (empty string)
+sandbox.update_network_settings(network_allow_list: '')
+```
+
 ## Network allow list format
 
-The network allow list is a comma-separated list of IPv4 CIDR blocks. Set your allowed networks using the `networkAllowList` parameter when [creating a sandbox](./sandboxes.md#create-sandboxes).
+The network allow list is a comma-separated list of IPv4 CIDR blocks. Set your allowed networks using the `networkAllowList` parameter when [creating a sandbox](./sandboxes.md#create-sandboxes) or when [updating settings on a running sandbox](#update-network-settings-while-a-sandbox-is-running).
 
 - **IPv4 only**: hostnames, domains, and IPv6 are not supported
 - **CIDR required**: every entry must include a `/` prefix length integer in the range `0` to `32` (inclusive), for example: `/32`

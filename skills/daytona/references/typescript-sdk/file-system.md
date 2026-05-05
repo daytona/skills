@@ -195,6 +195,47 @@ results.forEach(result => {
 
 ***
 
+#### downloadFileStream()
+
+```ts
+downloadFileStream(remotePath: string, timeout?: number): Promise<Readable>
+```
+
+Downloads a single file from the Sandbox as a readable stream without buffering
+the entire file into memory. The returned stream can be piped directly to an HTTP
+response, a file write stream, or any other writable destination.
+
+This method is only supported in Node.js-compatible runtimes (Node.js, Bun).
+Browser and serverless environments should use downloadFile instead.
+
+**Parameters**:
+
+- `remotePath` _string_ - Path to the file in the Sandbox. Relative paths are
+    resolved based on the sandbox working directory.
+- `timeout?` _number = ..._ - Timeout in seconds. 0 means no timeout. Default is 30 minutes.
+
+
+**Returns**:
+
+- `Promise<Readable>` - A Node.js Readable stream of the file content.
+
+**Examples:**
+
+```ts
+// Pipe directly to an HTTP response
+const stream = await sandbox.fs.downloadFileStream('outputs/report.pdf');
+stream.pipe(res);
+```
+
+```ts
+// Pipe to a local file
+import { createWriteStream } from 'fs';
+const stream = await sandbox.fs.downloadFileStream('outputs/data.csv');
+stream.pipe(createWriteStream('local-data.csv'));
+```
+
+***
+
 #### findFiles()
 
 ```ts

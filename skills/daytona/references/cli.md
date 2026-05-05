@@ -1,5 +1,7 @@
 ## Contents
 
+- Installation
+- Update
 - daytona
 - daytona archive
 - daytona autocomplete
@@ -39,10 +41,44 @@
 
 
 
-The `daytona` command-line tool provides access to Daytona's core features including managing Snapshots and the lifecycle of Daytona Sandboxes. View the installation instructions by clicking [here](./python-sdk/getting-started.md#cli).
+Daytona provides command-line access to core features for interacting with Daytona Sandboxes, including managing their lifecycle, snapshots, and more.
 
-This reference lists all commands supported by the `daytona` command-line tool complete with a description of their behaviour, and any supported flags.
+The CLI reference lists all commands supported by the `daytona` command-line tool, complete with a description of their behavior, and any supported flags.
 You can access this documentation on a per-command basis by appending the `--help`/`-h` flag when invoking `daytona`.
+
+## Installation
+
+Install the Daytona CLI to interact with Daytona sandboxes from the command line.
+
+**Mac/Linux:**
+
+```bash
+brew install daytonaio/cli/daytona
+```
+
+**Windows:**
+
+```bash
+powershell -Command "irm https://get.daytona.io/windows | iex"
+```
+
+After installing the Daytona CLI, use the `daytona` command to interact with Daytona Sandboxes from the command line.
+
+## Update
+
+To update the Daytona CLI to the latest version:
+
+**Mac/Linux:**
+
+```bash
+brew upgrade daytonaio/cli/daytona
+```
+
+**Windows:**
+
+```bash
+powershell -Command "irm https://get.daytona.io/windows | iex"
+```
 
 ## daytona
 Daytona CLI
