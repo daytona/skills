@@ -6,13 +6,18 @@
 - Get a volume by name
 - List volumes
 - Delete volumes
+- Share data between sandboxes
+- Mount multiple volumes to one sandbox
+- Multi-tenant isolation with subpaths
 - Limitations
 - Pricing & Limits
 
 
 
 
-Volumes are FUSE-based mounts that provide shared file access across Daytona Sandboxes. They enable sandboxes to read from large files instantly - no need to upload files manually to each sandbox. Volume data is stored in an S3-compatible object store.
+Volumes are FUSE-based mounts that provide shared file access across Daytona sandboxes. They enable sandboxes to read from large files instantly - no need to upload files manually to each sandbox. Volume data is stored in an S3-compatible object store.
+
+A sandbox reads and writes a mounted volume like any local directory, and the contents persist independently of the sandbox lifecycle. Use volumes to share datasets, model weights, build caches, or application state between sandboxes, scope per-user or per-tenant data with a `subpath`, and combine multiple volumes in the same sandbox at different mount paths.
 
 - multiple volumes can be mounted to a single sandbox
 - a single volume can be mounted to multiple sandboxes
@@ -118,6 +123,84 @@ The following snippet demonstrate how to delete a volume:
 
 ```python
 daytona.volume.delete(volume)
+```
+
+## Share data between sandboxes
+
+Daytona provides an option to share data across sandboxes by mounting the same volume in each one. A producer sandbox writes to the volume and is then deleted; a separately created consumer sandbox mounts the same volume by ID and reads the data. Volume contents persist independently of any individual sandbox.
+
+Sandboxes that mount the same volume see writes immediately, but FUSE-backed volumes are not transactional. If two sandboxes write to the same path concurrently, the last write wins. Coordinate access in your application when ordering matters.
+
+```python
+from daytona import CreateSandboxFromSnapshotParams, Daytona, VolumeMount
+
+daytona = Daytona()
+volume = daytona.volume.get("shared-data", create=True)
+mount_dir = "/home/daytona/volume"
+
+# Producer: write data into the volume, then delete the sandbox
+producer = daytona.create(CreateSandboxFromSnapshotParams(
+    language="python",
+    volumes=[VolumeMount(volume_id=volume.id, mount_path=mount_dir)],
+))
+producer.fs.upload_file(b"shared payload", f"{mount_dir}/payload.bin")
+producer.delete()
+
+# Consumer: a separate sandbox mounts the same volume by ID and reads the data
+consumer = daytona.create(CreateSandboxFromSnapshotParams(
+    language="python",
+    volumes=[VolumeMount(volume_id=volume.id, mount_path=mount_dir)],
+))
+data = consumer.fs.download_file(f"{mount_dir}/payload.bin")
+print(data.decode())
+```
+
+## Mount multiple volumes to one sandbox
+
+Daytona provides an option to mount more than one volume to a single sandbox by passing multiple entries in the `volumes` list. Use this pattern to combine shared assets, models, or datasets in one volume with separate per-application or per-user state in another, exposed at distinct mount paths.
+
+```python
+from daytona import CreateSandboxFromSnapshotParams, Daytona, VolumeMount
+
+daytona = Daytona()
+shared_assets = daytona.volume.get("shared-assets", create=True)
+logs = daytona.volume.get("logs", create=True)
+
+sandbox = daytona.create(CreateSandboxFromSnapshotParams(
+    language="python",
+    volumes=[
+        VolumeMount(volume_id=shared_assets.id, mount_path="/home/daytona/assets"),
+        VolumeMount(volume_id=logs.id, mount_path="/home/daytona/logs"),
+    ],
+))
+```
+
+## Multi-tenant isolation with subpaths
+
+Daytona provides an option to isolate per-tenant or per-user data inside a single shared volume by setting a unique `subpath` on each sandbox's volume mount. Each sandbox sees only files under its assigned subpath at `mount_path` and cannot read or write sibling subpaths within the same volume. This is the recommended pattern for multi-tenant workloads because it stays within the [per-organization volume limit](#pricing--limits) instead of creating one volume per tenant.
+
+Isolation is enforced at the FUSE mount boundary. Each sandbox sees its assigned subpath as the volume root, so a sandbox mounted at `users/alice` cannot reach `users/bob` through relative paths such as `../bob`.
+
+```python
+from daytona import CreateSandboxFromSnapshotParams, Daytona, VolumeMount
+
+daytona = Daytona()
+volume = daytona.volume.get("tenants", create=True)
+mount_dir = "/home/daytona/data"
+
+# Tenant A
+alice_sandbox = daytona.create(CreateSandboxFromSnapshotParams(
+    language="python",
+    volumes=[VolumeMount(volume_id=volume.id, mount_path=mount_dir, subpath="users/alice")],
+))
+alice_sandbox.fs.upload_file(b"alice's data", f"{mount_dir}/notes.txt")
+
+# Tenant B sees only its own subpath; alice's notes.txt is invisible
+bob_sandbox = daytona.create(CreateSandboxFromSnapshotParams(
+    language="python",
+    volumes=[VolumeMount(volume_id=volume.id, mount_path=mount_dir, subpath="users/bob")],
+))
+bob_sandbox.fs.upload_file(b"bob's data", f"{mount_dir}/notes.txt")
 ```
 
 ## Limitations

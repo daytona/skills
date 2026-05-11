@@ -218,12 +218,6 @@ The script installs Caddy with your DNS provider's module (needed for wildcard T
 
 Caddy handles certificate renewal automatically — no cron jobs are needed.
 
-### Dashboard Frontend Patch
-> **Caution:**
-> The Daytona OSS Docker images ship with `http://localhost:3000` hardcoded in the compiled frontend JavaScript bundle. Without patching this, the dashboard will load but **sandbox creation will fail** because the browser tries to reach `localhost:3000` on the user's machine.
-
-The script extracts the dashboard assets from the API container, replaces `http://localhost:3000` with `https://YOUR_DOMAIN`, and mounts the patched assets back via a Docker volume. If the Daytona API image is updated (e.g., via `docker compose pull`), this patch step must be re-run.
-
 ### Firewall Configuration
 
 The script opens ports 22, 80, 443, and 2222 on Linux (via ufw or firewalld). If your cloud provider has an external firewall (DigitalOcean Cloud Firewalls, AWS Security Groups, etc.), you must create matching inbound rules there as well — the host firewall and cloud firewall are independent. On macOS, firewall configuration is skipped.
@@ -257,10 +251,6 @@ The script opens ports 22, 80, 443, and 2222 on Linux (via ufw or firewalld). If
 **Caddy module**: `github.com/caddy-dns/hetzner`
 
 ## Domain Deployment Troubleshooting
-
-### Sandbox creation fails with "Network Error" / `localhost:3000` in browser console
-
-The compiled dashboard JavaScript has `http://localhost:3000` hardcoded. Follow the [Dashboard Frontend Patch](#dashboard-frontend-patch) section. After patching, do a hard refresh (Cmd+Shift+R or Ctrl+Shift+R) in the browser.
 
 ### Browser redirects to `localhost:5556` during login
 
@@ -296,7 +286,6 @@ If Caddy logs show `HTTP 429 rateLimited`, you have hit Let's Encrypt's rate lim
 - Database and storage data is persisted in Docker volumes
 - The registry is configured to allow image deletion for testing
 - Sandbox resource limits are disabled due to inability to partition cgroups in DinD environment where the sock is not mounted
-- The dashboard frontend patch (domain deployments only) is a workaround for a build-time bug in the Daytona Docker images and should be removed once the upstream project makes the SDK base URL configurable at runtime
 
 ## Security Considerations
 
@@ -476,6 +465,7 @@ Below is a full list of environment variables with their default values:
 | `OTEL_COLLECTOR_ENDPOINT_URL`              | string  | (empty)                                              | OpenTelemetry collector endpoint URL for sandbox telemetry and organization metrics (also accepts `SANDBOX_OTEL_ENDPOINT_URL` for backward compatibility) |
 | `HEALTH_CHECK_API_KEY`                     | string  | `supersecretkey`                                     | Authentication key for the readiness health-check route.                                             |
 | `NOTIFICATION_GATEWAY_DISABLED`            | boolean | `false`                                              | Disable notification gateway service                                                                 |
+| `SANDBOX_SNAPSHOTTING_TIMEOUT_MIN`         | number  | `60`                                                 | Minutes before a sandbox stuck in SNAPSHOTTING state is considered stale and recovered               |
 | `FAILED_SNAPSHOT_RUNNER_RETENTION_HOURS`   | number  | `3`                                                  | Hours to retain failed snapshot runner records before cleanup                                        |
 | `BUILDINFO_SNAPSHOT_RUNNER_STALENESS_DAYS` | number  | `7`                                                  | Days of inactivity before a snapshot runner is considered stale and eligible for cleanup             |
 

@@ -6,6 +6,9 @@
 - Get a volume by name
 - List volumes
 - Delete volumes
+- Share data between sandboxes
+- Mount multiple volumes to one sandbox
+- Multi-tenant isolation with subpaths
 - Limitations
 - Pricing & Limits
 - See Also
@@ -13,7 +16,9 @@
 
 
 
-Volumes are FUSE-based mounts that provide shared file access across Daytona Sandboxes. They enable sandboxes to read from large files instantly - no need to upload files manually to each sandbox. Volume data is stored in an S3-compatible object store.
+Volumes are FUSE-based mounts that provide shared file access across Daytona sandboxes. They enable sandboxes to read from large files instantly - no need to upload files manually to each sandbox. Volume data is stored in an S3-compatible object store.
+
+A sandbox reads and writes a mounted volume like any local directory, and the contents persist independently of the sandbox lifecycle. Use volumes to share datasets, model weights, build caches, or application state between sandboxes, scope per-user or per-tenant data with a `subpath`, and combine multiple volumes in the same sandbox at different mount paths.
 
 - multiple volumes can be mounted to a single sandbox
 - a single volume can be mounted to multiple sandboxes
@@ -176,6 +181,158 @@ The following snippet demonstrate how to delete a volume:
 
 ```go
 err := client.Volume.Delete(ctx, volume)
+```
+
+## Share data between sandboxes
+
+Daytona provides an option to share data across sandboxes by mounting the same volume in each one. A producer sandbox writes to the volume and is then deleted; a separately created consumer sandbox mounts the same volume by ID and reads the data. Volume contents persist independently of any individual sandbox.
+
+Sandboxes that mount the same volume see writes immediately, but FUSE-backed volumes are not transactional. If two sandboxes write to the same path concurrently, the last write wins. Coordinate access in your application when ordering matters.
+
+```go
+import (
+	"context"
+	"fmt"
+	"log"
+
+	"github.com/daytonaio/daytona/libs/sdk-go/pkg/daytona"
+	"github.com/daytonaio/daytona/libs/sdk-go/pkg/types"
+)
+
+ctx := context.Background()
+client, err := daytona.NewClient()
+if err != nil {
+	log.Fatal(err)
+}
+
+volume, err := client.Volume.Get(ctx, "shared-data")
+if err != nil {
+	volume, err = client.Volume.Create(ctx, "shared-data")
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+mountDir := "/home/daytona/volume"
+mount := types.VolumeMount{VolumeID: volume.ID, MountPath: mountDir}
+
+// Producer: write data into the volume, then delete the sandbox
+producer, err := client.Create(ctx, types.SnapshotParams{
+	SandboxBaseParams: types.SandboxBaseParams{
+		Language: types.CodeLanguagePython,
+		Volumes:  []types.VolumeMount{mount},
+	},
+})
+if err != nil {
+	log.Fatal(err)
+}
+if err := producer.FileSystem.UploadFile(ctx, []byte("shared payload"), mountDir+"/payload.bin"); err != nil {
+	log.Fatal(err)
+}
+if err := producer.Delete(ctx); err != nil {
+	log.Fatal(err)
+}
+
+// Consumer: a separate sandbox mounts the same volume by ID and reads the data
+consumer, err := client.Create(ctx, types.SnapshotParams{
+	SandboxBaseParams: types.SandboxBaseParams{
+		Language: types.CodeLanguagePython,
+		Volumes:  []types.VolumeMount{mount},
+	},
+})
+if err != nil {
+	log.Fatal(err)
+}
+data, err := consumer.FileSystem.DownloadFile(ctx, mountDir+"/payload.bin", nil)
+if err != nil {
+	log.Fatal(err)
+}
+fmt.Println(string(data))
+```
+
+## Mount multiple volumes to one sandbox
+
+Daytona provides an option to mount more than one volume to a single sandbox by passing multiple entries in the `volumes` list. Use this pattern to combine shared assets, models, or datasets in one volume with separate per-application or per-user state in another, exposed at distinct mount paths.
+
+```go
+sharedAssets, err := client.Volume.Get(ctx, "shared-assets")
+if err != nil {
+	sharedAssets, err = client.Volume.Create(ctx, "shared-assets")
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+logs, err := client.Volume.Get(ctx, "logs")
+if err != nil {
+	logs, err = client.Volume.Create(ctx, "logs")
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+sandbox, err := client.Create(ctx, types.SnapshotParams{
+	SandboxBaseParams: types.SandboxBaseParams{
+		Language: types.CodeLanguagePython,
+		Volumes: []types.VolumeMount{
+			{VolumeID: sharedAssets.ID, MountPath: "/home/daytona/assets"},
+			{VolumeID: logs.ID, MountPath: "/home/daytona/logs"},
+		},
+	},
+})
+if err != nil {
+	log.Fatal(err)
+}
+```
+
+## Multi-tenant isolation with subpaths
+
+Daytona provides an option to isolate per-tenant or per-user data inside a single shared volume by setting a unique `subpath` on each sandbox's volume mount. Each sandbox sees only files under its assigned subpath at `mount_path` and cannot read or write sibling subpaths within the same volume. This is the recommended pattern for multi-tenant workloads because it stays within the [per-organization volume limit](#pricing--limits) instead of creating one volume per tenant.
+
+Isolation is enforced at the FUSE mount boundary. Each sandbox sees its assigned subpath as the volume root, so a sandbox mounted at `users/alice` cannot reach `users/bob` through relative paths such as `../bob`.
+
+```go
+volume, err := client.Volume.Get(ctx, "tenants")
+if err != nil {
+	volume, err = client.Volume.Create(ctx, "tenants")
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+mountDir := "/home/daytona/data"
+
+// Tenant A
+aliceSubpath := "users/alice"
+aliceSandbox, err := client.Create(ctx, types.SnapshotParams{
+	SandboxBaseParams: types.SandboxBaseParams{
+		Language: types.CodeLanguagePython,
+		Volumes: []types.VolumeMount{
+			{VolumeID: volume.ID, MountPath: mountDir, Subpath: &aliceSubpath},
+		},
+	},
+})
+if err != nil {
+	log.Fatal(err)
+}
+if err := aliceSandbox.FileSystem.UploadFile(ctx, []byte("alice's data"), mountDir+"/notes.txt"); err != nil {
+	log.Fatal(err)
+}
+
+// Tenant B sees only its own subpath; alice's notes.txt is invisible
+bobSubpath := "users/bob"
+bobSandbox, err := client.Create(ctx, types.SnapshotParams{
+	SandboxBaseParams: types.SandboxBaseParams{
+		Language: types.CodeLanguagePython,
+		Volumes: []types.VolumeMount{
+			{VolumeID: volume.ID, MountPath: mountDir, Subpath: &bobSubpath},
+		},
+	},
+})
+if err != nil {
+	log.Fatal(err)
+}
+if err := bobSandbox.FileSystem.UploadFile(ctx, []byte("bob's data"), mountDir+"/notes.txt"); err != nil {
+	log.Fatal(err)
+}
 ```
 
 ## Limitations

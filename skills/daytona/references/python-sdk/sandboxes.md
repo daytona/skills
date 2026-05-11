@@ -179,7 +179,7 @@ The sandbox details page provides a summary of the sandbox information and actio
 - [**Web terminal**](../platform/web-terminal.md): an embedded web terminal session directly in the browser
 - **Filesystem**: sandbox filesystem tree for viewing and managing files and directories: create, upload, download, copy, refresh, collapse, search, and delete capabilities
 - [**VNC**](./vnc-access.md): a graphical desktop session for sandboxes that have a desktop environment
-- [**Logs**](https://www.daytona.io/docs/en/experimental/otel-collection): a detailed record of user and system activity for the sandbox
+- [**Logs**](https://www.daytona.io/docs/en/observability/otel-collection): a detailed record of user and system activity for the sandbox
 - **Metrics**: sandbox metrics data displayed as charts
 - **Traces**: distributed traces and spans collected from the sandbox
 - **Spending**: usage and cost over time
