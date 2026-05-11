@@ -20,6 +20,8 @@
 - POST `/organizations/{organizationId}/unsuspend`/unsuspend}
 - GET `/organizations/otel-config/by-sandbox-auth-token/{authToken}`}
 - GET `/organizations/{organizationId}/otel-config`/otel-config}
+- PUT `/organizations/{organizationId}/otel-config`/otel-config}
+- DELETE `/organizations/{organizationId}/otel-config`/otel-config}
 - POST `/organizations/{organizationId}/sandbox-default-limited-network-egress`/sandbox-default-limited-network-egress}
 - PUT `/organizations/{organizationId}/experimental-config`/experimental-config}
 - GET `/organizations/{organizationId}/roles`/roles}
@@ -383,6 +385,51 @@ Schema: **OrganizationSuspension**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OTEL Config | OtelConfig |
+
+---
+
+## PUT `/organizations/{organizationId}/otel-config` {#daytona/tag/organizations/PUT/organizations/{organizationId}/otel-config}
+
+**Update organization OpenTelemetry configuration**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `organizationId` | path | string | Yes | Organization ID |
+
+### Request Body
+
+Schema: **OtelConfig**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `endpoint` | string | Yes | Endpoint |
+| `headers` | object | No | Headers |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 204 | OpenTelemetry configuration updated successfully |  |
+
+---
+
+## DELETE `/organizations/{organizationId}/otel-config` {#daytona/tag/organizations/DELETE/organizations/{organizationId}/otel-config}
+
+**Delete organization OpenTelemetry configuration**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `organizationId` | path | string | Yes | Organization ID |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 204 | OpenTelemetry configuration deleted successfully |  |
 
 ---
 

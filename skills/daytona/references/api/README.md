@@ -68,6 +68,8 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `POST` | `/organizations/{organizationId}/unsuspend` | [Unsuspend organization](./organizations.md#daytona/tag/organizations/POST/organizations/{organizationId}/unsuspend) | [organizations](./organizations.md) |
 | `GET` | `/organizations/otel-config/by-sandbox-auth-token/{authToken}` | [Get organization OTEL config by sandbox auth token](./organizations.md#daytona/tag/organizations/GET/organizations/otel-config/by-sandbox-auth-token/{authToken}) | [organizations](./organizations.md) |
 | `GET` | `/organizations/{organizationId}/otel-config` | [Get organization OTEL config by organization ID](./organizations.md#daytona/tag/organizations/GET/organizations/{organizationId}/otel-config) | [organizations](./organizations.md) |
+| `PUT` | `/organizations/{organizationId}/otel-config` | [Update organization OpenTelemetry configuration](./organizations.md#daytona/tag/organizations/PUT/organizations/{organizationId}/otel-config) | [organizations](./organizations.md) |
+| `DELETE` | `/organizations/{organizationId}/otel-config` | [Delete organization OpenTelemetry configuration](./organizations.md#daytona/tag/organizations/DELETE/organizations/{organizationId}/otel-config) | [organizations](./organizations.md) |
 | `POST` | `/organizations/{organizationId}/sandbox-default-limited-network-egress` | [Update sandbox default limited network egress](./organizations.md#daytona/tag/organizations/POST/organizations/{organizationId}/sandbox-default-limited-network-egress) | [organizations](./organizations.md) |
 | `PUT` | `/organizations/{organizationId}/experimental-config` | [Update experimental configuration](./organizations.md#daytona/tag/organizations/PUT/organizations/{organizationId}/experimental-config) | [organizations](./organizations.md) |
 | `GET` | `/organizations/{organizationId}/roles` | [List organization roles](./organizations.md#daytona/tag/organizations/GET/organizations/{organizationId}/roles) | [organizations](./organizations.md) |
@@ -257,7 +259,7 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 - [docker-registry](./docker-registry.md) (6 endpoints) {#daytona/tag/docker-registry}
 - [jobs](./jobs.md) (4 endpoints) {#daytona/tag/jobs}
 - [object-storage](./object-storage.md) (1 endpoints) {#daytona/tag/object-storage}
-- [organizations](./organizations.md) (38 endpoints) {#daytona/tag/organizations}
+- [organizations](./organizations.md) (40 endpoints) {#daytona/tag/organizations}
 - [preview](./preview.md) (4 endpoints) {#daytona/tag/preview}
 - [regions](./regions.md) (1 endpoints) {#daytona/tag/regions}
 - [runners](./runners.md) (11 endpoints) {#daytona/tag/runners}

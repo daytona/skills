@@ -12,8 +12,8 @@ Declarative Builder provides a powerful, code-first approach to defining depende
 
 The declarative builder system supports two primary workflows:
 
-1. [**Declarative images**](#build-declarative-images): build images with varying dependencies _on demand_ when creating sandboxes
-2. [**Pre-built Snapshots**](#create-pre-built-snapshots): create and register _ready-to-use_ [Snapshots](./snapshots.md) that can be shared across multiple sandboxes
+- [**Declarative images**](#build-declarative-images): build images on demand when creating sandboxes
+- [**Pre-built snapshots**](#create-pre-built-snapshots): create and register ready-to-use [snapshots](./snapshots.md)
 
 ## Build declarative images
 
@@ -178,6 +178,55 @@ const image = Image.fromDockerfile('Dockerfile')
 
 // Extend an existing Dockerfile
 const image = Image.fromDockerfile("app/Dockerfile").pipInstall(['numpy'])
+```
+
+### System package installation
+
+Daytona provides an option to install OS-level packages during the image build. Use this pattern when your sandbox needs CLI tools or system libraries that are not available through `pip`.
+
+Each string passed to `run_commands` becomes a separate Dockerfile `RUN` instruction, and every `RUN` produces an immutable layer. To keep the image small, chain the package install and the apt cache cleanup together with `&&` inside a single string so the cache is never persisted in any layer.
+
+```typescript
+const image = Image.debianSlim('3.12').runCommands(
+  'apt-get update ' +
+    '&& apt-get install -y --no-install-recommends git curl ffmpeg jq ' +
+    '&& rm -rf /var/lib/apt/lists/*',
+)
+```
+
+### Non-root user setup
+
+Daytona provides an option to define a non-root user for application workloads. Run all installation steps as `root` first, then create the user, fix ownership of the working directory, and switch to the new user with the `USER` directive. Subsequent commands and the sandbox runtime then operate without root privileges.
+
+Place all installation steps before the `USER` directive. After switching to the non-root user, commands that write to system locations (such as `apt-get install` or `pip install` without `--user`) will fail with permission errors.
+
+```typescript
+const image = Image.debianSlim('3.12')
+  .pipInstall(['fastapi', 'uvicorn'])
+  .runCommands(
+    'groupadd -r daytona && useradd -r -g daytona -m -d /home/daytona daytona',
+    'chown -R daytona:daytona /home/daytona',
+  )
+  .workdir('/home/daytona')
+  .dockerfileCommands(['USER daytona'])
+```
+
+### Multi-language runtimes
+
+Daytona provides an option to combine multiple language runtimes in a single image. The following pattern adds Node.js 20 to a Python base image by installing it from the NodeSource repository. The same approach works for adding Go, Ruby, Java, or any other runtime that distributes a Linux installer.
+
+Chain the apt operations, the NodeSource installer, and the cache cleanup into a single `RUN` instruction. If the cache cleanup runs in a separate `RUN`, the apt cache is already persisted in the earlier layers and the final image keeps those bytes.
+
+```typescript
+const image = Image.debianSlim('3.12')
+  .runCommands(
+    'apt-get update ' +
+      '&& apt-get install -y --no-install-recommends curl ca-certificates ' +
+      '&& curl -fsSL https://deb.nodesource.com/setup_20.x | bash - ' +
+      '&& apt-get install -y nodejs ' +
+      '&& rm -rf /var/lib/apt/lists/*',
+  )
+  .pipInstall(['fastapi', 'uvicorn'])
 ```
 
 ## See Also

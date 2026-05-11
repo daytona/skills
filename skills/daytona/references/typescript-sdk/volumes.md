@@ -6,6 +6,9 @@
 - Get a volume by name
 - List volumes
 - Delete volumes
+- Share data between sandboxes
+- Mount multiple volumes to one sandbox
+- Multi-tenant isolation with subpaths
 - Limitations
 - Pricing & Limits
 - See Also
@@ -13,7 +16,9 @@
 
 
 
-Volumes are FUSE-based mounts that provide shared file access across Daytona Sandboxes. They enable sandboxes to read from large files instantly - no need to upload files manually to each sandbox. Volume data is stored in an S3-compatible object store.
+Volumes are FUSE-based mounts that provide shared file access across Daytona sandboxes. They enable sandboxes to read from large files instantly - no need to upload files manually to each sandbox. Volume data is stored in an S3-compatible object store.
+
+A sandbox reads and writes a mounted volume like any local directory, and the contents persist independently of the sandbox lifecycle. Use volumes to share datasets, model weights, build caches, or application state between sandboxes, scope per-user or per-tenant data with a `subpath`, and combine multiple volumes in the same sandbox at different mount paths.
 
 - multiple volumes can be mounted to a single sandbox
 - a single volume can be mounted to multiple sandboxes
@@ -120,6 +125,78 @@ The following snippet demonstrate how to delete a volume:
 
 ```typescript
 await daytona.volume.delete(volume)
+```
+
+## Share data between sandboxes
+
+Daytona provides an option to share data across sandboxes by mounting the same volume in each one. A producer sandbox writes to the volume and is then deleted; a separately created consumer sandbox mounts the same volume by ID and reads the data. Volume contents persist independently of any individual sandbox.
+
+Sandboxes that mount the same volume see writes immediately, but FUSE-backed volumes are not transactional. If two sandboxes write to the same path concurrently, the last write wins. Coordinate access in your application when ordering matters.
+
+```typescript
+import { Daytona } from '@daytona/sdk'
+
+const daytona = new Daytona()
+const volume = await daytona.volume.get('shared-data', true)
+const mountDir = '/home/daytona/volume'
+
+// Producer: write data into the volume, then delete the sandbox
+const producer = await daytona.create({
+  language: 'typescript',
+  volumes: [{ volumeId: volume.id, mountPath: mountDir }],
+})
+await producer.fs.uploadFile(Buffer.from('shared payload'), `${mountDir}/payload.bin`)
+await daytona.delete(producer)
+
+// Consumer: a separate sandbox mounts the same volume by ID and reads the data
+const consumer = await daytona.create({
+  language: 'typescript',
+  volumes: [{ volumeId: volume.id, mountPath: mountDir }],
+})
+const data = await consumer.fs.downloadFile(`${mountDir}/payload.bin`)
+console.log(data.toString())
+```
+
+## Mount multiple volumes to one sandbox
+
+Daytona provides an option to mount more than one volume to a single sandbox by passing multiple entries in the `volumes` list. Use this pattern to combine shared assets, models, or datasets in one volume with separate per-application or per-user state in another, exposed at distinct mount paths.
+
+```typescript
+const sharedAssets = await daytona.volume.get('shared-assets', true)
+const logs = await daytona.volume.get('logs', true)
+
+const sandbox = await daytona.create({
+  language: 'typescript',
+  volumes: [
+    { volumeId: sharedAssets.id, mountPath: '/home/daytona/assets' },
+    { volumeId: logs.id, mountPath: '/home/daytona/logs' },
+  ],
+})
+```
+
+## Multi-tenant isolation with subpaths
+
+Daytona provides an option to isolate per-tenant or per-user data inside a single shared volume by setting a unique `subpath` on each sandbox's volume mount. Each sandbox sees only files under its assigned subpath at `mount_path` and cannot read or write sibling subpaths within the same volume. This is the recommended pattern for multi-tenant workloads because it stays within the [per-organization volume limit](#pricing--limits) instead of creating one volume per tenant.
+
+Isolation is enforced at the FUSE mount boundary. Each sandbox sees its assigned subpath as the volume root, so a sandbox mounted at `users/alice` cannot reach `users/bob` through relative paths such as `../bob`.
+
+```typescript
+const volume = await daytona.volume.get('tenants', true)
+const mountDir = '/home/daytona/data'
+
+// Tenant A
+const aliceSandbox = await daytona.create({
+  language: 'typescript',
+  volumes: [{ volumeId: volume.id, mountPath: mountDir, subpath: 'users/alice' }],
+})
+await aliceSandbox.fs.uploadFile(Buffer.from("alice's data"), `${mountDir}/notes.txt`)
+
+// Tenant B sees only its own subpath; alice's notes.txt is invisible
+const bobSandbox = await daytona.create({
+  language: 'typescript',
+  volumes: [{ volumeId: volume.id, mountPath: mountDir, subpath: 'users/bob' }],
+})
+await bobSandbox.fs.uploadFile(Buffer.from("bob's data"), `${mountDir}/notes.txt`)
 ```
 
 ## Limitations
