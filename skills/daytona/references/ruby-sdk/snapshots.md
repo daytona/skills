@@ -44,6 +44,7 @@ Snapshots can be created using:
 - [local images](#using-local-images)
 - [images from private registries](#using-images-from-private-registries)
 - [the declarative builder](#using-the-declarative-builder)
+- [GPU snapshots](#gpu-snapshots) (for [GPU sandboxes](./sandboxes.md#gpu-sandboxes))
 
 1. Navigate to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
 2. Click the **Create Snapshot** button
@@ -53,6 +54,7 @@ Snapshots can be created using:
 - **Image**: Base image for the snapshot. Must include either a tag or a digest (e.g., **`ubuntu:22.04`**). The **`latest`** tag is not allowed. Since images tagged `latest` get frequent updates, only specific tags are supported. Same applies to tags such as `lts` or `stable`, and we recommend avoiding those when defining an image to prevent unexpected behavior.
 - **Entrypoint** (optional): The entrypoint command for the snapshot. Ensure that the entrypoint is a long-running command. If not provided, or if the snapshot does not have an entrypoint, `sleep infinity` will be used as the default.
 - [**Resources**](./sandboxes.md#resources) (optional): The resources you want the underlying Sandboxes to have. By default, Daytona Sandboxes use **1 vCPU**, **1GiB memory**, and **3GiB storage**.
+- **GPU** (optional): Enable the **GPU** option to create a GPU snapshot for [GPU sandboxes](./sandboxes.md#gpu-sandboxes).
 
 **Python:**
 
@@ -299,14 +301,16 @@ Step 1/5 : FROM alpine:latest
 
 ### Using images from private registries
 
-Daytona supports creating snapshots from images from [Docker Hub](#docker-hub), [Google Artifact Registry](#google-artifact-registry), [GitHub Container Registry](#github-container-registry-ghcr) or other private container registries.
+Daytona supports creating snapshots from images from [Docker Hub](#docker-hub), [Google Artifact Registry](#google-artifact-registry), [GitHub Container Registry](#github-container-registry-ghcr), [Amazon ECR](#amazon-elastic-container-registry-ecr) or other private container registries.
+
+The **Add Registry** form has a tab per provider — Docker Hub, Google, GitHub, Amazon ECR, and Generic. Select the tab that matches your registry; the form will pre-fill or hide fields whose value is fixed for that provider (so you only fill in what's actually account-specific). The provider-specific sections below list exactly what to enter, and what gets auto-filled behind the scenes.
 
 1. Navigate to [Daytona Registries ↗](https://app.daytona.io/dashboard/registries)
-2. Click the **Add Registry** button
-3. Enter the **registry name**, **registry URL**, **username**, **password**, and **project** (if applicable)
-4. After the container registry is successfully created, navigate to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
-5. Click the **Create Snapshot** button
-6. Enter the **snapshot name** and private **image** (tag or digest). When creating the snapshot, make sure to input the entire private image name, including the registry location and project name (e.g. **`my-private-registry.com/<my-project>/custom-alpine:3.21`**)
+2. Click **Add Registry** and pick the tab for your provider
+3. Fill in the visible fields (see the section for your provider below)
+4. After the registry is created, navigate to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
+5. Click **Create Snapshot**
+6. Enter the **snapshot name** and the full **image** reference, including the registry host and repository (e.g. `my-registry.com/<repo>/custom-alpine:3.21`)
 
 Optionally, set the **`CreateSandboxFromSnapshotParams`** field to use the custom snapshot.
 
@@ -314,76 +318,170 @@ Optionally, set the **`CreateSandboxFromSnapshotParams`** field to use the custo
 
 Daytona supports creating snapshots from Docker Hub images.
 
-1. Navigate to [Daytona Registries ↗](https://app.daytona.io/dashboard/registries)
-2. Click the **Add Registry** button
-3. Enter the **registry name**, **registry URL**, **username**, **password**, and **project** (if applicable)
+1. On [Daytona Registries ↗](https://app.daytona.io/dashboard/registries), click **Add Registry** and select the **Docker Hub** tab.
+2. Fill in:
+   - **Username**: your Docker Hub username (the account with access to the image)
+   - **Personal Access Token**: a [Docker Hub PAT](https://docs.docker.com/security/access-tokens/) — not your account password
 
-- **Registry URL**: `docker.io`
-- **Username**: Docker Hub username (the account with access to the image)
-- **Password**: [Docker Hub Personal Access Token](https://docs.docker.com/docker-hub/access-tokens/) (not your account password)
-- **Create the Snapshot**: `docker.io/<username>/<image>:<tag>`
-
-4. After the container registry is successfully created, navigate to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
-5. Click the **Create Snapshot** button
-6. Enter the **snapshot name** and **image** (tag or digest). When creating the snapshot, input the entire image name, including the registry location and project name (e.g. **`docker.io/<username>/<image>:<tag>`**)
+   Registry URL is auto-filled with `docker.io` and not shown in the form.
+3. Create the snapshot using the full image reference, e.g. `docker.io/<username>/<image>:<tag>`.
 
 #### Google Artifact Registry
 
-Daytona supports creating snapshots from images from Google Artifact Registry.
+Daytona supports creating snapshots from images from Google Artifact Registry, authenticated with a [service account key](https://cloud.google.com/iam/docs/keys-create-delete) in JSON format.
 
-To use an image from Google Artifact Registry, configure the registry using a [service account key](https://cloud.google.com/iam/docs/keys-create-delete) in JSON format.
+1. On [Daytona Registries ↗](https://app.daytona.io/dashboard/registries), click **Add Registry** and select the **Google** tab.
+2. Fill in:
+   - **Registry URL**: the base URL for your region (e.g. `https://us-central1-docker.pkg.dev`)
+   - **Service Account JSON Key**: paste the full contents of your service account key JSON file
+   - **Google Cloud Project ID**: your GCP project ID
 
-1. Navigate to [Daytona Registries ↗](https://app.daytona.io/dashboard/registries)
-2. Click the **Add Registry** button
-3. Enter the **registry name**, **registry URL**, **username**, **password**, and **project** (if applicable)
-
-- **Registry URL**: base URL for your region (e.g., `https://us-central1-docker.pkg.dev` or `https://us-central1-docker.pkg.dev/your-org`).
-- **Username**: `_json_key`
-- **Password**: Paste the full contents of your Service Account JSON key file
-- **Project**: Google Cloud Project ID
-- **Create the Snapshot**: `us-central1-docker.pkg.dev/<project>/<repo>/<image>:<tag>`
-
-4. After the container registry is successfully created, navigate to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
-5. Click the **Create Snapshot** button
-6. Enter the **snapshot name** and **image** (tag or digest). When creating the snapshot, make sure to input the entire image name, including the registry location and project name (e.g. **`us-central1-docker.pkg.dev/<project>/<repo>/<image>:<tag>`**)
+   Username is auto-filled with `_json_key` (required by Google for service-account auth) and not shown in the form.
+3. Create the snapshot using the full image reference, e.g. `us-central1-docker.pkg.dev/<project>/<repo>/<image>:<tag>`.
 
 #### GitHub Container Registry (GHCR)
 
-Daytona supports creating snapshots from images from GitHub Container Registry (GHCR).
+Daytona supports creating snapshots from images from GitHub Container Registry.
 
-1. Navigate to [Daytona Registries ↗](https://app.daytona.io/dashboard/registries)
-2. Click the **Add Registry** button
-3. Enter the **registry name**, **registry URL**, **username**, **password**, and **project** (if applicable)
+1. On [Daytona Registries ↗](https://app.daytona.io/dashboard/registries), click **Add Registry** and select the **GitHub** tab.
+2. Fill in:
+   - **GitHub Username**: the account with access to the image
+   - **Personal Access Token**: a [GitHub PAT](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) with `read:packages` scope (and `write:packages` / `delete:packages` if you'll push or delete)
 
-- **Registry URL**: `ghcr.io`
-- **Username**: GitHub username (the account with access to the image)
-- **Password**: [GitHub Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) (not your account password). Personal access token (PAT) requires **`write:packages`**, **`read:packages`**, and **`delete:packages`** scopes.
-
-4. After the container registry is successfully created, navigate to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
-5. Click the **Create Snapshot** button
-6. Enter the **snapshot name** and **image** (tag or digest). When creating the snapshot, make sure to input the entire image name, including the registry location and project name (e.g. **`ghcr.io/<my-project>/custom-alpine:3.21`**)
+   Registry URL is auto-filled with `ghcr.io` and not shown in the form.
+3. Create the snapshot using the full image reference, e.g. `ghcr.io/<owner>/<image>:<tag>`.
 
 #### Amazon Elastic Container Registry (ECR)
 
-Daytona supports creating snapshots from images from Amazon Elastic Container Registry.
+Daytona pulls private ECR images via cross-account IAM role assumption — you create a role in your AWS account that trusts Daytona's broker principal, and Daytona assumes it on every pull to fetch a short-lived ECR token. No long-lived AWS credentials are shared, and no manual token rotation is needed.
 
-1. Navigate to [Daytona Registries ↗](https://app.daytona.io/dashboard/registries)
-2. Click the **Add Registry** button
-3. Enter the **registry name**, **registry URL**, **username**, **password**, and **project** (if applicable)
+You'll need two values:
 
-- **Registry URL**: `<account_id>.dkr.ecr.<region>.amazonaws.com`
-- **Username**: `AWS`
-- **Password**: [Authorization token](https://docs.aws.amazon.com/AmazonECR/latest/userguide/registry_auth.html)
+- **Daytona Broker ARN**: `arn:aws:iam::967657494466:role/DaytonaEcrCredentialBroker` — the IAM principal Daytona uses to assume into your role. Self-hosted: substitute the IAM role your API pods assume (e.g. via IRSA).
+- **External ID**: your Daytona organization ID, visible in the dashboard URL (`/dashboard/<orgId>/...`) and on your organization settings page.
 
-4. After the container registry is successfully created, navigate to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
-5. Click the **Create Snapshot** button
-6. Enter the **snapshot name** and **image** (tag or digest). When creating the snapshot, make sure to input the entire image name, including the registry location and repository name (e.g. **`123456789012.dkr.ecr.us-east-1.amazonaws.com/my-repo/custom-alpine:3.21`**)
-> **Caution:**
-> Amazon ECR authorization tokens expire after **12 hours**. Update the registry password in Daytona each time the token expires. Support for automatic renewal is coming soon.
+##### 1. Create an IAM role in your AWS account
+
+Create an IAM role with the trust and permissions policies below. Replace `<YOUR_EXTERNAL_ID>` with your organization ID.
+
+Trust policy:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Principal": { "AWS": "arn:aws:iam::967657494466:role/DaytonaEcrCredentialBroker" },
+    "Action": "sts:AssumeRole",
+    "Condition": {
+      "StringEquals": {
+        "sts:ExternalId": "<YOUR_EXTERNAL_ID>"
+      }
+    }
+  }]
+}
+```
+
+Permissions policy (read-only on ECR):
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Action": [
+      "ecr:GetAuthorizationToken",
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:BatchGetImage"
+    ],
+    "Resource": "*"
+  }]
+}
+```
+
+Copy the ARN of the role you just created (e.g. `arn:aws:iam::123456789012:role/daytona-ecr-puller`).
+
+##### 2. Register the registry in Daytona
+
+1. On [Daytona Registries ↗](https://app.daytona.io/dashboard/registries), click **Add Registry** and select the **Amazon ECR** tab.
+2. Fill in:
+   - **Registry URL**: `<account_id>.dkr.ecr.<region>.amazonaws.com`
+   - **Role ARN**: the role you created in step 1 — Daytona assumes it on every pull
+
+   Password is not used for ECR — Daytona resolves credentials server-side by assuming the role you created in step 1, using your organization ID as the AssumeRole `ExternalId`.
+
+##### 3. Create the snapshot
+
+1. Navigate to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots).
+2. Click **Create Snapshot**.
+3. Enter the snapshot name and the full image reference (e.g. `123456789012.dkr.ecr.us-east-1.amazonaws.com/my-repo/custom-alpine:3.21`).
+
+##### Optional: harden the trust policy
+
+Daytona sends a `daytona-<orgId>-pull` session name on every AssumeRole call. You can require it in your trust policy for CloudTrail audit visibility — add inside `Condition`:
+
+```json
+"StringLike": {
+  "sts:RoleSessionName": "daytona-<YOUR_EXTERNAL_ID>-*"
+}
+```
 
 ### Using the declarative builder
 
 [Declarative Builder](./declarative-builder.md) provides a powerful, code-first approach to defining dependencies for Daytona Sandboxes. Instead of importing images from a container registry, you can programmatically define them using the Daytona [SDKs](./getting-started.md#sdks).
+
+### GPU Snapshots
+> **Caution: Experimental**
+> This feature is experimental. To request access, contact [support@daytona.io](mailto:support@daytona.io).
+
+Daytona provides methods to create GPU snapshots using the [Daytona Dashboard ↗](https://app.daytona.io/dashboard/snapshots) or programmatically using the Daytona [Python](../python-sdk/sync/snapshot.md), [TypeScript](../typescript-sdk/snapshot.md), [Ruby](./snapshot.md), [Go](../go-sdk/daytona.md#SnapshotService), [Java](https://www.daytona.io/docs/en/java-sdk/snapshot) **SDKs**, or [API](../api/README.md#daytona/tag/snapshots).
+
+GPU snapshots fit into the same snapshot creation flow as other snapshots, but with the additional option to enable the GPU. Create a GPU snapshot first, then use it as the source when creating a [GPU sandbox](./sandboxes.md#gpu-sandboxes).
+
+1. Navigate to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
+2. Click the **Create Snapshot** button
+3. Configure snapshot details and enable the GPU option
+
+To create a GPU-enabled snapshot programmatically, set GPU resources for the snapshot. The `gpu` value defines how many GPU units each sandbox created from this snapshot will request. If `gpu` is not set, it defaults to `0`, which creates a non-GPU snapshot.
+
+```ruby
+require 'daytona'
+
+daytona = Daytona::Daytona.new
+snapshot = daytona.snapshot.create(
+  Daytona::CreateSnapshotParams.new(
+    name: 'my-gpu-snapshot',
+    image: 'python:3.12',
+    resources: Daytona::Resources.new(gpu: 1)
+  )
+)
+```
+
+##### GPU Snapshot requirements
+
+Building a custom image for a GPU snapshot requires Ubuntu 24.04 and compatible NVIDIA userspace packages. Include the following in your snapshot Dockerfile:
+
+```dockerfile
+ARG NVIDIA_DRIVER_VERSION=580.126.20
+ARG UBUNTU_PKG_SUFFIX=0ubuntu0.24.04.2
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update -qq \
+ && apt-get install -y -qq --no-install-recommends \
+      nvidia-utils-580-server=${NVIDIA_DRIVER_VERSION}-${UBUNTU_PKG_SUFFIX} \
+      libnvidia-compute-580-server=${NVIDIA_DRIVER_VERSION}-${UBUNTU_PKG_SUFFIX} \
+      python3 \
+      ca-certificates \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
+
+COPY verify-cuda.sh /verify-cuda.sh
+RUN chmod +x /verify-cuda.sh
+
+LABEL nvidia.driver.version="${NVIDIA_DRIVER_VERSION}"
+```
 
 ### Resources
 
@@ -490,11 +588,11 @@ Agents can seamlessly interact with these services since they run within the sam
 > **Note:**
 > Docker-in-Docker Sandboxes require additional resources due to the Docker daemon overhead. Consider allocating at least 2 vCPU and 4GiB of memory for optimal performance.
 
-### Create a Docker-in-Docker Snapshot
+#### Create a Docker-in-Docker Snapshot
 
 Daytona provides an option to create a snapshot with Docker support using pre-built Docker-in-Docker images as a base or by manually installing Docker in a custom image.
 
-#### Using pre-built images
+##### Using pre-built images
 
 The following base images are widely used for creating Docker-in-Docker snapshots or can be used as a base for a custom Dockerfile:
 
@@ -502,7 +600,7 @@ The following base images are widely used for creating Docker-in-Docker snapshot
 - `docker:28.3.3-dind-rootless`: rootless Docker-in-Docker for enhanced security
 - `docker:28.3.2-dind-alpine3.22`: Docker-in-Docker image with Alpine 3.22
 
-#### Using manual installation
+##### Using manual installation
 
 Alternatively, install Docker manually in a custom Dockerfile:
 
@@ -512,7 +610,7 @@ FROM ubuntu:22.04
 RUN curl -fsSL https://get.docker.com | VERSION=28.3.3 sh -
 ```
 
-### Run Docker Compose in a Sandbox
+#### Run Docker Compose in a Sandbox
 
 Docker Compose allows you to define and run multi-container applications. With Docker-in-Docker enabled in a Daytona Sandbox, you can use Docker Compose to orchestrate services like databases, caches, and application containers.
 
@@ -553,7 +651,7 @@ sandbox.process.exec(command: 'docker compose -p demo down')
 
 Daytona Sandboxes can run a Kubernetes cluster inside the sandbox. Kubernetes runs entirely inside the sandbox and is removed when the sandbox is deleted, keeping environments secure and reproducible.
 
-### Run k3s in a Sandbox
+##### Run k3s in a Sandbox
 
 The following snippet installs and starts a k3s cluster inside a sandbox and lists all running pods.
 

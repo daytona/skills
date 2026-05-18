@@ -38,3 +38,23 @@
 | 404 | Webhook initialization status not found |  |
 
 ---
+
+## POST `/webhooks/organizations/{organizationId}/refresh-endpoints` {#daytona/tag/webhooks/POST/webhooks/organizations/{organizationId}/refresh-endpoints}
+
+**Refresh cached endpoint presence flag for an organization**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `organizationId` | path | string | Yes |  |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 204 | Endpoint flag refreshed |  |
+| 404 | Webhook initialization status not found |  |
+
+---

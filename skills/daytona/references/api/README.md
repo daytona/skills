@@ -235,6 +235,7 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `GET` | `/volumes/by-name/{name}` | [Get volume details by name](./volumes.md#daytona/tag/volumes/GET/volumes/by-name/{name}) | [volumes](./volumes.md) |
 | `POST` | `/webhooks/organizations/{organizationId}/app-portal-access` | [Get Svix Consumer App Portal access for an organization](./webhooks.md#daytona/tag/webhooks/POST/webhooks/organizations/{organizationId}/app-portal-access) | [webhooks](./webhooks.md) |
 | `GET` | `/webhooks/organizations/{organizationId}/initialization-status` | [Get webhook initialization status for an organization](./webhooks.md#daytona/tag/webhooks/GET/webhooks/organizations/{organizationId}/initialization-status) | [webhooks](./webhooks.md) |
+| `POST` | `/webhooks/organizations/{organizationId}/refresh-endpoints` | [Refresh cached endpoint presence flag for an organization](./webhooks.md#daytona/tag/webhooks/POST/webhooks/organizations/{organizationId}/refresh-endpoints) | [webhooks](./webhooks.md) |
 | `GET` | `/workspace` | [[DEPRECATED] List all workspaces](./workspace.md#daytona/tag/workspace/GET/workspace) | [workspace](./workspace.md) |
 | `POST` | `/workspace` | [[DEPRECATED] Create a new workspace](./workspace.md#daytona/tag/workspace/POST/workspace) | [workspace](./workspace.md) |
 | `GET` | `/workspace/{workspaceId}` | [[DEPRECATED] Get workspace details](./workspace.md#daytona/tag/workspace/GET/workspace/{workspaceId}) | [workspace](./workspace.md) |
@@ -268,7 +269,7 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 - [toolbox](./toolbox.md) (68 endpoints) {#daytona/tag/toolbox}
 - [users](./users.md) (5 endpoints) {#daytona/tag/users}
 - [volumes](./volumes.md) (5 endpoints) {#daytona/tag/volumes}
-- [webhooks](./webhooks.md) (2 endpoints) {#daytona/tag/webhooks}
+- [webhooks](./webhooks.md) (3 endpoints) {#daytona/tag/webhooks}
 - [workspace](./workspace.md) (14 endpoints) {#daytona/tag/workspace}
 
 ---
@@ -279,6 +280,11 @@ The Toolbox API runs inside sandboxes and provides file system, git, process, an
 
 | Method | Path | Summary | Tag |
 |--------|------|---------|-----|
+| `POST` | `/computeruse/a11y/find` | [Find accessibility nodes](./toolbox-computer-use.md#daytona-toolbox/tag/computer-use/POST/computeruse/a11y/find) | [computer-use](./toolbox-computer-use.md) |
+| `POST` | `/computeruse/a11y/node/focus` | [Focus an accessibility node](./toolbox-computer-use.md#daytona-toolbox/tag/computer-use/POST/computeruse/a11y/node/focus) | [computer-use](./toolbox-computer-use.md) |
+| `POST` | `/computeruse/a11y/node/invoke` | [Invoke an action on an accessibility node](./toolbox-computer-use.md#daytona-toolbox/tag/computer-use/POST/computeruse/a11y/node/invoke) | [computer-use](./toolbox-computer-use.md) |
+| `POST` | `/computeruse/a11y/node/value` | [Set the value of an accessibility node](./toolbox-computer-use.md#daytona-toolbox/tag/computer-use/POST/computeruse/a11y/node/value) | [computer-use](./toolbox-computer-use.md) |
+| `GET` | `/computeruse/a11y/tree` | [Get accessibility tree](./toolbox-computer-use.md#daytona-toolbox/tag/computer-use/GET/computeruse/a11y/tree) | [computer-use](./toolbox-computer-use.md) |
 | `GET` | `/computeruse/display/info` | [Get display information](./toolbox-computer-use.md#daytona-toolbox/tag/computer-use/GET/computeruse/display/info) | [computer-use](./toolbox-computer-use.md) |
 | `GET` | `/computeruse/display/windows` | [Get windows information](./toolbox-computer-use.md#daytona-toolbox/tag/computer-use/GET/computeruse/display/windows) | [computer-use](./toolbox-computer-use.md) |
 | `POST` | `/computeruse/keyboard/hotkey` | [Press hotkey](./toolbox-computer-use.md#daytona-toolbox/tag/computer-use/POST/computeruse/keyboard/hotkey) | [computer-use](./toolbox-computer-use.md) |
@@ -369,7 +375,7 @@ The Toolbox API runs inside sandboxes and provides file system, git, process, an
 
 ### Tags
 
-- [computer-use](./toolbox-computer-use.md) (28 endpoints) {#daytona-toolbox/tag/computer-use}
+- [computer-use](./toolbox-computer-use.md) (33 endpoints) {#daytona-toolbox/tag/computer-use}
 - [file-system](./toolbox-file-system.md) (13 endpoints) {#daytona-toolbox/tag/file-system}
 - [git](./toolbox-git.md) (11 endpoints) {#daytona-toolbox/tag/git}
 - [info](./toolbox-info.md) (3 endpoints) {#daytona-toolbox/tag/info}

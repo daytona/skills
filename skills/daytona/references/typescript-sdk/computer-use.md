@@ -1,16 +1,188 @@
 ## Contents
 
+- Accessibility
 - ComputerUse
 - Display
 - Keyboard
 - Mouse
 - RecordingService
 - Screenshot
+- AccessibilityTreeOptions
 - ScreenshotOptions
 - ScreenshotRegion
+- AccessibilityFindOptions
 - See Also
 
 
+
+
+## Accessibility
+
+Accessibility operations for computer use functionality.
+
+### Constructors
+
+#### new Accessibility()
+
+```ts
+new Accessibility(apiClient: ComputerUseApi): Accessibility
+```
+
+**Parameters**:
+
+- `apiClient` _ComputerUseApi_
+
+
+**Returns**:
+
+- `Accessibility`
+
+### Methods
+
+#### findNodes()
+
+```ts
+findNodes(options?: FindAccessibilityNodesRequest): Promise<AccessibilityNodesResponse>
+```
+
+Finds AT-SPI accessibility nodes matching the provided filters.
+
+**Parameters**:
+
+- `options?` _FindAccessibilityNodesRequest = {}_ - Search scope, node filters, and result limit
+
+
+**Returns**:
+
+- `Promise<AccessibilityNodesResponse>` - Matching accessibility nodes
+
+**Example:**
+
+```typescript
+const buttons = await sandbox.computerUse.accessibility.findNodes({
+  scope: 'all',
+  role: 'button',
+  name: 'Submit',
+  nameMatch: 'substring',
+});
+console.log(buttons.matches?.length);
+```
+
+***
+
+#### focusNode()
+
+```ts
+focusNode(id: string): Promise<void>
+```
+
+Focuses an AT-SPI accessibility node.
+
+**Parameters**:
+
+- `id` _string_ - Accessibility node ID returned by getTree or findNodes
+
+
+**Returns**:
+
+- `Promise<void>`
+
+**Example:**
+
+```typescript
+const node = (await sandbox.computerUse.accessibility.findNodes({ scope: 'all', limit: 1 })).matches?.[0];
+if (node?.id) {
+  await sandbox.computerUse.accessibility.focusNode(node.id);
+}
+```
+
+***
+
+#### getTree()
+
+```ts
+getTree(options?: AccessibilityTreeOptions): Promise<AccessibilityTreeResponse>
+```
+
+Fetches the AT-SPI accessibility tree.
+
+**Parameters**:
+
+- `options?` _AccessibilityTreeOptions = {}_ - Scope and depth options
+
+
+**Returns**:
+
+- `Promise<AccessibilityTreeResponse>` - Accessibility tree response
+
+**Example:**
+
+```typescript
+const tree = await sandbox.computerUse.accessibility.getTree({ scope: 'all', maxDepth: 3 });
+console.log(tree.root?.name);
+```
+
+***
+
+#### invokeNode()
+
+```ts
+invokeNode(id: string, action?: string): Promise<void>
+```
+
+Invokes an AT-SPI accessibility node action.
+
+**Parameters**:
+
+- `id` _string_ - Accessibility node ID returned by getTree or findNodes
+- `action?` _string_ - Action name to invoke. If omitted, the API invokes the primary action
+
+
+**Returns**:
+
+- `Promise<void>`
+
+**Example:**
+
+```typescript
+const button = (await sandbox.computerUse.accessibility.findNodes({ scope: 'all', role: 'button', limit: 1 }))
+  .matches?.[0];
+if (button?.id) {
+  await sandbox.computerUse.accessibility.invokeNode(button.id, 'click');
+}
+```
+
+***
+
+#### setNodeValue()
+
+```ts
+setNodeValue(id: string, value: string): Promise<void>
+```
+
+Sets an AT-SPI accessibility node value.
+
+**Parameters**:
+
+- `id` _string_ - Accessibility node ID returned by getTree or findNodes
+- `value` _string_ - Value to write to the node
+
+
+**Returns**:
+
+- `Promise<void>`
+
+**Example:**
+
+```typescript
+const field = (await sandbox.computerUse.accessibility.findNodes({ scope: 'all', role: 'entry', limit: 1 }))
+  .matches?.[0];
+if (field?.id) {
+  await sandbox.computerUse.accessibility.setNodeValue(field.id, 'hello');
+}
+```
+
+***
 
 
 ## ComputerUse
@@ -19,6 +191,7 @@ Computer Use functionality for interacting with the desktop environment.
 
 **Properties**:
 
+- `accessibility` _Accessibility_ - Accessibility operations interface
 - `display` _Display_ - Display operations interface
 - `keyboard` _Keyboard_ - Keyboard operations interface
 - `mouse` _Mouse_ - Mouse operations interface
@@ -27,7 +200,7 @@ Computer Use functionality for interacting with the desktop environment.
 
 
 
-Provides access to mouse, keyboard, screenshot, display, and recording operations
+Provides access to mouse, keyboard, screenshot, display, recording, and accessibility operations
 for automating desktop interactions within a sandbox.
 
 ### Constructors
@@ -977,6 +1150,15 @@ console.log(`Captured region: ${screenshot.region.width}x${screenshot.region.hei
 ***
 
 
+## AccessibilityTreeOptions
+
+Options for fetching the AT-SPI accessibility tree.
+
+**Properties**:
+
+- `maxDepth?` _number_ - Maximum depth to descend. Use 0 for the root only.
+- `pid?` _number_ - Process ID when scope is 'pid'.
+- `scope?` _string_ - Tree scope to inspect: 'focused', 'pid', or 'all'.
 ## ScreenshotOptions
 
 Interface for screenshot compression options
@@ -997,6 +1179,13 @@ Interface for region coordinates used in screenshot operations
 - `width` _number_
 - `x` _number_
 - `y` _number_
+## AccessibilityFindOptions
+
+```ts
+type AccessibilityFindOptions = FindAccessibilityNodesRequest;
+```
+
+Options for finding AT-SPI accessibility nodes.
 
 ## See Also
 - [Python SDK - computer-use](../python-sdk/sync/computer-use.md)

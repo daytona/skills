@@ -16,8 +16,9 @@ Daytona provides process and code execution capabilities through the `process` m
 ## Code execution
 
 Daytona provides methods to execute code in sandboxes. You can run code snippets in multiple languages with support for both stateless execution and stateful interpretation with persistent contexts.
-> **Note:**
-> Stateless execution inherits the sandbox language that you choose at [sandbox creation](./sandboxes.md#create-sandboxes) time. The stateful interpreter supports only Python.
+
+- [Run code (stateless)](#run-code-stateless): run independent code snippets where each execution starts from a clean interpreter state; inherits the sandbox language that you choose at [sandbox creation](./sandboxes.md#create-sandboxes).
+- [Run code (stateful)](#run-code-stateful): run code in a persistent interpreter context with variables, imports, and state to carry across executions; executes Python code and is available for every SDK.
 
 ### Run code (stateless)
 
