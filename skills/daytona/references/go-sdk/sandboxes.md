@@ -136,6 +136,42 @@ func main() {
 }
 ```
 
+### GPU Sandboxes
+> **Caution: Experimental**
+> This feature is experimental. To request access, contact [support@daytona.io](mailto:support@daytona.io).
+
+Daytona provides methods to create GPU sandboxes using the [Daytona Dashboard ↗](https://app.daytona.io/dashboard/sandboxes) or programmatically using the Daytona [Python](../python-sdk/sync/sandbox.md), [TypeScript](../typescript-sdk/sandbox.md), [Ruby](../ruby-sdk/sandbox.md), [Go](./daytona.md#type-sandbox), [Java](https://www.daytona.io/docs/en/java-sdk/sandbox) **SDKs**, [CLI](../cli.md#daytona-create), or [API](../api/README.md#daytona/tag/sandbox).
+
+Daytona supports NVIDIA GPU devices for snapshot-based sandbox creation. This allows you to run GPU workloads such as model inference, fine-tuning, and CUDA-accelerated compute inside a sandbox created from a [GPU snapshot](./snapshots.md#gpu-snapshots). GPU sandboxes must be ephemeral.
+
+1. Create a [GPU Snapshot](./snapshots.md#gpu-snapshots)
+2. Navigate to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+3. Click **Create Sandbox**
+4. Select your GPU snapshot
+5. Click **Create** to create a GPU sandbox
+
+```go
+package main
+
+import (
+	"context"
+	"github.com/daytonaio/daytona/libs/sdk-go/pkg/daytona"
+	"github.com/daytonaio/daytona/libs/sdk-go/pkg/types"
+)
+
+func main() {
+	client, _ := daytona.NewClient()
+	ctx := context.Background()
+	params := types.SnapshotParams{
+		Snapshot: "my-gpu-snapshot",
+		SandboxBaseParams: types.SandboxBaseParams{
+			Ephemeral: true,
+		},
+	}
+	_, _ = client.Create(ctx, params)
+}
+```
+
 ### Ephemeral Sandboxes
 
 Ephemeral sandboxes are automatically deleted once they are stopped. They are useful for short-lived tasks or testing purposes.
@@ -190,7 +226,7 @@ Daytona provides methods to list sandboxes and view their details in [Daytona Da
 result, err := client.List(ctx, nil, nil, nil)
 ```
 
-### Sandbox details page
+##### Sandbox details page
 
 [Daytona Dashboard ↗](https://app.daytona.io/dashboard/) provides a sandbox details page to view detailed information about a sandbox and interact with it directly.
 
@@ -265,7 +301,7 @@ sandbox.Archive(ctx)
 Daytona provides methods to recover sandboxes in [Daytona Dashboard ↗](https://app.daytona.io/dashboard/) or programmatically using the [Python](../python-sdk/README.md), [TypeScript](../typescript-sdk/README.md), [Ruby](../ruby-sdk/README.md), [Go](./daytona.md) **SDKs**, and [API](../api/README.md#daytona).
 
 
-### Recover from error state
+##### Recover from error state
 
 When a sandbox enters an error state, it can sometimes be recovered using the `recover` method, depending on the underlying error reason. The `recoverable` flag indicates whether the error state can be resolved through an automated recovery procedure.
 
@@ -273,10 +309,10 @@ Recovery actions are not performed automatically because they address errors tha
 
 
 ## Resize Sandboxes
-> **Caution: Experimental**
-> This feature is experimental. To request access, contact [support@daytona.io](mailto:support@daytona.io).
 
-Daytona provides methods to resize [sandbox resources](#resources) after creation. On a running sandbox, you can increase CPU and memory without interruption. To decrease CPU or memory, or to increase disk capacity, stop the sandbox first. Disk size can only be increased and cannot be decreased.
+Daytona provides methods to resize [sandbox resources](#resources) after creation using [Python](../python-sdk/README.md), [TypeScript](../typescript-sdk/README.md), [Ruby](../ruby-sdk/README.md), [Go](./daytona.md) **SDKs**, and [API](../api/README.md#daytona). On a running sandbox, you can increase CPU and memory without interruption. To decrease CPU or memory, or to increase disk capacity, stop the sandbox first. Disk size can only be increased and cannot be decreased.
+
+Resizing updates the sandbox resource allocation (`cpu`, `memory`, and `disk`) for that sandbox only. CPU and memory control compute capacity for running workloads, while disk controls persistent filesystem capacity. Values must be integers and stay within your organization's per-sandbox resource limits.
 
 ```go
 // Resize a started sandbox (CPU and memory can be increased)
@@ -309,7 +345,7 @@ if err != nil {
 }
 ```
 
-### View Forks
+##### View Forks
 
 Daytona provides methods to view forks. You can view the fork tree for a sandbox and all its related sandboxes.
 
@@ -380,7 +416,7 @@ params := types.SnapshotParams{
 sandbox, err := client.Create(ctx, params)
 ```
 
-#### What resets the timer
+##### What resets the timer
 
 The inactivity timer resets only for specific external interactions:
 
@@ -389,7 +425,7 @@ The inactivity timer resets only for specific external interactions:
 - Active [SSH connections](./ssh-access.md)
 - API requests to the [Daytona Toolbox SDK](../api/README.md#daytona-toolbox)
 
-#### What does not reset the timer
+##### What does not reset the timer
 
 The following do not reset the timer:
 

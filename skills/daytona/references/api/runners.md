@@ -52,6 +52,7 @@ Schema: **CreateRunner**
 |-------|------|----------|-------------|
 | `regionId` | string | Yes |  |
 | `name` | string | Yes |  |
+| `tags` | array of string | No | Tags to associate with the runner |
 
 ### Responses
 

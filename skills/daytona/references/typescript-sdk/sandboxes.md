@@ -115,6 +115,30 @@ const sandbox = await daytona.create({
 });
 ```
 
+### GPU Sandboxes
+> **Caution: Experimental**
+> This feature is experimental. To request access, contact [support@daytona.io](mailto:support@daytona.io).
+
+Daytona provides methods to create GPU sandboxes using the [Daytona Dashboard ↗](https://app.daytona.io/dashboard/sandboxes) or programmatically using the Daytona [Python](../python-sdk/sync/sandbox.md), [TypeScript](./sandbox.md), [Ruby](../ruby-sdk/sandbox.md), [Go](../go-sdk/daytona.md#type-sandbox), [Java](https://www.daytona.io/docs/en/java-sdk/sandbox) **SDKs**, [CLI](../cli.md#daytona-create), or [API](../api/README.md#daytona/tag/sandbox).
+
+Daytona supports NVIDIA GPU devices for snapshot-based sandbox creation. This allows you to run GPU workloads such as model inference, fine-tuning, and CUDA-accelerated compute inside a sandbox created from a [GPU snapshot](./snapshots.md#gpu-snapshots). GPU sandboxes must be ephemeral.
+
+1. Create a [GPU Snapshot](./snapshots.md#gpu-snapshots)
+2. Navigate to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+3. Click **Create Sandbox**
+4. Select your GPU snapshot
+5. Click **Create** to create a GPU sandbox
+
+```typescript
+import { Daytona } from "@daytona/sdk";
+
+const daytona = new Daytona();
+const sandbox = await daytona.create({
+  snapshot: "my-gpu-snapshot",
+  ephemeral: true,
+});
+```
+
 ### Ephemeral Sandboxes
 
 Ephemeral sandboxes are automatically deleted once they are stopped. They are useful for short-lived tasks or testing purposes.
@@ -154,7 +178,7 @@ Daytona provides methods to list sandboxes and view their details in [Daytona Da
 await daytona.list()
 ```
 
-### Sandbox details page
+##### Sandbox details page
 
 [Daytona Dashboard ↗](https://app.daytona.io/dashboard/) provides a sandbox details page to view detailed information about a sandbox and interact with it directly.
 
@@ -232,7 +256,7 @@ Daytona provides methods to recover sandboxes in [Daytona Dashboard ↗](https:/
 await sandbox.recover()
 ```
 
-### Recover from error state
+##### Recover from error state
 
 When a sandbox enters an error state, it can sometimes be recovered using the `recover` method, depending on the underlying error reason. The `recoverable` flag indicates whether the error state can be resolved through an automated recovery procedure.
 
@@ -246,10 +270,10 @@ if (sandbox.recoverable) {
 ```
 
 ## Resize Sandboxes
-> **Caution: Experimental**
-> This feature is experimental. To request access, contact [support@daytona.io](mailto:support@daytona.io).
 
-Daytona provides methods to resize [sandbox resources](#resources) after creation. On a running sandbox, you can increase CPU and memory without interruption. To decrease CPU or memory, or to increase disk capacity, stop the sandbox first. Disk size can only be increased and cannot be decreased.
+Daytona provides methods to resize [sandbox resources](#resources) after creation using [Python](../python-sdk/README.md), [TypeScript](./README.md), [Ruby](../ruby-sdk/README.md), [Go](../go-sdk/daytona.md) **SDKs**, and [API](../api/README.md#daytona). On a running sandbox, you can increase CPU and memory without interruption. To decrease CPU or memory, or to increase disk capacity, stop the sandbox first. Disk size can only be increased and cannot be decreased.
+
+Resizing updates the sandbox resource allocation (`cpu`, `memory`, and `disk`) for that sandbox only. CPU and memory control compute capacity for running workloads, while disk controls persistent filesystem capacity. Values must be integers and stay within your organization's per-sandbox resource limits.
 
 ```typescript
 // Resize a started sandbox (CPU and memory can be increased)
@@ -281,7 +305,7 @@ const forkedSandbox = await sandbox._experimental_fork({ name: "my-forked-sandbo
 const forkedSandbox = await daytona._experimental_fork(sandbox, { name: "my-forked-sandbox" });
 ```
 
-### View Forks
+##### View Forks
 
 Daytona provides methods to view forks. You can view the fork tree for a sandbox and all its related sandboxes.
 
@@ -345,7 +369,7 @@ const sandbox = await daytona.create({
 })
 ```
 
-#### What resets the timer
+##### What resets the timer
 
 The inactivity timer resets only for specific external interactions:
 
@@ -354,7 +378,7 @@ The inactivity timer resets only for specific external interactions:
 - Active [SSH connections](./ssh-access.md)
 - API requests to the [Daytona Toolbox SDK](../api/README.md#daytona-toolbox)
 
-#### What does not reset the timer
+##### What does not reset the timer
 
 The following do not reset the timer:
 

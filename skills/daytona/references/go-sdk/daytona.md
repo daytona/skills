@@ -7,12 +7,17 @@
 
 - Index
 - Variables
+- type AccessibilityFindOptions
+- type AccessibilityService
+- type AccessibilityTreeOptions
 - type Client
 - type CodeInterpreterService
 - type ComputerUseService
 - type DisplayService
 - type DockerImage
 - type DockerImageContext
+- type DownloadProgress
+- type DownloadStreamOption
 - type FileSystemService
 - type GitService
 - type KeyboardService
@@ -27,6 +32,8 @@
 - type Sandbox
 - type ScreenshotService
 - type SnapshotService
+- type UploadProgress
+- type UploadStreamOption
 - type VolumeService
 - See Also
 
@@ -101,6 +108,15 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
 ## Index
 
 - [Variables](https://www.daytona.io/docs/en<#variables>)
+- [type AccessibilityFindOptions](https://www.daytona.io/docs/en<#AccessibilityFindOptions>)
+- [type AccessibilityService](https://www.daytona.io/docs/en<#AccessibilityService>)
+  - [func NewAccessibilityService\(toolboxClient \*toolbox.APIClient, otel \*otelState\) \*AccessibilityService](https://www.daytona.io/docs/en<#NewAccessibilityService>)
+  - [func \(a \*AccessibilityService\) FindNodes\(ctx context.Context, opts \*AccessibilityFindOptions\) \(\*toolbox.AccessibilityNodesResponse, error\)](https://www.daytona.io/docs/en<#AccessibilityService.FindNodes>)
+  - [func \(a \*AccessibilityService\) FocusNode\(ctx context.Context, id string\) error](https://www.daytona.io/docs/en<#AccessibilityService.FocusNode>)
+  - [func \(a \*AccessibilityService\) GetTree\(ctx context.Context, opts \*AccessibilityTreeOptions\) \(\*toolbox.AccessibilityTreeResponse, error\)](https://www.daytona.io/docs/en<#AccessibilityService.GetTree>)
+  - [func \(a \*AccessibilityService\) InvokeNode\(ctx context.Context, id string, action \*string\) error](https://www.daytona.io/docs/en<#AccessibilityService.InvokeNode>)
+  - [func \(a \*AccessibilityService\) SetNodeValue\(ctx context.Context, id string, value string\) error](https://www.daytona.io/docs/en<#AccessibilityService.SetNodeValue>)
+- [type AccessibilityTreeOptions](https://www.daytona.io/docs/en<#AccessibilityTreeOptions>)
 - [type Client](https://www.daytona.io/docs/en<#Client>)
   - [func NewClient\(\) \(\*Client, error\)](https://www.daytona.io/docs/en<#NewClient>)
   - [func NewClientWithConfig\(config \*types.DaytonaConfig\) \(\*Client, error\)](https://www.daytona.io/docs/en<#NewClientWithConfig>)
@@ -116,6 +132,7 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(c \*CodeInterpreterService\) RunCode\(ctx context.Context, code string, opts ...func\(\*options.RunCode\)\) \(\*OutputChannels, error\)](https://www.daytona.io/docs/en<#CodeInterpreterService.RunCode>)
 - [type ComputerUseService](https://www.daytona.io/docs/en<#ComputerUseService>)
   - [func NewComputerUseService\(toolboxClient \*toolbox.APIClient, otel \*otelState\) \*ComputerUseService](https://www.daytona.io/docs/en<#NewComputerUseService>)
+  - [func \(c \*ComputerUseService\) Accessibility\(\) \*AccessibilityService](https://www.daytona.io/docs/en<#ComputerUseService.Accessibility>)
   - [func \(c \*ComputerUseService\) Display\(\) \*DisplayService](https://www.daytona.io/docs/en<#ComputerUseService.Display>)
   - [func \(c \*ComputerUseService\) GetStatus\(ctx context.Context\) \(map\[string\]any, error\)](<#ComputerUseService.GetStatus>)
   - [func \(c \*ComputerUseService\) Keyboard\(\) \*KeyboardService](https://www.daytona.io/docs/en<#ComputerUseService.Keyboard>)
@@ -150,12 +167,15 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(img \*DockerImage\) Volume\(paths \[\]string\) \*DockerImage](<#DockerImage.Volume>)
   - [func \(img \*DockerImage\) Workdir\(path string\) \*DockerImage](https://www.daytona.io/docs/en<#DockerImage.Workdir>)
 - [type DockerImageContext](https://www.daytona.io/docs/en<#DockerImageContext>)
+- [type DownloadProgress](https://www.daytona.io/docs/en<#DownloadProgress>)
+- [type DownloadStreamOption](https://www.daytona.io/docs/en<#DownloadStreamOption>)
+  - [func WithDownloadProgress\(fn func\(DownloadProgress\)\) DownloadStreamOption](https://www.daytona.io/docs/en<#WithDownloadProgress>)
 - [type FileSystemService](https://www.daytona.io/docs/en<#FileSystemService>)
   - [func NewFileSystemService\(toolboxClient \*toolbox.APIClient, otel \*otelState\) \*FileSystemService](https://www.daytona.io/docs/en<#NewFileSystemService>)
   - [func \(f \*FileSystemService\) CreateFolder\(ctx context.Context, path string, opts ...func\(\*options.CreateFolder\)\) error](https://www.daytona.io/docs/en<#FileSystemService.CreateFolder>)
   - [func \(f \*FileSystemService\) DeleteFile\(ctx context.Context, path string, recursive bool\) error](https://www.daytona.io/docs/en<#FileSystemService.DeleteFile>)
   - [func \(f \*FileSystemService\) DownloadFile\(ctx context.Context, remotePath string, localPath \*string\) \(\[\]byte, error\)](<#FileSystemService.DownloadFile>)
-  - [func \(f \*FileSystemService\) DownloadFileStream\(ctx context.Context, remotePath string\) \(io.ReadCloser, error\)](https://www.daytona.io/docs/en<#FileSystemService.DownloadFileStream>)
+  - [func \(f \*FileSystemService\) DownloadFileStream\(ctx context.Context, remotePath string, opts ...DownloadStreamOption\) \(io.ReadCloser, error\)](https://www.daytona.io/docs/en<#FileSystemService.DownloadFileStream>)
   - [func \(f \*FileSystemService\) FindFiles\(ctx context.Context, path, pattern string\) \(any, error\)](https://www.daytona.io/docs/en<#FileSystemService.FindFiles>)
   - [func \(f \*FileSystemService\) GetFileInfo\(ctx context.Context, path string\) \(\*types.FileInfo, error\)](https://www.daytona.io/docs/en<#FileSystemService.GetFileInfo>)
   - [func \(f \*FileSystemService\) ListFiles\(ctx context.Context, path string\) \(\[\]\*types.FileInfo, error\)](<#FileSystemService.ListFiles>)
@@ -164,6 +184,7 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(f \*FileSystemService\) SearchFiles\(ctx context.Context, path, pattern string\) \(any, error\)](https://www.daytona.io/docs/en<#FileSystemService.SearchFiles>)
   - [func \(f \*FileSystemService\) SetFilePermissions\(ctx context.Context, path string, opts ...func\(\*options.SetFilePermissions\)\) error](https://www.daytona.io/docs/en<#FileSystemService.SetFilePermissions>)
   - [func \(f \*FileSystemService\) UploadFile\(ctx context.Context, source any, destination string\) error](https://www.daytona.io/docs/en<#FileSystemService.UploadFile>)
+  - [func \(f \*FileSystemService\) UploadFileStream\(ctx context.Context, source io.Reader, remotePath string, opts ...UploadStreamOption\) error](https://www.daytona.io/docs/en<#FileSystemService.UploadFileStream>)
 - [type GitService](https://www.daytona.io/docs/en<#GitService>)
   - [func NewGitService\(toolboxClient \*toolbox.APIClient, otel \*otelState\) \*GitService](https://www.daytona.io/docs/en<#NewGitService>)
   - [func \(g \*GitService\) Add\(ctx context.Context, path string, files \[\]string\) error](<#GitService.Add>)
@@ -282,6 +303,9 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(s \*SnapshotService\) Delete\(ctx context.Context, snapshot \*types.Snapshot\) error](https://www.daytona.io/docs/en<#SnapshotService.Delete>)
   - [func \(s \*SnapshotService\) Get\(ctx context.Context, nameOrID string\) \(\*types.Snapshot, error\)](https://www.daytona.io/docs/en<#SnapshotService.Get>)
   - [func \(s \*SnapshotService\) List\(ctx context.Context, page \*int, limit \*int\) \(\*types.PaginatedSnapshots, error\)](https://www.daytona.io/docs/en<#SnapshotService.List>)
+- [type UploadProgress](https://www.daytona.io/docs/en<#UploadProgress>)
+- [type UploadStreamOption](https://www.daytona.io/docs/en<#UploadStreamOption>)
+  - [func WithUploadProgress\(fn func\(UploadProgress\)\) UploadStreamOption](https://www.daytona.io/docs/en<#WithUploadProgress>)
 - [type VolumeService](https://www.daytona.io/docs/en<#VolumeService>)
   - [func NewVolumeService\(client \*Client\) \*VolumeService](https://www.daytona.io/docs/en<#NewVolumeService>)
   - [func \(v \*VolumeService\) Create\(ctx context.Context, name string\) \(\*types.Volume, error\)](https://www.daytona.io/docs/en<#VolumeService.Create>)
@@ -305,6 +329,103 @@ fmt.Printf("Daytona SDK version: %s\n", daytona.Version)
 
 ```go
 var Version = strings.TrimSpace(version)
+```
+
+<a name="AccessibilityFindOptions"></a>
+## type AccessibilityFindOptions
+
+AccessibilityFindOptions configures an accessibility node search.
+
+```go
+type AccessibilityFindOptions struct {
+    Scope     *string
+    PID       *int
+    Role      *string
+    Name      *string
+    NameMatch *string
+    States    []string
+    Limit     *int
+}
+```
+
+<a name="AccessibilityService"></a>
+## type AccessibilityService
+
+AccessibilityService provides AT\-SPI accessibility operations.
+
+AccessibilityService exposes thin SDK wrappers over the toolbox accessibility endpoints. Access through [ComputerUseService.Accessibility](https://www.daytona.io/docs/en<#ComputerUseService.Accessibility>).
+
+```go
+type AccessibilityService struct {
+    // contains filtered or unexported fields
+}
+```
+
+<a name="NewAccessibilityService"></a>
+### func NewAccessibilityService
+
+```go
+func NewAccessibilityService(toolboxClient *toolbox.APIClient, otel *otelState) *AccessibilityService
+```
+
+NewAccessibilityService creates a new AccessibilityService.
+
+<a name="AccessibilityService.FindNodes"></a>
+### func \(\*AccessibilityService\) FindNodes
+
+```go
+func (a *AccessibilityService) FindNodes(ctx context.Context, opts *AccessibilityFindOptions) (*toolbox.AccessibilityNodesResponse, error)
+```
+
+FindNodes finds AT\-SPI accessibility nodes matching the provided filters.
+
+<a name="AccessibilityService.FocusNode"></a>
+### func \(\*AccessibilityService\) FocusNode
+
+```go
+func (a *AccessibilityService) FocusNode(ctx context.Context, id string) error
+```
+
+FocusNode focuses an AT\-SPI accessibility node.
+
+<a name="AccessibilityService.GetTree"></a>
+### func \(\*AccessibilityService\) GetTree
+
+```go
+func (a *AccessibilityService) GetTree(ctx context.Context, opts *AccessibilityTreeOptions) (*toolbox.AccessibilityTreeResponse, error)
+```
+
+GetTree fetches the AT\-SPI accessibility tree.
+
+<a name="AccessibilityService.InvokeNode"></a>
+### func \(\*AccessibilityService\) InvokeNode
+
+```go
+func (a *AccessibilityService) InvokeNode(ctx context.Context, id string, action *string) error
+```
+
+InvokeNode invokes an AT\-SPI accessibility node action.
+
+<a name="AccessibilityService.SetNodeValue"></a>
+### func \(\*AccessibilityService\) SetNodeValue
+
+```go
+func (a *AccessibilityService) SetNodeValue(ctx context.Context, id string, value string) error
+```
+
+SetNodeValue sets an AT\-SPI accessibility node value.
+
+<a name="AccessibilityTreeOptions"></a>
+## type AccessibilityTreeOptions
+
+AccessibilityTreeOptions configures an accessibility tree request.
+
+```go
+type AccessibilityTreeOptions struct {
+    Scope    *string
+    PID      *int
+    MaxDepth *int
+}
 ```
 
 <a name="Client"></a>
@@ -717,6 +838,17 @@ func NewComputerUseService(toolboxClient *toolbox.APIClient, otel *otelState) *C
 NewComputerUseService creates a new ComputerUseService.
 
 This is typically called internally by the SDK when creating a [Sandbox](https://www.daytona.io/docs/en<#Sandbox>). Users should access ComputerUseService through \[Sandbox.ComputerUse\] rather than creating it directly.
+
+<a name="ComputerUseService.Accessibility"></a>
+### func \(\*ComputerUseService\) Accessibility
+
+```go
+func (c *ComputerUseService) Accessibility() *AccessibilityService
+```
+
+Accessibility returns the [AccessibilityService](https://www.daytona.io/docs/en<#AccessibilityService>) for AT\-SPI accessibility operations.
+
+The service is lazily initialized on first access.
 
 <a name="ComputerUseService.Display"></a>
 ### func \(\*ComputerUseService\) Display
@@ -1313,6 +1445,39 @@ type DockerImageContext struct {
 }
 ```
 
+<a name="DownloadProgress"></a>
+## type DownloadProgress
+
+DownloadProgress contains progress information for a streaming download.
+
+```go
+type DownloadProgress struct {
+    // BytesReceived is the cumulative number of bytes read so far.
+    BytesReceived int64
+    // TotalBytes is the total number of bytes expected, if known.
+    // Zero means unknown.
+    TotalBytes int64
+}
+```
+
+<a name="DownloadStreamOption"></a>
+## type DownloadStreamOption
+
+DownloadStreamOption configures the behavior of DownloadFileStream.
+
+```go
+type DownloadStreamOption func(*downloadStreamConfig)
+```
+
+<a name="WithDownloadProgress"></a>
+### func WithDownloadProgress
+
+```go
+func WithDownloadProgress(fn func(DownloadProgress)) DownloadStreamOption
+```
+
+WithDownloadProgress returns an option that enables progress tracking for streaming downloads. The callback receives the cumulative bytes read and, when available, the total bytes expected.
+
 <a name="FileSystemService"></a>
 ## type FileSystemService
 
@@ -1442,7 +1607,7 @@ Returns an error if the file doesn't exist or cannot be read.
 ### func \(\*FileSystemService\) DownloadFileStream
 
 ```go
-func (f *FileSystemService) DownloadFileStream(ctx context.Context, remotePath string) (io.ReadCloser, error)
+func (f *FileSystemService) DownloadFileStream(ctx context.Context, remotePath string, opts ...DownloadStreamOption) (io.ReadCloser, error)
 ```
 
 DownloadFileStream downloads a single file from the sandbox as a stream without buffering the entire file into memory. The returned [io.ReadCloser](https://www.daytona.io/docs/en<https://pkg.go.dev/io#ReadCloser>) can be piped directly to an HTTP response, written to a file, or processed on the fly.
@@ -1730,6 +1895,27 @@ err := sandbox.FileSystem.UploadFile(ctx, content, "/home/user/hello.txt")
 ```
 
 Returns an error if the upload fails.
+
+<a name="FileSystemService.UploadFileStream"></a>
+### func \(\*FileSystemService\) UploadFileStream
+
+```go
+func (f *FileSystemService) UploadFileStream(ctx context.Context, source io.Reader, remotePath string, opts ...UploadStreamOption) error
+```
+
+UploadFileStream streams a file to the sandbox without buffering it in memory. The reader is piped directly into a multipart request, so heap usage stays flat regardless of source size. The HTTP layer uses chunked transfer encoding, so the source's natural EOF terminates the upload — no advance size is needed. Cancellation flows through the context: cancelling ctx aborts the in\-flight HTTP request.
+
+Example:
+
+```
+f, _ := os.Open("/local/big.bin")
+defer f.Close()
+err := sandbox.FileSystem.UploadFileStream(ctx, f, "/home/user/big.bin",
+    WithUploadProgress(func(p UploadProgress) {
+        log.Printf("%d bytes sent", p.BytesSent)
+    }),
+)
+```
 
 <a name="GitService"></a>
 ## type GitService
@@ -4585,6 +4771,36 @@ fmt.Printf("Page %d of %d, total: %d\n", result.Page, result.TotalPages, result.
 ```
 
 Returns \[types.PaginatedSnapshots\] containing the snapshots and pagination info.
+
+<a name="UploadProgress"></a>
+## type UploadProgress
+
+UploadProgress contains progress information for a streaming upload.
+
+```go
+type UploadProgress struct {
+    // BytesSent is the cumulative number of bytes written to the wire so far.
+    BytesSent int64
+}
+```
+
+<a name="UploadStreamOption"></a>
+## type UploadStreamOption
+
+UploadStreamOption configures the behavior of UploadFileStream.
+
+```go
+type UploadStreamOption func(*uploadStreamConfig)
+```
+
+<a name="WithUploadProgress"></a>
+### func WithUploadProgress
+
+```go
+func WithUploadProgress(fn func(UploadProgress)) UploadStreamOption
+```
+
+WithUploadProgress returns an option that enables progress tracking for streaming uploads. The callback fires once per chunk written to the wire with the cumulative byte count.
 
 <a name="VolumeService"></a>
 ## type VolumeService

@@ -3,6 +3,11 @@
 
 ## Contents
 
+- POST `/computeruse/a11y/find`
+- POST `/computeruse/a11y/node/focus`
+- POST `/computeruse/a11y/node/invoke`
+- POST `/computeruse/a11y/node/value`
+- GET `/computeruse/a11y/tree`
 - GET `/computeruse/display/info`
 - GET `/computeruse/display/windows`
 - POST `/computeruse/keyboard/hotkey`
@@ -31,6 +36,152 @@
 - POST `/computeruse/start`
 - GET `/computeruse/status`
 - POST `/computeruse/stop`
+
+## POST `/computeruse/a11y/find` {#daytona-toolbox/tag/computer-use/POST/computeruse/a11y/find}
+
+**Find accessibility nodes**
+
+Search the AT-SPI tree for nodes matching a role/name/state filter and return a flat list.
+
+### Request Body
+
+Find request
+
+Schema: **FindAccessibilityNodesRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `limit` | integer | No |  |
+| `name` | string | No |  |
+| `nameMatch` | string | No | "exact" \| "substring" \| "regex" |
+| `pid` | integer | No |  |
+| `role` | string | No |  |
+| `scope` | string | No |  |
+| `states` | array of string | No |  |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | AccessibilityNodesResponse |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+| 503 | Service Unavailable | object |
+
+---
+
+## POST `/computeruse/a11y/node/focus` {#daytona-toolbox/tag/computer-use/POST/computeruse/a11y/node/focus}
+
+**Focus an accessibility node**
+
+Move keyboard focus to the AT-SPI node identified by id (bus-name:object-path).
+
+### Request Body
+
+Node focus request
+
+Schema: **AccessibilityNodeRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | string | Yes |  |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | Empty |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+| 503 | Service Unavailable | object |
+
+---
+
+## POST `/computeruse/a11y/node/invoke` {#daytona-toolbox/tag/computer-use/POST/computeruse/a11y/node/invoke}
+
+**Invoke an action on an accessibility node**
+
+Call an AT-SPI Action on the node. Leave action empty to invoke the node's primary (first) action.
+
+### Request Body
+
+Invoke request
+
+Schema: **AccessibilityInvokeRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `action` | string | No |  |
+| `id` | string | Yes |  |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | Empty |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+| 503 | Service Unavailable | object |
+
+---
+
+## POST `/computeruse/a11y/node/value` {#daytona-toolbox/tag/computer-use/POST/computeruse/a11y/node/value}
+
+**Set the value of an accessibility node**
+
+Write the given value to the node via EditableText.SetTextContents or, for numeric controls, Value.CurrentValue.
+
+### Request Body
+
+Set value request
+
+Schema: **AccessibilitySetValueRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | string | Yes |  |
+| `value` | string | No |  |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | Empty |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+| 503 | Service Unavailable | object |
+
+---
+
+## GET `/computeruse/a11y/tree` {#daytona-toolbox/tag/computer-use/GET/computeruse/a11y/tree}
+
+**Get accessibility tree**
+
+Fetch the AT-SPI accessibility tree for the focused application, a specific PID, or all registered applications.
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `scope` | query | string | No | Scope: focused \| pid \| all (default: focused) |
+| `pid` | query | integer | No | Process ID when scope=pid |
+| `maxDepth` | query | integer | No | Max tree depth (-1 unbounded, 0 root only; default -1) |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | OK | AccessibilityTreeResponse |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
+| 500 | Internal Server Error | object |
+| 503 | Service Unavailable | object |
+
+---
 
 ## GET `/computeruse/display/info` {#daytona-toolbox/tag/computer-use/GET/computeruse/display/info}
 
