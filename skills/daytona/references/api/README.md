@@ -107,9 +107,9 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `PATCH` | `/runners/{id}/scheduling` | [Update runner scheduling status](./runners.md#daytona/tag/runners/PATCH/runners/{id}/scheduling) | [runners](./runners.md) |
 | `PATCH` | `/runners/{id}/draining` | [Update runner draining status](./runners.md#daytona/tag/runners/PATCH/runners/{id}/draining) | [runners](./runners.md) |
 | `POST` | `/runners/healthcheck` | [Runner healthcheck](./runners.md#daytona/tag/runners/POST/runners/healthcheck) | [runners](./runners.md) |
-| `GET` | `/sandbox` | [List all sandboxes](./sandbox.md#daytona/tag/sandbox/GET/sandbox) | [sandbox](./sandbox.md) |
+| `GET` | `/sandbox` | [List sandboxes](./sandbox.md#daytona/tag/sandbox/GET/sandbox) | [sandbox](./sandbox.md) |
 | `POST` | `/sandbox` | [Create a new sandbox](./sandbox.md#daytona/tag/sandbox/POST/sandbox) | [sandbox](./sandbox.md) |
-| `GET` | `/sandbox/paginated` | [List all sandboxes paginated](./sandbox.md#daytona/tag/sandbox/GET/sandbox/paginated) | [sandbox](./sandbox.md) |
+| `GET` | `/sandbox/paginated` | [[DEPRECATED] List all sandboxes paginated](./sandbox.md#daytona/tag/sandbox/GET/sandbox/paginated) | [sandbox](./sandbox.md) |
 | `GET` | `/sandbox/for-runner` | [Get sandboxes for the authenticated runner](./sandbox.md#daytona/tag/sandbox/GET/sandbox/for-runner) | [sandbox](./sandbox.md) |
 | `GET` | `/sandbox/{sandboxIdOrName}` | [Get sandbox details](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxIdOrName}) | [sandbox](./sandbox.md) |
 | `DELETE` | `/sandbox/{sandboxIdOrName}` | [Delete sandbox](./sandbox.md#daytona/tag/sandbox/DELETE/sandbox/{sandboxIdOrName}) | [sandbox](./sandbox.md) |
@@ -235,21 +235,8 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `GET` | `/volumes/by-name/{name}` | [Get volume details by name](./volumes.md#daytona/tag/volumes/GET/volumes/by-name/{name}) | [volumes](./volumes.md) |
 | `POST` | `/webhooks/organizations/{organizationId}/app-portal-access` | [Get Svix Consumer App Portal access for an organization](./webhooks.md#daytona/tag/webhooks/POST/webhooks/organizations/{organizationId}/app-portal-access) | [webhooks](./webhooks.md) |
 | `GET` | `/webhooks/organizations/{organizationId}/initialization-status` | [Get webhook initialization status for an organization](./webhooks.md#daytona/tag/webhooks/GET/webhooks/organizations/{organizationId}/initialization-status) | [webhooks](./webhooks.md) |
+| `POST` | `/webhooks/organizations/{organizationId}/initialize` | [Initialize webhooks for an organization](./webhooks.md#daytona/tag/webhooks/POST/webhooks/organizations/{organizationId}/initialize) | [webhooks](./webhooks.md) |
 | `POST` | `/webhooks/organizations/{organizationId}/refresh-endpoints` | [Refresh cached endpoint presence flag for an organization](./webhooks.md#daytona/tag/webhooks/POST/webhooks/organizations/{organizationId}/refresh-endpoints) | [webhooks](./webhooks.md) |
-| `GET` | `/workspace` | [[DEPRECATED] List all workspaces](./workspace.md#daytona/tag/workspace/GET/workspace) | [workspace](./workspace.md) |
-| `POST` | `/workspace` | [[DEPRECATED] Create a new workspace](./workspace.md#daytona/tag/workspace/POST/workspace) | [workspace](./workspace.md) |
-| `GET` | `/workspace/{workspaceId}` | [[DEPRECATED] Get workspace details](./workspace.md#daytona/tag/workspace/GET/workspace/{workspaceId}) | [workspace](./workspace.md) |
-| `DELETE` | `/workspace/{workspaceId}` | [[DEPRECATED] Delete workspace](./workspace.md#daytona/tag/workspace/DELETE/workspace/{workspaceId}) | [workspace](./workspace.md) |
-| `POST` | `/workspace/{workspaceId}/start` | [[DEPRECATED] Start workspace](./workspace.md#daytona/tag/workspace/POST/workspace/{workspaceId}/start) | [workspace](./workspace.md) |
-| `POST` | `/workspace/{workspaceId}/stop` | [[DEPRECATED] Stop workspace](./workspace.md#daytona/tag/workspace/POST/workspace/{workspaceId}/stop) | [workspace](./workspace.md) |
-| `PUT` | `/workspace/{workspaceId}/labels` | [[DEPRECATED] Replace workspace labels](./workspace.md#daytona/tag/workspace/PUT/workspace/{workspaceId}/labels) | [workspace](./workspace.md) |
-| `POST` | `/workspace/{workspaceId}/backup` | [[DEPRECATED] Create workspace backup](./workspace.md#daytona/tag/workspace/POST/workspace/{workspaceId}/backup) | [workspace](./workspace.md) |
-| `POST` | `/workspace/{workspaceId}/public/{isPublic}` | [[DEPRECATED] Update public status](./workspace.md#daytona/tag/workspace/POST/workspace/{workspaceId}/public/{isPublic}) | [workspace](./workspace.md) |
-| `POST` | `/workspace/{workspaceId}/autostop/{interval}` | [[DEPRECATED] Set workspace auto-stop interval](./workspace.md#daytona/tag/workspace/POST/workspace/{workspaceId}/autostop/{interval}) | [workspace](./workspace.md) |
-| `POST` | `/workspace/{workspaceId}/autoarchive/{interval}` | [[DEPRECATED] Set workspace auto-archive interval](./workspace.md#daytona/tag/workspace/POST/workspace/{workspaceId}/autoarchive/{interval}) | [workspace](./workspace.md) |
-| `POST` | `/workspace/{workspaceId}/archive` | [[DEPRECATED] Archive workspace](./workspace.md#daytona/tag/workspace/POST/workspace/{workspaceId}/archive) | [workspace](./workspace.md) |
-| `GET` | `/workspace/{workspaceId}/ports/{port}/preview-url` | [[DEPRECATED] Get preview URL for a workspace port](./workspace.md#daytona/tag/workspace/GET/workspace/{workspaceId}/ports/{port}/preview-url) | [workspace](./workspace.md) |
-| `GET` | `/workspace/{workspaceId}/build-logs` | [[DEPRECATED] Get build logs](./workspace.md#daytona/tag/workspace/GET/workspace/{workspaceId}/build-logs) | [workspace](./workspace.md) |
 
 ### Tags
 
@@ -269,8 +256,7 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 - [toolbox](./toolbox.md) (68 endpoints) {#daytona/tag/toolbox}
 - [users](./users.md) (5 endpoints) {#daytona/tag/users}
 - [volumes](./volumes.md) (5 endpoints) {#daytona/tag/volumes}
-- [webhooks](./webhooks.md) (3 endpoints) {#daytona/tag/webhooks}
-- [workspace](./workspace.md) (14 endpoints) {#daytona/tag/workspace}
+- [webhooks](./webhooks.md) (4 endpoints) {#daytona/tag/webhooks}
 
 ---
 

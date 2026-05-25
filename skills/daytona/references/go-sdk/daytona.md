@@ -6,6 +6,7 @@
 ## Contents
 
 - Index
+- Constants
 - Variables
 - type AccessibilityFindOptions
 - type AccessibilityService
@@ -21,15 +22,19 @@
 - type FileSystemService
 - type GitService
 - type KeyboardService
+- type ListSandboxesQuery
 - type LspServerService
 - type MouseService
 - type OutputChannels
-- type PaginatedSandboxes
 - type ProcessService
 - type PtyHandle
 - type PushAccessCredentials
 - type RecordingService
 - type Sandbox
+- type SandboxIterator
+- type SandboxListSortDirection
+- type SandboxListSortField
+- type SandboxState
 - type ScreenshotService
 - type SnapshotService
 - type UploadProgress
@@ -107,6 +112,7 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
 
 ## Index
 
+- [Constants](https://www.daytona.io/docs/en<#constants>)
 - [Variables](https://www.daytona.io/docs/en<#variables>)
 - [type AccessibilityFindOptions](https://www.daytona.io/docs/en<#AccessibilityFindOptions>)
 - [type AccessibilityService](https://www.daytona.io/docs/en<#AccessibilityService>)
@@ -123,7 +129,8 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(c \*Client\) Close\(ctx context.Context\) error](https://www.daytona.io/docs/en<#Client.Close>)
   - [func \(c \*Client\) Create\(ctx context.Context, params any, opts ...func\(\*options.CreateSandbox\)\) \(\*Sandbox, error\)](https://www.daytona.io/docs/en<#Client.Create>)
   - [func \(c \*Client\) Get\(ctx context.Context, sandboxIDOrName string\) \(\*Sandbox, error\)](https://www.daytona.io/docs/en<#Client.Get>)
-  - [func \(c \*Client\) List\(ctx context.Context, labels map\[string\]string, page \*int, limit \*int\) \(\*PaginatedSandboxes, error\)](<#Client.List>)
+  - [func \(c \*Client\) List\(ctx context.Context, query \*ListSandboxesQuery\) \*SandboxIterator](https://www.daytona.io/docs/en<#Client.List>)
+  - [func \(c \*Client\) ListSeq\(ctx context.Context, query \*ListSandboxesQuery\) iter.Seq2\[\*Sandbox, error\]](<#Client.ListSeq>)
 - [type CodeInterpreterService](https://www.daytona.io/docs/en<#CodeInterpreterService>)
   - [func NewCodeInterpreterService\(toolboxClient \*toolbox.APIClient, otel \*otelState\) \*CodeInterpreterService](https://www.daytona.io/docs/en<#NewCodeInterpreterService>)
   - [func \(c \*CodeInterpreterService\) CreateContext\(ctx context.Context, cwd \*string\) \(map\[string\]any, error\)](<#CodeInterpreterService.CreateContext>)
@@ -202,6 +209,7 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(k \*KeyboardService\) Hotkey\(ctx context.Context, keys string\) error](https://www.daytona.io/docs/en<#KeyboardService.Hotkey>)
   - [func \(k \*KeyboardService\) Press\(ctx context.Context, key string, modifiers \[\]string\) error](<#KeyboardService.Press>)
   - [func \(k \*KeyboardService\) Type\(ctx context.Context, text string, delay \*int\) error](https://www.daytona.io/docs/en<#KeyboardService.Type>)
+- [type ListSandboxesQuery](https://www.daytona.io/docs/en<#ListSandboxesQuery>)
 - [type LspServerService](https://www.daytona.io/docs/en<#LspServerService>)
   - [func NewLspServerService\(toolboxClient \*toolbox.APIClient, languageID types.LspLanguageID, projectPath string, otel \*otelState\) \*LspServerService](https://www.daytona.io/docs/en<#NewLspServerService>)
   - [func \(l \*LspServerService\) Completions\(ctx context.Context, path string, position types.Position\) \(any, error\)](https://www.daytona.io/docs/en<#LspServerService.Completions>)
@@ -219,7 +227,6 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(m \*MouseService\) Move\(ctx context.Context, x, y int\) \(map\[string\]any, error\)](<#MouseService.Move>)
   - [func \(m \*MouseService\) Scroll\(ctx context.Context, x, y int, direction string, amount \*int\) \(bool, error\)](https://www.daytona.io/docs/en<#MouseService.Scroll>)
 - [type OutputChannels](https://www.daytona.io/docs/en<#OutputChannels>)
-- [type PaginatedSandboxes](https://www.daytona.io/docs/en<#PaginatedSandboxes>)
 - [type ProcessService](https://www.daytona.io/docs/en<#ProcessService>)
   - [func NewProcessService\(toolboxClient \*toolbox.APIClient, otel \*otelState, language types.CodeLanguage\) \*ProcessService](https://www.daytona.io/docs/en<#NewProcessService>)
   - [func \(p \*ProcessService\) CodeRun\(ctx context.Context, code string, opts ...func\(\*options.CodeRun\)\) \(\*types.ExecuteResponse, error\)](https://www.daytona.io/docs/en<#ProcessService.CodeRun>)
@@ -266,7 +273,7 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(r \*RecordingService\) Start\(ctx context.Context, label \*string\) \(\*toolbox.Recording, error\)](https://www.daytona.io/docs/en<#RecordingService.Start>)
   - [func \(r \*RecordingService\) Stop\(ctx context.Context, id string\) \(\*toolbox.Recording, error\)](https://www.daytona.io/docs/en<#RecordingService.Stop>)
 - [type Sandbox](https://www.daytona.io/docs/en<#Sandbox>)
-  - [func NewSandbox\(client \*Client, toolboxClient \*toolbox.APIClient, id string, name string, state apiclient.SandboxState, target string, autoArchiveInterval int, autoDeleteInterval int, networkBlockAll bool, networkAllowList \*string, language types.CodeLanguage\) \*Sandbox](https://www.daytona.io/docs/en<#NewSandbox>)
+  - [func NewSandbox\(client \*Client, toolboxClient \*toolbox.APIClient, dto sandboxDTO, language types.CodeLanguage\) \*Sandbox](https://www.daytona.io/docs/en<#NewSandbox>)
   - [func \(s \*Sandbox\) Archive\(ctx context.Context\) error](https://www.daytona.io/docs/en<#Sandbox.Archive>)
   - [func \(s \*Sandbox\) Delete\(ctx context.Context\) error](https://www.daytona.io/docs/en<#Sandbox.Delete>)
   - [func \(s \*Sandbox\) DeleteWithTimeout\(ctx context.Context, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.DeleteWithTimeout>)
@@ -293,6 +300,13 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(s \*Sandbox\) WaitForResize\(ctx context.Context, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.WaitForResize>)
   - [func \(s \*Sandbox\) WaitForStart\(ctx context.Context, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.WaitForStart>)
   - [func \(s \*Sandbox\) WaitForStop\(ctx context.Context, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.WaitForStop>)
+- [type SandboxIterator](https://www.daytona.io/docs/en<#SandboxIterator>)
+  - [func \(it \*SandboxIterator\) Err\(\) error](https://www.daytona.io/docs/en<#SandboxIterator.Err>)
+  - [func \(it \*SandboxIterator\) Next\(\) bool](https://www.daytona.io/docs/en<#SandboxIterator.Next>)
+  - [func \(it \*SandboxIterator\) Value\(\) \*Sandbox](https://www.daytona.io/docs/en<#SandboxIterator.Value>)
+- [type SandboxListSortDirection](https://www.daytona.io/docs/en<#SandboxListSortDirection>)
+- [type SandboxListSortField](https://www.daytona.io/docs/en<#SandboxListSortField>)
+- [type SandboxState](https://www.daytona.io/docs/en<#SandboxState>)
 - [type ScreenshotService](https://www.daytona.io/docs/en<#ScreenshotService>)
   - [func NewScreenshotService\(toolboxClient \*toolbox.APIClient, otel \*otelState\) \*ScreenshotService](https://www.daytona.io/docs/en<#NewScreenshotService>)
   - [func \(s \*ScreenshotService\) TakeFullScreen\(ctx context.Context, showCursor \*bool\) \(\*types.ScreenshotResponse, error\)](https://www.daytona.io/docs/en<#ScreenshotService.TakeFullScreen>)
@@ -314,6 +328,56 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(v \*VolumeService\) List\(ctx context.Context\) \(\[\]\*types.Volume, error\)](<#VolumeService.List>)
   - [func \(v \*VolumeService\) WaitForReady\(ctx context.Context, volume \*types.Volume, timeout time.Duration\) \(\*types.Volume, error\)](https://www.daytona.io/docs/en<#VolumeService.WaitForReady>)
 
+
+## Constants
+
+<a name="SandboxStateCreating"></a>CamelCase enum constants, matching idiomatic Go naming \(the underlying api\-client uses SCREAMING\_SNAKE\_CASE which is non\-idiomatic in Go\).
+
+```go
+const (
+    SandboxStateCreating         = apiclient.SANDBOXSTATE_CREATING
+    SandboxStateRestoring        = apiclient.SANDBOXSTATE_RESTORING
+    SandboxStateDestroyed        = apiclient.SANDBOXSTATE_DESTROYED
+    SandboxStateDestroying       = apiclient.SANDBOXSTATE_DESTROYING
+    SandboxStateStarted          = apiclient.SANDBOXSTATE_STARTED
+    SandboxStateStopped          = apiclient.SANDBOXSTATE_STOPPED
+    SandboxStateStarting         = apiclient.SANDBOXSTATE_STARTING
+    SandboxStateStopping         = apiclient.SANDBOXSTATE_STOPPING
+    SandboxStateError            = apiclient.SANDBOXSTATE_ERROR
+    SandboxStateBuildFailed      = apiclient.SANDBOXSTATE_BUILD_FAILED
+    SandboxStatePendingBuild     = apiclient.SANDBOXSTATE_PENDING_BUILD
+    SandboxStateBuildingSnapshot = apiclient.SANDBOXSTATE_BUILDING_SNAPSHOT
+    SandboxStateUnknown          = apiclient.SANDBOXSTATE_UNKNOWN
+    SandboxStatePullingSnapshot  = apiclient.SANDBOXSTATE_PULLING_SNAPSHOT
+    SandboxStateArchived         = apiclient.SANDBOXSTATE_ARCHIVED
+    SandboxStateArchiving        = apiclient.SANDBOXSTATE_ARCHIVING
+    SandboxStateResizing         = apiclient.SANDBOXSTATE_RESIZING
+    SandboxStateSnapshotting     = apiclient.SANDBOXSTATE_SNAPSHOTTING
+    SandboxStateForking          = apiclient.SANDBOXSTATE_FORKING
+)
+```
+
+<a name="SandboxListSortFieldName"></a>
+
+```go
+const (
+    SandboxListSortFieldName           = apiclient.SANDBOXLISTSORTFIELD_NAME
+    SandboxListSortFieldCpu            = apiclient.SANDBOXLISTSORTFIELD_CPU
+    SandboxListSortFieldMemoryGib      = apiclient.SANDBOXLISTSORTFIELD_MEMORY_GIB
+    SandboxListSortFieldDiskGib        = apiclient.SANDBOXLISTSORTFIELD_DISK_GIB
+    SandboxListSortFieldLastActivityAt = apiclient.SANDBOXLISTSORTFIELD_LAST_ACTIVITY_AT
+    SandboxListSortFieldCreatedAt      = apiclient.SANDBOXLISTSORTFIELD_CREATED_AT
+)
+```
+
+<a name="SandboxListSortDirectionAsc"></a>
+
+```go
+const (
+    SandboxListSortDirectionAsc  = apiclient.SANDBOXLISTSORTDIRECTION_ASC
+    SandboxListSortDirectionDesc = apiclient.SANDBOXLISTSORTDIRECTION_DESC
+)
+```
 
 ## Variables
 
@@ -582,37 +646,44 @@ if err != nil {
 ### func \(\*Client\) List
 
 ```go
-func (c *Client) List(ctx context.Context, labels map[string]string, page *int, limit *int) (*PaginatedSandboxes, error)
+func (c *Client) List(ctx context.Context, query *ListSandboxesQuery) *SandboxIterator
 ```
 
-List retrieves sandboxes with optional label filtering and pagination.
+List returns an iterator over Sandboxes matching the given query, following the [database/sql.Rows](https://www.daytona.io/docs/en<https://pkg.go.dev/database/sql#Rows>) / [bufio.Scanner](https://www.daytona.io/docs/en<https://pkg.go.dev/bufio#Scanner>) iterator pattern.
 
-Parameters:
-
-- labels: Optional map of labels to filter sandboxes. Pass nil for no filtering.
-- page: Optional page number \(1\-indexed\). Pass nil for the first page.
-- limit: Optional number of results per page. Pass nil for the default limit.
+For Go 1.23\+ range\-over\-func consumers, see [Client.ListSeq](https://www.daytona.io/docs/en<#Client.ListSeq>).
 
 Example:
 
 ```
-// List all sandboxes
-result, err := client.List(ctx, nil, nil, nil)
-
-// List sandboxes with pagination
-page, limit := 1, 10
-result, err := client.List(ctx, nil, &page, &limit)
-
-// Filter by labels
-result, err := client.List(ctx, map[string]string{"env": "dev"}, nil, nil)
-
-// Iterate through results
-for _, sandbox := range result.Items {
-    fmt.Printf("Sandbox: %s (state: %s)\n", sandbox.Name, sandbox.State)
+iter := client.List(ctx, &ListSandboxesQuery{Labels: map[string]string{"env": "dev"}})
+for iter.Next() {
+    fmt.Println(iter.Value().ID)
+}
+if err := iter.Err(); err != nil {
+    log.Fatal(err)
 }
 ```
 
-Returns a [PaginatedSandboxes](https://www.daytona.io/docs/en<#PaginatedSandboxes>) containing the matching sandboxes and pagination metadata.
+<a name="Client.ListSeq"></a>
+### func \(\*Client\) ListSeq
+
+```go
+func (c *Client) ListSeq(ctx context.Context, query *ListSandboxesQuery) iter.Seq2[*Sandbox, error]
+```
+
+ListSeq returns a Go 1.23\+ range\-over\-func iterator over Sandboxes matching the given query. Each yielded pair is \(sandbox, error\); a non\-nil error terminates iteration and the consumer should break out of the range.
+
+Example:
+
+```
+for sandbox, err := range client.ListSeq(ctx, &ListSandboxesQuery{...}) {
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Println(sandbox.ID)
+}
+```
 
 <a name="CodeInterpreterService"></a>
 ## type CodeInterpreterService
@@ -2375,6 +2446,58 @@ err := keyboard.Type(ctx, "Slow typing", &delay)
 
 Returns an error if typing fails.
 
+<a name="ListSandboxesQuery"></a>
+## type ListSandboxesQuery
+
+ListSandboxesQuery contains query parameters for filtering and sorting when listing sandboxes.
+
+```go
+type ListSandboxesQuery struct {
+    // Per-page fetch size. Does NOT limit the total number of Sandboxes returned.
+    Limit *int
+    // Filter by ID prefix (case-insensitive)
+    ID  *string
+    // Filter by name prefix (case-insensitive)
+    Name *string
+    // Filter by labels
+    Labels map[string]string
+    // Filter by states
+    States []apiclient.SandboxState
+    // Filter by snapshot names
+    Snapshots []string
+    // Filter by targets
+    Targets []string
+    // Filter by minimum CPU
+    MinCpu *int
+    // Filter by maximum CPU
+    MaxCpu *int
+    // Filter by minimum memory in GiB
+    MinMemoryGib *int
+    // Filter by maximum memory in GiB
+    MaxMemoryGib *int
+    // Filter by minimum disk space in GiB
+    MinDiskGib *int
+    // Filter by maximum disk space in GiB
+    MaxDiskGib *int
+    // Filter by public status
+    IsPublic *bool
+    // Filter by recoverable status
+    IsRecoverable *bool
+    // Include sandboxes created after this timestamp
+    CreatedAtAfter *time.Time
+    // Include sandboxes created before this timestamp
+    CreatedAtBefore *time.Time
+    // Include sandboxes with last activity after this timestamp
+    LastActivityAfter *time.Time
+    // Include sandboxes with last activity before this timestamp
+    LastActivityBefore *time.Time
+    // Sort by field
+    Sort *apiclient.SandboxListSortField
+    // Sort direction
+    Order *apiclient.SandboxListSortDirection
+}
+```
+
 <a name="LspServerService"></a>
 ## type LspServerService
 
@@ -2761,20 +2884,6 @@ type OutputChannels struct {
     Stderr <-chan *types.OutputMessage   // Receives stderr messages as they occur
     Errors <-chan *types.ExecutionError  // Receives execution errors
     Done   <-chan *types.ExecutionResult // Receives final result when execution completes
-}
-```
-
-<a name="PaginatedSandboxes"></a>
-## type PaginatedSandboxes
-
-PaginatedSandboxes represents a paginated list of sandboxes.
-
-```go
-type PaginatedSandboxes struct {
-    Items      []*Sandbox // Sandboxes in this page
-    Total      int        // Total number of sandboxes
-    Page       int        // Current page number
-    TotalPages int        // Total number of pages
 }
 ```
 
@@ -3973,11 +4082,28 @@ err = sandbox.FileSystem.UploadFile(ctx, "local.txt", "/home/user/remote.txt")
 
 ```go
 type Sandbox struct {
-    ID            string                 // Unique sandbox identifier
-    Name          string                 // Human-readable sandbox name
-    State         apiclient.SandboxState // Current sandbox state
-    Target        string                 // Target region/environment where the sandbox runs
-    ToolboxClient *toolbox.APIClient     // Internal API client
+    ToolboxClient *toolbox.APIClient // Internal API client
+
+    ID             string                 // Unique sandbox identifier
+    Name           string                 // Human-readable sandbox name
+    OrganizationId string                 // Organization ID of the sandbox
+    Snapshot       *string                // Daytona snapshot used to create the sandbox
+    User           string                 // OS user running in the sandbox
+    Labels         map[string]string      // Custom labels attached to the sandbox
+    Public         bool                   // Whether the sandbox is publicly accessible
+    Target         string                 // Target region/environment where the sandbox runs
+    Cpu            float32                // Number of CPUs allocated to the sandbox
+    Gpu            float32                // Number of GPUs allocated to the sandbox
+    Memory         float32                // Amount of memory allocated to the sandbox in GiB
+    Disk           float32                // Amount of disk space allocated to the sandbox in GiB
+    State          apiclient.SandboxState // Current sandbox state
+    ErrorReason    *string                // Error message if the sandbox is in an error state
+    Recoverable    *bool                  // Whether the sandbox error is recoverable
+    BackupState    *string                // Current state of the sandbox backup
+
+    // AutoStopInterval is the time in minutes of inactivity before auto-stopping.
+    // 0 means disabled.
+    AutoStopInterval int
 
     // AutoArchiveInterval is the time in minutes after stopping before auto-archiving.
     // Set to 0 to disable auto-archiving.
@@ -3988,10 +4114,32 @@ type Sandbox struct {
     // Set to 0 to delete immediately upon stopping.
     AutoDeleteInterval int
 
-    // NetworkBlockAll blocks all network access when true.
-    NetworkBlockAll bool
+    CreatedAt      *string // When the sandbox was created
+    UpdatedAt      *string // When the sandbox was last updated
+    LastActivityAt *string // When the sandbox last had activity
+
+    // Env contains environment variables set in the sandbox.
+    // Not populated by [Client.List]; call [Sandbox.RefreshData] on each item to populate.
+    Env map[string]string
+
+    // BackupCreatedAt is the timestamp of the last backup.
+    // Not populated by [Client.List]; call [Sandbox.RefreshData] on each item to populate.
+    BackupCreatedAt *string
+
+    // Volumes attached to the sandbox.
+    // Not populated by [Client.List]; call [Sandbox.RefreshData] on each item to populate.
+    Volumes []apiclient.SandboxVolume
+
+    // BuildInfo contains build information for the sandbox if it was created from a dynamic build.
+    // Not populated by [Client.List]; call [Sandbox.RefreshData] on each item to populate.
+    BuildInfo *apiclient.BuildInfo
+
+    // NetworkBlockAll blocks all network access when true. Nil when not populated.
+    // Not populated by [Client.List]; call [Sandbox.RefreshData] on each item to populate.
+    NetworkBlockAll *bool
 
     // NetworkAllowList is a comma-separated list of allowed CIDR addresses.
+    // Not populated by [Client.List]; call [Sandbox.RefreshData] on each item to populate.
     NetworkAllowList *string
 
     FileSystem      *FileSystemService      // File system operations
@@ -4007,12 +4155,14 @@ type Sandbox struct {
 ### func NewSandbox
 
 ```go
-func NewSandbox(client *Client, toolboxClient *toolbox.APIClient, id string, name string, state apiclient.SandboxState, target string, autoArchiveInterval int, autoDeleteInterval int, networkBlockAll bool, networkAllowList *string, language types.CodeLanguage) *Sandbox
+func NewSandbox(client *Client, toolboxClient *toolbox.APIClient, dto sandboxDTO, language types.CodeLanguage) *Sandbox
 ```
 
-NewSandbox creates a new Sandbox instance.
+NewSandbox creates a new Sandbox instance from an API DTO.
 
-This is typically called internally by the SDK. Users should create sandboxes using [Client.Create](https://www.daytona.io/docs/en<#Client.Create>) rather than calling this directly.
+dto may be either \*\[apiclient.Sandbox\] \(returned by single\-sandbox endpoints such as Create, Get, Fork, RefreshData\) or \*\[apiclient.SandboxListItem\] \(returned by the list endpoint\). When dto is a \*\[apiclient.SandboxListItem\], the fields documented as "Not populated by [Client.List](https://www.daytona.io/docs/en<#Client.List>)" remain at their zero values; call [Sandbox.RefreshData](https://www.daytona.io/docs/en<#Sandbox.RefreshData>) to populate them.
+
+This is typically called internally by the SDK. Users should obtain sandboxes via [Client.Create](https://www.daytona.io/docs/en<#Client.Create>), [Client.Get](https://www.daytona.io/docs/en<#Client.Get>), or [Client.List](https://www.daytona.io/docs/en<#Client.List>) rather than calling this directly.
 
 <a name="Sandbox.Archive"></a>
 ### func \(\*Sandbox\) Archive
@@ -4251,7 +4401,7 @@ func (s *Sandbox) RefreshData(ctx context.Context) error
 
 RefreshData refreshes the sandbox data from the API.
 
-This updates the sandbox's State and other properties from the server. Useful for checking if the sandbox state has changed.
+This updates all sandbox fields from the server, including those not populated by [Client.List](https://www.daytona.io/docs/en<#Client.List>) \(Env, NetworkBlockAll, NetworkAllowList, Volumes, BuildInfo, BackupCreatedAt\).
 
 Example:
 
@@ -4515,6 +4665,73 @@ Example:
 
 ```
 err := sandbox.WaitForStop(ctx, 2*time.Minute)
+```
+
+<a name="SandboxIterator"></a>
+## type SandboxIterator
+
+SandboxIterator iterates over Sandboxes returned by [Client.List](https://www.daytona.io/docs/en<#Client.List>), following the standard Go iterator pattern used by [database/sql.Rows](https://www.daytona.io/docs/en<https://pkg.go.dev/database/sql#Rows>) and [bufio.Scanner](https://www.daytona.io/docs/en<https://pkg.go.dev/bufio#Scanner>).
+
+For Go 1.23\+ range\-over\-func consumers, see [Client.ListSeq](https://www.daytona.io/docs/en<#Client.ListSeq>).
+
+```go
+type SandboxIterator struct {
+    // contains filtered or unexported fields
+}
+```
+
+<a name="SandboxIterator.Err"></a>
+### func \(\*SandboxIterator\) Err
+
+```go
+func (it *SandboxIterator) Err() error
+```
+
+Err returns the first error encountered during iteration, if any. Callers should check Err after [SandboxIterator.Next](https://www.daytona.io/docs/en<#SandboxIterator.Next>) returns false.
+
+<a name="SandboxIterator.Next"></a>
+### func \(\*SandboxIterator\) Next
+
+```go
+func (it *SandboxIterator) Next() bool
+```
+
+Next advances the iterator to the next sandbox. It returns true if a sandbox is available \(accessible via [SandboxIterator.Value](https://www.daytona.io/docs/en<#SandboxIterator.Value>)\), or false if iteration has finished or an error occurred. After Next returns false, callers should inspect [SandboxIterator.Err](https://www.daytona.io/docs/en<#SandboxIterator.Err>).
+
+<a name="SandboxIterator.Value"></a>
+### func \(\*SandboxIterator\) Value
+
+```go
+func (it *SandboxIterator) Value() *Sandbox
+```
+
+Value returns the current sandbox. Only valid after [SandboxIterator.Next](https://www.daytona.io/docs/en<#SandboxIterator.Next>) has returned true.
+
+<a name="SandboxListSortDirection"></a>
+## type SandboxListSortDirection
+
+SandboxListSortDirection selects ascending or descending order for [Client.List](https://www.daytona.io/docs/en<#Client.List>).
+
+```go
+type SandboxListSortDirection = apiclient.SandboxListSortDirection
+```
+
+<a name="SandboxListSortField"></a>
+## type SandboxListSortField
+
+SandboxListSortField selects the field used to order results from [Client.List](https://www.daytona.io/docs/en<#Client.List>).
+
+```go
+type SandboxListSortField = apiclient.SandboxListSortField
+```
+
+<a name="SandboxState"></a>
+## type SandboxState
+
+SandboxState represents the lifecycle state of a Sandbox.
+
+```go
+type SandboxState = apiclient.SandboxState
 ```
 
 <a name="ScreenshotService"></a>

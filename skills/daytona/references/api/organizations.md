@@ -275,10 +275,14 @@ Schema: **UpdateOrganizationRegionQuota**
 | `totalCpuQuota` | number | Yes |  |
 | `totalMemoryQuota` | number | Yes |  |
 | `totalDiskQuota` | number | Yes |  |
+| `totalGpuQuota` | number | Yes |  |
 | `maxCpuPerSandbox` | number | No |  |
 | `maxMemoryPerSandbox` | number | No |  |
 | `maxDiskPerSandbox` | number | No |  |
 | `maxDiskPerNonEphemeralSandbox` | number | No |  |
+| `maxCpuPerGpuSandbox` | number | No |  |
+| `maxMemoryPerGpuSandbox` | number | No |  |
+| `maxDiskPerGpuSandbox` | number | No |  |
 
 ### Responses
 

@@ -1,7 +1,6 @@
 ## Contents
 
 - Installation
-- Update
 - daytona
 - daytona archive
 - daytona autocomplete
@@ -50,35 +49,41 @@ You can access this documentation on a per-command basis by appending the `--hel
 
 Install the Daytona CLI to interact with Daytona sandboxes from the command line.
 
-**Mac/Linux:**
+**Mac:**
 
 ```bash
 brew install daytonaio/cli/daytona
 ```
 
-**Windows:**
-
-```bash
-powershell -Command "irm https://get.daytona.io/windows | iex"
-```
-
-After installing the Daytona CLI, use the `daytona` command to interact with Daytona Sandboxes from the command line.
-
-## Update
-
-To update the Daytona CLI to the latest version:
-
-**Mac/Linux:**
+To upgrade the Daytona CLI to the latest version:
 
 ```bash
 brew upgrade daytonaio/cli/daytona
 ```
 
+**Linux:**
+
+Choose the command for your Linux architecture. Both commands download the latest binary from GitHub releases and install it to `/usr/local/bin`, overwriting any existing version.
+
+For `amd64` (`x86_64`):
+
+  ```bash
+  sudo curl -fL https://github.com/daytonaio/daytona/releases/latest/download/daytona-linux-amd64 -o /usr/local/bin/daytona && sudo chmod +x /usr/local/bin/daytona
+  ```
+
+For `arm64` (`aarch64`):
+
+  ```bash
+  sudo curl -fL https://github.com/daytonaio/daytona/releases/latest/download/daytona-linux-arm64 -o /usr/local/bin/daytona && sudo chmod +x /usr/local/bin/daytona
+  ```
+
 **Windows:**
 
 ```bash
 powershell -Command "irm https://get.daytona.io/windows | iex"
 ```
+
+After installing the Daytona CLI, use the `daytona` command to interact with Daytona sandboxes from the command line.
 
 ## daytona
 Daytona CLI
@@ -222,9 +227,9 @@ daytona list [flags]
 __Flags__
 | Long | Short | Description |
 | :--- | :---- | :---------- |
+| `--cursor` | `-c` | Cursor for pagination |
 | `--format` | `-f` | Output format. Must be one of (yaml, json) |
 | `--limit` | `-l` | Maximum number of items per page |
-| `--page` | `-p` | Page number for pagination (starting from 1) |
 | `--help` |  | help for daytona |
 
 
@@ -427,7 +432,7 @@ __Flags__
 Delete a snapshot
 
 ```shell
-daytona snapshot delete [SNAPSHOT_ID] [flags]
+daytona snapshot delete [SNAPSHOT_ID | SNAPSHOT_NAME] [flags]
 ```
 
 __Flags__
@@ -509,6 +514,7 @@ daytona stop [SANDBOX_ID] | [SANDBOX_NAME] [flags]
 __Flags__
 | Long | Short | Description |
 | :--- | :---- | :---------- |
+| `--force` | `-f` | Force stop the sandbox using SIGKILL |
 | `--help` |  | help for daytona |
 
 

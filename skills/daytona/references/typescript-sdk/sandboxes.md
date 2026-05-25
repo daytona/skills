@@ -175,7 +175,9 @@ await sandbox.start()
 Daytona provides methods to list sandboxes and view their details in [Daytona Dashboard ↗](https://app.daytona.io/dashboard/) via the [sandbox details page](#sandbox-details-page) or programmatically using the [Python](../python-sdk/README.md), [TypeScript](./README.md), [Ruby](../ruby-sdk/README.md), [Go](../go-sdk/daytona.md), [Java](https://www.daytona.io/docs/en/java-sdk/daytona) **SDKs**, [CLI](../cli.md), and [API](../api/README.md#daytona).
 
 ```typescript
-await daytona.list()
+for await (const sandbox of daytona.list()) {
+  console.log(sandbox.id)
+}
 ```
 
 ##### Sandbox details page

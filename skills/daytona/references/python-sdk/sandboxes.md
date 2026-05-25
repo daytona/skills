@@ -179,7 +179,8 @@ sandbox.start()
 Daytona provides methods to list sandboxes and view their details in [Daytona Dashboard ↗](https://app.daytona.io/dashboard/) via the [sandbox details page](#sandbox-details-page) or programmatically using the [Python](./README.md), [TypeScript](../typescript-sdk/README.md), [Ruby](../ruby-sdk/README.md), [Go](../go-sdk/daytona.md), [Java](https://www.daytona.io/docs/en/java-sdk/daytona) **SDKs**, [CLI](../cli.md), and [API](../api/README.md#daytona).
 
 ```python
-daytona.list()
+for sandbox in daytona.list():
+    print(sandbox.id)
 ```
 
 ##### Sandbox details page

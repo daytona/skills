@@ -26,37 +26,43 @@ Daytona provides [Python](../python-sdk/README.md), [TypeScript](../typescript-s
 
 ## CLI
 
-Daytona provides command-line access to core features for interacting with Daytona Sandboxes, including managing their lifecycle, snapshots, and more.
+Daytona provides command-line access to core features for interacting with Daytona Sandboxes, including managing their lifecycle, snapshots, and more. To interact with Daytona Sandboxes from the command line, install the Daytona CLI:
 
-To interact with Daytona Sandboxes from the command line, install the Daytona CLI:
-
-**Mac/Linux:**
+**Mac:**
 
 ```bash
 brew install daytonaio/cli/daytona
 ```
 
-**Windows:**
-
-```bash
-powershell -Command "irm https://get.daytona.io/windows | iex"
-```
-
-After installing the Daytona CLI, use the `daytona` command to interact with Daytona Sandboxes from the command line.
-
 To upgrade the Daytona CLI to the latest version:
-
-**Mac/Linux:**
 
 ```bash
 brew upgrade daytonaio/cli/daytona
 ```
 
+**Linux:**
+
+Choose the command for your Linux architecture. Both commands download the latest binary from GitHub releases and install it to `/usr/local/bin`, overwriting any existing version.
+
+For `amd64` (`x86_64`):
+
+  ```bash
+  sudo curl -fL https://github.com/daytonaio/daytona/releases/latest/download/daytona-linux-amd64 -o /usr/local/bin/daytona && sudo chmod +x /usr/local/bin/daytona
+  ```
+
+For `arm64` (`aarch64`):
+
+  ```bash
+  sudo curl -fL https://github.com/daytonaio/daytona/releases/latest/download/daytona-linux-arm64 -o /usr/local/bin/daytona && sudo chmod +x /usr/local/bin/daytona
+  ```
+
 **Windows:**
 
 ```bash
 powershell -Command "irm https://get.daytona.io/windows | iex"
 ```
+
+After installing the Daytona CLI, use the `daytona` command to interact with Daytona sandboxes from the command line.
 
 To view all available commands and flags, see the [CLI reference](../cli.md).
 
