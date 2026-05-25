@@ -36,7 +36,9 @@ Error thrown when authentication fails (HTTP 401).
 
 ```ts
 try {
-  await daytona.list()
+  for await (const sandbox of daytona.list()) {
+    console.log(sandbox.id)
+  }
 } catch (error) {
   if (error instanceof DaytonaAuthenticationError) {
     console.log(error.statusCode)
@@ -396,7 +398,9 @@ Error thrown when rate limit is exceeded.
 
 ```ts
 try {
-  await daytona.list()
+  for await (const sandbox of daytona.list()) {
+    console.log(sandbox.id)
+  }
 } catch (error) {
   if (error instanceof DaytonaRateLimitError) {
     console.log(error.errorCode)

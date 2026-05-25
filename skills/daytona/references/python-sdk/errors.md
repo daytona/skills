@@ -87,7 +87,8 @@ Error for when authentication fails (HTTP 401).
 
 ```python
 try:
-    daytona.list()
+    for sandbox in daytona.list():
+        print(sandbox.id)
 except DaytonaAuthenticationError as exc:
     print(exc.status_code)
 ```
@@ -121,7 +122,8 @@ Error for when rate limit is exceeded (HTTP 429).
 
 ```python
 try:
-    daytona.list()
+    for sandbox in daytona.list():
+        print(sandbox.id)
 except DaytonaRateLimitError as exc:
     print(exc.error_code)
 ```

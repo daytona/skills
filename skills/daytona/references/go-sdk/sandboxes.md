@@ -223,7 +223,15 @@ sandbox.Start(ctx)
 Daytona provides methods to list sandboxes and view their details in [Daytona Dashboard ↗](https://app.daytona.io/dashboard/) via the [sandbox details page](#sandbox-details-page) or programmatically using the [Python](../python-sdk/README.md), [TypeScript](../typescript-sdk/README.md), [Ruby](../ruby-sdk/README.md), [Go](./daytona.md), [Java](https://www.daytona.io/docs/en/java-sdk/daytona) **SDKs**, [CLI](../cli.md), and [API](../api/README.md#daytona).
 
 ```go
-result, err := client.List(ctx, nil, nil, nil)
+iter := client.List(ctx, nil)
+defer iter.Close()
+for iter.Next() {
+    sandbox := iter.Value()
+    fmt.Println(sandbox.ID)
+}
+if err := iter.Err(); err != nil {
+    log.Fatal(err)
+}
 ```
 
 ##### Sandbox details page

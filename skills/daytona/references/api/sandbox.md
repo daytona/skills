@@ -46,22 +46,44 @@
 
 ## GET `/sandbox` {#daytona/tag/sandbox/GET/sandbox}
 
-**List all sandboxes**
+**List sandboxes**
+
+Advanced filtering and ordering. Eventually consistent.
 
 ### Parameters
 
 | Name | In | Type | Required | Description |
 |------|-----|------|----------|-------------|
 | `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
-| `verbose` | query | boolean | No | Include verbose output |
+| `cursor` | query | string | No | Pagination cursor from a previous response |
+| `limit` | query | number | No | Number of results per page |
+| `id` | query | string | No | Filter by ID prefix (case-insensitive) |
+| `name` | query | string | No | Filter by name prefix (case-insensitive) |
 | `labels` | query | string | No | JSON encoded labels to filter by |
-| `includeErroredDeleted` | query | boolean | No | Include errored and deleted sandboxes |
+| `includeErroredDeleted` | query | boolean | No | Include results with errored state and deleted desired state |
+| `states` | query | array | No | List of states to filter by. |
+| `snapshots` | query | array | No | List of snapshot names to filter by |
+| `regionIds` | query | array | No | List of regions IDs to filter by |
+| `minCpu` | query | number | No | Minimum CPU |
+| `maxCpu` | query | number | No | Maximum CPU |
+| `minMemoryGiB` | query | number | No | Minimum memory in GiB |
+| `maxMemoryGiB` | query | number | No | Maximum memory in GiB |
+| `minDiskGiB` | query | number | No | Minimum disk space in GiB |
+| `maxDiskGiB` | query | number | No | Maximum disk space in GiB |
+| `isPublic` | query | boolean | No | Filter by public status |
+| `isRecoverable` | query | boolean | No | Filter by recoverable status |
+| `createdAtAfter` | query | string (date-time) | No | Include items created after this timestamp |
+| `createdAtBefore` | query | string (date-time) | No | Include items created before this timestamp |
+| `lastEventAfter` | query | string (date-time) | No | Include items with last event after this timestamp |
+| `lastEventBefore` | query | string (date-time) | No | Include items with last event before this timestamp |
+| `sort` | query | string | No | Field to sort by |
+| `order` | query | string | No | Direction to sort by |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | List of all sandboxes | array of Sandbox |
+| 200 |  | ListSandboxesResponse |
 
 ---
 
@@ -111,7 +133,7 @@ Schema: **CreateSandbox**
 
 ## GET `/sandbox/paginated` {#daytona/tag/sandbox/GET/sandbox/paginated}
 
-**List all sandboxes paginated**
+**[DEPRECATED] List all sandboxes paginated**
 
 ### Parameters
 
@@ -142,7 +164,7 @@ Schema: **CreateSandbox**
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | Paginated list of all sandboxes | PaginatedSandboxes |
+| 200 | Paginated list of all sandboxes | PaginatedSandboxes_deprecated |
 
 ---
 
