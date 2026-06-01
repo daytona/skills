@@ -9,6 +9,7 @@
 - Get process errors
 - Mouse operations
 - Keyboard operations
+- Accessibility operations
 - Screenshot operations
 - Screen Recording
 - Display operations
@@ -236,6 +237,140 @@ err = sandbox.ComputerUse.Keyboard().Hotkey(ctx, "alt+tab")
 | Other              | `capslock`, `menu`                                                                                                              |
 
 Common aliases like `Return` → `enter`, `control` → `ctrl`, `command` / `meta` / `win` → `cmd`, and `option` → `alt` are normalized automatically. Unsupported or malformed inputs return an error, sometimes with a suggested alternative.
+
+## Accessibility operations
+
+Use Linux accessibility operations to inspect the AT-SPI tree and interact with UI elements by node ID. Start Computer Use before calling accessibility methods.
+> **Note: App accessibility support**
+> Accessibility operations read the semantic UI information that applications expose over AT-SPI. Apps or custom widgets that do not expose accessibility objects may return sparse nodes, generic roles, or no actionable nodes; mouse, keyboard, and screenshot operations remain available for those cases.
+
+### Get tree
+
+Read an accessibility tree for the focused app, a specific process, or all apps.
+
+```go
+maxDepth := 2
+
+// Focused app
+focusedScope := "focused"
+focusedTree, err := sandbox.ComputerUse.Accessibility().GetTree(ctx, &daytona.AccessibilityTreeOptions{
+	Scope:    &focusedScope,
+	MaxDepth: &maxDepth,
+})
+if err != nil {
+	log.Fatal(err)
+}
+
+// Specific process
+processScope := "pid"
+pid := 1234
+processTree, err := sandbox.ComputerUse.Accessibility().GetTree(ctx, &daytona.AccessibilityTreeOptions{
+	Scope:    &processScope,
+	PID:      &pid,
+	MaxDepth: &maxDepth,
+})
+if err != nil {
+	log.Fatal(err)
+}
+
+// All apps
+allScope := "all"
+desktopTree, err := sandbox.ComputerUse.Accessibility().GetTree(ctx, &daytona.AccessibilityTreeOptions{
+	Scope:    &allScope,
+	MaxDepth: &maxDepth,
+})
+if err != nil {
+	log.Fatal(err)
+}
+```
+
+### Find nodes
+
+Search the accessibility tree by role, accessible name, state, and scope.
+
+```go
+limit := 10
+
+// Find buttons by accessible name
+focusedScope := "focused"
+buttonRole := "button"
+submitName := "Submit"
+substringMatch := "substring"
+buttons, err := sandbox.ComputerUse.Accessibility().FindNodes(ctx, &daytona.AccessibilityFindOptions{
+	Scope:     &focusedScope,
+	Role:      &buttonRole,
+	Name:      &submitName,
+	NameMatch: &substringMatch,
+	Limit:     &limit,
+})
+if err != nil {
+	log.Fatal(err)
+}
+
+// Find text entries in a process
+processScope := "pid"
+pid := 1234
+entryRole := "entry"
+entries, err := sandbox.ComputerUse.Accessibility().FindNodes(ctx, &daytona.AccessibilityFindOptions{
+	Scope:  &processScope,
+	PID:    &pid,
+	Role:   &entryRole,
+	States: []string{"enabled", "focusable"},
+	Limit:  &limit,
+})
+if err != nil {
+	log.Fatal(err)
+}
+
+// Find visible nodes across all apps
+allScope := "all"
+visibleLimit := 20
+visibleNodes, err := sandbox.ComputerUse.Accessibility().FindNodes(ctx, &daytona.AccessibilityFindOptions{
+	Scope:  &allScope,
+	States: []string{"visible"},
+	Limit:  &visibleLimit,
+})
+if err != nil {
+	log.Fatal(err)
+}
+```
+
+### Focus node
+
+Move keyboard focus to a node returned by `get_tree` or `find_nodes`.
+
+```go
+if err := sandbox.ComputerUse.Accessibility().FocusNode(ctx, "node-id"); err != nil {
+	log.Fatal(err)
+}
+```
+
+### Invoke node
+
+Run a node action, such as pressing a button.
+
+```go
+// Invoke the primary action
+if err := sandbox.ComputerUse.Accessibility().InvokeNode(ctx, "node-id", nil); err != nil {
+	log.Fatal(err)
+}
+
+// Invoke a named action
+action := "click"
+if err := sandbox.ComputerUse.Accessibility().InvokeNode(ctx, "node-id", &action); err != nil {
+	log.Fatal(err)
+}
+```
+
+### Set node value
+
+Write text or value content to nodes that support value changes.
+
+```go
+if err := sandbox.ComputerUse.Accessibility().SetNodeValue(ctx, "node-id", "hello"); err != nil {
+	log.Fatal(err)
+}
+```
 
 ## Screenshot operations
 

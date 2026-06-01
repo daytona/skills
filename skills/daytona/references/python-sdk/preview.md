@@ -1,21 +1,21 @@
 
 
-Daytona provides preview URLs for accessing services running in your sandboxes. Any process listening for HTTP traffic on ports `3000` - `9999` can be previewed through a generated URL.
+Daytona provides preview URLs for accessing services running in your sandboxes. Any process listening for HTTP traffic on ports `1` - `65535` can be previewed through a generated URL.
 
 Daytona supports two types of preview URLs, each with a different authentication mechanism:
 
-- [Standard preview URL](#standard-preview-url) uses the sandbox ID in the URL and requires a token sent via header
+- [Standard preview URL](#standard-preview-url) uses the sandbox ID in the URL and requires a separate token for authentication
 - [Signed preview URL](#signed-preview-url) embeds the authentication token directly in the URL, requiring no headers
 
 ## Authentication
 
 If a sandbox has its `public` property set to `true`, preview links are publicly accessible without authentication. Otherwise, authentication is required. The authentication mechanism depends on the preview URL type.
 > **Note:**
-> Standard and signed preview tokens are not interchangeable. The token from `get_preview_link()` must be sent via the `x-daytona-preview-token` header. The token from `create_signed_preview_url()` is embedded in the URL itself: it cannot be used as a header value, and vice versa.
+> Standard and signed preview tokens are not interchangeable. The token from `get_preview_link()` is used as a preview access token (sent via the `x-daytona-preview-token` header). The token from `create_signed_preview_url()` is embedded in the URL itself: it cannot be used as a standard preview token, and vice versa.
 
 ## Standard preview URL
 
-The standard preview URL includes your sandbox ID in the URL and provides a separate token for authentication via the `x-daytona-preview-token` request header.
+The standard preview URL includes your sandbox ID in the URL and provides a separate token for authentication.
 
 URL structure: `https://{port}-{sandboxId}.{daytonaProxyDomain}`
 

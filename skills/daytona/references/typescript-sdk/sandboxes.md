@@ -1,9 +1,8 @@
 ## Contents
 
-- Sandbox lifecycle
-- Multiple runtime support
 - Create Sandboxes
 - Start Sandboxes
+- Get Sandbox
 - List Sandboxes
 - Stop Sandboxes
 - Pause Sandboxes
@@ -11,8 +10,11 @@
 - Recover Sandboxes
 - Resize Sandboxes
 - Fork Sandboxes
+- Label Sandboxes
 - Create Snapshot from Sandbox
 - Delete Sandboxes
+- Sandbox lifecycle
+- Multiple runtime support
 - Automated lifecycle management
 - See Also
 
@@ -25,72 +27,72 @@ Sandboxes have **1 vCPU**, **1GB RAM**, and **3GiB disk** by default. [Organizat
 
 Sandboxes use [snapshots](./snapshots.md) to capture a fully configured environment (base OS, installed packages, dependencies, and configuration) to create new sandboxes.
 
-Each sandbox has its own network stack with per-sandbox firewall rules. By default, sandboxes follow standard network policies, but you can restrict egress to a specific set of allowed destinations or block all outbound traffic entirely. For details on configuring network access, see [network limits](./network-limits.md).
+Each sandbox has its own network stack with per-sandbox firewall rules. By default, sandboxes follow standard network policies, but you can restrict egress to a specific set of allowed destinations or block all outbound traffic entirely. For more details, see [network limits](./network-limits.md).
 
-A detailed overview of the Daytona platform is available in the [architecture](https://www.daytona.io/docs/en/architecture) section.
-
-## Sandbox lifecycle
-
-A sandbox can have several different states. Each state reflects the current status of your sandbox.
-
-- [**Creating**](#create-sandboxes): the sandbox is provisioning and will be ready to use
-- [**Starting**](#start-sandboxes): the sandbox is starting and will be ready to use
-- [**Started**](#start-sandboxes): the sandbox has started and is ready to use
-- [**Stopping**](#stop-sandboxes): the sandbox is stopping and will no longer accept requests
-- [**Stopped**](#stop-sandboxes): the sandbox has stopped and is no longer running
-- [**Deleting**](#delete-sandboxes): the sandbox is deleting and will be removed
-- [**Deleted**](#delete-sandboxes): the sandbox has been deleted and no longer exists
-- [**Archiving**](#archive-sandboxes): the sandbox is archiving and its state will be preserved
-- [**Archived**](#archive-sandboxes): the sandbox has been archived and its state is preserved
-- [**Resizing**](#resize-sandboxes): the sandbox is being resized to a new set of resources
-- [**Error**](#recover-sandboxes): the sandbox is in an error state and needs to be recovered
-- **Restoring**: the sandbox is being restored from archive and will be ready to use shortly
-- **Unknown**: the default sandbox state before it is created
-- **Pulling Snapshot**: the sandbox is pulling a [snapshot](./snapshots.md) to provide a base environment
-- **Building Snapshot**: the sandbox is building a [snapshot](./snapshots.md) to provide a base environment
-- **Build Pending**: the sandbox build is pending and will start shortly
-- **Build Failed**: the sandbox build failed and needs to be retried
-
-To view or update the current state of a sandbox, navigate to the [sandbox details page](#sandbox-details-page) or access the sandbox `state` attribute using the [SDKs](./getting-started.md#sdks), [API](../api/README.md#daytona/tag/sandbox/GET/sandbox/{sandboxIdOrName}), or [CLI](../cli.md#daytona-info).
-
-The diagram below demonstrates the states and possible transitions between them.
-
-
-## Multiple runtime support
-
-Daytona sandboxes support Python, TypeScript, and JavaScript programming language runtimes for direct code execution inside the sandbox. The `language` parameter controls which programming language runtime is used for the sandbox:
-
-- **`python`**
-- **`typescript`**
-- **`javascript`**
-
-If omitted, the Daytona SDK will default to `python`. To override this, explicitly set the `language` value when creating the sandbox.
+- **Sandbox SDKs**: [TypeScript](./sandbox.md), [Python](../python-sdk/sync/sandbox.md), [Ruby](../ruby-sdk/sandbox.md), [Go](../go-sdk/daytona.md#type-sandbox), [Java](https://www.daytona.io/docs/en/java-sdk/sandbox)
+- **Sandbox API**: [RESTful API](../api/README.md#daytona/tag/sandbox) ([OpenAPI spec](https://www.daytona.io/docs/en/openapi.json)), [Toolbox API](../api/README.md#daytona-toolbox) ([OpenAPI spec](https://www.daytona.io/docs/en/toolbox-openapi.json))
+- **Sandbox CLI**: [Mac/Linux/Windows](../cli.md)
 
 ## Create Sandboxes
 
-Daytona provides methods to create sandboxes using the [Daytona Dashboard ↗](https://app.daytona.io/dashboard/) or programmatically using the Daytona [Python](../python-sdk/sync/sandbox.md), [TypeScript](./sandbox.md), [Ruby](../ruby-sdk/sandbox.md), [Go](../go-sdk/daytona.md#type-sandbox), [Java](https://www.daytona.io/docs/en/java-sdk/sandbox) **SDKs**, [CLI](../cli.md#daytona-create), or [API](../api/README.md#daytona/tag/sandbox).
-
-You can specify [programming language runtime](./sandboxes.md#multiple-runtime-support), [snapshots](./snapshots.md), [resources](./sandboxes.md#resources), [regions](./regions.md), [environment variables](./configuration.md), and [volumes](./volumes.md) for each sandbox.
+Daytona provides methods to create sandboxes.
 
 1. Navigate to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
 2. Click **Create Sandbox**
 3. Click **Create** to create a sandbox
-
-Optionally, specify more parameters when creating a sandbox:
-
-- **Name**: enter the name of the sandbox
-- **Source**: select the source of the sandbox; [snapshot](./snapshots.md) (a pre-configured sandbox template) or image (an OCI-compliant container image: [public](./snapshots.md#using-public-images), [local](./snapshots.md#using-local-images), [private registries](./snapshots.md#using-images-from-private-registries)).
-- **Region**: select the region for the sandbox
-- **Lifecycle**: define [sandbox lifecycle management](#automated-lifecycle-management) or set as an [ephemeral sandbox](#ephemeral-sandboxes)
-- **Environment variables**: set in key-value pairs or import them from a **`.env`** file
-- **Labels**: set in key-value pairs to categorize and organize sandboxes
-- **Network settings**: [public HTTP preview](./preview.md) or [block all network access](./network-limits.md)
 
 ```typescript
 import { Daytona } from '@daytona/sdk'
 
 const daytona = new Daytona()
 const sandbox = await daytona.create()
+```
+
+### GPU Sandboxes
+> **Caution: Experimental**
+> This feature is experimental. To request access, contact [support@daytona.io](mailto:support@daytona.io).
+
+Daytona provides methods to create GPU sandboxes.
+
+Daytona supports NVIDIA GPU devices for sandbox creation. This allows you to run GPU workloads such as model inference, fine-tuning, and CUDA-accelerated compute inside a sandbox.
+
+Each GPU sandbox is ephemeral and supports up to **16 vCPUs**, **192GB RAM**, and **512GB disk**.
+
+1. Navigate to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+2. Click **Create Sandbox**
+3. Select a GPU snapshot
+4. Click **Create** to create a GPU sandbox
+
+To create a GPU sandbox programmatically, use the pre-built `daytona-gpu` snapshot, target `us-east-1` region, and set `auto_delete_interval` to `0` (ephemeral).
+
+```typescript
+import { Daytona } from "@daytona/sdk";
+
+const daytona = new Daytona({
+  target: "us-east-1",
+});
+const sandbox = await daytona.create({
+  snapshot: "daytona-gpu",
+  ephemeral: true,
+});
+```
+
+### Ephemeral Sandboxes
+
+Daytona provides methods to create ephemeral sandboxes.
+
+Ephemeral sandboxes are automatically deleted once they are stopped. They are useful for short-lived tasks or testing purposes.
+
+To create an ephemeral sandbox, set the `ephemeral` parameter to `True` when creating a sandbox. Setting [**`autoDeleteInterval: 0`**](#auto-delete-interval) (ephemeral) has the same effect.
+
+```typescript
+import { Daytona } from "@daytona/sdk";
+
+const daytona = new Daytona();
+const sandbox = await daytona.create({
+  ephemeral: true,
+  autoStopInterval: 5, // delete after 5 minutes of inactivity
+});
 ```
 
 ### Resources
@@ -103,7 +105,7 @@ Sandboxes have **1 vCPU**, **1GB RAM**, and **3GiB disk** by default. Organizati
 | Memory       | GiB      | **`1`**     | **`1`**     | **`8`**     |
 | Disk         | GiB      | **`3`**     | **`1`**     | **`10`**    |
 
-To set custom sandbox resources, use the `Resources` class. All resource parameters are optional and must be integers. If not specified, Daytona will use the default values. Maximum values are per-sandbox limits set at the organization level. Contact [support@daytona.io](mailto:support@daytona.io) to increase limits.
+To set custom sandbox resources, use the `Resources` class. All resource parameters are optional and must be integers. If not specified, Daytona will use the default values. Maximum values are per-sandbox limits set at the organization level.
 
 ```typescript
 import { Daytona, Image } from "@daytona/sdk";
@@ -115,64 +117,28 @@ const sandbox = await daytona.create({
 });
 ```
 
-### GPU Sandboxes
-> **Caution: Experimental**
-> This feature is experimental. To request access, contact [support@daytona.io](mailto:support@daytona.io).
-
-Daytona provides methods to create GPU sandboxes using the [Daytona Dashboard ↗](https://app.daytona.io/dashboard/sandboxes) or programmatically using the Daytona [Python](../python-sdk/sync/sandbox.md), [TypeScript](./sandbox.md), [Ruby](../ruby-sdk/sandbox.md), [Go](../go-sdk/daytona.md#type-sandbox), [Java](https://www.daytona.io/docs/en/java-sdk/sandbox) **SDKs**, [CLI](../cli.md#daytona-create), or [API](../api/README.md#daytona/tag/sandbox).
-
-Daytona supports NVIDIA GPU devices for snapshot-based sandbox creation. This allows you to run GPU workloads such as model inference, fine-tuning, and CUDA-accelerated compute inside a sandbox created from a [GPU snapshot](./snapshots.md#gpu-snapshots). GPU sandboxes must be ephemeral.
-
-1. Create a [GPU Snapshot](./snapshots.md#gpu-snapshots)
-2. Navigate to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
-3. Click **Create Sandbox**
-4. Select your GPU snapshot
-5. Click **Create** to create a GPU sandbox
-
-```typescript
-import { Daytona } from "@daytona/sdk";
-
-const daytona = new Daytona();
-const sandbox = await daytona.create({
-  snapshot: "my-gpu-snapshot",
-  ephemeral: true,
-});
-```
-
-### Ephemeral Sandboxes
-
-Ephemeral sandboxes are automatically deleted once they are stopped. They are useful for short-lived tasks or testing purposes.
-
-To create an ephemeral sandbox, set the `ephemeral` parameter to `True` when creating a sandbox. Setting [**`autoDeleteInterval: 0`**](#auto-delete-interval) has the same effect as setting `ephemeral` to `True`.
-
-```typescript
-import { Daytona } from "@daytona/sdk";
-
-const daytona = new Daytona();
-const sandbox = await daytona.create({
-  ephemeral: true,
-  autoStopInterval: 5, // delete after 5 minutes of inactivity
-});
-```
-
 ## Start Sandboxes
 
-Daytona provides methods to start sandboxes in [Daytona Dashboard ↗](https://app.daytona.io/dashboard/) or programmatically using the [Python](../python-sdk/README.md), [TypeScript](./README.md), [Ruby](../ruby-sdk/README.md), [Go](../go-sdk/daytona.md#type-sandbox), [Java](https://www.daytona.io/docs/en/java-sdk/sandbox) **SDKs**, [CLI](../cli.md), and [API](../api/README.md#daytona/).
+Daytona provides methods to start sandboxes.
 
 1. Navigate to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
 2. Click the start icon (**▶**) next to the sandbox you want to start
-
-```text
-Starting sandbox with ID: <sandbox-id>
-```
 
 ```typescript
 await sandbox.start()
 ```
 
+## Get Sandbox
+
+Daytona provides methods to get a sandbox by ID or name.
+
+```typescript
+const sandbox = await daytona.get("my-sandbox-id-or-name");
+```
+
 ## List Sandboxes
 
-Daytona provides methods to list sandboxes and view their details in [Daytona Dashboard ↗](https://app.daytona.io/dashboard/) via the [sandbox details page](#sandbox-details-page) or programmatically using the [Python](../python-sdk/README.md), [TypeScript](./README.md), [Ruby](../ruby-sdk/README.md), [Go](../go-sdk/daytona.md), [Java](https://www.daytona.io/docs/en/java-sdk/daytona) **SDKs**, [CLI](../cli.md), and [API](../api/README.md#daytona).
+Daytona provides methods to list sandboxes.
 
 ```typescript
 for await (const sandbox of daytona.list()) {
@@ -210,16 +176,14 @@ The sandbox details page provides a summary of the sandbox information and actio
 
 ## Stop Sandboxes
 
-Daytona provides methods to stop sandboxes in [Daytona Dashboard ↗](https://app.daytona.io/dashboard/) or programmatically using the [Python](../python-sdk/README.md), [TypeScript](./README.md), [Ruby](../ruby-sdk/README.md), [Go](../go-sdk/daytona.md), [Java](https://www.daytona.io/docs/en/java-sdk/daytona) **SDKs**, [CLI](../cli.md), and [API](../api/README.md#daytona).
+Daytona provides methods to stop sandboxes.
 
-Stopped sandboxes maintain filesystem persistence while their memory state is cleared. They incur only disk usage costs and can be started again when needed. The stopped state should be used when a sandbox is expected to be started again. Otherwise, it is recommended to stop and then archive the sandbox to eliminate disk usage costs.
+Stopped sandboxes maintain filesystem persistence while their memory state is cleared. They incur only disk usage costs and can be started again when needed.
+
+The stopped state should be used when a sandbox is expected to be started again. Otherwise, it is recommended to stop and then archive the sandbox to eliminate disk usage costs.
 
 1. Navigate to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
 2. Click the stop icon (**⏹**) next to the sandbox you want to stop
-
-```text
-Stopping sandbox with ID: <sandbox-id>
-```
 
 ```typescript
 await sandbox.stop()
@@ -236,15 +200,19 @@ Common use cases for force stop include:
 > **Caution: Experimental**
 > This feature is experimental. To request access, contact [support@daytona.io](mailto:support@daytona.io).
 
-Daytona provides methods to pause sandboxes. Pausing a sandbox keeps both filesystem state and memory persistence, so sandboxes can resume from in-memory runtime state. Compared to regular stop behavior, pause is useful for workloads with active in-memory context and state continuity.
+Daytona provides methods to pause sandboxes.
+
+Pausing a sandbox keeps both filesystem state and memory persistence, so sandboxes can resume from in-memory runtime state. Compared to regular stop behavior, pause is useful for workloads with active in-memory context and state continuity.
 
 Daytona supports pause functionality through VM-based runners. Pause is handled through the existing stop action. This means stop behaves as pause and preserves memory state, while force stop performs a full shutdown without preserving memory state.
 
 ## Archive Sandboxes
 
-Daytona provides methods to archive sandboxes in [Daytona Dashboard ↗](https://app.daytona.io/dashboard/) or programmatically using the [Python](../python-sdk/README.md), [TypeScript](./README.md), [Ruby](../ruby-sdk/README.md), [Go](../go-sdk/daytona.md) **SDKs**, [CLI](../cli.md), and [API](../api/README.md#daytona).
+Daytona provides methods to archive sandboxes.
 
-A sandbox must be stopped before it can be archived. When a sandbox is archived, the entire filesystem state is moved to a cost-effective object storage, making it available for an extended period. Starting an archived sandbox takes more time than starting a stopped sandbox, depending on its size. It can be started again in the same way as a stopped sandbox.
+A sandbox must be stopped before it can be archived. When a sandbox is archived, the entire filesystem state is moved to a cost-effective object storage, making it available for an extended period.
+
+Starting an archived sandbox takes more time than starting a stopped sandbox, depending on its size. It can be started again in the same way as a stopped sandbox.
 
 ```typescript
 await sandbox.archive()
@@ -252,7 +220,7 @@ await sandbox.archive()
 
 ## Recover Sandboxes
 
-Daytona provides methods to recover sandboxes in [Daytona Dashboard ↗](https://app.daytona.io/dashboard/) or programmatically using the [Python](../python-sdk/README.md), [TypeScript](./README.md), [Ruby](../ruby-sdk/README.md), [Go](../go-sdk/daytona.md) **SDKs**, and [API](../api/README.md#daytona).
+Daytona provides methods to recover sandboxes.
 
 ```typescript
 await sandbox.recover()
@@ -273,7 +241,9 @@ if (sandbox.recoverable) {
 
 ## Resize Sandboxes
 
-Daytona provides methods to resize [sandbox resources](#resources) after creation using [Python](../python-sdk/README.md), [TypeScript](./README.md), [Ruby](../ruby-sdk/README.md), [Go](../go-sdk/daytona.md) **SDKs**, and [API](../api/README.md#daytona). On a running sandbox, you can increase CPU and memory without interruption. To decrease CPU or memory, or to increase disk capacity, stop the sandbox first. Disk size can only be increased and cannot be decreased.
+Daytona provides methods to resize [sandbox resources](#resources) after creation.
+
+On a running sandbox, you can increase CPU and memory without interruption. To decrease CPU or memory, or to increase disk capacity, stop the sandbox first. Disk size can only be increased and cannot be decreased.
 
 Resizing updates the sandbox resource allocation (`cpu`, `memory`, and `disk`) for that sandbox only. CPU and memory control compute capacity for running workloads, while disk controls persistent filesystem capacity. Values must be integers and stay within your organization's per-sandbox resource limits.
 
@@ -287,11 +257,21 @@ await sandbox.resize({ cpu: 4, memory: 8, disk: 20 })
 await sandbox.start()
 ```
 
+To verify CPU and memory limits inside the sandbox after resizing, read `cgroup` values directly. Tools such as `nproc`, `free`, `top`, `htop`, `/proc/cpuinfo`, and `/proc/meminfo` read host-level values and do not reflect sandbox resource limits.
+
+```bash
+cat /sys/fs/cgroup/cpu.max      # "<quota> <period>" (cores = quota / period)
+cat /sys/fs/cgroup/memory.max   # bytes
+df -h /                         # disk
+```
+
 ## Fork Sandboxes
 > **Caution: Experimental**
 > This feature is experimental. To request access, contact [support@daytona.io](mailto:support@daytona.io).
 
-Daytona provides methods to fork sandboxes. Forking creates a duplicate of your sandbox's filesystem and memory, and copies it into a new sandbox. The new sandbox is fully independent: it can be started, stopped, and deleted without affecting the original. The sandbox must be in started state before forking.
+Daytona provides methods to fork sandboxes.
+
+Forking creates a duplicate of your sandbox's filesystem and memory, and copies it into a new sandbox. The new sandbox is fully independent: it can be started, stopped, and deleted without affecting the original. The sandbox must be in started state before forking.
 
 Daytona tracks the parent-child relationship in a fork tree, so you can always trace a fork's lineage back to the sandbox it was created from. You can fork a fork, building out branches as needed. The parent sandbox cannot be deleted while it has active fork children.
 
@@ -307,9 +287,7 @@ const forkedSandbox = await sandbox._experimental_fork({ name: "my-forked-sandbo
 const forkedSandbox = await daytona._experimental_fork(sandbox, { name: "my-forked-sandbox" });
 ```
 
-##### View Forks
-
-Daytona provides methods to view forks. You can view the fork tree for a sandbox and all its related sandboxes.
+To view the fork tree for a sandbox and all its related sandboxes:
 
 1. Navigate to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
 2. Click the three-dot menu (**⋮**) next to a forked sandbox
@@ -317,11 +295,26 @@ Daytona provides methods to view forks. You can view the fork tree for a sandbox
 
 The fork tree displays each sandbox in the hierarchy along with its current state and creation time, allowing you to trace the lineage of any fork back to its origin.
 
+## Label Sandboxes
+
+Daytona provides methods to set sandbox labels.
+
+Setting labels replaces the full label set for the sandbox. Include all labels you want to keep in the request. If you omit an existing label, it will be removed.
+
+```typescript
+await sandbox.setLabels({
+  team: "platform",
+  env: "staging",
+});
+```
+
 ## Create Snapshot from Sandbox
 > **Caution: Experimental**
 > This feature is experimental. To request access, contact [support@daytona.io](mailto:support@daytona.io).
 
-Daytona provides methods to create [snapshots](./snapshots.md) from sandboxes. A snapshot captures an immutable, point-in-time copy of a sandbox's filesystem and memory that you can use as a base to create new sandboxes, effectively templating a known-good environment for reuse. You can think of it as a checkpoint you can restore from whenever you need a clean, identical starting point.
+Daytona provides methods to create [snapshots](./snapshots.md) from sandboxes.
+
+A snapshot captures an immutable, point-in-time copy of a sandbox's filesystem and memory that you can use as a base to create new sandboxes, effectively templating a known-good environment for reuse. You can think of it as a checkpoint you can restore from whenever you need a clean, identical starting point.
 
 ```typescript
 // Create snapshot from sandbox
@@ -330,28 +323,73 @@ await sandbox._experimental_createSnapshot("my-sandbox-snapshot");
 
 ## Delete Sandboxes
 
-Daytona provides methods to delete sandboxes in [Daytona Dashboard ↗](https://app.daytona.io/dashboard/) or programmatically using the [Python](../python-sdk/README.md), [TypeScript](./README.md), [Ruby](../ruby-sdk/README.md), [Go](../go-sdk/daytona.md), [Java](https://www.daytona.io/docs/en/java-sdk/daytona) **SDKs**, [CLI](../cli.md), and [API](../api/README.md#daytona).
+Daytona provides methods to delete sandboxes.
 
 1. Navigate to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
 2. Click the **Delete** button next to the sandbox you want to delete.
-
-```text
-Deleting sandbox with ID: <sandbox-id>
-```
 
 ```typescript
 await sandbox.delete()
 ```
 
+## Sandbox lifecycle
+
+A sandbox can have several different states. Each state reflects the status of your sandbox.
+
+- [**Creating**](#create-sandboxes): the sandbox is provisioning and will be ready to use
+- [**Starting**](#start-sandboxes): the sandbox is starting and will be ready to use
+- [**Started**](#start-sandboxes): the sandbox has started and is ready to use
+- [**Stopping**](#stop-sandboxes): the sandbox is stopping and will no longer accept requests
+- [**Stopped**](#stop-sandboxes): the sandbox has stopped and is no longer running
+- [**Deleting**](#delete-sandboxes): the sandbox is deleting and will be removed
+- [**Deleted**](#delete-sandboxes): the sandbox has been deleted and no longer exists
+- [**Archiving**](#archive-sandboxes): the sandbox is archiving and its state will be preserved
+- [**Archived**](#archive-sandboxes): the sandbox has been archived and its state is preserved
+- [**Resizing**](#resize-sandboxes): the sandbox is being resized to a new set of resources
+- [**Error**](#recover-sandboxes): the sandbox is in an error state and needs to be recovered
+- **Restoring**: the sandbox is being restored from archive and will be ready to use shortly
+- **Unknown**: the default sandbox state before it is created
+- **Pulling Snapshot**: the sandbox is pulling a [snapshot](./snapshots.md) to provide a base environment
+- **Building Snapshot**: the sandbox is building a [snapshot](./snapshots.md) to provide a base environment
+- **Build Pending**: the sandbox build is pending and will start shortly
+- **Build Failed**: the sandbox build failed and needs to be retried
+
+The diagram demonstrates the states and possible transitions between them.
+
+
+## Multiple runtime support
+
+Daytona sandboxes support Python, TypeScript, and JavaScript programming language runtimes for direct code execution inside the sandbox. The `language` parameter controls which programming language runtime is used for the sandbox:
+
+- **`python`**
+- **`typescript`**
+- **`javascript`**
+
+If omitted, the Daytona SDK will default to `python`. To override this, explicitly set the `language` value when creating the sandbox.
+
 ## Automated lifecycle management
 
-Daytona sandboxes can be automatically stopped, archived, and deleted based on user-defined intervals.
+Daytona sandboxes can be automatically stopped, archived, and deleted based on user-defined intervals. You can also refresh the last activity timestamp to explicitly signal activity when lifecycle behavior depends on inactivity windows.
+
+### Update sandbox last activity
+
+Daytona provides methods to update a sandbox's last activity timestamp.
+
+This updates the sandbox's recorded activity time without changing its runtime state. It is useful when your workflow is driven by external systems or background orchestration that may not reset inactivity tracking.
+
+For example, if you run long-lived automation around a sandbox and want to avoid unintended auto-stop behavior, call this operation periodically to indicate that the sandbox is still actively used.
+
+```typescript
+await sandbox.refreshActivity();
+```
 
 ### Auto-stop interval
 
-The auto-stop interval parameter sets the amount of time after which a running sandbox will be automatically stopped.
+Daytona provides methods to set the auto-stop interval.
 
-The auto-stop interval triggers even if there are internal processes running in the sandbox. The system differentiates between "internal processes" and "active user interaction". Merely having a script or background task running is not sufficient to keep the sandbox alive.
+The auto-stop interval sets the amount of time after which a running sandbox will be automatically stopped. The auto-stop triggers even if there are internal processes running in the sandbox.
+
+The system differentiates between "internal processes" and "active user interaction". Merely having a script or background task running is not sufficient to keep the sandbox alive.
 
 - [What resets the timer](#what-resets-the-timer)
 - [What does not reset the timer](#what-does-not-reset-the-timer)
@@ -393,9 +431,9 @@ If you run a long-running task like LLM inference that takes more than 15 minute
 
 ### Auto-archive interval
 
-Daytona provides methods to set the auto-archive interval using the [Python SDK](../python-sdk/README.md), [TypeScript SDK](./README.md), [Ruby SDK](../ruby-sdk/README.md), and [Java SDK](https://www.daytona.io/docs/en/java-sdk/sandbox).
+Daytona provides methods to set the auto-archive interval.
 
-The auto-archive interval parameter sets the amount of time after which a continuously stopped sandbox will be automatically archived. The parameter can either be set to:
+The auto-archive interval sets the amount of time after which a continuously stopped sandbox will be automatically archived. The parameter can either be set to:
 
 - a time interval in minutes
 - `0`: the maximum interval of `30 days` will be used
@@ -412,9 +450,9 @@ const sandbox = await daytona.create({
 
 ### Auto-delete interval
 
-Daytona provides methods to set the auto-delete interval using the [Python](../python-sdk/README.md), [TypeScript](./README.md), [Ruby](../ruby-sdk/README.md), [Go](../go-sdk/daytona.md), [Java](https://www.daytona.io/docs/en/java-sdk/daytona) **SDKs**, and [API](../api/README.md#daytona).
+Daytona provides methods to set the auto-delete interval.
 
-The auto-delete interval parameter sets the amount of time after which a continuously stopped sandbox will be automatically deleted. By default, sandboxes will never be automatically deleted. The parameter can either be set to:
+The auto-delete interval sets the amount of time after which a continuously stopped sandbox will be automatically deleted. By default, sandboxes will never be automatically deleted. The parameter can either be set to:
 
 - a time interval in minutes
 - `-1`: disables the auto-delete functionality
@@ -438,9 +476,9 @@ await sandbox.setAutoDeleteInterval(-1)
 
 ### Running indefinitely
 
-Daytona provides methods to run sandboxes indefinitely using the [Python](../python-sdk/README.md), [TypeScript](./README.md), [Ruby](../ruby-sdk/README.md), [Go](../go-sdk/daytona.md), and [Java](https://www.daytona.io/docs/en/java-sdk/daytona) **SDKs**.
+Daytona provides methods to run sandboxes indefinitely.
 
-By default, Daytona Sandboxes auto-stop after 15 minutes of inactivity. To keep a sandbox running without interruption, set the auto-stop interval to `0` when creating a new sandbox:
+By default, Daytona sandboxes auto-stop after 15 minutes of inactivity. To keep a sandbox running without interruption, set the auto-stop interval to `0` when creating a new sandbox:
 
 ```typescript
 const sandbox = await daytona.create({
