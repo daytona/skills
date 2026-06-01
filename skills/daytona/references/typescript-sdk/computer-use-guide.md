@@ -9,6 +9,7 @@
 - Get process errors
 - Mouse operations
 - Keyboard operations
+- Accessibility operations
 - Screenshot operations
 - Screen Recording
 - Display operations
@@ -207,6 +208,96 @@ await sandbox.computerUse.keyboard.hotkey('alt+tab');
 | Other              | `capslock`, `menu`                                                                                                              |
 
 Common aliases like `Return` → `enter`, `control` → `ctrl`, `command` / `meta` / `win` → `cmd`, and `option` → `alt` are normalized automatically. Unsupported or malformed inputs return an error, sometimes with a suggested alternative.
+
+## Accessibility operations
+
+Use Linux accessibility operations to inspect the AT-SPI tree and interact with UI elements by node ID. Start Computer Use before calling accessibility methods.
+> **Note: App accessibility support**
+> Accessibility operations read the semantic UI information that applications expose over AT-SPI. Apps or custom widgets that do not expose accessibility objects may return sparse nodes, generic roles, or no actionable nodes; mouse, keyboard, and screenshot operations remain available for those cases.
+
+### Get tree
+
+Read an accessibility tree for the focused app, a specific process, or all apps.
+
+```typescript
+// Focused app
+const focusedTree = await sandbox.computerUse.accessibility.getTree({
+  scope: 'focused',
+  maxDepth: 2,
+});
+
+// Specific process
+const processTree = await sandbox.computerUse.accessibility.getTree({
+  scope: 'pid',
+  pid: 1234,
+  maxDepth: 2,
+});
+
+// All apps
+const desktopTree = await sandbox.computerUse.accessibility.getTree({
+  scope: 'all',
+  maxDepth: 2,
+});
+```
+
+### Find nodes
+
+Search the accessibility tree by role, accessible name, state, and scope.
+
+```typescript
+// Find buttons by accessible name
+const buttons = await sandbox.computerUse.accessibility.findNodes({
+  scope: 'focused',
+  role: 'button',
+  name: 'Submit',
+  nameMatch: 'substring',
+  limit: 10,
+});
+
+// Find text entries in a process
+const entries = await sandbox.computerUse.accessibility.findNodes({
+  scope: 'pid',
+  pid: 1234,
+  role: 'entry',
+  states: ['enabled', 'focusable'],
+  limit: 10,
+});
+
+// Find visible nodes across all apps
+const visibleNodes = await sandbox.computerUse.accessibility.findNodes({
+  scope: 'all',
+  states: ['visible'],
+  limit: 20,
+});
+```
+
+### Focus node
+
+Move keyboard focus to a node returned by `get_tree` or `find_nodes`.
+
+```typescript
+await sandbox.computerUse.accessibility.focusNode('node-id');
+```
+
+### Invoke node
+
+Run a node action, such as pressing a button.
+
+```typescript
+// Invoke the primary action
+await sandbox.computerUse.accessibility.invokeNode('node-id');
+
+// Invoke a named action
+await sandbox.computerUse.accessibility.invokeNode('node-id', 'click');
+```
+
+### Set node value
+
+Write text or value content to nodes that support value changes.
+
+```typescript
+await sandbox.computerUse.accessibility.setNodeValue('node-id', 'hello');
+```
 
 ## Screenshot operations
 

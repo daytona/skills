@@ -272,6 +272,7 @@ Schema: **UpdateOrganizationRegionQuota**
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
+| `sandboxClass` | object | No |  |
 | `totalCpuQuota` | number | Yes |  |
 | `totalMemoryQuota` | number | Yes |  |
 | `totalDiskQuota` | number | Yes |  |

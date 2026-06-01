@@ -60,6 +60,7 @@ Schema: **CreateSnapshot**
 | `disk` | integer | No | Disk space allocated to the sandbox in GB |
 | `buildInfo` | object | No | Build information for the snapshot |
 | `regionId` | string | No | ID of the region where the snapshot will be available. Defaults to organization default region if not specified. |
+| `sandboxClass` | object | No | Target sandbox class. Determines which runners can host sandboxes created from this snapshot. |
 
 ### Responses
 

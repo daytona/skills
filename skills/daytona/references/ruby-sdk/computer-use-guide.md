@@ -9,6 +9,7 @@
 - Get process errors
 - Mouse operations
 - Keyboard operations
+- Accessibility operations
 - Screenshot operations
 - Screen Recording
 - Display operations
@@ -207,6 +208,90 @@ sandbox.computer_use.keyboard.hotkey(keys: "alt+tab")
 | Other              | `capslock`, `menu`                                                                                                              |
 
 Common aliases like `Return` → `enter`, `control` → `ctrl`, `command` / `meta` / `win` → `cmd`, and `option` → `alt` are normalized automatically. Unsupported or malformed inputs return an error, sometimes with a suggested alternative.
+
+## Accessibility operations
+
+Use Linux accessibility operations to inspect the AT-SPI tree and interact with UI elements by node ID. Start Computer Use before calling accessibility methods.
+> **Note: App accessibility support**
+> Accessibility operations read the semantic UI information that applications expose over AT-SPI. Apps or custom widgets that do not expose accessibility objects may return sparse nodes, generic roles, or no actionable nodes; mouse, keyboard, and screenshot operations remain available for those cases.
+
+### Get tree
+
+Read an accessibility tree for the focused app, a specific process, or all apps.
+
+```ruby
+# Focused app
+focused_tree = sandbox.computer_use.accessibility.get_tree(scope: "focused", max_depth: 2)
+
+# Specific process
+process_tree = sandbox.computer_use.accessibility.get_tree(
+  scope: "pid",
+  pid: 1234,
+  max_depth: 2
+)
+
+# All apps
+desktop_tree = sandbox.computer_use.accessibility.get_tree(scope: "all", max_depth: 2)
+```
+
+### Find nodes
+
+Search the accessibility tree by role, accessible name, state, and scope.
+
+```ruby
+# Find buttons by accessible name
+buttons = sandbox.computer_use.accessibility.find_nodes(
+  scope: "focused",
+  role: "button",
+  name: "Submit",
+  name_match: "substring",
+  limit: 10
+)
+
+# Find text entries in a process
+entries = sandbox.computer_use.accessibility.find_nodes(
+  scope: "pid",
+  pid: 1234,
+  role: "entry",
+  states: ["enabled", "focusable"],
+  limit: 10
+)
+
+# Find visible nodes across all apps
+visible_nodes = sandbox.computer_use.accessibility.find_nodes(
+  scope: "all",
+  states: ["visible"],
+  limit: 20
+)
+```
+
+### Focus node
+
+Move keyboard focus to a node returned by `get_tree` or `find_nodes`.
+
+```ruby
+sandbox.computer_use.accessibility.focus_node(id: "node-id")
+```
+
+### Invoke node
+
+Run a node action, such as pressing a button.
+
+```ruby
+# Invoke the primary action
+sandbox.computer_use.accessibility.invoke_node(id: "node-id")
+
+# Invoke a named action
+sandbox.computer_use.accessibility.invoke_node(id: "node-id", action: "click")
+```
+
+### Set node value
+
+Write text or value content to nodes that support value changes.
+
+```ruby
+sandbox.computer_use.accessibility.set_node_value(id: "node-id", value: "hello")
+```
 
 ## Screenshot operations
 

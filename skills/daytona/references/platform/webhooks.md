@@ -146,7 +146,7 @@ Sent when a new sandbox is created.
   "id": "sandbox123",
   "organizationId": "org123",
   "state": "started",
-  "class": "small",
+  "sandboxClass": "container",
   "createdAt": "2025-12-19T10:30:00.000Z"
 }
 ```
@@ -156,7 +156,7 @@ Sent when a new sandbox is created.
 | **`id`**             | string | Sandbox ID                                      |
 | **`organizationId`** | string | Organization ID                                 |
 | **`state`**          | string | Sandbox state                                   |
-| **`class`**          | string | Sandbox class (`small`, `medium`, or `large`)   |
+| **`sandboxClass`**   | string | Sandbox class                                   |
 | **`createdAt`**      | string | ISO 8601 timestamp when the sandbox was created |
 
 ### **`sandbox.state.updated`**

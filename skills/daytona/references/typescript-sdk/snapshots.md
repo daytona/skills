@@ -1,12 +1,12 @@
 ## Contents
 
-- Snapshot lifecycle
 - Create Snapshots
 - Get a Snapshot by name
 - List Snapshots
 - Activate Snapshots
 - Deactivate Snapshots
 - Delete Snapshots
+- Snapshot lifecycle
 - Run Docker in a Sandbox
 - Run Kubernetes in a Sandbox
 - Default Snapshots
@@ -17,44 +17,28 @@
 
 Snapshots are sandbox templates created from [Docker](https://www.docker.com/) or [OCI](https://opencontainers.org/) compatible images. Sandboxes can use a [default snapshot](#default-snapshots) or custom snapshots to provide a consistent and reproducible sandbox environments for your dependencies, settings, and resources.
 
-Daytona supports running [Docker](#run-docker-in-a-sandbox) and [Kubernetes](#run-kubernetes-in-a-sandbox) workloads inside sandboxes using snapshots.
-
-## Snapshot lifecycle
-
-A snapshot can have several different states. Each state reflects the current status of your snapshot.
-
-- **Pending**: the snapshot creation has been requested
-- **Building**: the snapshot is being built
-- **Pulling**: the snapshot image is being pulled from a registry
-- **Active**: the snapshot is ready to use for creating sandboxes
-- **Inactive**: the snapshot is deactivated
-- **Error**: the snapshot creation failed
-- **Build Failed**: the snapshot build process failed
-- **Removing**: the snapshot is being deleted
-> **Note:**
-> Inactive snapshots cannot be used to create sandboxes. They must be explicitly [re-activated](#activate-snapshots) before use. When activated, the snapshot returns to `pending` state and is re-processed before becoming `active` again.
+- **Snapshot SDKs**: [TypeScript](./snapshot.md), [Python](../python-sdk/sync/snapshot.md), [Ruby](../ruby-sdk/snapshot.md), [Go](../go-sdk/daytona.md#type-snapshotservice), [Java](https://www.daytona.io/docs/en/java-sdk/snapshot)
+- **Snapshot API**: [RESTful API](../api/README.md#daytona/tag/snapshots) ([OpenAPI spec](https://www.daytona.io/docs/en/openapi.json)), [Toolbox API](../api/README.md#daytona-toolbox) ([OpenAPI spec](https://www.daytona.io/docs/en/toolbox-openapi.json))
+- **Snapshot CLI**: [Mac/Linux/Windows](../cli.md)
 
 ## Create Snapshots
 
-Daytona provides methods to create snapshots using the [Daytona Dashboard ↗](https://app.daytona.io/dashboard/snapshots) or programmatically using the Daytona [Python](../python-sdk/sync/snapshot.md), [TypeScript](./snapshot.md), [Ruby](../ruby-sdk/snapshot.md), [Go](../go-sdk/daytona.md#SnapshotService), [Java](https://www.daytona.io/docs/en/java-sdk/snapshot) **SDKs**, [CLI](../cli.md#daytona-snapshot), or [API](../api/README.md#daytona/tag/snapshots).
+Daytona provides methods to create snapshots. You can create a snapshot from:
 
-Snapshots can be created using:
-
-- [public images](#using-public-images)
-- [local images](#using-local-images)
-- [images from private registries](#using-images-from-private-registries)
-- [the declarative builder](#using-the-declarative-builder)
+- [public images](#public-images)
+- [local images](#local-images)
+- [images from private registries](#images-from-private-registries)
+- [the declarative builder](#declarative-builder)
 - [GPU snapshots](#gpu-snapshots) (for [GPU sandboxes](./sandboxes.md#gpu-sandboxes))
 
 1. Navigate to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
 2. Click the **Create Snapshot** button
-3. Enter the **snapshot name**, **image** (tag or digest), **entrypoint**, and **resources**
+3. Enter the snapshot name and image (tag or digest)
 
-- **Snapshot name**: Identifier used to reference the snapshot in the SDK or CLI.
-- **Image**: Base image for the snapshot. Must include either a tag or a digest (e.g., **`ubuntu:22.04`**). The **`latest`** tag is not allowed. Since images tagged `latest` get frequent updates, only specific tags are supported. Same applies to tags such as `lts` or `stable`, and we recommend avoiding those when defining an image to prevent unexpected behavior.
-- **Entrypoint** (optional): The entrypoint command for the snapshot. Ensure that the entrypoint is a long-running command. If not provided, or if the snapshot does not have an entrypoint, `sleep infinity` will be used as the default.
-- [**Resources**](./sandboxes.md#resources) (optional): The resources you want the underlying Sandboxes to have. By default, Daytona Sandboxes use **1 vCPU**, **1GiB memory**, and **3GiB storage**.
-- **GPU** (optional): Enable the **GPU** option to create a GPU snapshot for [GPU sandboxes](./sandboxes.md#gpu-sandboxes).
+- **Snapshot name**: identifier used to reference the snapshot
+- **Image**: base image for the snapshot, must include either a tag or a digest (e.g., **`ubuntu:22.04`**); the `latest`/`lts`/`stable` tags are not supported
+- **Entrypoint** (optional): entrypoint command for the snapshot; ensure that the entrypoint is a long-running command; if not provided, or if the snapshot does not have an entrypoint, `sleep infinity` will be used as the default
+- [**Resources**](./sandboxes.md#resources) (optional): resources underlying sandboxes have; by default, sandboxes use **1 vCPU**, **1GiB memory**, and **3GiB storage**; use [GPU snapshots](#gpu-snapshots) for GPU sandboxes
 
 **Python:**
 
@@ -151,7 +135,35 @@ curl https://app.daytona.io/api/snapshots \
   }'
 ```
 
-### Using public images
+### GPU Snapshots
+> **Caution: Experimental**
+> This feature is experimental. To request access, contact [support@daytona.io](mailto:support@daytona.io).
+
+Daytona provides methods to create GPU snapshots.
+
+GPU snapshots are used to create [GPU sandboxes](./sandboxes.md#gpu-sandboxes). Daytona provides a pre-built `daytona-gpu` system snapshot for creating GPU sandboxes. You can also create a custom GPU snapshot to customize the image or dependencies.
+
+GPU snapshots follow the same snapshot creation flow, but with the additional option to enable and provide GPU resources.
+
+1. Navigate to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
+2. Click the **Create Snapshot** button
+3. Configure GPU snapshot details and enable the GPU option
+
+To create a GPU snapshot programmatically, set the `gpu` value to the number of GPU units you want to allocate and target `us-east-1` region. If `gpu` is not set, it defaults to `0`, which creates a non-GPU snapshot.
+
+```typescript
+import { Daytona } from "@daytona/sdk";
+
+const daytona = new Daytona({ target: "us-east-1" });
+const snapshot = await daytona.snapshot.create({
+  name: "my-gpu-snapshot",
+  image: "python:3.12",
+  resources: { cpu: 1, memory: 1, disk: 1, gpu: 1 },
+});
+```
+
+<a id="using-public-images"></a>
+### Public images
 
 Daytona supports creating snapshots from any publicly accessible image or container registry.
 
@@ -258,7 +270,8 @@ curl https://app.daytona.io/api/snapshots \
   }'
 ```
 
-### Using local images
+<a id="using-local-images"></a>
+### Local images
 
 Daytona supports creating snapshots from local images or from local Dockerfiles. To create a snapshot from a local image or from a local Dockerfile, use the [Daytona CLI](../cli.md#daytona-snapshot).
 
@@ -299,7 +312,8 @@ Step 1/5 : FROM alpine:latest
  ✓  Use 'harbor-transient.internal.daytona.app/daytona/trying-daytona:0.0.1' to create a new sandbox using this Snapshot
 ```
 
-### Using images from private registries
+<a id="using-images-from-private-registries"></a>
+### Images from private registries
 
 Daytona supports creating snapshots from images from [Docker Hub](#docker-hub), [Google Artifact Registry](#google-artifact-registry), [GitHub Container Registry](#github-container-registry-ghcr), [Amazon ECR](#amazon-elastic-container-registry-ecr) or other private container registries.
 
@@ -339,7 +353,8 @@ Daytona supports creating snapshots from images from Google Artifact Registry, a
    Username is auto-filled with `_json_key` (required by Google for service-account auth) and not shown in the form.
 3. Create the snapshot using the full image reference, e.g. `us-central1-docker.pkg.dev/<project>/<repo>/<image>:<tag>`.
 
-#### GitHub Container Registry (GHCR)
+<a id="github-container-registry-ghcr"></a>
+#### GitHub Container Registry
 
 Daytona supports creating snapshots from images from GitHub Container Registry.
 
@@ -351,7 +366,9 @@ Daytona supports creating snapshots from images from GitHub Container Registry.
    Registry URL is auto-filled with `ghcr.io` and not shown in the form.
 3. Create the snapshot using the full image reference, e.g. `ghcr.io/<owner>/<image>:<tag>`.
 
-#### Amazon Elastic Container Registry (ECR)
+
+<a id="amazon-elastic-container-registry-ecr"></a>
+#### Amazon Elastic Container Registry
 
 Daytona pulls private ECR images via cross-account IAM role assumption — you create a role in your AWS account that trusts Daytona's broker principal, and Daytona assumes it on every pull to fetch a short-lived ECR token. No long-lived AWS credentials are shared, and no manual token rotation is needed.
 
@@ -427,59 +444,10 @@ Daytona sends a `daytona-<orgId>-pull` session name on every AssumeRole call. Yo
 }
 ```
 
-### Using the declarative builder
+<a id="using-the-declarative-builder"></a>
+### Declarative builder
 
 [Declarative Builder](./declarative-builder.md) provides a powerful, code-first approach to defining dependencies for Daytona Sandboxes. Instead of importing images from a container registry, you can programmatically define them using the Daytona [SDKs](./getting-started.md#sdks).
-
-### GPU Snapshots
-> **Caution: Experimental**
-> This feature is experimental. To request access, contact [support@daytona.io](mailto:support@daytona.io).
-
-Daytona provides methods to create GPU snapshots using the [Daytona Dashboard ↗](https://app.daytona.io/dashboard/snapshots) or programmatically using the Daytona [Python](../python-sdk/sync/snapshot.md), [TypeScript](./snapshot.md), [Ruby](../ruby-sdk/snapshot.md), [Go](../go-sdk/daytona.md#SnapshotService), [Java](https://www.daytona.io/docs/en/java-sdk/snapshot) **SDKs**, or [API](../api/README.md#daytona/tag/snapshots).
-
-GPU snapshots fit into the same snapshot creation flow as other snapshots, but with the additional option to enable the GPU. Create a GPU snapshot first, then use it as the source when creating a [GPU sandbox](./sandboxes.md#gpu-sandboxes).
-
-1. Navigate to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
-2. Click the **Create Snapshot** button
-3. Configure snapshot details and enable the GPU option
-
-To create a GPU-enabled snapshot programmatically, set GPU resources for the snapshot. The `gpu` value defines how many GPU units each sandbox created from this snapshot will request. If `gpu` is not set, it defaults to `0`, which creates a non-GPU snapshot.
-
-```typescript
-import { Daytona } from "@daytona/sdk";
-
-const daytona = new Daytona();
-const snapshot = await daytona.snapshot.create({
-  name: "my-gpu-snapshot",
-  image: "python:3.12",
-  resources: { gpu: 1 },
-});
-```
-
-##### GPU Snapshot requirements
-
-Building a custom image for a GPU snapshot requires Ubuntu 24.04 and compatible NVIDIA userspace packages. Include the following in your snapshot Dockerfile:
-
-```dockerfile
-ARG NVIDIA_DRIVER_VERSION=580.126.20
-ARG UBUNTU_PKG_SUFFIX=0ubuntu0.24.04.2
-
-ENV DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get update -qq \
- && apt-get install -y -qq --no-install-recommends \
-      nvidia-utils-580-server=${NVIDIA_DRIVER_VERSION}-${UBUNTU_PKG_SUFFIX} \
-      libnvidia-compute-580-server=${NVIDIA_DRIVER_VERSION}-${UBUNTU_PKG_SUFFIX} \
-      python3 \
-      ca-certificates \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
-
-COPY verify-cuda.sh /verify-cuda.sh
-RUN chmod +x /verify-cuda.sh
-
-LABEL nvidia.driver.version="${NVIDIA_DRIVER_VERSION}"
-```
 
 ### Resources
 
@@ -564,6 +532,21 @@ Daytona provides options to delete snapshots. Deleted snapshots cannot be recove
 ```typescript
 await daytona.snapshot.delete(await daytona.snapshot.get("my-awesome-snapshot"))
 ```
+
+## Snapshot lifecycle
+
+A snapshot can have several different states. Each state reflects the snapshot's current status.
+
+- **Pending**: the snapshot creation has been requested
+- **Building**: the snapshot is being built
+- **Pulling**: the snapshot image is being pulled from a registry
+- **Active**: the snapshot is ready to use for creating sandboxes
+- **Inactive**: the snapshot is deactivated
+- **Error**: the snapshot creation failed
+- **Build Failed**: the snapshot build process failed
+- **Removing**: the snapshot is being deleted
+> **Note:**
+> Inactive snapshots cannot be used to create sandboxes. They must be explicitly [re-activated](#activate-snapshots) before use. When activated, the snapshot returns to `pending` state and is re-processed before becoming `active` again.
 
 ## Run Docker in a Sandbox
 

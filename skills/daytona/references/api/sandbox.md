@@ -64,6 +64,7 @@ Advanced filtering and ordering. Eventually consistent.
 | `states` | query | array | No | List of states to filter by. |
 | `snapshots` | query | array | No | List of snapshot names to filter by |
 | `regionIds` | query | array | No | List of regions IDs to filter by |
+| `sandboxClasses` | query | array | No | List of sandbox classes to filter by |
 | `minCpu` | query | number | No | Minimum CPU |
 | `maxCpu` | query | number | No | Maximum CPU |
 | `minMemoryGiB` | query | number | No | Minimum memory in GiB |
@@ -111,7 +112,6 @@ Schema: **CreateSandbox**
 | `public` | boolean | No | Whether the sandbox http preview is publicly accessible |
 | `networkBlockAll` | boolean | No | Whether to block all network access for the sandbox |
 | `networkAllowList` | string | No | Comma-separated list of allowed CIDR network addresses for the sandbox |
-| `class` | string | No | The sandbox class type |
 | `target` | string | No | The target (region) where the sandbox will be created |
 | `cpu` | integer | No | CPU cores allocated to the sandbox |
 | `gpu` | integer | No | GPU units allocated to the sandbox |
@@ -122,6 +122,7 @@ Schema: **CreateSandbox**
 | `autoDeleteInterval` | integer | No | Auto-delete interval in minutes (negative value means disabled, 0 means delete immediately upon stopping) |
 | `volumes` | array of [SandboxVolume](#schema-sandboxvolume) | No | Array of volumes to attach to the sandbox |
 | `buildInfo` | object | No | Build information for the sandbox |
+| `linkedSandbox` | string | No | ID or name of an existing sandbox to link the new sandbox to. The new sandbox will be scheduled on the same runner as the linked sandbox so a local network can be established between them. Linked sandboxes must be ephemeral (autoDeleteInterval=0) and cannot themselves be linked to another sandbox. |
 
 ### Responses
 
