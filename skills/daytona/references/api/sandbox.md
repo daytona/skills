@@ -115,6 +115,7 @@ Schema: **CreateSandbox**
 | `target` | string | No | The target (region) where the sandbox will be created |
 | `cpu` | integer | No | CPU cores allocated to the sandbox |
 | `gpu` | integer | No | GPU units allocated to the sandbox |
+| `gpuType` | array of [GpuType](#schema-gputype) | No | Preferred GPU type for the sandbox. Accepts a single value or an ordered preference list — the scheduler tries each in order and pins the sandbox to the first that has capacity. |
 | `memory` | integer | No | Memory allocated to the sandbox in GB |
 | `disk` | integer | No | Disk space allocated to the sandbox in GB |
 | `autoStopInterval` | integer | No | Auto-stop interval in minutes (0 means disabled) |
