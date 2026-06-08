@@ -139,7 +139,7 @@ Schema: **GitCheckoutRequest**
 
 **Clone a Git repository**
 
-Clone a Git repository to the specified path
+Clone a Git repository to the specified path. Defaults to strict TLS verification; set insecure_skip_tls=true to skip verification for self-signed or private-CA Git servers.
 
 ### Request Body
 
@@ -151,6 +151,7 @@ Schema: **GitCloneRequest**
 |-------|------|----------|-------------|
 | `branch` | string | No |  |
 | `commit_id` | string | No |  |
+| `insecure_skip_tls` | boolean | No | Skip TLS certificate verification for this clone. Defaults to false (verify). Set to true ONLY for trusted internal Git servers with self-signed or private-CA certs; credentials, if supplied, will be transmitted over an unverified TLS connection and are exposed to any MITM on the route. |
 | `password` | string | No |  |
 | `path` | string | Yes |  |
 | `url` | string | Yes |  |

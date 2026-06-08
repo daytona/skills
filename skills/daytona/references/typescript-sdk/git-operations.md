@@ -22,6 +22,8 @@ Similar to [file system operations](./file-system-operations.md), the starting c
 
 Daytona provides methods to clone Git repositories into sandboxes. You can clone public or private repositories, specific branches, and authenticate using personal access tokens.
 
+Clones verify the remote's TLS certificate by default. For clones against internal Git servers that use self-signed or private-CA certificates, pass `insecure_skip_tls=true` (`insecureSkipTls: true` in TypeScript / Java). The bypass is per-request and disables TLS verification for that clone only; credentials, if supplied, are transmitted over an unverified TLS connection and are exposed to any MITM on the route. Prefer adding the server's CA to the sandbox base image's trust store when possible.
+
 ```typescript
 // Basic clone
 await sandbox.git.clone(
@@ -44,6 +46,17 @@ await sandbox.git.clone(
     "https://github.com/user/repo.git",
     "workspace/repo",
     "develop"
+);
+
+// Clone from a self-signed internal Git server (insecure)
+await sandbox.git.clone(
+    "https://internal-git.example.com/org/repo.git",
+    "workspace/repo",
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    true
 );
 ```
 

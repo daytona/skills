@@ -21,13 +21,13 @@
 
 
 
-Daytona provides **full composable computers** — **sandboxes** — for AI agents. Sandboxes are isolated runtime environments you can manage programmatically to run code. Each sandbox runs in isolation, giving it a dedicated kernel, filesystem, network stack, and allocated vCPU, RAM, and disk. Agents get access to a full composable computer environment where they can install packages, run servers, compile code, and manage processes.
+Daytona provides **full composable computers** — **sandboxes** — for AI agents. Sandboxes are isolated runtime environments you can manage programmatically to run code. Each sandbox runs in isolation, giving it a dedicated kernel, filesystem, network stack, and allocated vCPU, RAM, and disk. Agents get access to a full composable computer where they can install packages, run servers, compile code, and manage processes.
 
-Sandboxes have **1 vCPU**, **1GB RAM**, and **3GiB disk** by default. [Organizations](../platform/organizations.md) get a maximum sandbox resource limit of **4 vCPUs**, **8GB RAM**, and **10GB disk**. For more power, see [resources](#resources) or contact [support@daytona.io](mailto:support@daytona.io).
+Sandboxes have **1 vCPU**, **1GB RAM**, and **3GiB disk** by default. Organizations get a maximum sandbox resource limit of **4 vCPUs**, **8GB RAM**, and **10GB disk**.
 
-Sandboxes use [snapshots](./snapshots.md) to capture a fully configured environment (base OS, installed packages, dependencies, and configuration) to create new sandboxes.
+Sandboxes can use [snapshots](./snapshots.md) to capture a fully configured environment (base operating system, installed packages, dependencies and configuration) to create new sandboxes.
 
-Each sandbox has its own network stack with per-sandbox firewall rules. By default, sandboxes follow standard network policies, but you can restrict egress to a specific set of allowed destinations or block all outbound traffic entirely. For more details, see [network limits](./network-limits.md).
+Each sandbox has its own network stack with per-sandbox firewall rules. By default, sandboxes follow standard network policies, but you can restrict egress to a specific set of allowed destinations or block all outbound traffic entirely.
 
 - **Sandbox SDKs**: [TypeScript](./sandbox.md), [Python](../python-sdk/sync/sandbox.md), [Ruby](../ruby-sdk/sandbox.md), [Go](../go-sdk/daytona.md#type-sandbox), [Java](https://www.daytona.io/docs/en/java-sdk/sandbox)
 - **Sandbox API**: [RESTful API](../api/README.md#daytona/tag/sandbox) ([OpenAPI spec](https://www.daytona.io/docs/en/openapi.json)), [Toolbox API](../api/README.md#daytona-toolbox) ([OpenAPI spec](https://www.daytona.io/docs/en/toolbox-openapi.json))
@@ -49,21 +49,21 @@ const sandbox = await daytona.create()
 ```
 
 ### GPU Sandboxes
-> **Caution: Experimental**
-> This feature is experimental. To request access, contact [support@daytona.io](mailto:support@daytona.io).
 
 Daytona provides methods to create GPU sandboxes.
 
-Daytona supports NVIDIA GPU devices for sandbox creation. This allows you to run GPU workloads such as model inference, fine-tuning, and CUDA-accelerated compute inside a sandbox.
+Daytona supports NVIDIA GPU devices for creating GPU sandboxes. Use GPU sandboxes for workloads such as model inference, fine-tuning, and CUDA-accelerated compute.
 
-Each GPU sandbox is ephemeral and supports up to **16 vCPUs**, **192GB RAM**, and **512GB disk**.
+- **NVIDIA H100**
+- **NVIDIA RTX Pro 6000**
+
+Daytona provides a pre-built `daytona-gpu` snapshot for creating GPU sandboxes. Each GPU sandbox is ephemeral and supports up to **16 vCPUs**, **192GB RAM**, and **512GB disk**.
 
 1. Navigate to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
 2. Click **Create Sandbox**
-3. Select a GPU snapshot
-4. Click **Create** to create a GPU sandbox
-
-To create a GPU sandbox programmatically, use the pre-built `daytona-gpu` snapshot, target `us-east-1` region, and set `auto_delete_interval` to `0` (ephemeral).
+3. Select a GPU snapshot (**`daytona-gpu`**)
+4. Select **`us-east-1`** region
+5. Click **Create** to create a GPU sandbox
 
 ```typescript
 import { Daytona } from "@daytona/sdk";
@@ -74,6 +74,56 @@ const daytona = new Daytona({
 const sandbox = await daytona.create({
   snapshot: "daytona-gpu",
   ephemeral: true,
+});
+```
+
+To create a GPU sandbox with custom GPU count and types:
+
+1. Create a sandbox from an **`image`**
+2. Set the **`auto-delete interval`** to **`0`** (ephemeral)
+3. Set the **`GPU`** count to the number of GPUs you want
+4. Specify the **`GPU type`**(s): **`H100`** **`RTX-PRO-6000`**
+
+    The GPU type field accepts a single value or an ordered list of preferred types.
+
+```typescript
+import { Daytona, GpuType, Image } from "@daytona/sdk";
+
+const daytona = new Daytona({
+  target: "us-east-1",
+});
+const sandbox = await daytona.create({
+  image: Image.debianSlim("3.12"),
+  autoDeleteInterval: 0,
+  resources: {
+    gpu: 1,
+    gpuType: [GpuType.H100, GpuType.RTX_PRO_6000],
+  },
+});
+```
+
+### Windows Sandboxes
+
+Daytona provides methods to create Windows sandboxes.
+
+Windows sandboxes are Windows OS runtime environments used to run Windows applications. They provide a consistent Windows baseline, so you can run Windows-specific tools and workflows in an isolated sandbox.
+
+Daytona provides a pre-built `windows` snapshot for creating Windows sandboxes. The snapshot uses **2 vCPU**, **8GiB** memory, and **30GiB** disk.
+
+1. Navigate to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+2. Click **Create Sandbox**
+3. Select a Windows snapshot (**`windows`**)
+4. Select **`us`** region
+5. Click **Create** to create a Windows sandbox
+
+```typescript
+import { Daytona } from "@daytona/sdk";
+
+const daytona = new Daytona({
+  target: "us",
+});
+const sandbox = await daytona.create({
+  snapshot: "windows",
 });
 ```
 
@@ -105,7 +155,30 @@ Sandboxes have **1 vCPU**, **1GB RAM**, and **3GiB disk** by default. Organizati
 | Memory       | GiB      | **`1`**     | **`1`**     | **`8`**     |
 | Disk         | GiB      | **`3`**     | **`1`**     | **`10`**    |
 
-To set custom sandbox resources, use the `Resources` class. All resource parameters are optional and must be integers. If not specified, Daytona will use the default values. Maximum values are per-sandbox limits set at the organization level.
+##### Pre-built snapshots
+
+Daytona provides pre-built [default snapshots](./snapshots.md#default-snapshots) with fixed resource sizes for creating sandboxes.
+
+| **Snapshot**         | **vCPU** | **Memory** | **Storage** |
+| -------------------- | -------- | ---------- | ----------- |
+| **`daytona-small`**  | 1        | 1GiB       | 3GiB        |
+| **`daytona-medium`** | 2        | 4GiB       | 8GiB        |
+| **`daytona-large`**  | 4        | 8GiB       | 10GiB       |
+
+```typescript
+import { Daytona } from "@daytona/sdk";
+
+const daytona = new Daytona();
+const sandbox = await daytona.create({
+  snapshot: "daytona-medium",
+});
+```
+
+##### Custom resources
+
+Daytona provides methods to create sandboxes with custom resources.
+
+Use the `Resources` class to set custom sandbox resources. All resource parameters are optional and must be integers. If not specified, Daytona will use the default values. Maximum values are per-sandbox limits set at the organization level.
 
 ```typescript
 import { Daytona, Image } from "@daytona/sdk";
@@ -146,39 +219,13 @@ for await (const sandbox of daytona.list()) {
 }
 ```
 
-##### Sandbox details page
-
-[Daytona Dashboard ↗](https://app.daytona.io/dashboard/) provides a sandbox details page to view detailed information about a sandbox and interact with it directly.
-
-1. Navigate to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
-2. Click on a sandbox you want to view the details of
-3. Click **View** to open the sandbox details page
-
-The sandbox details page provides a summary of the sandbox information and actions to perform on the sandbox:
-
-- **Name**: the name of the sandbox
-- **UUID**: the unique identifier of the sandbox
-- **State**: the sandbox state with a visual indicator
-- **Actions**: [start](#start-sandboxes), [stop](#stop-sandboxes), [recover](#recover-sandboxes), [archive](#archive-sandboxes), [delete](#delete-sandboxes), refresh, [SSH access](./ssh-access.md), [screen recordings](./computer-use-guide.md#screen-recording)
-- [**Region**](./regions.md): the target region where the sandbox is running
-- [**Snapshot**](./snapshots.md): the snapshot used to create the sandbox
-- [**Resources**](#resources): allocated sandbox CPU, memory, and disk
-- [**Lifecycle**](#sandbox-lifecycle): [auto-stop](#auto-stop-interval), [auto-archive](#auto-archive-interval), and [auto-delete](#auto-delete-interval) intervals
-- **Labels**: key-value pairs assigned to the sandbox
-- **Timestamps**: when the sandbox was created and when the last event occurred
-- [**Web terminal**](../platform/web-terminal.md): an embedded web terminal session directly in the browser
-- **Filesystem**: sandbox filesystem tree for viewing and managing files and directories: create, upload, download, copy, refresh, collapse, search, and delete capabilities
-- [**VNC**](./vnc-access.md): a graphical desktop session for sandboxes that have a desktop environment
-- [**Logs**](https://www.daytona.io/docs/en/observability/otel-collection): a detailed record of user and system activity for the sandbox
-- **Metrics**: sandbox metrics data displayed as charts
-- **Traces**: distributed traces and spans collected from the sandbox
-- **Spending**: usage and cost over time
-
 ## Stop Sandboxes
 
 Daytona provides methods to stop sandboxes.
 
-Stopped sandboxes maintain filesystem persistence while their memory state is cleared. They incur only disk usage costs and can be started again when needed.
+Stopped sandboxes maintain filesystem persistence while their memory state is cleared. They incur
+only disk usage costs and can be started again when needed. Sandboxes in a stopping or stopped state
+will no longer accept requests.
 
 The stopped state should be used when a sandbox is expected to be started again. Otherwise, it is recommended to stop and then archive the sandbox to eliminate disk usage costs.
 
@@ -197,8 +244,6 @@ Common use cases for force stop include:
 - the entrypoint ignores termination signals or hangs during shutdown
 
 ## Pause Sandboxes
-> **Caution: Experimental**
-> This feature is experimental. To request access, contact [support@daytona.io](mailto:support@daytona.io).
 
 Daytona provides methods to pause sandboxes.
 
@@ -225,8 +270,6 @@ Daytona provides methods to recover sandboxes.
 ```typescript
 await sandbox.recover()
 ```
-
-##### Recover from error state
 
 When a sandbox enters an error state, it can sometimes be recovered using the `recover` method, depending on the underlying error reason. The `recoverable` flag indicates whether the error state can be resolved through an automated recovery procedure.
 
@@ -266,8 +309,6 @@ df -h /                         # disk
 ```
 
 ## Fork Sandboxes
-> **Caution: Experimental**
-> This feature is experimental. To request access, contact [support@daytona.io](mailto:support@daytona.io).
 
 Daytona provides methods to fork sandboxes.
 
@@ -309,8 +350,6 @@ await sandbox.setLabels({
 ```
 
 ## Create Snapshot from Sandbox
-> **Caution: Experimental**
-> This feature is experimental. To request access, contact [support@daytona.io](mailto:support@daytona.io).
 
 Daytona provides methods to create [snapshots](./snapshots.md) from sandboxes.
 

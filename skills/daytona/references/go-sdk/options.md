@@ -26,6 +26,7 @@
 - func WithForce
 - func WithGroup
 - func WithIndexURL
+- func WithInsecureSkipTLS
 - func WithInterpreterTimeout
 - func WithLogChannel
 - func WithMode
@@ -111,6 +112,7 @@ opts := options.Apply(
 - [func WithForce\(force bool\) func\(\*GitDeleteBranch\)](https://www.daytona.io/docs/en<#WithForce>)
 - [func WithGroup\(group string\) func\(\*SetFilePermissions\)](https://www.daytona.io/docs/en<#WithGroup>)
 - [func WithIndexURL\(url string\) func\(\*PipInstall\)](https://www.daytona.io/docs/en<#WithIndexURL>)
+- [func WithInsecureSkipTLS\(insecureSkipTLS bool\) func\(\*GitClone\)](https://www.daytona.io/docs/en<#WithInsecureSkipTLS>)
 - [func WithInterpreterTimeout\(timeout time.Duration\) func\(\*RunCode\)](https://www.daytona.io/docs/en<#WithInterpreterTimeout>)
 - [func WithLogChannel\(logChannel chan string\) func\(\*CreateSandbox\)](https://www.daytona.io/docs/en<#WithLogChannel>)
 - [func WithMode\(mode string\) func\(\*CreateFolder\)](https://www.daytona.io/docs/en<#WithMode>)
@@ -493,6 +495,23 @@ image := daytona.Base("python:3.11").PipInstall(
 )
 ```
 
+<a name="WithInsecureSkipTLS"></a>
+## func WithInsecureSkipTLS
+
+```go
+func WithInsecureSkipTLS(insecureSkipTLS bool) func(*GitClone)
+```
+
+WithInsecureSkipTLS opts into skipping TLS certificate verification for the clone. Use ONLY when cloning from a trusted internal Git server with a self\-signed or private\-CA certificate. Credentials, if supplied, will be transmitted over an unverified TLS connection and are exposed to any MITM on the route.
+
+Example:
+
+```
+err := sandbox.Git.Clone(ctx, url, path,
+    options.WithInsecureSkipTLS(true),
+)
+```
+
 <a name="WithInterpreterTimeout"></a>
 ## func WithInterpreterTimeout
 
@@ -868,10 +887,11 @@ Fields are pointers to distinguish between unset values and zero values. Use the
 
 ```go
 type GitClone struct {
-    Branch   *string // Branch to clone (defaults to repository's default branch)
-    CommitId *string // Specific commit SHA to checkout after cloning
-    Username *string // Username for HTTPS authentication
-    Password *string // Password or token for HTTPS authentication
+    Branch          *string // Branch to clone (defaults to repository's default branch)
+    CommitId        *string // Specific commit SHA to checkout after cloning
+    Username        *string // Username for HTTPS authentication
+    Password        *string // Password or token for HTTPS authentication
+    InsecureSkipTLS *bool   // Skip TLS certificate verification (insecure). Use only for trusted internal Git servers with self-signed or private-CA certs.
 }
 ```
 

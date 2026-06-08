@@ -277,6 +277,7 @@ Schema: **UpdateOrganizationRegionQuota**
 | `totalMemoryQuota` | number | Yes |  |
 | `totalDiskQuota` | number | Yes |  |
 | `totalGpuQuota` | number | Yes |  |
+| `allowedGpuTypes` | array of [GpuType](#schema-gputype) | No |  |
 | `maxCpuPerSandbox` | number | No |  |
 | `maxMemoryPerSandbox` | number | No |  |
 | `maxDiskPerSandbox` | number | No |  |

@@ -24,6 +24,7 @@
 - type FileUpload
 - type GitCommitResponse
 - type GitStatus
+- type GpuType
 - type ImageParams
 - type LspLanguageID
 - type OutputMessage
@@ -68,6 +69,7 @@ import "github.com/daytonaio/daytona/libs/sdk-go/pkg/types"
 - [type FileUpload](https://www.daytona.io/docs/en<#FileUpload>)
 - [type GitCommitResponse](https://www.daytona.io/docs/en<#GitCommitResponse>)
 - [type GitStatus](https://www.daytona.io/docs/en<#GitStatus>)
+- [type GpuType](https://www.daytona.io/docs/en<#GpuType>)
 - [type ImageParams](https://www.daytona.io/docs/en<#ImageParams>)
 - [type LspLanguageID](https://www.daytona.io/docs/en<#LspLanguageID>)
 - [type OutputMessage](https://www.daytona.io/docs/en<#OutputMessage>)
@@ -322,6 +324,24 @@ type GitStatus struct {
 }
 ```
 
+<a name="GpuType"></a>
+## type GpuType
+
+GpuType identifies a specific NVIDIA GPU model. Used in \[Resources.GpuType\] as an ordered preference list — the scheduler tries each in order and pins the sandbox/snapshot to the first that has capacity. It is an alias for the API client's GpuType type.
+
+```go
+type GpuType = apiclient.GpuType
+```
+
+<a name="GpuTypeH100"></a>
+
+```go
+const (
+    GpuTypeH100       GpuType = apiclient.GPUTYPE_H100
+    GpuTypeRtxPro6000 GpuType = apiclient.GPUTYPE_RTX_PRO_6000
+)
+```
+
 <a name="ImageParams"></a>
 ## type ImageParams
 
@@ -454,10 +474,11 @@ Resources represents resource allocation for a sandbox.
 
 ```go
 type Resources struct {
-    CPU    int
-    GPU    int
-    Memory int
-    Disk   int
+    CPU     int
+    GPU     int
+    GpuType []GpuType
+    Memory  int
+    Disk    int
 }
 ```
 
