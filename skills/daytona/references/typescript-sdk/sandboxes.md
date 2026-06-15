@@ -106,7 +106,7 @@ const sandbox = await daytona.create({
 
 Daytona provides methods to create Windows sandboxes.
 
-Windows sandboxes are Windows OS runtime environments used to run Windows applications. They provide a consistent Windows baseline, so you can run Windows-specific tools and workflows in an isolated sandbox.
+Windows sandboxes are Windows OS runtime environments used to run Windows applications. Use Windows sandboxes to run Windows-specific tools and workflows on a consistent Windows baseline.
 
 Daytona provides a pre-built `windows` snapshot for creating Windows sandboxes. The snapshot uses **2 vCPU**, **8GiB** memory, and **30GiB** disk.
 
@@ -125,6 +125,100 @@ const daytona = new Daytona({
 const sandbox = await daytona.create({
   snapshot: "windows",
 });
+```
+
+### Android Sandboxes
+
+**Available in the `android` region. Contact [support@daytona.io](mailto:support@daytona.io) to request access.**
+
+Daytona provides methods to create Android sandboxes.
+
+Android sandboxes are Android emulator runtime environments used to run Android applications. Use Android sandboxes to run Android-specific tools and workflows on a consistent Android baseline.
+
+An Android setup pairs a standard Linux sandbox with one or more emulator devices:
+
+- **Base sandbox**: a standard Linux sandbox where your code runs (git, builds, POSIX tooling)
+- **Device sandbox(es)**: one or more Android emulator devices, attached as [linked sandboxes](#linked-sandboxes)
+
+Daytona provides pre-built Android snapshots for creating Android sandboxes. The snapshots use **4 vCPU**, **8GiB** memory, and **30GiB** disk.
+
+- **`android-12`**, **`android-13`**, **`android-14`**, **`android-15`**, **`android-16`**
+
+```typescript
+import { Daytona, Image } from "@daytona/sdk";
+
+const daytona = new Daytona({ target: "android" });
+
+// Base sandbox: a Linux machine with adb installed
+const base = await daytona.create({
+  image: Image.base("ubuntu:24.04").runCommands(
+    "apt-get update && apt-get install -y --no-install-recommends curl unzip ca-certificates && rm -rf /var/lib/apt/lists/*",
+    "curl -fsSL -o /tmp/pt.zip https://dl.google.com/android/repository/platform-tools-latest-linux.zip && unzip -q /tmp/pt.zip -d /opt && rm /tmp/pt.zip",
+    "ln -s /opt/platform-tools/adb /usr/local/bin/adb",
+  ),
+});
+
+// Device sandbox: an Android 16 emulator linked to the base
+const device = await daytona.create(
+  {
+    snapshot: "android-16",
+    name: "android-emulator",
+    linkedSandbox: base.id,
+    ephemeral: true,
+  },
+  { timeout: 600 },
+);
+
+// Drive the device from the base over the link network
+await base.process.executeCommand(`adb connect ${device.name}:5555`);
+const response = await base.process.executeCommand(
+  `adb -s ${device.name}:5555 shell getprop ro.build.version.release`,
+);
+```
+
+##### SSH port forwarding
+
+For connecting tools like Android Studio from your machine, tunnel through the base sandbox, not the device. In the following snippet, the device appears as `localhost:5555`:
+
+```bash
+ssh -L 5555:LINKED_SANDBOX_ID:5555 SSH_ACCESS_TOKEN@ssh.app.daytona.io
+```
+
+##### Customization rules
+
+- **Custom device snapshots**: Available on request. Device images are built by Daytona from a specification you provide. Contact [support@daytona.io](mailto:support@daytona.io) for more information.
+
+### Linked Sandboxes
+
+Daytona provides methods to create linked sandboxes.
+
+Linked sandboxes are attached to an existing parent sandbox at creation time.
+
+Create the parent sandbox first, then create one or more children whose create request references the parent's sandbox ID. This records the relationship on the child sandbox as the linked sandbox ID. Omitting the linked sandbox parameter yields an unlinked sandbox.
+
+- **Lifecycle**
+
+  Linked sandboxes are always ephemeral and cannot be persisted or resumed after stop. The [auto-delete interval](#auto-delete-interval) must be exactly `0` on create; this is enforced, not a default. The [auto-stop interval](#auto-stop-interval) sets the idle period in minutes after which the child sandbox stops. Once stopped, linked children are auto-deleted. Deleting the parent deletes all of its linked children (cascade). One parent may have many linked children (1:N).
+- **Networking**
+
+  Linked sandboxes share an internal link network. Connections work in both directions: the parent can reach each child and each child can reach the parent. Every sandbox on the link network is registered under its sandbox name and ID as DNS aliases, so either works as the host. For example: `telnet LINKED_SANDBOX_ID 5555` from the parent reaches port `5555` on the linked child sandbox.
+
+```typescript
+import { Daytona } from "@daytona/sdk";
+
+const daytona = new Daytona();
+
+const parent = await daytona.create();
+
+const child = await daytona.create({
+  linkedSandbox: parent.id,
+  ephemeral: true,
+});
+
+// The link network registers each sandbox under its name as a DNS alias
+const response = await child.process.executeCommand(
+  `curl http://${parent.name}:3000/`
+);
 ```
 
 ### Ephemeral Sandboxes
@@ -331,8 +425,8 @@ const forkedSandbox = await daytona._experimental_fork(sandbox, { name: "my-fork
 To view the fork tree for a sandbox and all its related sandboxes:
 
 1. Navigate to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
-2. Click the three-dot menu (**⋮**) next to a forked sandbox
-3. Select **View Forks**
+2. Click the three-dot menu (**⋮**) next to a sandbox
+3. Select **View Fork Tree**
 
 The fork tree displays each sandbox in the hierarchy along with its current state and creation time, allowing you to trace the lineage of any fork back to its origin.
 
@@ -354,6 +448,13 @@ await sandbox.setLabels({
 Daytona provides methods to create [snapshots](./snapshots.md) from sandboxes.
 
 A snapshot captures an immutable, point-in-time copy of a sandbox's filesystem and memory that you can use as a base to create new sandboxes, effectively templating a known-good environment for reuse. You can think of it as a checkpoint you can restore from whenever you need a clean, identical starting point.
+
+[Windows sandboxes](#windows-sandboxes) use the `includeMemory` parameter to control whether the snapshot also captures the sandbox's memory.
+
+| **Include memory** | **Snapshot contents**     | **Required sandbox state** |
+| ------------------- | ------------------------- | -------------------------- |
+| **`false`** (default)   | Filesystem only           | Stopped                    |
+| **`true`**              | Filesystem and memory     | Started                    |
 
 ```typescript
 // Create snapshot from sandbox
@@ -408,7 +509,7 @@ If omitted, the Daytona SDK will default to `python`. To override this, explicit
 
 ## Automated lifecycle management
 
-Daytona sandboxes can be automatically stopped, archived, and deleted based on user-defined intervals. You can also refresh the last activity timestamp to explicitly signal activity when lifecycle behavior depends on inactivity windows.
+Sandboxes can be automatically stopped, archived, and deleted based on user-defined intervals. The intervals act as a TTL (time-to-live) mechanism for the sandbox. You can also refresh the last activity timestamp to explicitly signal activity when lifecycle behavior depends on inactivity intervals.
 
 ### Update sandbox last activity
 

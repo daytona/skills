@@ -410,6 +410,7 @@ Schema: **CreateSandboxSnapshot**
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `name` | string | Yes | Name for the new snapshot |
+| `includeMemory` | boolean | No | Include the VM's memory in the snapshot. VM sandboxes only. When true the sandbox must be STARTED; when false (default) VM sandboxes must be STOPPED. Container sandboxes do not support memory snapshots. |
 
 ### Responses
 
