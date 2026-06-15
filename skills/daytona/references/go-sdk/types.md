@@ -36,6 +36,7 @@
 - type PtySize
 - type Resources
 - type SandboxBaseParams
+- type SandboxClass
 - type ScreenshotOptions
 - type ScreenshotRegion
 - type ScreenshotResponse
@@ -81,6 +82,7 @@ import "github.com/daytonaio/daytona/libs/sdk-go/pkg/types"
 - [type PtySize](https://www.daytona.io/docs/en<#PtySize>)
 - [type Resources](https://www.daytona.io/docs/en<#Resources>)
 - [type SandboxBaseParams](https://www.daytona.io/docs/en<#SandboxBaseParams>)
+- [type SandboxClass](https://www.daytona.io/docs/en<#SandboxClass>)
 - [type ScreenshotOptions](https://www.daytona.io/docs/en<#ScreenshotOptions>)
 - [type ScreenshotRegion](https://www.daytona.io/docs/en<#ScreenshotRegion>)
 - [type ScreenshotResponse](https://www.daytona.io/docs/en<#ScreenshotResponse>)
@@ -150,6 +152,7 @@ type CreateSnapshotParams struct {
     Resources      *Resources
     Entrypoint     []string
     SkipValidation *bool
+    SandboxClass   *SandboxClass
 }
 ```
 
@@ -511,6 +514,25 @@ type SandboxBaseParams struct {
 }
 ```
 
+<a name="SandboxClass"></a>
+## type SandboxClass
+
+SandboxClass determines which runners can host sandboxes created from a snapshot. It is an alias for the API client's SandboxClass type.
+
+```go
+type SandboxClass = apiclient.SandboxClass
+```
+
+<a name="SandboxClassLinuxVM"></a>
+
+```go
+const (
+    SandboxClassLinuxVM   SandboxClass = apiclient.SANDBOXCLASS_LINUX_VM
+    SandboxClassContainer SandboxClass = apiclient.SANDBOXCLASS_CONTAINER
+    SandboxClassAndroid   SandboxClass = apiclient.SANDBOXCLASS_ANDROID
+)
+```
+
 <a name="ScreenshotOptions"></a>
 ## type ScreenshotOptions
 
@@ -629,7 +651,7 @@ VolumeMount represents a volume mount configuration
 
 ```go
 type VolumeMount struct {
-    VolumeID  string
+    VolumeID  string // ID or name of the volume to mount
     MountPath string
     Subpath   *string // Optional subpath within the volume; nil = mount entire volume
 }

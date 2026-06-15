@@ -211,6 +211,7 @@ type CreateSnapshotParams = {
   name: string;
   regionId: string;
   resources: Resources;
+  sandboxClass: SandboxClass;
 };
 ```
 
@@ -223,6 +224,7 @@ Parameters for creating a new snapshot.
 - `name` _string_
 - `regionId?` _string_
 - `resources?` _Resources_
+- `sandboxClass?` _SandboxClass_
 
 
 ## Snapshot

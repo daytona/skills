@@ -55,6 +55,12 @@ Install the Daytona CLI to interact with Daytona sandboxes from the command line
 brew install daytonaio/cli/daytona
 ```
 
+Trust the tap once so routine `brew upgrade` keeps the Daytona CLI up to date. Recent Homebrew versions require third-party taps to be explicitly trusted; without it, a bare `brew upgrade` skips the Daytona tap and the CLI goes stale:
+
+```bash
+brew trust daytonaio/cli
+```
+
 To upgrade the Daytona CLI to the latest version:
 
 ```bash
@@ -156,7 +162,7 @@ __Flags__
 | `--snapshot` |  | Snapshot to use for the sandbox |
 | `--target` |  | Target region (eu, us) |
 | `--user` |  | User associated with the sandbox |
-| `--volume` | `-v` | Volumes to mount (format: VOLUME_NAME:MOUNT_PATH) |
+| `--volume` | `-v` | Volumes to mount (format: VOLUME_ID_OR_NAME:MOUNT_PATH) |
 | `--help` |  | help for daytona |
 
 
@@ -561,7 +567,7 @@ __Flags__
 Delete a volume
 
 ```shell
-daytona volume delete [VOLUME_ID] [flags]
+daytona volume delete [VOLUME_ID_OR_NAME] [flags]
 ```
 
 __Flags__
@@ -574,7 +580,7 @@ __Flags__
 Get volume details
 
 ```shell
-daytona volume get [VOLUME_ID] [flags]
+daytona volume get [VOLUME_ID_OR_NAME] [flags]
 ```
 
 __Flags__
