@@ -10,7 +10,7 @@
   "plugins": [
     {
       "name": "daytona",
-      "source": "./skills/daytona",
+      "source": ".",
       "description": "Creates and manages isolated cloud sandboxes (secure code execution environments with dedicated runtimes) on the Daytona platform"
     }
   ]
