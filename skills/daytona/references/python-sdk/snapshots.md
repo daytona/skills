@@ -149,7 +149,8 @@ GPU snapshots are used to create [GPU sandboxes](./sandboxes.md#gpu-sandboxes). 
 3. Enter the snapshot **`name`** and **`image`**
 4. Select **`us-east-1`** region
 5. Select the **`Allocate GPU`** checkbox
-6. Click **Create** to create a GPU snapshot
+6. Specify the **`GPU type`**: **`NVIDIA H100`** **`NVIDIA RTX PRO 6000`**
+7. Click **Create** to create a GPU snapshot
 
 ```python
 from daytona import CreateSnapshotParams, Daytona, DaytonaConfig, Image, Resources
@@ -651,15 +652,17 @@ console.log(pods.result)
 
 ## Default Snapshots
 
-When a sandbox is created with no snapshot specified, Daytona uses a default snapshot that includes `python`, `node`, their language servers, and several common pip packages. Daytona provides three default snapshot sizes:
+Daytona provides pre-built snapshots with fixed resource sizes for creating sandboxes.
 
-| **Snapshot**         | **vCPU** | **Memory** | **Storage** |
-| -------------------- | -------- | ---------- | ----------- |
-| **`daytona-small`**  | 1        | 1GiB       | 3GiB        |
-| **`daytona-medium`** | 2        | 4GiB       | 8GiB        |
-| **`daytona-large`**  | 4        | 8GiB       | 10GiB       |
+| **Snapshot**         | **vCPU** | **Memory** | **Storage** | **GPU** |
+| -------------------- | -------- | ---------- | ----------- | ------- |
+| **`daytona-small`**  | 1        | 1GiB       | 3GiB        |         |
+| **`daytona-medium`** | 2        | 4GiB       | 8GiB        |         |
+| **`daytona-large`**  | 4        | 8GiB       | 10GiB       |         |
+| **`daytona-gpu`**    | 1        | 1GiB       | 1GiB        | 1       |
+| **`windows`**        | 2        | 8GiB       | 30GiB       |         |
 
-All default snapshots are based on the `daytonaio/sandbox:<version>` image. For more information, see the [Dockerfile](https://github.com/daytonaio/daytona/blob/main/images/sandbox/Dockerfile).
+Snapshots are based on the `daytonaio/sandbox:<version>` image.
 
 ### Python packages (pip)
 

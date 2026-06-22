@@ -12,6 +12,7 @@
 - POST `/sandbox/{sandboxIdOrName}/recover`/recover}
 - POST `/sandbox/{sandboxIdOrName}/start`/start}
 - POST `/sandbox/{sandboxIdOrName}/stop`/stop}
+- POST `/sandbox/{sandboxIdOrName}/pause`/pause}
 - POST `/sandbox/{sandboxIdOrName}/resize`/resize}
 - PUT `/sandbox/{sandboxIdOrName}/labels`/labels}
 - PUT `/sandbox/{sandboxId}/state`/state}
@@ -251,7 +252,9 @@ Schema: **CreateSandbox**
 
 ## POST `/sandbox/{sandboxIdOrName}/start` {#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/start}
 
-**Start sandbox**
+**Start or resume sandbox**
+
+Starts a stopped or archived sandbox, or resumes a paused sandbox. The transition taken depends on the current sandbox state.
 
 ### Parameters
 
@@ -264,7 +267,7 @@ Schema: **CreateSandbox**
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | Sandbox has been started or is being restored from archived state | Sandbox |
+| 200 | Sandbox has been started, is being restored from archived state, or is being resumed from paused | Sandbox |
 
 ---
 
@@ -285,6 +288,25 @@ Schema: **CreateSandbox**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | Sandbox has been stopped | Sandbox |
+
+---
+
+## POST `/sandbox/{sandboxIdOrName}/pause` {#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/pause}
+
+**Pause sandbox**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes | ID or name of the sandbox |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Sandbox pause has been initiated | Sandbox |
 
 ---
 

@@ -114,8 +114,9 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `GET` | `/sandbox/{sandboxIdOrName}` | [Get sandbox details](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxIdOrName}) | [sandbox](./sandbox.md) |
 | `DELETE` | `/sandbox/{sandboxIdOrName}` | [Delete sandbox](./sandbox.md#daytona/tag/sandbox/DELETE/sandbox/{sandboxIdOrName}) | [sandbox](./sandbox.md) |
 | `POST` | `/sandbox/{sandboxIdOrName}/recover` | [Recover sandbox from error state](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/recover) | [sandbox](./sandbox.md) |
-| `POST` | `/sandbox/{sandboxIdOrName}/start` | [Start sandbox](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/start) | [sandbox](./sandbox.md) |
+| `POST` | `/sandbox/{sandboxIdOrName}/start` | [Start or resume sandbox](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/start) | [sandbox](./sandbox.md) |
 | `POST` | `/sandbox/{sandboxIdOrName}/stop` | [Stop sandbox](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/stop) | [sandbox](./sandbox.md) |
+| `POST` | `/sandbox/{sandboxIdOrName}/pause` | [Pause sandbox](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/pause) | [sandbox](./sandbox.md) |
 | `POST` | `/sandbox/{sandboxIdOrName}/resize` | [Resize sandbox resources](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/resize) | [sandbox](./sandbox.md) |
 | `PUT` | `/sandbox/{sandboxIdOrName}/labels` | [Replace sandbox labels](./sandbox.md#daytona/tag/sandbox/PUT/sandbox/{sandboxIdOrName}/labels) | [sandbox](./sandbox.md) |
 | `PUT` | `/sandbox/{sandboxId}/state` | [Update sandbox state](./sandbox.md#daytona/tag/sandbox/PUT/sandbox/{sandboxId}/state) | [sandbox](./sandbox.md) |
@@ -251,7 +252,7 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 - [preview](./preview.md) (4 endpoints) {#daytona/tag/preview}
 - [regions](./regions.md) (1 endpoints) {#daytona/tag/regions}
 - [runners](./runners.md) (11 endpoints) {#daytona/tag/runners}
-- [sandbox](./sandbox.md) (40 endpoints) {#daytona/tag/sandbox}
+- [sandbox](./sandbox.md) (41 endpoints) {#daytona/tag/sandbox}
 - [snapshots](./snapshots.md) (8 endpoints) {#daytona/tag/snapshots}
 - [toolbox](./toolbox.md) (68 endpoints) {#daytona/tag/toolbox}
 - [users](./users.md) (5 endpoints) {#daytona/tag/users}

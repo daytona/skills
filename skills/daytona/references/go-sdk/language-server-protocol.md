@@ -31,8 +31,8 @@ if err != nil {
 	log.Fatal(err)
 }
 
-// Get LSP service for Python
-lsp := sandbox.Lsp(types.LspLanguagePython, "workspace/project")
+// Create LSP server for Python
+lsp := sandbox.CreateLspServer(types.LspLanguagePython, "workspace/project")
 ```
 
 ### Supported languages
@@ -49,7 +49,7 @@ The supported languages for creating LSP servers with Daytona are defined by the
 Daytona provides methods to start LSP servers.
 
 ```go
-lsp := sandbox.Lsp(types.LspLanguagePython, "workspace/project")
+lsp := sandbox.CreateLspServer(types.LspLanguagePython, "workspace/project")
 err := lsp.Start(ctx)  // Initialize the server
 if err != nil {
 	log.Fatal(err)

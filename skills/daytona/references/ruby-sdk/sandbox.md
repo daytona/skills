@@ -964,6 +964,24 @@ The Sandbox will temporarily enter a 'snapshotting' state and return to its prev
 
 - `void`
 
+#### pause()
+
+```ruby
+def pause(timeout:)
+
+```
+
+Pauses the Sandbox, freezing all running processes.
+The Sandbox will enter a 'pausing' state and transition to 'paused' when complete.
+
+**Parameters**:
+
+- `timeout` _Numeric_ - Maximum wait time in seconds (defaults to 60 s)
+
+**Returns**:
+
+- `void`
+
 ## See Also
 - [Python SDK - sandbox](../python-sdk/sync/sandbox.md)
 - [TypeScript SDK - sandbox](../typescript-sdk/sandbox.md)
