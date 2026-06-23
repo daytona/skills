@@ -686,7 +686,7 @@ Using a Netbird setup key provides a non-interactive way to connect your Daytona
 The following snippets demonstrate connecting to a Netbird network using a setup key.
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk';
+import { Daytona } from '@daytona/sdk';
 
 // Configuration
 const DAYTONA_API_KEY = "YOUR_API_KEY";
@@ -764,7 +764,7 @@ The browser login method initiates an interactive authentication flow where Netb
 The following snippets demonstrate connecting to a Netbird network using a browser login.
 
 ```typescript
-import { Daytona } from '@daytonaio/sdk';
+import { Daytona } from '@daytona/sdk';
 
 // Configuration
 const DAYTONA_API_KEY = "YOUR_API_KEY";

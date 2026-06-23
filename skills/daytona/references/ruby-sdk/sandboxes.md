@@ -63,7 +63,8 @@ Daytona provides a pre-built `daytona-gpu` snapshot for creating GPU sandboxes. 
 2. Click **Create Sandbox**
 3. Select a GPU snapshot (**`daytona-gpu`**)
 4. Select **`us-east-1`** region
-5. Click **Create** to create a GPU sandbox
+5. Select **`ephemeral`** or set **`auto-delete interval`** to **`0`**
+6. Click **Create** to create a GPU sandbox
 
 ```ruby
 require 'daytona'
@@ -137,69 +138,6 @@ sandbox = daytona.create(
 )
 ```
 
-### Android Sandboxes
-
-**Available in the `android` region. Contact [support@daytona.io](mailto:support@daytona.io) to request access.**
-
-Daytona provides methods to create Android sandboxes.
-
-Android sandboxes are Android emulator runtime environments used to run Android applications. Use Android sandboxes to run Android-specific tools and workflows on a consistent Android baseline.
-
-An Android setup pairs a standard Linux sandbox with one or more emulator devices:
-
-- **Base sandbox**: a standard Linux sandbox where your code runs (git, builds, POSIX tooling)
-- **Device sandbox(es)**: one or more Android emulator devices, attached as [linked sandboxes](#linked-sandboxes)
-
-Daytona provides pre-built Android snapshots for creating Android sandboxes. The snapshots use **4 vCPU**, **8GiB** memory, and **30GiB** disk.
-
-- **`android-12`**, **`android-13`**, **`android-14`**, **`android-15`**, **`android-16`**
-
-```ruby
-require 'daytona'
-
-daytona = Daytona::Daytona.new(Daytona::Config.new(target: 'android'))
-
-# Base sandbox: a Linux machine with adb installed
-base = daytona.create(
-  Daytona::CreateSandboxFromImageParams.new(
-    image: Daytona::Image.base('ubuntu:24.04').run_commands(
-      'apt-get update && apt-get install -y --no-install-recommends curl unzip ca-certificates && rm -rf /var/lib/apt/lists/*',
-      'curl -fsSL -o /tmp/pt.zip https://dl.google.com/android/repository/platform-tools-latest-linux.zip && unzip -q /tmp/pt.zip -d /opt && rm /tmp/pt.zip',
-      'ln -s /opt/platform-tools/adb /usr/local/bin/adb'
-    )
-  )
-)
-
-# Device sandbox: an Android 16 emulator linked to the base
-device = daytona.create(
-  Daytona::CreateSandboxFromSnapshotParams.new(
-    snapshot: 'android-16',
-    name: 'android-emulator',
-    linked_sandbox: base.id,
-    ephemeral: true,
-    timeout: 600
-  )
-)
-
-# Drive the device from the base over the link network,
-# addressing it by the name set at creation
-base.process.exec(command: 'adb connect android-emulator:5555')
-response = base.process.exec(
-  command: 'adb -s android-emulator:5555 shell getprop ro.build.version.release'
-)
-```
-
-##### SSH port forwarding
-
-For connecting tools like Android Studio from your machine, tunnel through the base sandbox, not the device. In the following snippet, the device appears as `localhost:5555`:
-
-```bash
-ssh -L 5555:LINKED_SANDBOX_ID:5555 SSH_ACCESS_TOKEN@ssh.app.daytona.io
-```
-
-##### Customization rules
-
-- **Custom device snapshots**: Available on request. Device images are built by Daytona from a specification you provide. Contact [support@daytona.io](mailto:support@daytona.io) for more information.
 
 ### Linked Sandboxes
 
@@ -266,13 +204,15 @@ Sandboxes have **1 vCPU**, **1GB RAM**, and **3GiB disk** by default. Organizati
 
 ##### Pre-built snapshots
 
-Daytona provides pre-built [default snapshots](./snapshots.md#default-snapshots) with fixed resource sizes for creating sandboxes.
+Daytona provides [pre-built snapshots](./snapshots.md#default-snapshots) with fixed resource sizes for creating sandboxes.
 
-| **Snapshot**         | **vCPU** | **Memory** | **Storage** |
-| -------------------- | -------- | ---------- | ----------- |
-| **`daytona-small`**  | 1        | 1GiB       | 3GiB        |
-| **`daytona-medium`** | 2        | 4GiB       | 8GiB        |
-| **`daytona-large`**  | 4        | 8GiB       | 10GiB       |
+| **Snapshot**         | **vCPU** | **Memory** | **Storage** | **GPU** |
+| -------------------- | -------- | ---------- | ----------- | ------- |
+| **`daytona-small`**  | 1        | 1GiB       | 3GiB        |         |
+| **`daytona-medium`** | 2        | 4GiB       | 8GiB        |         |
+| **`daytona-large`**  | 4        | 8GiB       | 10GiB       |         |
+| **`daytona-gpu`**    | 1        | 1GiB       | 1GiB        | 1       |
+| **`windows`**        | 2        | 8GiB       | 30GiB       |         |
 
 ```ruby
 require 'daytona'

@@ -22,9 +22,9 @@ Computer Use enables programmatic control of desktop environments within sandbox
 
 Computer Use and [VNC](./vnc-access.md) work together to enable both manual and automated desktop interactions. VNC provides the visual interface for users to manually interact with the desktop, while Computer Use provides the programmatic API for AI agents to automate operations.
 
-Computer Use is available for **Linux**. **Windows** and **macOS** support is currently in private alpha.
-> **Caution: Private Alpha**
-> Computer Use for macOS and Windows is currently in private alpha and requires access. To request access, fill out the [Windows](https://docs.google.com/forms/d/e/1FAIpQLSfoK-77-VpfsMubw8F4f1opCxIL1AyJUgnM0ONYup5hZ0RTvQ/viewform?usp=dialog) or [macOS](https://docs.google.com/forms/d/e/1FAIpQLSc9xlGZ49OjWNkyzDPC9Ip3InMRR0ZXY3tcoD-PFQj3ck6gzQ/viewform?usp=sharing&ouid=103304973264148733944) access request form. Our team will review your request and reach out with setup instructions.
+Computer Use is available for **Linux** and **Windows**. **macOS** support is currently in private alpha.
+> **Note: macOS access**
+> Computer Use for macOS is currently in private alpha and requires access. To request access, fill out the [macOS access request form](https://docs.google.com/forms/d/e/1FAIpQLSc9xlGZ49OjWNkyzDPC9Ip3InMRR0ZXY3tcoD-PFQj3ck6gzQ/viewform?usp=sharing&ouid=103304973264148733944). Our team will review your request and reach out with setup instructions.
 
 - **GUI application testing**: automate interactions with native applications, click buttons, fill forms, and validate UI behavior
 - **Visual testing & screenshots**: capture screenshots of applications, compare UI states, and perform visual regression testing
@@ -344,7 +344,7 @@ Take a compressed screenshot of a specific region.
 region = Daytona::ComputerUse::ScreenshotRegion.new(x: 0, y: 0, width: 800, height: 600)
 screenshot = sandbox.computer_use.screenshot.take_compressed_region(
   region: region,
-  options: Daytona::ComputerUse::ScreenshotOptions.new(format: "webp", quality: 80, show_cursor: true)
+  options: Daytona::ComputerUse::ScreenshotOptions.new(format: "jpeg", quality: 80, show_cursor: true)
 )
 puts "Compressed size: #{screenshot.size_bytes} bytes"
 ```

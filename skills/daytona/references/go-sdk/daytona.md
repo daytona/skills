@@ -275,6 +275,7 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
 - [type Sandbox](https://www.daytona.io/docs/en<#Sandbox>)
   - [func NewSandbox\(client \*Client, toolboxClient \*toolbox.APIClient, dto sandboxDTO, language types.CodeLanguage\) \*Sandbox](https://www.daytona.io/docs/en<#NewSandbox>)
   - [func \(s \*Sandbox\) Archive\(ctx context.Context\) error](https://www.daytona.io/docs/en<#Sandbox.Archive>)
+  - [func \(s \*Sandbox\) CreateLspServer\(languageID types.LspLanguageID, pathToProject string\) \*LspServerService](https://www.daytona.io/docs/en<#Sandbox.CreateLspServer>)
   - [func \(s \*Sandbox\) Delete\(ctx context.Context\) error](https://www.daytona.io/docs/en<#Sandbox.Delete>)
   - [func \(s \*Sandbox\) DeleteWithTimeout\(ctx context.Context, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.DeleteWithTimeout>)
   - [func \(s \*Sandbox\) ExperimentalCreateSnapshot\(ctx context.Context, name string\) error](https://www.daytona.io/docs/en<#Sandbox.ExperimentalCreateSnapshot>)
@@ -286,6 +287,8 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(s \*Sandbox\) GetSignedPreviewLink\(ctx context.Context, port int, expiresInSeconds int\) \(\*types.SignedPreviewLink, error\)](https://www.daytona.io/docs/en<#Sandbox.GetSignedPreviewLink>)
   - [func \(s \*Sandbox\) GetUserHomeDir\(ctx context.Context\) \(string, error\)](https://www.daytona.io/docs/en<#Sandbox.GetUserHomeDir>)
   - [func \(s \*Sandbox\) GetWorkingDir\(ctx context.Context\) \(string, error\)](https://www.daytona.io/docs/en<#Sandbox.GetWorkingDir>)
+  - [func \(s \*Sandbox\) Pause\(ctx context.Context\) error](https://www.daytona.io/docs/en<#Sandbox.Pause>)
+  - [func \(s \*Sandbox\) PauseWithTimeout\(ctx context.Context, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.PauseWithTimeout>)
   - [func \(s \*Sandbox\) RefreshData\(ctx context.Context\) error](https://www.daytona.io/docs/en<#Sandbox.RefreshData>)
   - [func \(s \*Sandbox\) Resize\(ctx context.Context, resources \*types.Resources\) error](https://www.daytona.io/docs/en<#Sandbox.Resize>)
   - [func \(s \*Sandbox\) ResizeWithTimeout\(ctx context.Context, resources \*types.Resources, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.ResizeWithTimeout>)
@@ -2503,13 +2506,13 @@ type ListSandboxesQuery struct {
 
 LspServerService provides Language Server Protocol \(LSP\) operations for a sandbox.
 
-LspServerService enables IDE\-like features such as code completion, symbol search, and document analysis through LSP. The service manages a language server instance for a specific language and project path. Access through \[Sandbox.Lsp\].
+LspServerService enables IDE\-like features such as code completion, symbol search, and document analysis through LSP. The service manages a language server instance for a specific language and project path. Access through [Sandbox.CreateLspServer](https://www.daytona.io/docs/en<#Sandbox.CreateLspServer>).
 
 Example:
 
 ```
-// Get LSP service for Python
-lsp := sandbox.Lsp(types.LspLanguageIDPython, "/home/user/project")
+// Create an LSP server for Python
+lsp := sandbox.CreateLspServer(types.LspLanguagePython, "/home/user/project")
 
 // Start the language server
 if err := lsp.Start(ctx); err != nil {
@@ -2542,12 +2545,12 @@ func NewLspServerService(toolboxClient *toolbox.APIClient, languageID types.LspL
 
 NewLspServerService creates a new LspServerService.
 
-This is typically called internally by the SDK through \[Sandbox.Lsp\]. Users should access LspServerService through \[Sandbox.Lsp\] rather than creating it directly.
+This is typically called internally by the SDK through [Sandbox.CreateLspServer](https://www.daytona.io/docs/en<#Sandbox.CreateLspServer>). Users should obtain an LspServerService through [Sandbox.CreateLspServer](https://www.daytona.io/docs/en<#Sandbox.CreateLspServer>) rather than creating it directly.
 
 Parameters:
 
 - toolboxClient: The toolbox API client
-- languageID: The language identifier \(e.g., \[types.LspLanguageIDPython\]\)
+- languageID: The language identifier \(e.g., \[types.LspLanguagePython\]\)
 - projectPath: The root path of the project for LSP analysis
 
 <a name="LspServerService.Completions"></a>
@@ -4063,6 +4066,8 @@ Access sandbox capabilities through the service fields:
 - CodeInterpreter: Python code execution
 - ComputerUse: Desktop automation \(mouse, keyboard, screenshots\)
 
+Language Server Protocol \(LSP\) servers are created on demand via [Sandbox.CreateLspServer](https://www.daytona.io/docs/en<#Sandbox.CreateLspServer>).
+
 Example:
 
 ```
@@ -4183,6 +4188,27 @@ if err != nil {
     return err
 }
 // Sandbox is now archived and can be restored later
+```
+
+<a name="Sandbox.CreateLspServer"></a>
+### func \(\*Sandbox\) CreateLspServer
+
+```go
+func (s *Sandbox) CreateLspServer(languageID types.LspLanguageID, pathToProject string) *LspServerService
+```
+
+CreateLspServer creates a Language Server Protocol \(LSP\) server scoped to a language and project path within the sandbox.
+
+The returned [LspServerService](https://www.daytona.io/docs/en<#LspServerService>) must be started with [LspServerService.Start](https://www.daytona.io/docs/en<#LspServerService.Start>) before use, and stopped with [LspServerService.Stop](https://www.daytona.io/docs/en<#LspServerService.Stop>) when finished.
+
+Example:
+
+```
+lsp := sandbox.CreateLspServer(types.LspLanguagePython, "/home/user/project")
+if err := lsp.Start(ctx); err != nil {
+    return err
+}
+defer lsp.Stop(ctx)
 ```
 
 <a name="Sandbox.Delete"></a>
@@ -4390,6 +4416,41 @@ if err != nil {
     return err
 }
 fmt.Printf("Working directory: %s\n", workDir)
+```
+
+<a name="Sandbox.Pause"></a>
+### func \(\*Sandbox\) Pause
+
+```go
+func (s *Sandbox) Pause(ctx context.Context) error
+```
+
+Pause pauses the Sandbox, freezing all running processes. Uses a default timeout of 60 seconds.
+
+The Sandbox will enter a 'pausing' state and transition to 'paused' when complete.
+
+Example:
+
+```
+err := sandbox.Pause(ctx)
+if err != nil {
+    return err
+}
+```
+
+<a name="Sandbox.PauseWithTimeout"></a>
+### func \(\*Sandbox\) PauseWithTimeout
+
+```go
+func (s *Sandbox) PauseWithTimeout(ctx context.Context, timeout time.Duration) error
+```
+
+PauseWithTimeout pauses the Sandbox with a custom timeout. 0 means no timeout.
+
+Example:
+
+```
+err := sandbox.PauseWithTimeout(ctx, 2*time.Minute)
 ```
 
 <a name="Sandbox.RefreshData"></a>

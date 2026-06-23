@@ -1,5 +1,5 @@
 
-The Daytona Go SDK provides a powerful interface for programmatically interacting with Daytona Sandboxes.
+The Daytona Go SDK provides a powerful interface for programmatically interacting with Daytona Sandboxes. It requires Go 1.25 or later.
 
 ## Installation
 

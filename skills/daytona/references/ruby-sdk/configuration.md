@@ -1,3 +1,11 @@
+## Contents
+
+- Configuration in code
+- Environment variables
+- Default values
+- See Also
+
+
 
 
 Daytona supports multiple methods to configure your environment, in order of precedence:
@@ -63,6 +71,26 @@ Set the environment variables in a `.env` file using the following format:
 DAYTONA_API_KEY=YOUR_API_KEY
 DAYTONA_API_URL=https://your_api_url
 DAYTONA_TARGET=us
+```
+
+### Async Python SDK
+
+Daytona provides an additional `DAYTONA_HAPPY_EYEBALLS_DELAY` environment variable for HTTP transport tuning in the async Python SDK. Use it to reduce intermittent async connection failures, such as `aiohttp.ClientConnectorError`, that can occur on dual-stack (IPv4/IPv6) networks.
+
+| Variable                           | Description                                                                 | Required |
+| ---------------------------------- | --------------------------------------------------------------------------- | -------- |
+| **`DAYTONA_HAPPY_EYEBALLS_DELAY`** | Controls **`aiohttp`** Happy Eyeballs (IPv4/IPv6 connection race) delay in seconds. | No       |
+
+- unset or empty: use `aiohttp` default behavior
+- `none` (case-insensitive): disable the IPv4/IPv6 race
+- non-negative float (for example `0.25`): set an explicit delay in seconds
+
+```bash
+# Disable Happy Eyeballs
+export DAYTONA_HAPPY_EYEBALLS_DELAY=none
+
+# Or set an explicit delay in seconds
+export DAYTONA_HAPPY_EYEBALLS_DELAY=0.25
 ```
 
 ## Default values
