@@ -409,8 +409,6 @@ Upload file inside sandbox
 
 ### Request Body
 
-Schema: **uploadFile_deprecated_request**
-
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `file` | string (binary) | No |  |

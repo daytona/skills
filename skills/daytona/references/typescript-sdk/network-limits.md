@@ -4,6 +4,7 @@
 - Create sandboxes with network restrictions
 - Update network settings while a sandbox is running
 - Network allow list format
+- Domain allow list format
 - Organization configuration
 - Test network access
 - Security benefits
@@ -20,7 +21,7 @@ Daytona provides network egress limiting for sandboxes to control internet acces
 
 Network limits are automatically applied to sandboxes based on your organization's billing tier. This provides secure and controlled internet access for development environments:
 
-- **Tier 1 & Tier 2**: Network access is restricted and cannot be overridden at the sandbox level. Organization-level network restrictions take precedence over sandbox-level settings. Even with [`networkAllowList`](#create-sandboxes-with-network-restrictions) specified when creating a sandbox, the organization's network restrictions still apply
+- **Tier 1 & Tier 2**: Network access is restricted and cannot be overridden at the sandbox level. Organization-level network restrictions take precedence over sandbox-level settings. Even with [`networkAllowList`](#create-sandboxes-with-network-restrictions) or [`domainAllowList`](#create-sandboxes-with-network-restrictions) specified when creating a sandbox, the organization's network restrictions still apply
 - **Tier 3 & Tier 4**: Full internet access is available by default, with the ability to configure custom network settings
 
 > To learn more about organization tiers and limits, see [limits](../platform/limits.md).
@@ -29,7 +30,7 @@ Network limits are automatically applied to sandboxes based on your organization
 
 ## Create sandboxes with network restrictions
 
-Daytona provides methods to control network access when [creating sandboxes](./sandboxes.md#create-sandboxes) by using the `networkAllowList` and `networkBlockAll` parameters:
+Control network access when [creating sandboxes](./sandboxes.md#create-sandboxes) by using the `networkAllowList`, `domainAllowList`, and `networkBlockAll` parameters. Use `networkAllowList` for IPv4 CIDR ranges, `domainAllowList` for domains and wildcard domains, and `networkBlockAll` to block outbound network access:
 
 ```typescript
 import { Daytona } from '@daytona/sdk'
@@ -37,35 +38,41 @@ import { Daytona } from '@daytona/sdk'
 const daytona = new Daytona()
 
 // Allow access to specific IP addresses (Wikipedia, X/Twitter, private network)
-const sandbox = await daytona.create({
+const sandboxWithCidrAllowList = await daytona.create({
   networkAllowList: '208.80.154.232/32,199.16.156.103/32,192.168.1.0/24'
 })
 
+// Allow access to specific domains
+const sandboxWithDomainAllowList = await daytona.create({
+  domainAllowList: 'example.com,*.daytona.io'
+})
+
 // Or block all network access
-const sandbox = await daytona.create({
+const blockedSandbox = await daytona.create({
   networkBlockAll: true
 })
 ```
 > **Note:**
-> If both `networkBlockAll` and `networkAllowList` are specified, `networkBlockAll` takes precedence and all network access will be blocked, ignoring the allow list.
+> These options are mutually exclusive. Set at most one non-empty value among `networkAllowList`, `domainAllowList`, and `networkBlockAll: true`. Empty-string allow lists count as unset and never conflict. Sending a conflicting combination returns a `400` error.
 
 ## Update network settings while a sandbox is running
 
-Daytona provides methods to update network settings for running sandboxes. Organizations on [Tier 3 and Tier 4](#tier-based-network-restrictions) can change outbound firewall policy after the sandbox is created. The API applies the new rules on the runner and persists them on the sandbox record. The sandbox keeps running; stop or start are not required.
+Update network settings for running sandboxes. Organizations on [Tier 3 and Tier 4](#tier-based-network-restrictions) can change outbound firewall policy after the sandbox is created. The API applies the new rules on the runner and persists them on the sandbox record. The sandbox keeps running; stop or start are not required.
 
-The request must include at least one of `networkBlockAll` or `networkAllowList`. Rules match create-time behavior and use the same [allow list format](#network-allow-list-format).
+The request must include at least one of `networkBlockAll`, `networkAllowList`, or `domainAllowList`. Rules match create-time behavior and use the same [network allow list](#network-allow-list-format) and [domain allow list](#domain-allow-list-format) formats.
 
-- Sending `networkAllowList` as an empty string clears a stored allow list
-- Sending `networkBlockAll: true` blocks all outbound traffic and clears the allow list
-- Sending only `networkBlockAll: false` restores general outbound access (for your tier) and clears a stored allow list
+- Sending `networkAllowList` as an empty string clears a stored CIDR allow list
+- Sending `domainAllowList` as an empty string clears a stored domain allow list
+- Sending `networkBlockAll: true` blocks all outbound traffic and clears both the stored CIDR and domain allow lists
+- Sending only `networkBlockAll: false` removes the block-all rule and clears both the stored CIDR and domain allow lists
 
 This operation requires the `WRITE_SANDBOXES` permission. Organizations on Tier 1 or Tier 2 cannot override network policy at the sandbox level, and the API returns an error in that case.
 
 ```typescript
-// Block all outbound traffic (clears any allow list)
+// Block all outbound traffic (clears the CIDR allow list)
 await sandbox.updateNetworkSettings({ networkBlockAll: true })
 
-// Restore general outbound access and clear the allow list
+// Remove the block-all rule and clear the CIDR allow list
 await sandbox.updateNetworkSettings({ networkBlockAll: false })
 
 // Apply or replace a CIDR allow list (implies not blocking all)
@@ -73,13 +80,21 @@ await sandbox.updateNetworkSettings({
   networkAllowList: '208.80.154.232/32,192.168.1.0/24',
 })
 
-// Clear a stored allow list (empty string). Outbound traffic still follows `networkBlockAll`.
+// Apply or replace a domain allow list
+await sandbox.updateNetworkSettings({
+  domainAllowList: 'example.com,*.daytona.io',
+})
+
+// Clear a stored CIDR allow list (empty string). Outbound traffic still follows `networkBlockAll`.
 await sandbox.updateNetworkSettings({ networkAllowList: '' })
+
+// Clear a stored domain allow list
+await sandbox.updateNetworkSettings({ domainAllowList: '' })
 ```
 
 ## Network allow list format
 
-The network allow list is a comma-separated list of IPv4 CIDR blocks. Set your allowed networks using the `networkAllowList` parameter when [creating a sandbox](./sandboxes.md#create-sandboxes) or when [updating settings on a running sandbox](#update-network-settings-while-a-sandbox-is-running).
+The network allow list is a comma-separated list of IPv4 CIDR blocks. Set your allowed networks using the `networkAllowList` parameter when [creating a sandbox](./sandboxes.md#create-sandboxes) or when [updating settings on a running sandbox](#update-network-settings-while-a-sandbox-is-running). To allow hostnames or DNS domains instead, use [**`domainAllowList`**](#domain-allow-list-format).
 
 - **IPv4 only**: hostnames, domains, and IPv6 are not supported
 - **CIDR required**: every entry must include a `/` prefix length integer in the range `0` to `32` (inclusive), for example: `/32`
@@ -93,6 +108,22 @@ The following examples are valid:
 - **Subnet**: `192.168.1.0/24` (Private network)
 - **Multiple networks**: `208.80.154.232/32,199.16.156.103/32,10.0.0.0/8`
 
+## Domain allow list format
+
+The domain allow list is a comma-separated list of DNS domains. Set your allowed domains using the `domainAllowList` parameter when [creating a sandbox](./sandboxes.md#create-sandboxes) or when [updating settings on a running sandbox](#update-network-settings-while-a-sandbox-is-running). When a domain allow list is set, outbound traffic is limited to the listed domains and other external domains are blocked.
+
+- **Domains only**: use hostnames such as `example.com` or `api.openai.com`. Do not include protocols, paths, ports, or query strings
+- **Wildcards supported**: prefix a domain with `*.` to allow the base domain and its subdomains, for example `*.daytona.io`
+- **Max 20 entries**: the list cannot contain more than 20 comma-separated items
+- **Whitespace is ignored**: entries are trimmed, so spaces around commas are ok
+- **Clear on update**: send `domainAllowList` as an empty string when updating network settings to clear a stored domain allow list
+
+The following examples are valid:
+
+- **Single domain**: `example.com`
+- **Wildcard domain**: `*.daytona.io`
+- **Multiple domains**: `example.com,*.daytona.io,api.openai.com`
+
 ## Organization configuration
 
 The network access policies for your organization are set automatically depending on your organization's limits tier and cannot be modified by organization administrators. These policies determine the default network behavior for all sandboxes in your organization.
@@ -104,6 +135,9 @@ To test network connectivity from your sandbox:
 ```bash
 # Test HTTP connectivity to allowed addresses
 curl -I https://208.80.154.232
+
+# Test HTTP connectivity to allowed domains
+curl -I https://example.com
 
 # Test package manager access (allowed on all tiers)
 apt update  # For Ubuntu/Debian
@@ -120,7 +154,7 @@ Network limits provide several security advantages:
 - **Complies with security policies** for development environments
 - **Enables fine-grained control** over network access
 > **Caution:**
-> Enabling unrestricted network access may pose security risks when executing untrusted code. It is recommended to whitelist specific network addresses using `networkAllowList` or block all network access using `networkBlockAll` instead.
+> Enabling unrestricted network access may pose security risks when executing untrusted code. It is recommended to allow only the network addresses or domains you need using `networkAllowList` or `domainAllowList`, or block all network access using `networkBlockAll`.
 >
 > Test network connectivity before starting critical development work and consider upgrading your tier if you need access to many external services.
 
@@ -236,7 +270,7 @@ Daytona provides a list of essential services that are available on all tiers an
 If you encounter network access issues or need unrestricted network access:
 
 1. Verify your [organization tier](../platform/limits.md#tiers) in the [Daytona Dashboard ↗](https://app.daytona.io/dashboard/limits)
-2. Verify your [network allow list](#network-allow-list-format) configuration
+2. Verify your [network allow list](#network-allow-list-format) and [domain allow list](#domain-allow-list-format) configuration
 3. Contact [support@daytona.io](mailto:support@daytona.io) for assistance
 
 ## See Also

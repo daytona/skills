@@ -10,6 +10,7 @@
 - type Chart
 - type CodeLanguage
 - type CodeRunParams
+- type CreateSecretParams
 - type CreateSnapshotParams
 - type DaytonaConfig
 - type ExecuteResponse
@@ -40,14 +41,16 @@
 - type ScreenshotOptions
 - type ScreenshotRegion
 - type ScreenshotResponse
+- type Secret
 - type SignedPreviewLink
 - type Snapshot
 - type SnapshotParams
+- type UpdateSecretParams
 - type Volume
 - type VolumeMount
 
 ```go
-import "github.com/daytonaio/daytona/libs/sdk-go/pkg/types"
+import "github.com/daytona/clients/sdk-go/pkg/types"
 ```
 
 ## Index
@@ -56,6 +59,7 @@ import "github.com/daytonaio/daytona/libs/sdk-go/pkg/types"
 - [type Chart](https://www.daytona.io/docs/en<#Chart>)
 - [type CodeLanguage](https://www.daytona.io/docs/en<#CodeLanguage>)
 - [type CodeRunParams](https://www.daytona.io/docs/en<#CodeRunParams>)
+- [type CreateSecretParams](https://www.daytona.io/docs/en<#CreateSecretParams>)
 - [type CreateSnapshotParams](https://www.daytona.io/docs/en<#CreateSnapshotParams>)
 - [type DaytonaConfig](https://www.daytona.io/docs/en<#DaytonaConfig>)
 - [type ExecuteResponse](https://www.daytona.io/docs/en<#ExecuteResponse>)
@@ -86,9 +90,11 @@ import "github.com/daytonaio/daytona/libs/sdk-go/pkg/types"
 - [type ScreenshotOptions](https://www.daytona.io/docs/en<#ScreenshotOptions>)
 - [type ScreenshotRegion](https://www.daytona.io/docs/en<#ScreenshotRegion>)
 - [type ScreenshotResponse](https://www.daytona.io/docs/en<#ScreenshotResponse>)
+- [type Secret](https://www.daytona.io/docs/en<#Secret>)
 - [type SignedPreviewLink](https://www.daytona.io/docs/en<#SignedPreviewLink>)
 - [type Snapshot](https://www.daytona.io/docs/en<#Snapshot>)
 - [type SnapshotParams](https://www.daytona.io/docs/en<#SnapshotParams>)
+- [type UpdateSecretParams](https://www.daytona.io/docs/en<#UpdateSecretParams>)
 - [type Volume](https://www.daytona.io/docs/en<#Volume>)
 - [type VolumeMount](https://www.daytona.io/docs/en<#VolumeMount>)
 
@@ -137,6 +143,26 @@ CodeRunParams represents parameters for code execution
 type CodeRunParams struct {
     Argv []string
     Env  map[string]string
+}
+```
+
+<a name="CreateSecretParams"></a>
+## type CreateSecretParams
+
+CreateSecretParams contains parameters for creating a secret.
+
+```go
+type CreateSecretParams struct {
+    // Name is the secret name. It must match ^[a-zA-Z_][a-zA-Z0-9_-]*$ and be
+    // unique within the organization (a duplicate name returns a 409 conflict).
+    Name string
+    // Value is the plaintext secret value. It is write-only and never returned.
+    Value string
+    // Description is an optional human-readable description.
+    Description *string
+    // Hosts are the allowed hosts this secret may be sent to. Entries are exact
+    // hostnames or "*." wildcards (without ports).
+    Hosts []string
 }
 ```
 
@@ -502,9 +528,16 @@ type SandboxBaseParams struct {
     AutoArchiveInterval *int // nil = no auto-archive, 0 = immediate archive
     AutoDeleteInterval  *int // nil = no auto-delete, 0 = immediate delete
     Volumes             []VolumeMount
-    NetworkBlockAll     bool
-    NetworkAllowList    *string
-    Ephemeral           bool
+    // Secrets maps an environment variable name to the name of an existing
+    // organization secret. For each entry, the env var is injected into the
+    // sandbox holding the secret's opaque placeholder, which is resolved to the
+    // real value only when the sandbox connects to one of the secret's allowed
+    // hosts. The referenced secrets must already exist (see [Client.Secret]).
+    Secrets          map[string]string
+    NetworkBlockAll  bool
+    NetworkAllowList *string
+    DomainAllowList  *string
+    Ephemeral        bool
     // LinkedSandbox is the ID or name of an existing sandbox to link the new sandbox to.
     // The new sandbox will be scheduled on the same runner as the linked sandbox so a local
     // network can be established between them.
@@ -573,6 +606,28 @@ type ScreenshotResponse struct {
 }
 ```
 
+<a name="Secret"></a>
+## type Secret
+
+Secret represents an organization\-scoped secret.
+
+A Secret stores a write\-only plaintext value that is never returned by the API. When referenced from a sandbox, the env var holds the opaque \[Secret.Placeholder\] token, which is resolved to the real value only for the secret's allowed \[Secret.Hosts\].
+
+```go
+type Secret struct {
+    ID          string  `json:"id"`
+    Name        string  `json:"name"`
+    Description *string `json:"description,omitempty"`
+    // Placeholder is the opaque token injected as the env var value in sandboxes.
+    Placeholder string `json:"placeholder"`
+    // Hosts are the allowed hosts this secret may be sent to. Entries are exact
+    // hostnames or "*." wildcards (without ports).
+    Hosts     []string  `json:"hosts"`
+    CreatedAt time.Time `json:"createdAt"`
+    UpdatedAt time.Time `json:"updatedAt"`
+}
+```
+
 <a name="SignedPreviewLink"></a>
 ## type SignedPreviewLink
 
@@ -623,6 +678,23 @@ SnapshotParams represents parameters for creating a sandbox from a snapshot
 type SnapshotParams struct {
     SandboxBaseParams
     Snapshot string
+}
+```
+
+<a name="UpdateSecretParams"></a>
+## type UpdateSecretParams
+
+UpdateSecretParams contains parameters for updating a secret. Only the non\-nil fields are applied.
+
+```go
+type UpdateSecretParams struct {
+    // Value is the new plaintext secret value. It is write-only and never returned.
+    Value *string
+    // Description is an optional human-readable description.
+    Description *string
+    // Hosts are the allowed hosts this secret may be sent to. Entries are exact
+    // hostnames or "*." wildcards (without ports).
+    Hosts []string
 }
 ```
 

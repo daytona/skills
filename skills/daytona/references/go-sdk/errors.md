@@ -21,7 +21,7 @@
 - See Also
 
 ```go
-import "github.com/daytonaio/daytona/libs/sdk-go/pkg/errors"
+import "github.com/daytona/clients/sdk-go/pkg/errors"
 ```
 
 ## Index

@@ -1,6 +1,6 @@
 
 
-Sandboxes are isolated runtime environments that run on [runners](../platform/runners.md) — machines that form Daytona's compute plane.
+Sandboxes are isolated runtime environments that run on [runners](https://www.daytona.io/docs/en/bring-your-own-compute) — machines that form Daytona's compute plane.
 
 Runners are organized into **regions**, which are geographic or logical groupings of compute infrastructure. When creating a sandbox, you can target a specific region, and Daytona will schedule your workload on an available runner within that region.
 
@@ -48,4 +48,4 @@ Custom regions are created and managed by your organization, allowing you to use
 
 Additionally, custom regions have no limits applied for concurrent resource usage, giving you full control over capacity and performance.
 
-For more information, see the [runners](../platform/runners.md) guide.
+For more information, see the [bring your own compute (BYOC)](https://www.daytona.io/docs/en/bring-your-own-compute) guide.

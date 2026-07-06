@@ -5,6 +5,7 @@
 - Stage changes
 - Commit changes
 - Remote operations
+- Advanced operations
 - See Also
 
 
@@ -16,13 +17,11 @@ Daytona provides built-in Git support through the `git` module in sandboxes.
 
 Daytona provides methods to clone, check status, and manage Git repositories in sandboxes.
 
-Similar to [file system operations](./file-system-operations.md), the starting cloning directory is the current sandbox working directory. It uses the WORKDIR specified in the Dockerfile if present, or falls back to the user's home directory if not - e.g. `workspace/repo` implies `/my-work-dir/workspace/repo`, but you are free to provide an absolute `workDir` path as well (by starting the path with `/`).
+Git operations assume you are operating in the sandbox user's home directory (e.g. `workspace` implies `/home/[username]/workspace`). Use a leading `/` when providing absolute paths.
 
 ### Clone repositories
 
-Daytona provides methods to clone Git repositories into sandboxes. You can clone public or private repositories, specific branches, and authenticate using personal access tokens.
-
-Clones verify the remote's TLS certificate by default. For clones against internal Git servers that use self-signed or private-CA certificates, pass `insecure_skip_tls=true` (`insecureSkipTls: true` in TypeScript / Java). The bypass is per-request and disables TLS verification for that clone only; credentials, if supplied, are transmitted over an unverified TLS connection and are exposed to any MITM on the route. Prefer adding the server's CA to the sandbox base image's trust store when possible.
+Clone a Git repository into a sandbox by providing the URL and path to clone it to. You can clone public or private repositories, specific branches or commits, and authenticate using personal access tokens.
 
 ```go
 // Basic clone
@@ -48,6 +47,14 @@ if err != nil {
 	log.Fatal(err)
 }
 
+// Clone a specific commit (detached HEAD)
+err = sandbox.Git.Clone(ctx, "https://github.com/user/repo.git", "workspace/repo-old",
+	options.WithCommitId("abc123def456"),
+)
+if err != nil {
+	log.Fatal(err)
+}
+
 // Clone from a self-signed internal Git server (insecure)
 err = sandbox.Git.Clone(ctx, "https://internal-git.example.com/org/repo.git", "workspace/repo",
 	options.WithInsecureSkipTLS(true),
@@ -59,7 +66,9 @@ if err != nil {
 
 ### Get repository status
 
-Daytona provides methods to check the status of Git repositories in sandboxes. You can get the current branch, modified files, number of commits ahead and behind main branch.
+Get the status of a Git repository by providing the path to the repository.
+
+You can get the current branch, modified files, and the number of commits ahead and behind the upstream tracking branch. When no upstream is configured, `ahead` and `behind` are zero and `branch_published` is false. The response also includes `upstream` (for example `origin/main`) and `detached` when HEAD is not on a branch.
 
 ```go
 // Get repository status
@@ -86,11 +95,11 @@ for _, branch := range branches {
 
 ## Branch operations
 
-Daytona provides methods to manage branches in Git repositories. You can create, switch, and delete branches.
+Daytona provides methods to manage branches in Git repositories. You can create, switch, and delete branches. Checkout accepts a branch name or a commit SHA.
 
 ### Create branches
 
-Daytona provides methods to create branches in Git repositories. The following snippet creates a new branch called `new-feature`.
+Create a new branch by providing the path to the repository and the name of the new branch.
 
 ```go
 // Create a new branch
@@ -100,9 +109,9 @@ if err != nil {
 }
 ```
 
-### Checkout branches
+### Checkout branches or commits
 
-Daytona provides methods to checkout branches in Git repositories. The following snippet checks out the branch called `feature-branch`.
+Checkout a branch or commit by providing the path to the repository and the name of the branch or commit SHA. Pass a commit SHA to enter detached HEAD state.
 
 ```go
 // Checkout a branch
@@ -110,11 +119,17 @@ err := sandbox.Git.Checkout(ctx, "workspace/repo", "feature-branch")
 if err != nil {
 	log.Fatal(err)
 }
+
+// Checkout a commit (detached HEAD)
+err = sandbox.Git.Checkout(ctx, "workspace/repo", "abc123def456")
+if err != nil {
+	log.Fatal(err)
+}
 ```
 
 ### Delete branches
 
-Daytona provides methods to delete branches in Git repositories. The following snippet deletes the branch called `old-feature`.
+Delete a branch by providing the path to the repository and the name of the branch.
 
 ```go
 // Delete a branch
@@ -122,11 +137,19 @@ err := sandbox.Git.DeleteBranch(ctx, "workspace/repo", "old-feature")
 if err != nil {
 	log.Fatal(err)
 }
+
+// Force delete an unmerged branch
+err = sandbox.Git.DeleteBranch(ctx, "workspace/repo", "old-feature",
+	options.WithForce(true),
+)
+if err != nil {
+	log.Fatal(err)
+}
 ```
 
 ## Stage changes
 
-Daytona provides methods to stage changes in Git repositories. You can stage specific files, all changes, and commit with a message. The following snippet stages the file `file.txt` and the `src` directory.
+Stage specific files, all changes, or the whole repository by providing the path to the repository and the files to stage.
 
 ```go
 // Stage a single file
@@ -154,7 +177,7 @@ if err != nil {
 
 ## Commit changes
 
-Daytona provides methods to commit changes in Git repositories. You can commit with a message, author, and email. The following snippet commits the changes with the message `Update documentation` and the author `John Doe` and email `john@example.com`.
+Commit changes by providing the path to the repository, the message, author, and email.
 
 ```go
 // Stage and commit changes
@@ -181,7 +204,7 @@ Daytona provides methods to work with remote repositories in Git. You can push a
 
 ### Push changes
 
-Daytona provides methods to push changes to remote repositories. The following snippet pushes the changes to a public repository.
+Push changes to a remote repository by providing the path to the repository and the username and password to authenticate.
 
 ```go
 // Push without authentication (for public repos or SSH)
@@ -202,7 +225,7 @@ if err != nil {
 
 ### Pull changes
 
-Daytona provides methods to pull changes from remote repositories. The following snippet pulls the changes from a public repository.
+Pull changes from a remote repository by providing the path to the repository and the username and password to authenticate.
 
 ```go
 // Pull without authentication
@@ -219,6 +242,150 @@ err = sandbox.Git.Pull(ctx, "workspace/repo",
 if err != nil {
 	log.Fatal(err)
 }
+```
+
+## Advanced operations
+
+Daytona provides additional Git operations through the [Toolbox API](../api/README.md#daytona-toolbox).
+
+### Initialize a repository
+
+Initialize a new Git repository by providing the path to the repository and the name of the first branch. Set `bare` to create a repository without a working tree.
+
+**API:**
+
+```bash
+curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/git/init' \
+  --request POST \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "bare": false,
+  "initial_branch": "main",
+  "path": "workspace/repo"
+}'
+```
+
+### Reset changes
+
+Reset the current HEAD to the specified state by providing the path to the repository, the mode and the target revision to reset to. Pass `files` to constrain the reset to specific paths.
+
+**API:**
+
+```bash
+curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/git/reset' \
+  --request POST \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "files": [],
+  "mode": "mixed",
+  "path": "workspace/repo",
+  "target": "HEAD~1"
+}'
+```
+
+### Restore files
+
+Restore working tree files or unstage changes by providing the path to the repository, the files to restore, the source revision, and whether to restore from the staged index or working tree.
+
+**API:**
+
+```bash
+curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/git/restore' \
+  --request POST \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "files": ["src/main.py"],
+  "path": "workspace/repo",
+  "source": "",
+  "staged": false,
+  "worktree": true
+}'
+```
+
+### Get commit history
+
+Return the commit log for a repository.
+
+**API:**
+
+```bash
+curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/git/history?path=workspace/repo'
+```
+
+### Manage remotes
+
+List configured remotes or add (and optionally overwrite) a remote by providing the path to the repository, the name of the remote, the URL of the remote, and whether to fetch from the remote immediately after adding it.
+
+**API:**
+
+```bash
+# List remotes
+curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/git/remotes?path=workspace/repo'
+
+# Add a remote
+curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/git/remotes' \
+  --request POST \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "fetch": false,
+  "name": "origin",
+  "overwrite": false,
+  "path": "workspace/repo",
+  "url": "https://github.com/user/repo.git"
+}'
+```
+
+### Configure Git
+
+Read or write Git config values, or set the user name and email at a given scope by providing the path to the repository, the key to get or set, and the value to set.
+
+Scope: `global` (default), `local`, or `system`.
+
+**API:**
+
+```bash
+# Get a config value
+curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/git/config?key=user.name&scope=global'
+
+# Set a config value
+curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/git/config' \
+  --request POST \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "key": "core.editor",
+  "path": "",
+  "scope": "global",
+  "value": "vim"
+}'
+
+# Configure user name and email
+curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/git/config/user' \
+  --request POST \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "email": "john@example.com",
+  "name": "John Doe",
+  "path": "",
+  "scope": "global"
+}'
+```
+
+### Authenticate credentials
+
+Persist Git credentials globally via the credential store by providing the host, protocol, username, and password. Credentials are stored in plaintext on disk.
+
+**API:**
+
+```bash
+curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/git/credentials' \
+  --request POST \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "host": "github.com",
+  "password": "personal_access_token",
+  "protocol": "https",
+  "username": "git"
+}'
 ```
 
 ## See Also

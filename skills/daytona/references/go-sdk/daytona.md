@@ -36,6 +36,7 @@
 - type SandboxListSortField
 - type SandboxState
 - type ScreenshotService
+- type SecretService
 - type SnapshotService
 - type UploadProgress
 - type UploadStreamOption
@@ -43,7 +44,7 @@
 - See Also
 
 ```go
-import "github.com/daytonaio/daytona/libs/sdk-go/pkg/daytona"
+import "github.com/daytona/clients/sdk-go/pkg/daytona"
 ```
 
 Package daytona provides a Go SDK for interacting with the Daytona platform.
@@ -314,6 +315,13 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func NewScreenshotService\(toolboxClient \*toolbox.APIClient, otel \*otelState\) \*ScreenshotService](https://www.daytona.io/docs/en<#NewScreenshotService>)
   - [func \(s \*ScreenshotService\) TakeFullScreen\(ctx context.Context, showCursor \*bool\) \(\*types.ScreenshotResponse, error\)](https://www.daytona.io/docs/en<#ScreenshotService.TakeFullScreen>)
   - [func \(s \*ScreenshotService\) TakeRegion\(ctx context.Context, region types.ScreenshotRegion, showCursor \*bool\) \(\*types.ScreenshotResponse, error\)](https://www.daytona.io/docs/en<#ScreenshotService.TakeRegion>)
+- [type SecretService](https://www.daytona.io/docs/en<#SecretService>)
+  - [func NewSecretService\(client \*Client\) \*SecretService](https://www.daytona.io/docs/en<#NewSecretService>)
+  - [func \(s \*SecretService\) Create\(ctx context.Context, params \*types.CreateSecretParams\) \(\*types.Secret, error\)](https://www.daytona.io/docs/en<#SecretService.Create>)
+  - [func \(s \*SecretService\) Delete\(ctx context.Context, secretID string\) error](https://www.daytona.io/docs/en<#SecretService.Delete>)
+  - [func \(s \*SecretService\) Get\(ctx context.Context, secretID string\) \(\*types.Secret, error\)](https://www.daytona.io/docs/en<#SecretService.Get>)
+  - [func \(s \*SecretService\) List\(ctx context.Context\) \(\[\]\*types.Secret, error\)](<#SecretService.List>)
+  - [func \(s \*SecretService\) Update\(ctx context.Context, secretID string, params \*types.UpdateSecretParams\) \(\*types.Secret, error\)](https://www.daytona.io/docs/en<#SecretService.Update>)
 - [type SnapshotService](https://www.daytona.io/docs/en<#SnapshotService>)
   - [func NewSnapshotService\(client \*Client\) \*SnapshotService](https://www.daytona.io/docs/en<#NewSnapshotService>)
   - [func \(s \*SnapshotService\) Create\(ctx context.Context, params \*types.CreateSnapshotParams\) \(\*types.Snapshot, \<\-chan string, error\)](https://www.daytona.io/docs/en<#SnapshotService.Create>)
@@ -524,6 +532,9 @@ type Client struct {
 
     // Snapshot provides methods for managing sandbox snapshots.
     Snapshot *SnapshotService
+
+    // Secret provides methods for managing organization secrets.
+    Secret *SecretService
     // contains filtered or unexported fields
 }
 ```
@@ -4147,6 +4158,10 @@ type Sandbox struct {
     // Not populated by [Client.List]; call [Sandbox.RefreshData] on each item to populate.
     NetworkAllowList *string
 
+    // DomainAllowList is a comma-separated list of allowed domains.
+    // Not populated by [Client.List]; call [Sandbox.RefreshData] on each item to populate.
+    DomainAllowList *string
+
     FileSystem      *FileSystemService      // File system operations
     Git             *GitService             // Git operations
     Process         *ProcessService         // Process and PTY operations
@@ -4462,7 +4477,7 @@ func (s *Sandbox) RefreshData(ctx context.Context) error
 
 RefreshData refreshes the sandbox data from the API.
 
-This updates all sandbox fields from the server, including those not populated by [Client.List](https://www.daytona.io/docs/en<#Client.List>) \(Env, NetworkBlockAll, NetworkAllowList, Volumes, BuildInfo, BackupCreatedAt\).
+This updates all sandbox fields from the server, including those not populated by [Client.List](https://www.daytona.io/docs/en<#Client.List>) \(Env, NetworkBlockAll, NetworkAllowList, DomainAllowList, Volumes, BuildInfo, BackupCreatedAt\).
 
 Example:
 
@@ -4875,6 +4890,188 @@ if err != nil {
 ```
 
 Returns \[types.ScreenshotResponse\] with the captured image.
+
+<a name="SecretService"></a>
+## type SecretService
+
+SecretService provides organization\-scoped secret management operations.
+
+SecretService enables creating, listing, retrieving, updating, and deleting secrets. A secret stores a write\-only plaintext value that is never returned by the API. Secrets can be referenced when creating a sandbox \(see the Secrets field on \[types.SandboxBaseParams\]\); the env var injected into the sandbox holds the secret's opaque placeholder, which is resolved to the real value only for the secret's allowed hosts. Access through \[Client.Secret\].
+
+Example:
+
+```
+// Create a new secret
+secret, err := client.Secret.Create(ctx, &types.CreateSecretParams{
+    Name:  "anthropic-prod",
+    Value: "sk-ant-...",
+    Hosts: []string{"api.anthropic.com"},
+})
+if err != nil {
+    return err
+}
+
+// List all secrets
+secrets, err := client.Secret.List(ctx)
+```
+
+```go
+type SecretService struct {
+    // contains filtered or unexported fields
+}
+```
+
+<a name="NewSecretService"></a>
+### func NewSecretService
+
+```go
+func NewSecretService(client *Client) *SecretService
+```
+
+NewSecretService creates a new SecretService.
+
+This is typically called internally by the SDK when creating a [Client](https://www.daytona.io/docs/en<#Client>). Users should access SecretService through \[Client.Secret\] rather than creating it directly.
+
+<a name="SecretService.Create"></a>
+### func \(\*SecretService\) Create
+
+```go
+func (s *SecretService) Create(ctx context.Context, params *types.CreateSecretParams) (*types.Secret, error)
+```
+
+Create creates a new organization secret.
+
+The plaintext value is write\-only and is never returned. The name must match ^\[a\-zA\-Z\_\]\[a\-zA\-Z0\-9\_\-\]\*$ and be unique within the organization; a duplicate name returns a conflict error.
+
+Parameters:
+
+- params: Secret creation parameters including name, value, optional description, and allowed hosts
+
+Example:
+
+```
+secret, err := client.Secret.Create(ctx, &types.CreateSecretParams{
+    Name:  "anthropic-prod",
+    Value: "sk-ant-...",
+    Hosts: []string{"api.anthropic.com"},
+})
+if err != nil {
+    return err
+}
+```
+
+Returns the created \[types.Secret\] or an error.
+
+<a name="SecretService.Delete"></a>
+### func \(\*SecretService\) Delete
+
+```go
+func (s *SecretService) Delete(ctx context.Context, secretID string) error
+```
+
+Delete permanently removes a secret identified by its ID.
+
+This operation is irreversible.
+
+Parameters:
+
+- secretID: The secret ID
+
+Example:
+
+```
+err := client.Secret.Delete(ctx, secretID)
+if err != nil {
+    return err
+}
+```
+
+Returns an error if the ID is unknown \(404\) or deletion fails.
+
+<a name="SecretService.Get"></a>
+### func \(\*SecretService\) Get
+
+```go
+func (s *SecretService) Get(ctx context.Context, secretID string) (*types.Secret, error)
+```
+
+Get retrieves a secret by its ID.
+
+Parameters:
+
+- secretID: The secret ID
+
+Example:
+
+```
+secret, err := client.Secret.Get(ctx, secretID)
+if err != nil {
+    var notFound *errors.DaytonaNotFoundError
+    if errors.As(err, &notFound) {
+        log.Println("Secret not found")
+    }
+    return err
+}
+fmt.Printf("Secret %s allows hosts: %v\n", secret.Name, secret.Hosts)
+```
+
+Returns the \[types.Secret\] or an error if the ID is unknown \(404\).
+
+<a name="SecretService.List"></a>
+### func \(\*SecretService\) List
+
+```go
+func (s *SecretService) List(ctx context.Context) ([]*types.Secret, error)
+```
+
+List returns all secrets in the organization.
+
+The plaintext value is never returned; each secret carries only its opaque placeholder.
+
+Example:
+
+```
+secrets, err := client.Secret.List(ctx)
+if err != nil {
+    return err
+}
+for _, secret := range secrets {
+    fmt.Printf("Secret %s -> %s\n", secret.Name, secret.Placeholder)
+}
+```
+
+Returns a slice of \[types.Secret\] or an error if the request fails.
+
+<a name="SecretService.Update"></a>
+### func \(\*SecretService\) Update
+
+```go
+func (s *SecretService) Update(ctx context.Context, secretID string, params *types.UpdateSecretParams) (*types.Secret, error)
+```
+
+Update modifies an existing secret identified by its ID.
+
+Only the non\-nil fields of params are applied. The plaintext value is write\-only and is never returned.
+
+Parameters:
+
+- secretID: The secret ID
+- params: Fields to update \(value, description, allowed hosts\)
+
+Example:
+
+```
+newValue := "sk-ant-rotated-..."
+secret, err := client.Secret.Update(ctx, secretID, &types.UpdateSecretParams{
+    Value: &newValue,
+    Hosts: []string{"api.anthropic.com", "*.anthropic.com"},
+})
+if err != nil {
+    return err
+}
+```
+
+Returns the updated \[types.Secret\] or an error if the ID is unknown \(404\).
 
 <a name="SnapshotService"></a>
 ## type SnapshotService

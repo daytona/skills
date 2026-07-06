@@ -1,21 +1,20 @@
 
-Daytona supports linking user accounts from various identity providers. At the moment, the following providers are supported:
+Daytona supports linking user accounts from identity providers.
 
 - Google
 - GitHub
-> **Tip:**
-> GitHub account is one of the requirements to automatically [upgrade your organization to **Tier 2**](./limits.md#tiers).
 
 ## Link account
-1. Navigate to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/user/account-settings) account settings.
-2. Click the **Link Account** button next to the provider you want to link.
-3. Follow the prompts to link your account.
+
+1. Go to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/user/account-settings) account settings
+2. Click the **Link Account** button next to the provider you want to link
+3. Follow the prompts to link your account
 
 ## Unlink account
 
-1. Navigate to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/user/account-settings) account settings.
-2. Click the **Unlink** button next to the provider you want to unlink.
-3. Follow the prompts to unlink your account.
+1. Go to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/user/account-settings) account settings
+2. Click the **Unlink** button next to the provider you want to unlink
+3. Follow the prompts to unlink your account
 
 ## See Also
 

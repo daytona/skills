@@ -10,7 +10,7 @@ File operations assume you are operating in the sandbox user's home directory (e
 
 ### List files and directories
 
-Daytona provides methods to list files and directories in a sandbox by providing the path to the directory. If the path is not provided, the method will list the files and directories in the sandbox working directory.
+List files and directories in a sandbox by providing the path to the directory.
 
 ```python
 # List files in a directory
@@ -25,7 +25,7 @@ for file in files:
 
 ### Get directory or file information
 
-Daytona provides methods to get directory or file information such as group, directory, modified time, mode, name, owner, permissions, and size by providing the path to the directory or file.
+Get directory or file information by providing the path to the directory or file.
 
 ```python
 # Get file metadata
@@ -42,7 +42,7 @@ if info.is_dir:
 
 ### Create directories
 
-Daytona provides methods to create directories by providing the path to the directory and the permissions to set on the directory.
+Create a directory by providing the path and permissions to set on the directory.
 
 ```python
 # Create with specific permissions
@@ -55,18 +55,20 @@ Daytona provides methods to upload a single or multiple files in sandboxes.
 
 #### Upload a single file
 
-Daytona provides methods to upload a single file in sandboxes by providing the content to upload and the path to the file to upload it to.
+Upload a single file by providing the content to upload and the path to the file to upload it to.
 
 ```python
-# Upload a single file
-with open("local_file.txt", "rb") as f:
-    content = f.read()
+# Upload from memory (small files)
+content = b"Hello, World!"
 sandbox.fs.upload_file(content, "remote_file.txt")
+
+# Upload from a local file path (streams large files)
+sandbox.fs.upload_file("local_file.txt", "remote_file.txt")
 ```
 
 #### Upload multiple files
 
-Daytona provides methods to upload multiple files in sandboxes by providing the content to upload and their destination paths.
+Upload multiple files by providing the content to upload and their destination paths.
 
 ```python
 # Upload multiple files at once
@@ -93,13 +95,22 @@ with open("settings.json", "rb") as f3:
 sandbox.fs.upload_files(files_to_upload)
 ```
 
+#### Stream uploads
+
+For large files, use streaming upload methods to avoid loading the entire file into memory.
+
+```python
+with open("large_dataset.csv", "rb") as f:
+    sandbox.fs.upload_file_stream(f, "workspace/dataset.csv")
+```
+
 ### Download files
 
 Daytona provides methods to download files from sandboxes.
 
 #### Download a single file
 
-Daytona provides methods to download a single file from sandboxes by providing the path to the file to download.
+Download a single file by providing the path to the file to download.
 
 ```python
 from daytona import DaytonaNotFoundError
@@ -113,13 +124,14 @@ else:
         f.write(content)
 
     print(content.decode("utf-8"))
-```
 
-In the Python and TypeScript SDKs, `download_file` and `downloadFile` raise typed Daytona exceptions when the daemon returns structured per-file error metadata. Missing files map to not-found errors, invalid paths such as directories map to validation errors, and permission failures map to authorization errors.
+# Stream a large file to disk without loading it into memory
+sandbox.fs.download_file("workspace/large-file.bin", "local_copy.bin")
+```
 
 #### Download multiple files
 
-Daytona provides methods to download multiple files from sandboxes by providing the paths to the files to download.
+Download multiple files by providing the paths to the files to download.
 
 ```python
 # Download multiple files at once
@@ -142,28 +154,36 @@ for result in results:
         print(f"Downloaded {result.source} to {result.result}")
 ```
 
-Bulk downloads keep the existing `error` string for compatibility and now also include structured metadata on each failed item:
+#### Stream downloads
 
-- Python: `result.error_details.message`, `result.error_details.status_code`, `result.error_details.error_code`
-- TypeScript: `result.errorDetails.message`, `result.errorDetails.statusCode`, `result.errorDetails.errorCode`
+For large files, use streaming download methods to avoid loading the entire file into memory.
 
-The toolbox bulk-download API returns successful files as multipart `file` parts and per-file failures as multipart `error` parts with JSON payloads containing `message`, `statusCode`, and `code`.
+```python
+with open("local_copy.bin", "wb") as f:
+    for chunk in sandbox.fs.download_file_stream("workspace/large-file.bin"):
+        f.write(chunk)
+```
 
 ### Delete files
 
-Daytona provides methods to delete files or directories from sandboxes by providing the path to the file or directory to delete.
+Delete a file or directory by providing the path to the file or directory to delete.
+
+Pass `recursive: true` to delete a directory recursively.
 
 ```python
 sandbox.fs.delete_file("workspace/file.txt")
+
+# Delete a directory recursively
+sandbox.fs.delete_file("workspace/old_dir", recursive=True)
 ```
 
 ## Advanced operations
 
-Daytona provides advanced file system operations such as file permissions, search and replace, and move files.
+Daytona provides advanced file system operations such as file permissions, search by file name, content search and replace, and move files.
 
 ### File permissions
 
-Daytona provides methods to set file permissions, ownership, and group for a file or directory by providing the path to the file or directory and the permissions to set.
+Set file permissions, ownership, and group for a file or directory by providing the path to the file or directory and the permissions to set.
 
 ```python
 # Set file permissions
@@ -174,9 +194,19 @@ file_info = sandbox.fs.get_file_info("workspace/file.txt")
 print(f"Permissions: {file_info.permissions}")
 ```
 
+### Search files by pattern
+
+Search for files and directories by name using glob patterns (for example `*.py`). This is distinct from `find_files` / `findFiles`, which searches file contents.
+
+```python
+result = sandbox.fs.search_files("workspace", "*.py")
+for file in result.files:
+    print(file)
+```
+
 ### Find and replace text in files
 
-Daytona provides methods to find and replace text in files by providing the path to the directory to search in and the pattern to search for.
+Find and replace text in files by providing the path to the directory to search in and the pattern to search for.
 
 ```python
 # Search for text in files by providing the path to the directory to search in and the pattern to search for
@@ -200,7 +230,7 @@ sandbox.fs.replace_in_files(
 
 ### Move or rename directory or file
 
-Daytona provides methods to move or rename a directory or file in sandboxes by providing the path to the file or directory (source) and the new path to the file or directory (destination).
+Move or rename a directory or file by providing the path to the file or directory (source) and the new path to the file or directory (destination).
 
 ```python
 # Rename a file

@@ -239,6 +239,7 @@ Schema: **UpdateOrganizationQuota**
 | `snapshotQuota` | number | Yes |  |
 | `maxSnapshotSize` | number | Yes |  |
 | `volumeQuota` | number | Yes |  |
+| `secretQuota` | number | Yes |  |
 | `authenticatedRateLimit` | number | Yes |  |
 | `sandboxCreateRateLimit` | number | Yes |  |
 | `sandboxLifecycleRateLimit` | number | Yes |  |
@@ -246,6 +247,7 @@ Schema: **UpdateOrganizationQuota**
 | `sandboxCreateRateLimitTtlSeconds` | number | Yes |  |
 | `sandboxLifecycleRateLimitTtlSeconds` | number | Yes |  |
 | `snapshotDeactivationTimeoutMinutes` | number | Yes | Time in minutes before an unused snapshot is deactivated |
+| `maxConcurrentSnapshotProcessing` | number | Yes | Maximum number of snapshots an organization can process (building or pulling) concurrently. Excess are queued. <= 0 means unlimited. |
 
 ### Responses
 
@@ -412,6 +414,7 @@ Schema: **OtelConfig**
 |-------|------|----------|-------------|
 | `endpoint` | string | Yes | Endpoint |
 | `headers` | object | No | Headers |
+| `organizationId` | string | No | Organization ID the config belongs to |
 
 ### Responses
 

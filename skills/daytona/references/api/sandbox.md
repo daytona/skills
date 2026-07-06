@@ -40,6 +40,7 @@
 - GET `/sandbox/{sandboxId}/toolbox-proxy-url`/toolbox-proxy-url}
 - GET `/sandbox/{sandboxId}/organization`/organization}
 - GET `/sandbox/{sandboxId}/region-quota`/region-quota}
+- GET `/sandbox/{sandboxId}/secrets`/secrets}
 - GET `/sandbox/{sandboxId}/telemetry/logs`/telemetry/logs}
 - GET `/sandbox/{sandboxId}/telemetry/traces`/telemetry/traces}
 - GET `/sandbox/{sandboxId}/telemetry/traces/{traceId}`/telemetry/traces/{traceId}}
@@ -113,6 +114,7 @@ Schema: **CreateSandbox**
 | `public` | boolean | No | Whether the sandbox http preview is publicly accessible |
 | `networkBlockAll` | boolean | No | Whether to block all network access for the sandbox |
 | `networkAllowList` | string | No | Comma-separated list of allowed CIDR network addresses for the sandbox |
+| `domainAllowList` | string | No | Comma-separated list of allowed domains for the sandbox |
 | `target` | string | No | The target (region) where the sandbox will be created |
 | `cpu` | integer | No | CPU cores allocated to the sandbox |
 | `gpu` | integer | No | GPU units allocated to the sandbox |
@@ -125,6 +127,7 @@ Schema: **CreateSandbox**
 | `volumes` | array of [SandboxVolume](#schema-sandboxvolume) | No | Array of volumes to attach to the sandbox |
 | `buildInfo` | object | No | Build information for the sandbox |
 | `linkedSandbox` | string | No | ID or name of an existing sandbox to link the new sandbox to. The new sandbox will be scheduled on the same runner as the linked sandbox so a local network can be established between them. Linked sandboxes must be ephemeral (autoDeleteInterval=0) and cannot themselves be linked to another sandbox. |
+| `secrets` | array of object | No | Secrets to mount in this sandbox. Each entry maps an env var name to a vault secret name. |
 
 ### Responses
 
@@ -647,6 +650,7 @@ Schema: **UpdateSandboxNetworkSettings**
 |-------|------|----------|-------------|
 | `networkBlockAll` | boolean | No | Whether to block all network access for the sandbox |
 | `networkAllowList` | string | No | Comma-separated list of allowed CIDR network addresses for the sandbox |
+| `domainAllowList` | string | No | Comma-separated list of allowed domains for the sandbox |
 
 ### Responses
 
@@ -891,6 +895,25 @@ This endpoint is deprecated. Use `getBuildLogsUrl` instead.
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | Region quota | RegionQuota |
+
+---
+
+## GET `/sandbox/{sandboxId}/secrets` {#daytona/tag/sandbox/GET/sandbox/{sandboxId}/secrets}
+
+**Resolve sandbox secrets**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxId` | path | string | Yes | Sandbox ID |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Decrypted secret key-value pairs for this sandbox | array |
 
 ---
 

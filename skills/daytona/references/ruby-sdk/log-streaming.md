@@ -15,8 +15,8 @@ Real-time streaming is especially useful for **debugging**, **monitoring**, or i
 - [**Fetching log snapshot**](#retrieve-all-existing-logs): retrieve all logs up to a certain point.
 
 This guide covers how to use log streaming with callbacks and fetching log snapshots in both asynchronous and synchronous modes.
-> **Note:**
-> Starting with version `0.27.0`, you can retrieve session command logs in two distinct streams: **stdout** and **stderr**.
+
+For entrypoint log streaming, see [Process & Code Execution](./process-code-execution.md#entrypoint-session). To stream logs while sending input to a running command, see [Execute interactive commands](./process-code-execution.md#execute-interactive-commands).
 
 ## Stream logs with callbacks
 
@@ -28,6 +28,8 @@ This is ideal for:
 - Continuous monitoring
 - Debugging long-running jobs
 - Live log forwarding or visualizations
+> **Tip: Python callbacks**
+> When streaming with the Python SDK, avoid blocking operations inside stdout/stderr callbacks. Blocking synchronous callbacks can cause WebSocket disconnections. Use async callbacks where possible.
 
 ```ruby
 require 'daytona'
@@ -39,18 +41,18 @@ session_id = 'streaming-session'
 sandbox.process.create_session(session_id)
 
 command = sandbox.process.execute_session_command(
-  session_id,
-  Daytona::SessionExecuteRequest.new(
+  session_id: session_id,
+  req: Daytona::SessionExecuteRequest.new(
     command: 'for i in {1..5}; do echo "Step $i"; echo "Error $i" >&2; sleep 1; done',
-    var_async: true
+    run_async: true
   )
 )
 
 # Stream logs using a thread
 log_thread = Thread.new do
-  sandbox.process.get_session_command_logs_stream(
-    session_id,
-    command.cmd_id,
+  sandbox.process.get_session_command_logs_async(
+    session_id: session_id,
+    command_id: command.cmd_id,
     on_stdout: ->(stdout) { puts "[STDOUT]: #{stdout}" },
     on_stderr: ->(stderr) { puts "[STDERR]: #{stderr}" }
   )
@@ -81,8 +83,8 @@ sandbox.process.create_session(session_id)
 
 # Execute a blocking command and wait for the result
 command = sandbox.process.execute_session_command(
-  session_id,
-  Daytona::SessionExecuteRequest.new(
+  session_id: session_id,
+  req: Daytona::SessionExecuteRequest.new(
     command: 'echo "Hello from stdout" && echo "Hello from stderr" >&2'
   )
 )
@@ -92,15 +94,18 @@ puts "[OUTPUT]: #{command.output}"
 
 # Or execute command in the background and get the logs later
 command = sandbox.process.execute_session_command(
-  session_id,
-  Daytona::SessionExecuteRequest.new(
+  session_id: session_id,
+  req: Daytona::SessionExecuteRequest.new(
     command: 'while true; do if (( RANDOM % 2 )); then echo "All good at $(date)"; else echo "Oops, an error at $(date)" >&2; fi; sleep 1; done',
-    var_async: true
+    run_async: true
   )
 )
 sleep(5)
 # Get the logs up to the current point in time
-logs = sandbox.process.get_session_command_logs(session_id, command.cmd_id)
+logs = sandbox.process.get_session_command_logs(
+  session_id: session_id,
+  command_id: command.cmd_id
+)
 puts "[STDOUT]: #{logs.stdout}"
 puts "[STDERR]: #{logs.stderr}"
 puts "[OUTPUT]: #{logs.output}"

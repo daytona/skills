@@ -26,6 +26,7 @@ It can be initialized either with explicit configuration or using environment va
 
 - `volume` _VolumeService_ - Service for managing volumes.
 - `snapshot` _SnapshotService_ - Service for managing snapshots.
+- `secret` _SecretService_ - Service for managing secrets.
 
 
 **Example**:
@@ -427,8 +428,14 @@ Base parameters for creating a new Sandbox.
   automatically be deleted. By default, auto-delete is disabled.
   Negative value means disabled, 0 means delete immediately upon stopping.
 - `volumes` _list[VolumeMount] | None_ - List of volumes mounts to attach to the Sandbox.
+- `secrets` _dict[str, str] | None_ - Map of environment variable name to the name of an existing
+  organization Secret to mount into the Sandbox. The env var is set to the Secret's opaque
+  placeholder, not the plaintext; the real value is substituted transparently on outbound
+  requests to the Secret's allowed hosts. Every referenced Secret name must already exist
+  in the organization.
 - `network_block_all` _bool | None_ - Whether to block all network access for the Sandbox.
 - `network_allow_list` _str | None_ - Comma-separated list of allowed CIDR network addresses for the Sandbox.
+- `domain_allow_list` _str | None_ - Comma-separated list of allowed domains for the Sandbox.
 - `ephemeral` _bool | None_ - Whether the Sandbox should be ephemeral.
   If True, auto_delete_interval will be set to 0.
 - `linked_sandbox` _str | None_ - ID or name of an existing Sandbox to link the new Sandbox to. The new

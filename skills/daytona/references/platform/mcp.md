@@ -6,7 +6,6 @@
 - Configure MCP server
 - Start MCP server
 - Available tools
-- Troubleshooting
 - See Also
 
 
@@ -42,7 +41,7 @@ daytona login
 
 ## Initialize MCP server
 
-Daytona provides methods to initialize the MCP server with your preferred AI agent. Supported agents include Claude, Cursor, and Windsurf.
+Initialize the MCP server with your preferred AI agent. Supported agents include Claude, Cursor, and Windsurf.
 
 **CLI:**
 
@@ -61,7 +60,7 @@ After initialization, open your AI agent application to begin using Daytona feat
 
 ## Configure MCP server
 
-Daytona provides methods to generate MCP configuration for integration with other AI agents.
+Generate MCP configuration for integration with other AI agents.
 
 **CLI:**
 
@@ -95,7 +94,7 @@ This command outputs a JSON configuration that you can copy into your agent's se
 
 ## Start MCP server
 
-Daytona provides methods to manually start the MCP server.
+Manually start the MCP server.
 
 **CLI:**
 
@@ -105,7 +104,7 @@ daytona mcp start
 
 ## Available tools
 
-Daytona MCP server provides the following tools for interacting with Daytona Sandboxes:
+MCP server provides the following tools for interacting with Daytona Sandboxes:
 
 - [Sandbox management](../python-sdk/sandboxes.md)
 - [File system operations](../python-sdk/file-system-operations.md)
@@ -113,16 +112,6 @@ Daytona MCP server provides the following tools for interacting with Daytona San
 - [Process and code execution](../python-sdk/process-code-execution.md)
 - [Computer use](../python-sdk/computer-use-guide.md)
 - [Preview](../python-sdk/preview.md)
-
-## Troubleshooting
-
-To troubleshoot issues with the Daytona MCP server, try the following:
-
-- **Authentication issues**: run `daytona login` to refresh credentials
-- **Connection errors**: verify MCP server configuration, check server status
-- **Sandbox errors**: use `daytona list` to check sandbox status
-
-If the issue persists, contact [support@daytona.io](mailto:support@daytona.io).
 
 ## See Also
 

@@ -22,6 +22,7 @@ Can be initialized either with explicit configuration or using environment varia
 
 **Properties**:
 
+- `secret` _SecretService_ - Service for managing Daytona Secrets
 - `snapshot` _SnapshotService_ - Service for managing Daytona Snapshots
 - `volume` _VolumeService_ - Service for managing Daytona Volumes
 
@@ -388,6 +389,7 @@ Base parameters for creating a new Sandbox.
 - `autoArchiveInterval?` _number_ - Auto-archive interval in minutes (0 means the maximum interval will be used). Default is 7 days.
 - `autoDeleteInterval?` _number_ - Auto-delete interval in minutes (negative value means disabled, 0 means delete immediately upon stopping). By default, auto-delete is disabled.
 - `autoStopInterval?` _number_ - Auto-stop interval in minutes (0 means disabled). Default is 15 minutes.
+- `domainAllowList?` _string_ - Comma-separated list of allowed domains for the Sandbox
 - `envVars?` _Record\<string, string\>_ - Optional environment variables to set in the Sandbox
 - `ephemeral?` _boolean_ - Whether the Sandbox should be ephemeral. If true, autoDeleteInterval will be set to 0.
 - `labels?` _Record\<string, string\>_ - Sandbox labels
@@ -397,6 +399,7 @@ Base parameters for creating a new Sandbox.
 - `networkAllowList?` _string_ - Comma-separated list of allowed CIDR network addresses for the Sandbox
 - `networkBlockAll?` _boolean_ - Whether to block all network access for the Sandbox
 - `public?` _boolean_ - Is the Sandbox port preview public
+- `secrets?` _Record\<string, string\>_ - Optional map of environment variable name to the name of an existing organization Secret to mount into the Sandbox. The env var is set to the Secret's opaque placeholder; the real value is substituted transparently on outbound requests to the Secret's allowed hosts. Every referenced Secret name must already exist in the organization.
 - `user?` _string_ - Optional os user to use for the Sandbox
 - `volumes?` _VolumeMount\[\]_ - Optional array of volumes to mount to the Sandbox
 ## CreateSandboxFromImageParams
@@ -408,6 +411,7 @@ Parameters for creating a new Sandbox.
 - `autoArchiveInterval?` _number_
 - `autoDeleteInterval?` _number_
 - `autoStopInterval?` _number_
+- `domainAllowList?` _string_
 - `envVars?` _Record\<string, string\>_
 - `ephemeral?` _boolean_
 - `image` _string \| Image_ - Custom Docker image to use for the Sandbox. If an Image object is provided,
@@ -421,6 +425,7 @@ Parameters for creating a new Sandbox.
 - `public?` _boolean_
 - `resources?` _Resources_ - Resource allocation for the Sandbox. If not provided, sandbox will
     have default resources.
+- `secrets?` _Record\<string, string\>_
 - `user?` _string_
 - `volumes?` _VolumeMount\[\]_
 ## CreateSandboxFromSnapshotParams
@@ -432,6 +437,7 @@ Parameters for creating a new Sandbox from a snapshot.
 - `autoArchiveInterval?` _number_
 - `autoDeleteInterval?` _number_
 - `autoStopInterval?` _number_
+- `domainAllowList?` _string_
 - `envVars?` _Record\<string, string\>_
 - `ephemeral?` _boolean_
 - `labels?` _Record\<string, string\>_
@@ -441,6 +447,7 @@ Parameters for creating a new Sandbox from a snapshot.
 - `networkAllowList?` _string_
 - `networkBlockAll?` _boolean_
 - `public?` _boolean_
+- `secrets?` _Record\<string, string\>_
 - `snapshot?` _string_ - Name of the snapshot to use for the Sandbox.
 - `user?` _string_
 - `volumes?` _VolumeMount\[\]_

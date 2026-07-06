@@ -43,31 +43,21 @@
 
 Search the AT-SPI tree for nodes matching a role/name/state filter and return a flat list.
 
-### Request Body
+### Parameters
 
-Find request
-
-Schema: **FindAccessibilityNodesRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `limit` | integer | No |  |
-| `name` | string | No |  |
-| `nameMatch` | string | No | "exact" \| "substring" \| "regex" |
-| `pid` | integer | No |  |
-| `role` | string | No |  |
-| `scope` | string | No |  |
-| `states` | array of string | No |  |
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `request` | body | string | Yes | Find request |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | AccessibilityNodesResponse |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-| 503 | Service Unavailable | object |
+| 200 | OK |  |
+| 400 | Bad Request |  |
+| 404 | Not Found |  |
+| 500 | Internal Server Error |  |
+| 503 | Service Unavailable |  |
 
 ---
 
@@ -77,25 +67,21 @@ Schema: **FindAccessibilityNodesRequest**
 
 Move keyboard focus to the AT-SPI node identified by id (bus-name:object-path).
 
-### Request Body
+### Parameters
 
-Node focus request
-
-Schema: **AccessibilityNodeRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `id` | string | Yes |  |
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `request` | body | string | Yes | Node focus request |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | Empty |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-| 503 | Service Unavailable | object |
+| 200 | OK |  |
+| 400 | Bad Request |  |
+| 404 | Not Found |  |
+| 500 | Internal Server Error |  |
+| 503 | Service Unavailable |  |
 
 ---
 
@@ -105,26 +91,21 @@ Schema: **AccessibilityNodeRequest**
 
 Call an AT-SPI Action on the node. Leave action empty to invoke the node's primary (first) action.
 
-### Request Body
+### Parameters
 
-Invoke request
-
-Schema: **AccessibilityInvokeRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `action` | string | No |  |
-| `id` | string | Yes |  |
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `request` | body | string | Yes | Invoke request |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | Empty |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-| 503 | Service Unavailable | object |
+| 200 | OK |  |
+| 400 | Bad Request |  |
+| 404 | Not Found |  |
+| 500 | Internal Server Error |  |
+| 503 | Service Unavailable |  |
 
 ---
 
@@ -134,26 +115,21 @@ Schema: **AccessibilityInvokeRequest**
 
 Write the given value to the node via EditableText.SetTextContents or, for numeric controls, Value.CurrentValue.
 
-### Request Body
+### Parameters
 
-Set value request
-
-Schema: **AccessibilitySetValueRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `id` | string | Yes |  |
-| `value` | string | No |  |
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `request` | body | string | Yes | Set value request |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | Empty |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-| 503 | Service Unavailable | object |
+| 200 | OK |  |
+| 400 | Bad Request |  |
+| 404 | Not Found |  |
+| 500 | Internal Server Error |  |
+| 503 | Service Unavailable |  |
 
 ---
 
@@ -168,18 +144,18 @@ Fetch the AT-SPI accessibility tree for the focused application, a specific PID,
 | Name | In | Type | Required | Description |
 |------|-----|------|----------|-------------|
 | `scope` | query | string | No | Scope: focused \| pid \| all (default: focused) |
-| `pid` | query | integer | No | Process ID when scope=pid |
-| `maxDepth` | query | integer | No | Max tree depth (-1 unbounded, 0 root only; default -1) |
+| `pid` | query | string | No | Process ID when scope=pid |
+| `maxDepth` | query | string | No | Max tree depth (-1 unbounded, 0 root only; default -1) |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | AccessibilityTreeResponse |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-| 503 | Service Unavailable | object |
+| 200 | OK |  |
+| 400 | Bad Request |  |
+| 404 | Not Found |  |
+| 500 | Internal Server Error |  |
+| 503 | Service Unavailable |  |
 
 ---
 
@@ -193,7 +169,7 @@ Get information about all available displays
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | DisplayInfoResponse |
+| 200 | OK |  |
 
 ---
 
@@ -207,7 +183,7 @@ Get information about all open windows
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | WindowsResponse |
+| 200 | OK |  |
 
 ---
 
@@ -217,21 +193,17 @@ Get information about all open windows
 
 Press a hotkey combination (e.g., ctrl+c, cmd+v)
 
-### Request Body
+### Parameters
 
-Hotkey press request
-
-Schema: **KeyboardHotkeyRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `keys` | string | No | e.g., "ctrl+c", "cmd+v" |
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `request` | body | string | Yes | Hotkey press request |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | Empty |
+| 200 | OK |  |
 
 ---
 
@@ -241,22 +213,17 @@ Schema: **KeyboardHotkeyRequest**
 
 Press a key with optional modifiers
 
-### Request Body
+### Parameters
 
-Key press request
-
-Schema: **KeyboardPressRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `key` | string | No |  |
-| `modifiers` | array of string | No | ctrl, alt, shift, cmd |
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `request` | body | string | Yes | Key press request |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | Empty |
+| 200 | OK |  |
 
 ---
 
@@ -266,22 +233,17 @@ Schema: **KeyboardPressRequest**
 
 Type text with optional delay between keystrokes
 
-### Request Body
+### Parameters
 
-Text typing request
-
-Schema: **KeyboardTypeRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `delay` | integer | No | milliseconds between keystrokes |
-| `text` | string | No |  |
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `request` | body | string | Yes | Text typing request |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | Empty |
+| 200 | OK |  |
 
 ---
 
@@ -291,24 +253,17 @@ Schema: **KeyboardTypeRequest**
 
 Click the mouse button at the specified coordinates
 
-### Request Body
+### Parameters
 
-Mouse click request
-
-Schema: **MouseClickRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `button` | string | No | left, right, middle |
-| `double` | boolean | No |  |
-| `x` | integer | No |  |
-| `y` | integer | No |  |
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `request` | body | string | Yes | Mouse click request |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | MouseClickResponse |
+| 200 | OK |  |
 
 ---
 
@@ -318,25 +273,17 @@ Schema: **MouseClickRequest**
 
 Drag the mouse from start to end coordinates
 
-### Request Body
+### Parameters
 
-Mouse drag request
-
-Schema: **MouseDragRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `button` | string | No |  |
-| `endX` | integer | No |  |
-| `endY` | integer | No |  |
-| `startX` | integer | No |  |
-| `startY` | integer | No |  |
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `request` | body | string | Yes | Mouse drag request |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | MouseDragResponse |
+| 200 | OK |  |
 
 ---
 
@@ -346,22 +293,17 @@ Schema: **MouseDragRequest**
 
 Move the mouse cursor to the specified coordinates
 
-### Request Body
+### Parameters
 
-Mouse move request
-
-Schema: **MouseMoveRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `x` | integer | No |  |
-| `y` | integer | No |  |
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `request` | body | string | Yes | Mouse move request |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | MousePositionResponse |
+| 200 | OK |  |
 
 ---
 
@@ -375,7 +317,7 @@ Get the current mouse cursor position
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | MousePositionResponse |
+| 200 | OK |  |
 
 ---
 
@@ -385,24 +327,17 @@ Get the current mouse cursor position
 
 Scroll the mouse wheel at the specified coordinates
 
-### Request Body
+### Parameters
 
-Mouse scroll request
-
-Schema: **MouseScrollRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `amount` | integer | No |  |
-| `direction` | string | No | up, down |
-| `x` | integer | No |  |
-| `y` | integer | No |  |
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `request` | body | string | Yes | Mouse scroll request |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | ScrollResponse |
+| 200 | OK |  |
 
 ---
 
@@ -416,7 +351,7 @@ Get the status of all computer use processes
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | ComputerUseStatusResponse |
+| 200 | OK |  |
 
 ---
 
@@ -436,7 +371,7 @@ Get errors for a specific computer use process
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | ProcessErrorsResponse |
+| 200 | OK |  |
 
 ---
 
@@ -456,7 +391,7 @@ Get logs for a specific computer use process
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | ProcessLogsResponse |
+| 200 | OK |  |
 
 ---
 
@@ -476,7 +411,7 @@ Restart a specific computer use process
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | ProcessRestartResponse |
+| 200 | OK |  |
 
 ---
 
@@ -496,7 +431,7 @@ Check if a specific computer use process is running
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | ProcessStatusResponse |
+| 200 | OK |  |
 
 ---
 
@@ -510,8 +445,8 @@ Get a list of all recordings (active and completed)
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | ListRecordingsResponse |
-| 500 | Internal Server Error | object |
+| 200 | OK |  |
+| 500 | Internal Server Error |  |
 
 ---
 
@@ -521,23 +456,19 @@ Get a list of all recordings (active and completed)
 
 Start a new screen recording session
 
-### Request Body
+### Parameters
 
-Recording options
-
-Schema: **StartRecordingRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `label` | string | No |  |
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `request` | body | string | No | Recording options |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 201 | Created | Recording |
-| 400 | Bad Request | object |
-| 500 | Internal Server Error | object |
+| 201 | Created |  |
+| 400 | Bad Request |  |
+| 500 | Internal Server Error |  |
 
 ---
 
@@ -547,23 +478,19 @@ Schema: **StartRecordingRequest**
 
 Stop an active screen recording session
 
-### Request Body
+### Parameters
 
-Recording ID to stop
-
-Schema: **StopRecordingRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `id` | string | Yes |  |
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `request` | body | string | Yes | Recording ID to stop |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | Recording |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
+| 200 | OK |  |
+| 400 | Bad Request |  |
+| 404 | Not Found |  |
 
 ---
 
@@ -583,9 +510,9 @@ Get details of a specific recording by ID
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | Recording |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
+| 200 | OK |  |
+| 404 | Not Found |  |
+| 500 | Internal Server Error |  |
 
 ---
 
@@ -606,9 +533,9 @@ Delete a recording file by ID
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 204 | No Content |  |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
+| 400 | Bad Request |  |
+| 404 | Not Found |  |
+| 500 | Internal Server Error |  |
 
 ---
 
@@ -628,9 +555,9 @@ Download a recording by providing its ID
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | string |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
+| 200 | OK |  |
+| 404 | Not Found |  |
+| 500 | Internal Server Error |  |
 
 ---
 
@@ -644,13 +571,13 @@ Take a screenshot of the entire screen
 
 | Name | In | Type | Required | Description |
 |------|-----|------|----------|-------------|
-| `showCursor` | query | boolean | No | Whether to show cursor in screenshot |
+| `showCursor` | query | string | No | Whether to show cursor in screenshot |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | ScreenshotResponse |
+| 200 | OK |  |
 
 ---
 
@@ -664,16 +591,16 @@ Take a compressed screenshot of the entire screen
 
 | Name | In | Type | Required | Description |
 |------|-----|------|----------|-------------|
-| `showCursor` | query | boolean | No | Whether to show cursor in screenshot |
+| `showCursor` | query | string | No | Whether to show cursor in screenshot |
 | `format` | query | string | No | Image format (png or jpeg) |
-| `quality` | query | integer | No | JPEG quality (1-100) |
-| `scale` | query | number | No | Scale factor (0.1-1.0) |
+| `quality` | query | string | No | JPEG quality (1-100) |
+| `scale` | query | string | No | Scale factor (0.1-1.0) |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | ScreenshotResponse |
+| 200 | OK |  |
 
 ---
 
@@ -687,17 +614,17 @@ Take a screenshot of a specific region of the screen
 
 | Name | In | Type | Required | Description |
 |------|-----|------|----------|-------------|
-| `x` | query | integer | Yes | X coordinate of the region |
-| `y` | query | integer | Yes | Y coordinate of the region |
-| `width` | query | integer | Yes | Width of the region |
-| `height` | query | integer | Yes | Height of the region |
-| `showCursor` | query | boolean | No | Whether to show cursor in screenshot |
+| `x` | query | string | Yes | X coordinate of the region |
+| `y` | query | string | Yes | Y coordinate of the region |
+| `width` | query | string | Yes | Width of the region |
+| `height` | query | string | Yes | Height of the region |
+| `showCursor` | query | string | No | Whether to show cursor in screenshot |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | ScreenshotResponse |
+| 200 | OK |  |
 
 ---
 
@@ -711,20 +638,20 @@ Take a compressed screenshot of a specific region of the screen
 
 | Name | In | Type | Required | Description |
 |------|-----|------|----------|-------------|
-| `x` | query | integer | Yes | X coordinate of the region |
-| `y` | query | integer | Yes | Y coordinate of the region |
-| `width` | query | integer | Yes | Width of the region |
-| `height` | query | integer | Yes | Height of the region |
-| `showCursor` | query | boolean | No | Whether to show cursor in screenshot |
+| `x` | query | string | Yes | X coordinate of the region |
+| `y` | query | string | Yes | Y coordinate of the region |
+| `width` | query | string | Yes | Width of the region |
+| `height` | query | string | Yes | Height of the region |
+| `showCursor` | query | string | No | Whether to show cursor in screenshot |
 | `format` | query | string | No | Image format (png or jpeg) |
-| `quality` | query | integer | No | JPEG quality (1-100) |
-| `scale` | query | number | No | Scale factor (0.1-1.0) |
+| `quality` | query | string | No | JPEG quality (1-100) |
+| `scale` | query | string | No | Scale factor (0.1-1.0) |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | ScreenshotResponse |
+| 200 | OK |  |
 
 ---
 
@@ -738,7 +665,7 @@ Start all computer use processes and return their status
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | ComputerUseStartResponse |
+| 200 | OK |  |
 
 ---
 
@@ -752,7 +679,7 @@ Get the current status of the computer use system
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | ComputerUseStatusResponse |
+| 200 | OK |  |
 
 ---
 
@@ -766,6 +693,6 @@ Stop all computer use processes and return their status
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | ComputerUseStopResponse |
+| 200 | OK |  |
 
 ---

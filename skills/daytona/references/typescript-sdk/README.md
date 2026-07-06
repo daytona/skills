@@ -60,7 +60,7 @@ const daytona = new Daytona({
 });
 ```
 
-For more information on configuring the Daytona SDK, see [configuration](./configuration.md).
+For more information on configuring the Daytona SDK, see [API keys](../../SKILL.md#authentication#authentication).
 
 ## Multiple runtime support
 

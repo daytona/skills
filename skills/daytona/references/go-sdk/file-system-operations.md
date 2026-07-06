@@ -17,7 +17,7 @@ File operations assume you are operating in the sandbox user's home directory (e
 
 ### List files and directories
 
-Daytona provides methods to list files and directories in a sandbox by providing the path to the directory. If the path is not provided, the method will list the files and directories in the sandbox working directory.
+List files and directories in a sandbox by providing the path to the directory.
 
 ```go
 // List files in a directory
@@ -36,7 +36,7 @@ for _, file := range files {
 
 ### Get directory or file information
 
-Daytona provides methods to get directory or file information such as group, directory, modified time, mode, name, owner, permissions, and size by providing the path to the directory or file.
+Get directory or file information by providing the path to the directory or file.
 
 ```go
 // Get file metadata
@@ -60,7 +60,7 @@ if info.IsDirectory {
 
 ### Create directories
 
-Daytona provides methods to create directories by providing the path to the directory and the permissions to set on the directory.
+Create a directory by providing the path and permissions to set on the directory.
 
 ```go
 // Create with specific permissions
@@ -78,7 +78,7 @@ Daytona provides methods to upload a single or multiple files in sandboxes.
 
 #### Upload a single file
 
-Daytona provides methods to upload a single file in sandboxes by providing the content to upload and the path to the file to upload it to.
+Upload a single file by providing the content to upload and the path to the file to upload it to.
 
 ```go
 // Upload from a local file path
@@ -97,7 +97,7 @@ if err != nil {
 
 #### Upload multiple files
 
-Daytona provides methods to upload multiple files in sandboxes by providing the content to upload and their destination paths.
+Upload multiple files by providing the content to upload and their destination paths.
 
 ```go
 // Upload multiple files by calling UploadFile for each
@@ -118,13 +118,30 @@ for _, f := range filesToUpload {
 }
 ```
 
+#### Stream uploads
+
+For large files, use streaming upload methods to avoid loading the entire file into memory.
+
+```go
+f, err := os.Open("large_dataset.csv")
+if err != nil {
+	log.Fatal(err)
+}
+defer f.Close()
+
+err = sandbox.FileSystem.UploadFileStream(ctx, f, "workspace/dataset.csv")
+if err != nil {
+	log.Fatal(err)
+}
+```
+
 ### Download files
 
 Daytona provides methods to download files from sandboxes.
 
 #### Download a single file
 
-Daytona provides methods to download a single file from sandboxes by providing the path to the file to download.
+Download a single file by providing the path to the file to download.
 
 ```go
 // Download and get contents in memory
@@ -142,11 +159,9 @@ if err != nil {
 }
 ```
 
-In the Python and TypeScript SDKs, `download_file` and `downloadFile` raise typed Daytona exceptions when the daemon returns structured per-file error metadata. Missing files map to not-found errors, invalid paths such as directories map to validation errors, and permission failures map to authorization errors.
-
 #### Download multiple files
 
-Daytona provides methods to download multiple files from sandboxes by providing the paths to the files to download.
+Download multiple files by providing the paths to the files to download.
 
 ```go
 // Download multiple files by calling DownloadFile for each
@@ -172,16 +187,34 @@ for _, f := range filesToDownload {
 }
 ```
 
-Bulk downloads keep the existing `error` string for compatibility and now also include structured metadata on each failed item:
+#### Stream downloads
 
-- Python: `result.error_details.message`, `result.error_details.status_code`, `result.error_details.error_code`
-- TypeScript: `result.errorDetails.message`, `result.errorDetails.statusCode`, `result.errorDetails.errorCode`
+For large files, use streaming download methods to avoid loading the entire file into memory.
 
-The toolbox bulk-download API returns successful files as multipart `file` parts and per-file failures as multipart `error` parts with JSON payloads containing `message`, `statusCode`, and `code`.
+```go
+stream, err := sandbox.FileSystem.DownloadFileStream(ctx, "workspace/large-file.bin")
+if err != nil {
+	log.Fatal(err)
+}
+defer stream.Close()
+
+out, err := os.Create("local_copy.bin")
+if err != nil {
+	log.Fatal(err)
+}
+defer out.Close()
+
+_, err = io.Copy(out, stream)
+if err != nil {
+	log.Fatal(err)
+}
+```
 
 ### Delete files
 
-Daytona provides methods to delete files or directories from sandboxes by providing the path to the file or directory to delete.
+Delete a file or directory by providing the path to the file or directory to delete.
+
+Pass `recursive: true` to delete a directory recursively.
 
 ```go
 // Delete a file
@@ -199,11 +232,11 @@ if err != nil {
 
 ## Advanced operations
 
-Daytona provides advanced file system operations such as file permissions, search and replace, and move files.
+Daytona provides advanced file system operations such as file permissions, search by file name, content search and replace, and move files.
 
 ### File permissions
 
-Daytona provides methods to set file permissions, ownership, and group for a file or directory by providing the path to the file or directory and the permissions to set.
+Set file permissions, ownership, and group for a file or directory by providing the path to the file or directory and the permissions to set.
 
 ```go
 // Set file permissions
@@ -231,9 +264,24 @@ if err != nil {
 fmt.Printf("Mode: %s\n", fileInfo.Mode)
 ```
 
+### Search files by pattern
+
+Search for files and directories by name using glob patterns (for example `*.py`). This is distinct from `find_files` / `findFiles`, which searches file contents.
+
+```go
+result, err := sandbox.FileSystem.SearchFiles(ctx, "workspace", "*.go")
+if err != nil {
+	log.Fatal(err)
+}
+files := result.(map[string]any)["files"].([]string)
+for _, file := range files {
+	fmt.Println(file)
+}
+```
+
 ### Find and replace text in files
 
-Daytona provides methods to find and replace text in files by providing the path to the directory to search in and the pattern to search for.
+Find and replace text in files by providing the path to the directory to search in and the pattern to search for.
 
 ```go
 // Search for text in files
@@ -261,7 +309,7 @@ if err != nil {
 
 ### Move or rename directory or file
 
-Daytona provides methods to move or rename a directory or file in sandboxes by providing the path to the file or directory (source) and the new path to the file or directory (destination).
+Move or rename a directory or file by providing the path to the file or directory (source) and the new path to the file or directory (destination).
 
 ```go
 // Rename a file

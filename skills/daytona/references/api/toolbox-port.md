@@ -10,7 +10,7 @@ Get a list of all currently active ports
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | PortList |
+| 200 | OK |  |
 
 ---
 
@@ -24,12 +24,12 @@ Check if a specific port is currently in use
 
 | Name | In | Type | Required | Description |
 |------|-----|------|----------|-------------|
-| `port` | path | integer | Yes | Port number (3000-9999) |
+| `port` | path | string | Yes | Port number (3000-9999) |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | IsPortInUseResponse |
+| 200 | OK |  |
 
 ---

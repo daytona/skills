@@ -59,7 +59,7 @@
 - type SetFilePermissions
 
 ```go
-import "github.com/daytonaio/daytona/libs/sdk-go/pkg/options"
+import "github.com/daytona/clients/sdk-go/pkg/options"
 ```
 
 Package options provides functional option types for configuring SDK operations.
