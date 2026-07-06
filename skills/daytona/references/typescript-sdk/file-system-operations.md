@@ -17,7 +17,7 @@ File operations assume you are operating in the sandbox user's home directory (e
 
 ### List files and directories
 
-Daytona provides methods to list files and directories in a sandbox by providing the path to the directory. If the path is not provided, the method will list the files and directories in the sandbox working directory.
+List files and directories in a sandbox by providing the path to the directory.
 
 ```typescript
 // List files in a directory
@@ -33,17 +33,17 @@ files.forEach(file => {
 
 ### Get directory or file information
 
-Daytona provides methods to get directory or file information such as group, directory, modified time, mode, name, owner, permissions, and size by providing the path to the directory or file.
+Get directory or file information by providing the path to the directory or file.
 
 ```typescript
 // Get file details
-const info = await fs.getFileDetails('app/config.json')
-console.log(`Size: ${info.size}, Modified: ${info.modTime}`)
+const info = await sandbox.fs.getFileDetails('app/config.json')
+console.log(`Size: ${info.size}, Modified: ${info.modifiedAt ?? info.modTime}`)
 ```
 
 ### Create directories
 
-Daytona provides methods to create directories by providing the path to the directory and the permissions to set on the directory.
+Create a directory by providing the path and permissions to set on the directory.
 
 ```typescript
 // Create with specific permissions
@@ -56,7 +56,7 @@ Daytona provides methods to upload a single or multiple files in sandboxes.
 
 #### Upload a single file
 
-Daytona provides methods to upload a single file in sandboxes by providing the content to upload and the path to the file to upload it to.
+Upload a single file by providing the content to upload and the path to the file to upload it to.
 
 ```typescript
 // Upload a single file
@@ -66,7 +66,7 @@ await sandbox.fs.uploadFile(fileContent, 'data.txt')
 
 #### Upload multiple files
 
-Daytona provides methods to upload multiple files in sandboxes by providing the content to upload and their destination paths.
+Upload multiple files by providing the content to upload and their destination paths.
 
 ```typescript
 // Upload multiple files at once
@@ -88,13 +88,26 @@ const files = [
 await sandbox.fs.uploadFiles(files)
 ```
 
+#### Stream uploads
+
+For large files, use streaming upload methods to avoid loading the entire file into memory.
+
+```typescript
+import { createReadStream } from 'node:fs'
+
+await sandbox.fs.uploadFileStream(
+  createReadStream('large_dataset.csv'),
+  'workspace/dataset.csv'
+)
+```
+
 ### Download files
 
 Daytona provides methods to download files from sandboxes.
 
 #### Download a single file
 
-Daytona provides methods to download a single file from sandboxes by providing the path to the file to download.
+Download a single file by providing the path to the file to download.
 
 ```typescript
 import { DaytonaNotFoundError } from '@daytona/sdk'
@@ -111,11 +124,9 @@ try {
 }
 ```
 
-In the Python and TypeScript SDKs, `download_file` and `downloadFile` raise typed Daytona exceptions when the daemon returns structured per-file error metadata. Missing files map to not-found errors, invalid paths such as directories map to validation errors, and permission failures map to authorization errors.
-
 #### Download multiple files
 
-Daytona provides methods to download multiple files from sandboxes by providing the paths to the files to download.
+Download multiple files by providing the paths to the files to download.
 
 ```typescript
 // Download multiple files at once
@@ -140,28 +151,38 @@ results.forEach(result => {
 })
 ```
 
-Bulk downloads keep the existing `error` string for compatibility and now also include structured metadata on each failed item:
+#### Stream downloads
 
-- Python: `result.error_details.message`, `result.error_details.status_code`, `result.error_details.error_code`
-- TypeScript: `result.errorDetails.message`, `result.errorDetails.statusCode`, `result.errorDetails.errorCode`
+For large files, use streaming download methods to avoid loading the entire file into memory.
 
-The toolbox bulk-download API returns successful files as multipart `file` parts and per-file failures as multipart `error` parts with JSON payloads containing `message`, `statusCode`, and `code`.
+```typescript
+import { createWriteStream } from 'node:fs'
+import { pipeline } from 'node:stream/promises'
+
+const stream = await sandbox.fs.downloadFileStream('workspace/large-file.bin')
+await pipeline(stream, createWriteStream('local_copy.bin'))
+```
 
 ### Delete files
 
-Daytona provides methods to delete files or directories from sandboxes by providing the path to the file or directory to delete.
+Delete a file or directory by providing the path to the file or directory to delete.
+
+Pass `recursive: true` to delete a directory recursively.
 
 ```typescript
 await sandbox.fs.deleteFile('workspace/file.txt')
+
+// Delete a directory recursively
+await sandbox.fs.deleteFile('workspace/old_dir', true)
 ```
 
 ## Advanced operations
 
-Daytona provides advanced file system operations such as file permissions, search and replace, and move files.
+Daytona provides advanced file system operations such as file permissions, search by file name, content search and replace, and move files.
 
 ### File permissions
 
-Daytona provides methods to set file permissions, ownership, and group for a file or directory by providing the path to the file or directory and the permissions to set.
+Set file permissions, ownership, and group for a file or directory by providing the path to the file or directory and the permissions to set.
 
 ```typescript
 // Set file permissions
@@ -172,20 +193,26 @@ const fileInfo = await sandbox.fs.getFileDetails('workspace/file.txt')
 console.log(`Permissions: ${fileInfo.permissions}`)
 ```
 
+### Search files by pattern
+
+Search for files and directories by name using glob patterns (for example `*.py`). This is distinct from `find_files` / `findFiles`, which searches file contents.
+
+```typescript
+const result = await sandbox.fs.searchFiles('workspace', '*.ts')
+result.files.forEach(file => console.log(file))
+```
+
 ### Find and replace text in files
 
-Daytona provides methods to find and replace text in files by providing the path to the directory to search in and the pattern to search for.
+Find and replace text in files by providing the path to the directory to search in and the pattern to search for.
 
 ```typescript
 // Search for text in files; if a folder is specified, the search is recursive
-const results = await sandbox.fs.findFiles({
-    path="workspace/src",
-    pattern: "text-of-interest"
-})
+const results = await sandbox.fs.findFiles('workspace/src', 'text-of-interest')
 results.forEach(match => {
-    console.log('Absolute file path:', match.file)
-    console.log('Line number:', match.line)
-    console.log('Line content:', match.content)
+  console.log('Absolute file path:', match.file)
+  console.log('Line number:', match.line)
+  console.log('Line content:', match.content)
 })
 
 // Replace text in files
@@ -198,11 +225,11 @@ await sandbox.fs.replaceInFiles(
 
 ### Move or rename directory or file
 
-Daytona provides methods to move or rename a directory or file in sandboxes by providing the path to the file or directory (source) and the new path to the file or directory (destination).
+Move or rename a directory or file by providing the path to the file or directory (source) and the new path to the file or directory (destination).
 
 ```typescript
 // Move a file to a new location
-await fs.moveFiles('app/temp/data.json', 'app/data/data.json')
+await sandbox.fs.moveFiles('app/temp/data.json', 'app/data/data.json')
 ```
 
 ## See Also

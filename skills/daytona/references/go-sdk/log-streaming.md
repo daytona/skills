@@ -15,8 +15,8 @@ Real-time streaming is especially useful for **debugging**, **monitoring**, or i
 - [**Fetching log snapshot**](#retrieve-all-existing-logs): retrieve all logs up to a certain point.
 
 This guide covers how to use log streaming with callbacks and fetching log snapshots in both asynchronous and synchronous modes.
-> **Note:**
-> Starting with version `0.27.0`, you can retrieve session command logs in two distinct streams: **stdout** and **stderr**.
+
+For entrypoint log streaming, see [Process & Code Execution](./process-code-execution.md#entrypoint-session). To stream logs while sending input to a running command, see [Execute interactive commands](./process-code-execution.md#execute-interactive-commands).
 
 ## Stream logs with callbacks
 
@@ -28,6 +28,8 @@ This is ideal for:
 - Continuous monitoring
 - Debugging long-running jobs
 - Live log forwarding or visualizations
+> **Tip: Python callbacks**
+> When streaming with the Python SDK, avoid blocking operations inside stdout/stderr callbacks. Blocking synchronous callbacks can cause WebSocket disconnections. Use async callbacks where possible.
 
 ```go
 package main
@@ -139,9 +141,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to get logs: %v", err)
 	}
-	if logContent, ok := logs["logs"].(string); ok {
-		fmt.Printf("[LOGS]: %s\n", logContent)
-	}
+	fmt.Printf("[STDOUT]: %s\n", logs.Stdout)
+	fmt.Printf("[STDERR]: %s\n", logs.Stderr)
+	fmt.Printf("[OUTPUT]: %s\n", logs.Output)
 
 	sandbox.Delete(ctx)
 }

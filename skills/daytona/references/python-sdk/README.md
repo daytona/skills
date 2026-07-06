@@ -3,6 +3,7 @@
 - Installation
 - Getting Started
 - Configuration
+- Async Python SDK
 
 
 
@@ -119,4 +120,24 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-For more information on configuring the Daytona SDK, see [configuration](./configuration.md).
+For more information on configuring the Daytona SDK, see [API keys](../../SKILL.md#authentication#authentication).
+
+## Async Python SDK
+
+Daytona provides an additional `DAYTONA_HAPPY_EYEBALLS_DELAY` environment variable for HTTP transport tuning in the async Python SDK. Use it to reduce intermittent async connection failures, such as `aiohttp.ClientConnectorError`, that can occur on dual-stack (IPv4/IPv6) networks.
+
+| Variable                           | Description                                                                 | Required |
+| ---------------------------------- | --------------------------------------------------------------------------- | -------- |
+| **`DAYTONA_HAPPY_EYEBALLS_DELAY`** | Controls **`aiohttp`** Happy Eyeballs (IPv4/IPv6 connection race) delay in seconds. | No       |
+
+- unset or empty: use `aiohttp` default behavior
+- `none` (case-insensitive): disable the IPv4/IPv6 race
+- non-negative float (for example `0.25`): set an explicit delay in seconds
+
+```bash
+# Disable Happy Eyeballs
+export DAYTONA_HAPPY_EYEBALLS_DELAY=none
+
+# Or set an explicit delay in seconds
+export DAYTONA_HAPPY_EYEBALLS_DELAY=0.25
+```

@@ -21,7 +21,7 @@ Daytona provides a browser-based web terminal for interacting with your sandboxe
 
 Access the web terminal directly from the [Daytona Dashboard ↗](https://app.daytona.io/dashboard/sandboxes).
 
-1. Navigate to [Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+1. Go to [Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
 2. Locate the running sandbox you want to access
 3. Click the terminal icon **`>_`**
 

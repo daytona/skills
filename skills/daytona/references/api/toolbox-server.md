@@ -6,20 +6,16 @@
 
 Set the auth token and initialize telemetry for the toolbox server
 
-### Request Body
+### Parameters
 
-Initialization request
-
-Schema: **InitializeRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `token` | string | Yes |  |
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `request` | body | string | Yes | Initialization request |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | object |
+| 200 | OK |  |
 
 ---

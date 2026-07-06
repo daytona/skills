@@ -11,7 +11,6 @@
 - Resource management
 - PtyHandle methods
 - Error handling
-- Troubleshooting
 - See Also
 
 
@@ -28,7 +27,7 @@ A PTY (Pseudo Terminal) is a virtual terminal interface that allows programs to 
 
 ## Create PTY session
 
-Daytona provides methods to create an interactive terminal session that can execute commands and handle user input.
+Create an interactive terminal session that can execute commands and handle user input.
 
 ```go
 // Create a PTY session with custom configuration
@@ -66,7 +65,7 @@ fmt.Printf("PTY session completed with exit code: %d\n", *result.ExitCode)
 
 ## Connect to PTY session
 
-Daytona provides methods to establish a connection to an existing PTY session, enabling interaction with a previously created terminal.
+Establish a connection to an existing PTY session.
 
 ```go
 // Connect to an existing PTY session
@@ -101,7 +100,7 @@ fmt.Printf("Session exited with code: %d\n", *result.ExitCode)
 
 ## List PTY sessions
 
-Daytona provides methods to list PTY sessions, allowing you to retrieve information about all PTY sessions, both active and inactive, that have been created in the sandbox.
+List PTY sessions currently registered in the sandbox.
 
 ```go
 // List all PTY sessions
@@ -120,7 +119,7 @@ for _, session := range sessions {
 
 ## Get PTY session info
 
-Daytona provides methods to get information about a specific PTY session, allowing you to retrieve comprehensive information about a specific PTY session including its current state, configuration, and metadata.
+Get details about a specific PTY session.
 
 ```go
 // Get details about a specific PTY session
@@ -133,15 +132,11 @@ fmt.Printf("Session ID: %s\n", session.Id)
 fmt.Printf("Active: %t\n", session.Active)
 fmt.Printf("Working Directory: %s\n", session.Cwd)
 fmt.Printf("Terminal Size: %dx%d\n", session.Cols, session.Rows)
-
-if session.ProcessId != nil {
-	fmt.Printf("Process ID: %d\n", *session.ProcessId)
-}
 ```
 
 ## Kill PTY session
 
-Daytona provides methods to kill a PTY session, allowing you to forcefully terminate a PTY session and cleans up all associated resources.
+Kill a PTY session, terminating the shell process and removing the session from the sandbox.
 
 ```go
 // Kill a specific PTY session
@@ -163,7 +158,7 @@ for _, session := range sessions {
 
 ## Resize PTY session
 
-Daytona provides methods to resize a PTY session, allowing you to change the terminal dimensions of an active PTY session. This sends a SIGWINCH signal to the shell process, allowing terminal applications to adapt to the new size.
+Resize a PTY session, allowing you to change the terminal dimensions of an active PTY session.
 
 ```go
 // Resize a PTY session to a larger terminal
@@ -187,7 +182,7 @@ fmt.Printf("Terminal resized to %dx%d\n", info.Cols, info.Rows)
 
 ## Interactive commands
 
-Daytona provides methods to handle interactive commands with PTY sessions, allowing you to handle interactive commands that require user input and can be resized during execution.
+Handle interactive commands with PTY sessions, allowing you to handle interactive commands that require user input and can be resized during execution.
 
 ```go
 // Create PTY session
@@ -235,7 +230,7 @@ fmt.Printf("Session completed with exit code: %d\n", *result.ExitCode)
 
 ## Long-running processes
 
-Daytona provides methods to manage long-running processes with PTY sessions, allowing you to manage long-running processes that need to be monitored or terminated.
+Manage long-running processes with PTY sessions, allowing you to manage long-running processes that need to be monitored or terminated.
 
 ```go
 // Create PTY session
@@ -280,10 +275,10 @@ if result.Error != nil {
 
 ## Resource management
 
-Daytona provides methods to manage resource leaks with PTY sessions, allowing you to always clean up PTY sessions to prevent resource leaks.
+Manage resource leaks with PTY sessions, allowing you to always clean up PTY sessions to prevent resource leaks.
 
 ```go
-// Go: Use defer for cleanup
+// Go: defer Disconnect to close the WebSocket without killing the shell
 handle, err := sandbox.Process.CreatePty(ctx, "session",
 	options.WithCreatePtySize(types.PtySize{Cols: 120, Rows: 30}),
 )
@@ -294,8 +289,8 @@ defer handle.Disconnect()
 
 // Do work...
 
-// Or use Kill to terminate the process
-defer handle.Kill(ctx)
+// Call Kill to terminate the shell process when needed
+// handle.Kill(ctx)
 ```
 
 ## PtyHandle methods
@@ -304,7 +299,7 @@ Daytona provides methods to interact with PTY sessions, allowing you to send inp
 
 ### Send input
 
-Daytona provides methods to send input to a PTY session, allowing you to send input data (keystrokes or commands) to the PTY session.
+Send input to a PTY session, allowing you to send input data (keystrokes or commands) to the PTY session.
 
 ```go
 // Send a command
@@ -316,7 +311,7 @@ handle.SendInput([]byte{0x03})
 
 ### Wait for completion
 
-Daytona provides methods to wait for a PTY process to exit and return the result, allowing you to wait for a PTY process to exit and return the result.
+Wait for a PTY process to exit and return the result.
 
 ```go
 // Wait for process to complete
@@ -337,7 +332,7 @@ if result.ExitCode != nil && *result.ExitCode == 0 {
 
 ### Wait for connection
 
-Daytona provides methods to wait for the WebSocket connection to be established before sending input, allowing you to wait for the WebSocket connection to be established before sending input.
+Wait for the WebSocket connection to be established before sending input.
 
 ```go
 // Wait for connection to be established
@@ -351,7 +346,7 @@ handle.SendInput([]byte("echo 'Connected!'\n"))
 
 ### Kill PTY process
 
-Daytona provides methods to kill a PTY process and terminate the session from the handle.
+Kill a PTY process and terminate the session from the handle.
 
 ```go
 // Kill a long-running process
@@ -369,7 +364,7 @@ fmt.Printf("Process terminated with exit code: %d\n", *result.ExitCode)
 
 ### Resize from handle
 
-Daytona provides methods to resize the PTY terminal dimensions directly from the handle.
+Resize the PTY terminal dimensions directly from the handle.
 
 ```go
 // Resize to 120x30
@@ -382,7 +377,7 @@ fmt.Printf("Resized to %dx%d\n", info.Cols, info.Rows)
 
 ### Disconnect
 
-Daytona provides methods to disconnect from a PTY session and clean up resources without killing the process.
+Disconnect from a PTY session and clean up resources without killing the process.
 
 ```go
 // Always clean up when done using defer
@@ -397,7 +392,7 @@ defer handle.Disconnect()
 
 ### Check connection status
 
-Daytona provides methods to check if a PTY session is still connected.
+Check if a PTY session is still connected.
 
 ```go
 if handle.IsConnected() {
@@ -407,7 +402,7 @@ if handle.IsConnected() {
 
 ### Exit code and error
 
-Daytona provides methods to access the exit code and error message after a PTY process terminates.
+Access the exit code and error message after a PTY process terminates.
 
 ```go
 // Access via methods after process terminates
@@ -421,7 +416,7 @@ if errMsg := handle.Error(); errMsg != nil {
 
 ### Iterate over output (Python)
 
-Daytona provides methods to iterate over a PTY handle to receive output data.
+Iterate over a PTY handle to receive output data.
 
 ```go
 // Go uses a channel to receive output data
@@ -437,7 +432,7 @@ fmt.Printf("Session ended with exit code: %d\n", *handle.ExitCode())
 
 ## Error handling
 
-Daytona provides methods to monitor exit codes and handle errors appropriately with PTY sessions.
+Monitor exit codes and handle errors appropriately with PTY sessions.
 
 ```go
 // Go: Check exit codes
@@ -453,12 +448,6 @@ if result.ExitCode != nil && *result.ExitCode != 0 {
 	}
 }
 ```
-
-## Troubleshooting
-
-- **Connection issues**: verify sandbox status, network connectivity, and proper session IDs
-- **Performance issues**: use appropriate terminal dimensions and efficient data handlers
-- **Process management**: use explicit `kill()` calls and proper timeout handling for long-running processes
 
 ## See Also
 - [Python SDK - pty](../python-sdk/pty.md)

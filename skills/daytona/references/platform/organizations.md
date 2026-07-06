@@ -18,7 +18,7 @@
 
 Daytona provides organizations as a way to group resources and enable collaboration. Users can work individually in their personal organization or together in a collaborative organization.
 
-Navigate to [Daytona Dashboard ↗](https://app.daytona.io/dashboard) to manage your organizations, or use the [API](../api/README.md#daytona/tag/organizations) to manage them programmatically.
+Go to [Daytona Dashboard ↗](https://app.daytona.io/dashboard) to manage your organizations, or use the [API](../api/README.md#daytona/tag/organizations) to manage them programmatically.
 
 ## Personal vs Collaborative
 
@@ -40,12 +40,12 @@ Users can switch between their personal and collaborative organizations by using
 
 Daytona provides options to create organizations in [Daytona Dashboard ↗](https://app.daytona.io/dashboard/) or programmatically using the [API](../api/README.md#daytona/tag/organizations).
 
-1. Navigate to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/)
+1. Go to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/)
 2. Expand the dropdown at the top-left corner of the sidebar to view your organizations
 3. Click the **Create Organization** button
 4. Enter the organization name
 5. Select a [region](../python-sdk/regions.md)
-6. Click **Create** to create the organization
+6. Click **Create**
 
 **API:**
 
@@ -62,7 +62,7 @@ curl 'https://app.daytona.io/api/organizations' \
 
 ## List organizations
 
-Daytona provides methods to list all organizations the authenticated user belongs to.
+List all organizations the authenticated user belongs to.
 
 **API:**
 
@@ -73,7 +73,7 @@ curl 'https://app.daytona.io/api/organizations' \
 
 ### Get by ID
 
-Daytona provides a method to get an organization by ID.
+Get an organization by ID.
 
 **API:**
 
@@ -84,9 +84,9 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID' \
 
 ## Leave organization
 
-Daytona provides options to leave an organization in [Daytona Dashboard ↗](https://app.daytona.io/dashboard/) or programmatically using the [API](../api/README.md#daytona/tag/organizations).
+Leave an organization.
 
-1. Navigate to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/)
+1. Go to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/)
 2. Expand the dropdown at the top-left corner of the sidebar to view your organizations
 3. Select the organization you want to leave
 4. Click **Settings** in the sidebar
@@ -103,9 +103,9 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/leave' \
 
 ## Delete organization
 
-Daytona provides options to delete an organization in [Daytona Dashboard ↗](https://app.daytona.io/dashboard/) or programmatically using the [API](../api/README.md#daytona/tag/organizations).
+Delete an organization.
 
-1. Navigate to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/)
+1. Go to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/)
 2. Expand the dropdown at the top-left corner of the sidebar to view your organizations
 3. Select the organization you want to delete
 4. Click **Settings** in the sidebar
@@ -145,7 +145,7 @@ The list of available role assignments includes:
 
 ### Create role
 
-Daytona provides a method to create a new role in an organization.
+Create a new role in an organization.
 
 **API:**
 
@@ -163,7 +163,7 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/roles' \
 
 ### List roles
 
-Daytona provides a method to list all roles in an organization.
+List all roles in an organization.
 
 **API:**
 
@@ -174,7 +174,7 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/roles' \
 
 ### Update role
 
-Daytona provides a method to update a role in an organization.
+Update a role in an organization.
 
 **API:**
 
@@ -192,7 +192,7 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/roles/ROLE_ID' \
 
 ### Delete role
 
-Daytona provides a method to delete a role in an organization.
+Delete a role in an organization.
 
 **API:**
 
@@ -208,7 +208,7 @@ Daytona provides methods to manage members in an organization.
 
 ### List members
 
-Daytona provides a method to list all members in an organization.
+List all members in an organization.
 
 **API:**
 
@@ -219,9 +219,9 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/users' \
 
 ### Invite members
 
-Daytona provides a method to invite a new user to an organization.
+Invite a new user to an organization.
 
-1. Navigate to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/members)
+1. Go to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/members)
 2. Click the **Invite Member** button
 3. Enter the email address of the user you want to invite
 4. [Select a role](#roles) for the new user. If you select the **`Member`** role, define their [assignments](#role-assignments)
@@ -242,9 +242,9 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/invitations' \
 
 ### Remove members
 
-Daytona provides a method to remove a user from an organization.
+Remove a user from an organization.
 
-1. Navigate to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/members)
+1. Go to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/members)
 2. Click the **Remove** button next to the user you want to remove
 3. Confirm the removal by clicking the **Remove** button
 
@@ -258,9 +258,9 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/users/USER_ID' \
 
 ### Update access
 
-Daytona provides options to update the access of a member in an organization in [Daytona Dashboard ↗](https://app.daytona.io/dashboard/members) or programmatically using the [API](../api/README.md#daytona/tag/organizations).
+Update the access of a member in an organization.
 
-1. Navigate to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/members)
+1. Go to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/members)
 2. Click the three-dot menu on the member row
 3. Click **Change Role** or **Manage Assignments**
 4. Update the role or assignments and click **Save**
@@ -280,9 +280,9 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/users/USER_ID/acc
 
 ## Invitations
 
-Daytona provides methods to manage invitations in an organization.
+Manage invitations in an organization.
 
-1. Navigate to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/user/invitations)
+1. Go to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/user/invitations)
 2. Expand the dropdown at the bottom of the sidebar to view pending invitations to join other organizations.
 
 **API:**
@@ -294,7 +294,7 @@ curl 'https://app.daytona.io/api/organizations/invitations' \
 
 ### Get invitations count
 
-Daytona provides a method to get the number of invitations in an organization.
+Get the number of invitations in an organization.
 
 **API:**
 
@@ -305,9 +305,9 @@ curl 'https://app.daytona.io/api/organizations/invitations/count' \
 
 ### Accept invitation
 
-Daytona provides options to accept a pending organization invitation in [Daytona Dashboard ↗](https://app.daytona.io/dashboard/user/invitations) or programmatically using the [API](../api/README.md#daytona/tag/organizations).
+Accept a pending organization invitation.
 
-1. Navigate to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/)
+1. Go to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/)
 2. Click your profile at the bottom-left of the sidebar
 3. Click **Invitations**
 4. Click the checkmark button on the invitation row
@@ -324,9 +324,9 @@ Once a user accepts an invitation to join an organization, they get access to re
 
 ### Decline invitation
 
-Daytona provides options to decline a pending organization invitation in [Daytona Dashboard ↗](https://app.daytona.io/dashboard/user/invitations) or programmatically using the [API](../api/README.md#daytona/tag/organizations).
+Decline a pending organization invitation.
 
-1. Navigate to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/)
+1. Go to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/)
 2. Click your profile at the bottom-left of the sidebar
 3. Click **Invitations**
 4. Click the X button on the invitation row
@@ -342,7 +342,7 @@ curl 'https://app.daytona.io/api/organizations/invitations/INVITATION_ID/decline
 
 ### List pending
 
-Daytona provides a method to list pending invitations for an organization.
+List pending invitations for an organization.
 
 **API:**
 
@@ -353,9 +353,9 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/invitations' \
 
 ### Update invitation
 
-Daytona provides options to update an invitation for an organization in [Daytona Dashboard ↗](https://app.daytona.io/dashboard/members) or programmatically using the [API](../api/README.md#daytona/tag/organizations).
+Update an invitation for an organization.
 
-1. Navigate to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/members)
+1. Go to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/members)
 2. Scroll to the **Invitations** table
 3. Click the three-dot menu on the invitation row
 4. Click **Edit**
@@ -377,9 +377,9 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/invitations/INVIT
 
 ### Cancel invitation
 
-Daytona provides options to cancel an invitation for an organization in [Daytona Dashboard ↗](https://app.daytona.io/dashboard/members) or programmatically using the [API](../api/README.md#daytona/tag/organizations).
+Cancel an invitation for an organization.
 
-1. Navigate to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/members)
+1. Go to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/members)
 2. Scroll to the **Invitations** table
 3. Click the three-dot menu on the invitation row
 4. Click **Cancel**
@@ -401,7 +401,7 @@ For more information on available region types, see the [Regions](../python-sdk/
 
 ### Set default region
 
-Daytona provides options to set the default region programmatically using the [API](../api/README.md#daytona/tag/organizations).
+Set the default region.
 
 **API:**
 
@@ -425,7 +425,7 @@ Daytona provides methods to perform advanced operations on an organization.
 
 ### Usage overview
 
-Daytona provides a method to get the usage overview for an organization.
+Get the usage overview for an organization.
 
 **API:**
 
@@ -436,7 +436,7 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/usage' \
 
 ### Update sandbox default limited network egress
 
-Daytona provides a method to update the sandbox default limited network egress for an organization.
+Update the sandbox default limited network egress for an organization.
 
 **API:**
 
@@ -452,7 +452,7 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/sandbox-default-l
 
 ### Update experimental configuration
 
-Daytona provides a method to update the experimental configuration for an organization.
+Update the experimental configuration for an organization.
 
 **API:**
 

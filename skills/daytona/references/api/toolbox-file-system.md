@@ -21,19 +21,22 @@
 
 **List files and directories**
 
-List files and directories in the specified path
+List files and directories in the specified path. Use the optional depth
+parameter to list recursively: depth=1 (default) lists the directory's
+entries, depth=2 also includes their children, and so on.
 
 ### Parameters
 
 | Name | In | Type | Required | Description |
 |------|-----|------|----------|-------------|
 | `path` | query | string | No | Directory path to list (defaults to working directory) |
+| `depth` | query | string | No | How many levels deep to list (default: 1, must be >= 1) |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | array of FileInfo |
+| 200 | OK |  |
 
 ---
 
@@ -48,7 +51,7 @@ Delete a file or directory at the specified path
 | Name | In | Type | Required | Description |
 |------|-----|------|----------|-------------|
 | `path` | query | string | Yes | File or directory path to delete |
-| `recursive` | query | boolean | No | Enable recursive deletion for directories |
+| `recursive` | query | string | No | Enable recursive deletion for directories |
 
 ### Responses
 
@@ -64,21 +67,17 @@ Delete a file or directory at the specified path
 
 Download multiple files by providing their paths. Successful files are returned as multipart parts named `file`. Per-file failures are returned as multipart parts named `error` with JSON payloads shaped like ErrorResponse.
 
-### Request Body
+### Parameters
 
-Paths of files to download
-
-Schema: **FilesDownloadRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `paths` | array of string | Yes |  |
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `downloadFiles` | body | string | Yes | Paths of files to download |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | Multipart response with file parts and JSON error parts | gin.H |
+| 200 | Multipart response with file parts and JSON error parts |  |
 
 ---
 
@@ -112,7 +111,7 @@ Download a file by providing its path
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | string |
+| 200 | OK |  |
 
 ---
 
@@ -133,7 +132,7 @@ Search for text pattern within files in a directory
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | array of Match |
+| 200 | OK |  |
 
 ---
 
@@ -174,7 +173,7 @@ Get detailed information about a file or directory
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | FileInfo |
+| 200 | OK |  |
 
 ---
 
@@ -228,23 +227,17 @@ Set file permissions, ownership, and group for a file or directory
 
 Replace text pattern with new value in multiple files
 
-### Request Body
+### Parameters
 
-Replace request
-
-Schema: **ReplaceRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `files` | array of string | Yes |  |
-| `newValue` | string | Yes |  |
-| `pattern` | string | Yes |  |
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `request` | body | string | Yes | Replace request |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | array of ReplaceResult |
+| 200 | OK |  |
 
 ---
 
@@ -265,7 +258,7 @@ Search for files matching a specific pattern in a directory
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | SearchFilesResponse |
+| 200 | OK |  |
 
 ---
 
@@ -280,19 +273,12 @@ Upload a file to the specified path
 | Name | In | Type | Required | Description |
 |------|-----|------|----------|-------------|
 | `path` | query | string | Yes | Destination path for the uploaded file |
-
-### Request Body
-
-Schema: **UploadFile_request**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `file` | string (binary) | Yes | File to upload |
+| `file` | formData | string | Yes | File to upload |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | gin.H |
+| 200 | OK |  |
 
 ---

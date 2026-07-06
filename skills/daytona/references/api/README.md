@@ -144,10 +144,16 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `GET` | `/sandbox/{sandboxId}/toolbox-proxy-url` | [Get toolbox proxy URL for a sandbox](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxId}/toolbox-proxy-url) | [sandbox](./sandbox.md) |
 | `GET` | `/sandbox/{sandboxId}/organization` | [Get organization by sandbox ID](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxId}/organization) | [sandbox](./sandbox.md) |
 | `GET` | `/sandbox/{sandboxId}/region-quota` | [Get region quota by sandbox ID](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxId}/region-quota) | [sandbox](./sandbox.md) |
+| `GET` | `/sandbox/{sandboxId}/secrets` | [Resolve sandbox secrets](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxId}/secrets) | [sandbox](./sandbox.md) |
 | `GET` | `/sandbox/{sandboxId}/telemetry/logs` | [Get sandbox logs](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxId}/telemetry/logs) | [sandbox](./sandbox.md) |
 | `GET` | `/sandbox/{sandboxId}/telemetry/traces` | [Get sandbox traces](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxId}/telemetry/traces) | [sandbox](./sandbox.md) |
 | `GET` | `/sandbox/{sandboxId}/telemetry/traces/{traceId}` | [Get trace spans](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxId}/telemetry/traces/{traceId}) | [sandbox](./sandbox.md) |
 | `GET` | `/sandbox/{sandboxId}/telemetry/metrics` | [Get sandbox metrics](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxId}/telemetry/metrics) | [sandbox](./sandbox.md) |
+| `GET` | `/secret` | [List secrets](./secret.md#daytona/tag/secret/GET/secret) | [secret](./secret.md) |
+| `POST` | `/secret` | [Create secret](./secret.md#daytona/tag/secret/POST/secret) | [secret](./secret.md) |
+| `GET` | `/secret/{secretId}` | [Get secret](./secret.md#daytona/tag/secret/GET/secret/{secretId}) | [secret](./secret.md) |
+| `PATCH` | `/secret/{secretId}` | [Update secret](./secret.md#daytona/tag/secret/PATCH/secret/{secretId}) | [secret](./secret.md) |
+| `DELETE` | `/secret/{secretId}` | [Delete secret](./secret.md#daytona/tag/secret/DELETE/secret/{secretId}) | [secret](./secret.md) |
 | `GET` | `/snapshots` | [List all snapshots](./snapshots.md#daytona/tag/snapshots/GET/snapshots) | [snapshots](./snapshots.md) |
 | `POST` | `/snapshots` | [Create a new snapshot](./snapshots.md#daytona/tag/snapshots/POST/snapshots) | [snapshots](./snapshots.md) |
 | `GET` | `/snapshots/{id}` | [Get snapshot by ID or name](./snapshots.md#daytona/tag/snapshots/GET/snapshots/{id}) | [snapshots](./snapshots.md) |
@@ -252,7 +258,8 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 - [preview](./preview.md) (4 endpoints) {#daytona/tag/preview}
 - [regions](./regions.md) (1 endpoints) {#daytona/tag/regions}
 - [runners](./runners.md) (11 endpoints) {#daytona/tag/runners}
-- [sandbox](./sandbox.md) (41 endpoints) {#daytona/tag/sandbox}
+- [sandbox](./sandbox.md) (42 endpoints) {#daytona/tag/sandbox}
+- [secret](./secret.md) (5 endpoints) {#daytona/tag/secret}
 - [snapshots](./snapshots.md) (8 endpoints) {#daytona/tag/snapshots}
 - [toolbox](./toolbox.md) (68 endpoints) {#daytona/tag/toolbox}
 - [users](./users.md) (5 endpoints) {#daytona/tag/users}
@@ -320,9 +327,18 @@ The Toolbox API runs inside sandboxes and provides file system, git, process, an
 | `POST` | `/git/checkout` | [Checkout branch or commit](./toolbox-git.md#daytona-toolbox/tag/git/POST/git/checkout) | [git](./toolbox-git.md) |
 | `POST` | `/git/clone` | [Clone a Git repository](./toolbox-git.md#daytona-toolbox/tag/git/POST/git/clone) | [git](./toolbox-git.md) |
 | `POST` | `/git/commit` | [Commit changes](./toolbox-git.md#daytona-toolbox/tag/git/POST/git/commit) | [git](./toolbox-git.md) |
+| `GET` | `/git/config` | [Get a Git config value](./toolbox-git.md#daytona-toolbox/tag/git/GET/git/config) | [git](./toolbox-git.md) |
+| `POST` | `/git/config` | [Set a Git config value](./toolbox-git.md#daytona-toolbox/tag/git/POST/git/config) | [git](./toolbox-git.md) |
+| `POST` | `/git/config/user` | [Configure Git user](./toolbox-git.md#daytona-toolbox/tag/git/POST/git/config/user) | [git](./toolbox-git.md) |
+| `POST` | `/git/credentials` | [Authenticate Git](./toolbox-git.md#daytona-toolbox/tag/git/POST/git/credentials) | [git](./toolbox-git.md) |
 | `GET` | `/git/history` | [Get commit history](./toolbox-git.md#daytona-toolbox/tag/git/GET/git/history) | [git](./toolbox-git.md) |
+| `POST` | `/git/init` | [Initialize a Git repository](./toolbox-git.md#daytona-toolbox/tag/git/POST/git/init) | [git](./toolbox-git.md) |
 | `POST` | `/git/pull` | [Pull changes from remote](./toolbox-git.md#daytona-toolbox/tag/git/POST/git/pull) | [git](./toolbox-git.md) |
 | `POST` | `/git/push` | [Push changes to remote](./toolbox-git.md#daytona-toolbox/tag/git/POST/git/push) | [git](./toolbox-git.md) |
+| `GET` | `/git/remotes` | [List remotes](./toolbox-git.md#daytona-toolbox/tag/git/GET/git/remotes) | [git](./toolbox-git.md) |
+| `POST` | `/git/remotes` | [Add a remote](./toolbox-git.md#daytona-toolbox/tag/git/POST/git/remotes) | [git](./toolbox-git.md) |
+| `POST` | `/git/reset` | [Reset repository](./toolbox-git.md#daytona-toolbox/tag/git/POST/git/reset) | [git](./toolbox-git.md) |
+| `POST` | `/git/restore` | [Restore files](./toolbox-git.md#daytona-toolbox/tag/git/POST/git/restore) | [git](./toolbox-git.md) |
 | `GET` | `/git/status` | [Get Git status](./toolbox-git.md#daytona-toolbox/tag/git/GET/git/status) | [git](./toolbox-git.md) |
 | `GET` | `/user-home-dir` | [Get user home directory](./toolbox-info.md#daytona-toolbox/tag/info/GET/user-home-dir) | [info](./toolbox-info.md) |
 | `GET` | `/version` | [Get version](./toolbox-info.md#daytona-toolbox/tag/info/GET/version) | [info](./toolbox-info.md) |
@@ -359,15 +375,17 @@ The Toolbox API runs inside sandboxes and provides file system, git, process, an
 | `GET` | `/process/session/{sessionId}/command/{commandId}/logs` | [Get session command logs](./toolbox-process.md#daytona-toolbox/tag/process/GET/process/session/{sessionId}/command/{commandId}/logs) | [process](./toolbox-process.md) |
 | `POST` | `/process/session/{sessionId}/exec` | [Execute command in session](./toolbox-process.md#daytona-toolbox/tag/process/POST/process/session/{sessionId}/exec) | [process](./toolbox-process.md) |
 | `POST` | `/init` | [Initialize toolbox server](./toolbox-server.md#daytona-toolbox/tag/server/POST/init) | [server](./toolbox-server.md) |
+| `GET` | `/system/metrics` | [Get sandbox resource metrics](./toolbox-system.md#daytona-toolbox/tag/system/GET/system/metrics) | [system](./toolbox-system.md) |
 
 ### Tags
 
 - [computer-use](./toolbox-computer-use.md) (33 endpoints) {#daytona-toolbox/tag/computer-use}
 - [file-system](./toolbox-file-system.md) (13 endpoints) {#daytona-toolbox/tag/file-system}
-- [git](./toolbox-git.md) (11 endpoints) {#daytona-toolbox/tag/git}
+- [git](./toolbox-git.md) (20 endpoints) {#daytona-toolbox/tag/git}
 - [info](./toolbox-info.md) (3 endpoints) {#daytona-toolbox/tag/info}
 - [interpreter](./toolbox-interpreter.md) (4 endpoints) {#daytona-toolbox/tag/interpreter}
 - [lsp](./toolbox-lsp.md) (7 endpoints) {#daytona-toolbox/tag/lsp}
 - [port](./toolbox-port.md) (2 endpoints) {#daytona-toolbox/tag/port}
 - [process](./toolbox-process.md) (18 endpoints) {#daytona-toolbox/tag/process}
 - [server](./toolbox-server.md) (1 endpoints) {#daytona-toolbox/tag/server}
+- [system](./toolbox-system.md) (1 endpoints) {#daytona-toolbox/tag/system}

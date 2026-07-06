@@ -17,25 +17,17 @@
 
 Get code completion suggestions from the LSP server
 
-### Request Body
+### Parameters
 
-Completion request
-
-Schema: **LspCompletionParams**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `context` | [CompletionContext](#schema-completioncontext) | No |  |
-| `languageId` | string | Yes |  |
-| `pathToProject` | string | Yes |  |
-| `position` | [LspPosition](#schema-lspposition) | Yes |  |
-| `uri` | string | Yes |  |
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `request` | body | string | Yes | Completion request |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | CompletionList |
+| 200 | OK |  |
 
 ---
 
@@ -45,17 +37,11 @@ Schema: **LspCompletionParams**
 
 Notify the LSP server that a document has been closed
 
-### Request Body
+### Parameters
 
-Document request
-
-Schema: **LspDocumentRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `languageId` | string | Yes |  |
-| `pathToProject` | string | Yes |  |
-| `uri` | string | Yes |  |
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `request` | body | string | Yes | Document request |
 
 ### Responses
 
@@ -71,17 +57,11 @@ Schema: **LspDocumentRequest**
 
 Notify the LSP server that a document has been opened
 
-### Request Body
+### Parameters
 
-Document request
-
-Schema: **LspDocumentRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `languageId` | string | Yes |  |
-| `pathToProject` | string | Yes |  |
-| `uri` | string | Yes |  |
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `request` | body | string | Yes | Document request |
 
 ### Responses
 
@@ -109,7 +89,7 @@ Get symbols (functions, classes, etc.) from a document
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | array of LspSymbol |
+| 200 | OK |  |
 
 ---
 
@@ -119,16 +99,11 @@ Get symbols (functions, classes, etc.) from a document
 
 Start a Language Server Protocol server for the specified language
 
-### Request Body
+### Parameters
 
-LSP server request
-
-Schema: **LspServerRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `languageId` | string | Yes |  |
-| `pathToProject` | string | Yes |  |
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `request` | body | string | Yes | LSP server request |
 
 ### Responses
 
@@ -144,16 +119,11 @@ Schema: **LspServerRequest**
 
 Stop a Language Server Protocol server
 
-### Request Body
+### Parameters
 
-LSP server request
-
-Schema: **LspServerRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `languageId` | string | Yes |  |
-| `pathToProject` | string | Yes |  |
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `request` | body | string | Yes | LSP server request |
 
 ### Responses
 
@@ -181,6 +151,6 @@ Search for symbols across the entire workspace
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | array of LspSymbol |
+| 200 | OK |  |
 
 ---

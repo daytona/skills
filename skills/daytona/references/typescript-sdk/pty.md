@@ -11,7 +11,6 @@
 - Resource management
 - PtyHandle methods
 - Error handling
-- Troubleshooting
 - See Also
 
 
@@ -28,7 +27,7 @@ A PTY (Pseudo Terminal) is a virtual terminal interface that allows programs to 
 
 ## Create PTY session
 
-Daytona provides methods to create an interactive terminal session that can execute commands and handle user input.
+Create an interactive terminal session that can execute commands and handle user input.
 
 ```typescript
 // Create a PTY session with custom configuration
@@ -63,7 +62,7 @@ await ptyHandle.disconnect()
 
 ## Connect to PTY session
 
-Daytona provides methods to establish a connection to an existing PTY session, enabling interaction with a previously created terminal.
+Establish a connection to an existing PTY session.
 
 ```typescript
 // Connect to an existing PTY session
@@ -93,7 +92,7 @@ await handle.disconnect()
 
 ## List PTY sessions
 
-Daytona provides methods to list PTY sessions, allowing you to retrieve information about all PTY sessions, both active and inactive, that have been created in the sandbox.
+List PTY sessions currently registered in the sandbox.
 
 ```typescript
 // List all PTY sessions
@@ -102,6 +101,7 @@ const sessions = await sandbox.process.listPtySessions()
 for (const session of sessions) {
   console.log(`Session ID: ${session.id}`)
   console.log(`Active: ${session.active}`)
+  console.log(`Lazy start: ${session.lazyStart}`)
   console.log(`Created: ${session.createdAt}`)
   console.log('---')
 }
@@ -109,7 +109,7 @@ for (const session of sessions) {
 
 ## Get PTY session info
 
-Daytona provides methods to get information about a specific PTY session, allowing you to retrieve comprehensive information about a specific PTY session including its current state, configuration, and metadata.
+Get details about a specific PTY session.
 
 ```typescript
 // Get details about a specific PTY session
@@ -117,17 +117,14 @@ const session = await sandbox.process.getPtySessionInfo('my-session')
 
 console.log(`Session ID: ${session.id}`)
 console.log(`Active: ${session.active}`)
+console.log(`Lazy start: ${session.lazyStart}`)
 console.log(`Working Directory: ${session.cwd}`)
 console.log(`Terminal Size: ${session.cols}x${session.rows}`)
-
-if (session.processId) {
-  console.log(`Process ID: ${session.processId}`)
-}
 ```
 
 ## Kill PTY session
 
-Daytona provides methods to kill a PTY session, allowing you to forcefully terminate a PTY session and cleans up all associated resources.
+Kill a PTY session, terminating the shell process and removing the session from the sandbox.
 
 ```typescript
 // Kill a specific PTY session
@@ -144,7 +141,7 @@ try {
 
 ## Resize PTY session
 
-Daytona provides methods to resize a PTY session, allowing you to change the terminal dimensions of an active PTY session. This sends a SIGWINCH signal to the shell process, allowing terminal applications to adapt to the new size.
+Resize a PTY session, allowing you to change the terminal dimensions of an active PTY session.
 
 ```typescript
 // Resize a PTY session to a larger terminal
@@ -157,7 +154,7 @@ await ptyHandle.resize(150, 40) // cols, rows
 
 ## Interactive commands
 
-Daytona provides methods to handle interactive commands with PTY sessions, allowing you to handle interactive commands that require user input and can be resized during execution.
+Handle interactive commands with PTY sessions, allowing you to handle interactive commands that require user input and can be resized during execution.
 
 ```typescript
 import { Daytona, Sandbox } from '@daytona/sdk'
@@ -202,7 +199,7 @@ console.log(`Session completed with exit code: ${result.exitCode}`)
 
 ## Long-running processes
 
-Daytona provides methods to manage long-running processes with PTY sessions, allowing you to manage long-running processes that need to be monitored or terminated.
+Manage long-running processes with PTY sessions, allowing you to manage long-running processes that need to be monitored or terminated.
 
 ```typescript
 import { Daytona, Sandbox } from '@daytona/sdk'
@@ -237,7 +234,7 @@ if (result.error) {
 
 ## Resource management
 
-Daytona provides methods to manage resource leaks with PTY sessions, allowing you to always clean up PTY sessions to prevent resource leaks.
+Manage resource leaks with PTY sessions, allowing you to always clean up PTY sessions to prevent resource leaks.
 
 ```typescript
 // TypeScript: Use try/finally
@@ -260,7 +257,7 @@ Daytona provides methods to interact with PTY sessions, allowing you to send inp
 
 ### Send input
 
-Daytona provides methods to send input to a PTY session, allowing you to send input data (keystrokes or commands) to the PTY session.
+Send input to a PTY session, allowing you to send input data (keystrokes or commands) to the PTY session.
 
 ```typescript
 // Send a command
@@ -272,7 +269,7 @@ await ptyHandle.sendInput(new Uint8Array([3])) // Ctrl+C
 
 ### Wait for completion
 
-Daytona provides methods to wait for a PTY process to exit and return the result, allowing you to wait for a PTY process to exit and return the result.
+Wait for a PTY process to exit and return the result.
 
 ```typescript
 // Wait for process to complete
@@ -290,7 +287,7 @@ if (result.exitCode === 0) {
 
 ### Wait for connection
 
-Daytona provides methods to wait for the WebSocket connection to be established before sending input, allowing you to wait for the WebSocket connection to be established before sending input.
+Wait for the WebSocket connection to be established before sending input.
 
 ```typescript
 // Wait for connection to be established
@@ -302,7 +299,7 @@ await ptyHandle.sendInput('echo "Connected!"\n')
 
 ### Kill PTY process
 
-Daytona provides methods to kill a PTY process and terminate the session from the handle.
+Kill a PTY process and terminate the session from the handle.
 
 ```typescript
 // Kill a long-running process
@@ -315,7 +312,7 @@ console.log(`Process terminated with exit code: ${result.exitCode}`)
 
 ### Resize from handle
 
-Daytona provides methods to resize the PTY terminal dimensions directly from the handle.
+Resize the PTY terminal dimensions directly from the handle.
 
 ```typescript
 // Resize to 120x30
@@ -324,7 +321,7 @@ await ptyHandle.resize(120, 30)
 
 ### Disconnect
 
-Daytona provides methods to disconnect from a PTY session and clean up resources without killing the process.
+Disconnect from a PTY session and clean up resources without killing the process.
 
 ```typescript
 // Always clean up when done
@@ -337,7 +334,7 @@ try {
 
 ### Check connection status
 
-Daytona provides methods to check if a PTY session is still connected.
+Check if a PTY session is still connected.
 
 ```typescript
 if (ptyHandle.isConnected()) {
@@ -347,7 +344,7 @@ if (ptyHandle.isConnected()) {
 
 ### Exit code and error
 
-Daytona provides methods to access the exit code and error message after a PTY process terminates.
+Access the exit code and error message after a PTY process terminates.
 
 ```typescript
 // Access via getters after process terminates
@@ -359,7 +356,7 @@ if (ptyHandle.error) {
 
 ### Iterate over output (Python)
 
-Daytona provides methods to iterate over a PTY handle to receive output data.
+Iterate over a PTY handle to receive output data.
 
 ```typescript
 // TypeScript uses the onData callback instead
@@ -374,7 +371,7 @@ const ptyHandle = await sandbox.process.createPty({
 
 ## Error handling
 
-Daytona provides methods to monitor exit codes and handle errors appropriately with PTY sessions.
+Monitor exit codes and handle errors appropriately with PTY sessions.
 
 ```typescript
 // TypeScript: Check exit codes
@@ -384,12 +381,6 @@ if (result.exitCode !== 0) {
   console.log(`Error: ${result.error}`)
 }
 ```
-
-## Troubleshooting
-
-- **Connection issues**: verify sandbox status, network connectivity, and proper session IDs
-- **Performance issues**: use appropriate terminal dimensions and efficient data handlers
-- **Process management**: use explicit `kill()` calls and proper timeout handling for long-running processes
 
 ## See Also
 - [Python SDK - pty](../python-sdk/pty.md)

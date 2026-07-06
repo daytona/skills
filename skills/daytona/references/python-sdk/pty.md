@@ -11,7 +11,6 @@
 - Resource management
 - PtyHandle methods
 - Error handling
-- Troubleshooting
 - See Also
 
 
@@ -28,7 +27,7 @@ A PTY (Pseudo Terminal) is a virtual terminal interface that allows programs to 
 
 ## Create PTY session
 
-Daytona provides methods to create an interactive terminal session that can execute commands and handle user input.
+Create an interactive terminal session that can execute commands and handle user input.
 
 ```python
 from daytona.common.pty import PtySize
@@ -43,7 +42,7 @@ pty_handle = sandbox.process.create_pty_session(
 
 ## Connect to PTY session
 
-Daytona provides methods to establish a connection to an existing PTY session, enabling interaction with a previously created terminal.
+Establish a connection to an existing PTY session.
 
 ```python
 pty_handle = sandbox.process.connect_pty_session("my-session")
@@ -51,7 +50,7 @@ pty_handle = sandbox.process.connect_pty_session("my-session")
 
 ## List PTY sessions
 
-Daytona provides methods to list PTY sessions, allowing you to retrieve information about all PTY sessions, both active and inactive, that have been created in the sandbox.
+List PTY sessions currently registered in the sandbox.
 
 ```python
 # List all PTY sessions
@@ -60,12 +59,13 @@ sessions = sandbox.process.list_pty_sessions()
 for session in sessions:
     print(f"Session ID: {session.id}")
     print(f"Active: {session.active}")
+    print(f"Lazy start: {session.lazy_start}")
     print(f"Created: {session.created_at}")
 ```
 
 ## Get PTY session info
 
-Daytona provides methods to get information about a specific PTY session, allowing you to retrieve comprehensive information about a specific PTY session including its current state, configuration, and metadata.
+Get details about a specific PTY session.
 
 ```python
 # Get details about a specific PTY session
@@ -73,13 +73,14 @@ session_info = sandbox.process.get_pty_session_info("my-session")
 
 print(f"Session ID: {session_info.id}")
 print(f"Active: {session_info.active}")
+print(f"Lazy start: {session_info.lazy_start}")
 print(f"Working Directory: {session_info.cwd}")
 print(f"Terminal Size: {session_info.cols}x{session_info.rows}")
 ```
 
 ## Kill PTY session
 
-Daytona provides methods to kill a PTY session, allowing you to forcefully terminate a PTY session and cleans up all associated resources.
+Kill a PTY session, terminating the shell process and removing the session from the sandbox.
 
 ```python
 # Kill a specific PTY session
@@ -93,7 +94,7 @@ for pty_session in pty_sessions:
 
 ## Resize PTY session
 
-Daytona provides methods to resize a PTY session, allowing you to change the terminal dimensions of an active PTY session. This sends a SIGWINCH signal to the shell process, allowing terminal applications to adapt to the new size.
+Resize a PTY session, allowing you to change the terminal dimensions of an active PTY session.
 
 ```python
 from daytona.common.pty import PtySize
@@ -110,11 +111,11 @@ pty_handle.resize(new_size)
 
 ## Interactive commands
 
-Daytona provides methods to handle interactive commands with PTY sessions, allowing you to handle interactive commands that require user input and can be resized during execution.
+Handle interactive commands with PTY sessions, allowing you to handle interactive commands that require user input and can be resized during execution.
 
 ```python
 import time
-from daytona import Daytona, Sandbox
+import threading
 from daytona.common.pty import PtySize
 
 def handle_pty_data(data: bytes):
@@ -127,6 +128,10 @@ pty_handle = sandbox.process.create_pty_session(
     pty_size=PtySize(cols=300, rows=100)
 )
 
+# Handle output while sending interactive input
+thread = threading.Thread(target=pty_handle.wait, args=(handle_pty_data,))
+thread.start()
+
 # Send interactive command
 pty_handle.send_input('printf "Are you accepting the terms and conditions? (y/n): " && read confirm && if [ "$confirm" = "y" ]; then echo "You accepted"; else echo "You did not accept"; fi\n')
 time.sleep(1)
@@ -138,17 +143,14 @@ print(f"PTY session resized to {pty_session_info.cols}x{pty_session_info.rows}")
 
 # Exit the session
 pty_handle.send_input('exit\n')
-
-# Handle output using iterator
-for data in pty_handle:
-    handle_pty_data(data)
+thread.join()
 
 print(f"Session completed with exit code: {pty_handle.exit_code}")
 ```
 
 ## Long-running processes
 
-Daytona provides methods to manage long-running processes with PTY sessions, allowing you to manage long-running processes that need to be monitored or terminated.
+Manage long-running processes with PTY sessions, allowing you to manage long-running processes that need to be monitored or terminated.
 
 ```python
 import time
@@ -187,7 +189,7 @@ if pty_handle.error:
 
 ## Resource management
 
-Daytona provides methods to manage resource leaks with PTY sessions, allowing you to always clean up PTY sessions to prevent resource leaks.
+Manage resource leaks with PTY sessions, allowing you to always clean up PTY sessions to prevent resource leaks.
 
 ```python
 # Python: Use try/finally
@@ -206,7 +208,7 @@ Daytona provides methods to interact with PTY sessions, allowing you to send inp
 
 ### Send input
 
-Daytona provides methods to send input to a PTY session, allowing you to send input data (keystrokes or commands) to the PTY session.
+Send input to a PTY session, allowing you to send input data (keystrokes or commands) to the PTY session.
 
 ```python
 # Send a command
@@ -218,7 +220,7 @@ pty_handle.send_input("y\n")
 
 ### Wait for completion
 
-Daytona provides methods to wait for a PTY process to exit and return the result, allowing you to wait for a PTY process to exit and return the result.
+Wait for a PTY process to exit and return the result.
 
 ```python
 # Wait with a callback for output data
@@ -231,7 +233,7 @@ print(f"Exit code: {result.exit_code}")
 
 ### Wait for connection
 
-Daytona provides methods to wait for the WebSocket connection to be established before sending input, allowing you to wait for the WebSocket connection to be established before sending input.
+Wait for the WebSocket connection to be established before sending input.
 
 ```python
 # Python handles connection internally during creation
@@ -240,7 +242,7 @@ Daytona provides methods to wait for the WebSocket connection to be established 
 
 ### Kill PTY process
 
-Daytona provides methods to kill a PTY process and terminate the session from the handle.
+Kill a PTY process and terminate the session from the handle.
 
 ```python
 pty_handle.kill()
@@ -248,7 +250,7 @@ pty_handle.kill()
 
 ### Resize from handle
 
-Daytona provides methods to resize the PTY terminal dimensions directly from the handle.
+Resize the PTY terminal dimensions directly from the handle.
 
 ```python
 from daytona.common.pty import PtySize
@@ -258,7 +260,7 @@ pty_handle.resize(PtySize(cols=120, rows=30))
 
 ### Disconnect
 
-Daytona provides methods to disconnect from a PTY session and clean up resources without killing the process.
+Disconnect from a PTY session and clean up resources without killing the process.
 
 ```python
 # Python: Use kill() to terminate, or let the handle go out of scope
@@ -266,7 +268,7 @@ Daytona provides methods to disconnect from a PTY session and clean up resources
 
 ### Check connection status
 
-Daytona provides methods to check if a PTY session is still connected.
+Check if a PTY session is still connected.
 
 ```python
 # Python: Check by attempting operations or using session info
@@ -276,7 +278,7 @@ print(f"Session active: {session_info.active}")
 
 ### Exit code and error
 
-Daytona provides methods to access the exit code and error message after a PTY process terminates.
+Access the exit code and error message after a PTY process terminates.
 
 ```python
 # After iteration or wait completes
@@ -287,7 +289,7 @@ if pty_handle.error:
 
 ### Iterate over output (Python)
 
-Daytona provides methods to iterate over a PTY handle to receive output data.
+Iterate over a PTY handle to receive output data.
 
 ```python
 # Iterate over PTY output
@@ -300,7 +302,7 @@ print(f"Session ended with exit code: {pty_handle.exit_code}")
 
 ## Error handling
 
-Daytona provides methods to monitor exit codes and handle errors appropriately with PTY sessions.
+Monitor exit codes and handle errors appropriately with PTY sessions.
 
 ```python
 # Python: Check exit codes
@@ -309,12 +311,6 @@ if result.exit_code != 0:
     print(f"Command failed: {result.exit_code}")
     print(f"Error: {result.error}")
 ```
-
-## Troubleshooting
-
-- **Connection issues**: verify sandbox status, network connectivity, and proper session IDs
-- **Performance issues**: use appropriate terminal dimensions and efficient data handlers
-- **Process management**: use explicit `kill()` calls and proper timeout handling for long-running processes
 
 ## See Also
 - [TypeScript SDK - pty](../typescript-sdk/pty.md)

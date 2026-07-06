@@ -21,7 +21,7 @@ Overview provides a summary of your organization's wallet, including the current
 
 Payment method connects your wallet to your preferred payment method, allowing you to add funds to your balance and receive invoices.
 
-1. Navigate to [Daytona Wallet ↗](https://app.daytona.io/dashboard/billing/wallet)
+1. Go to [Daytona Wallet ↗](https://app.daytona.io/dashboard/billing/wallet)
 2. Click the **Connect** button in the **Payment method** section
 3. Follow the prompts to connect your payment method to your wallet
 
@@ -36,7 +36,7 @@ Set both **Threshold** and **Target** to `0` to disable automatic top-up.
 
 Redeem coupon allows you to redeem coupon codes to add credits to your wallet.
 
-1. Navigate to [Daytona Wallet ↗](https://app.daytona.io/dashboard/billing/wallet)
+1. Go to [Daytona Wallet ↗](https://app.daytona.io/dashboard/billing/wallet)
 2. Enter the coupon code in the **Redeem coupon** input field
 3. Click the **Redeem** button to redeem the coupon code
 
@@ -44,7 +44,7 @@ Redeem coupon allows you to redeem coupon codes to add credits to your wallet.
 
 One time top-up allows you to add credits to your balance with a one time payment.
 
-1. Navigate to [Daytona Wallet ↗](https://app.daytona.io/dashboard/billing/wallet)
+1. Go to [Daytona Wallet ↗](https://app.daytona.io/dashboard/billing/wallet)
 2. Select the top-up amount or enter a custom amount
 3. Click the **Top up** button
 4. Follow the prompts to complete the payment
@@ -62,7 +62,7 @@ Invoices are automatically generated and sent to your billing emails.
 - **Status**: the status of the invoice
 - **Type**: the type of the invoice
 
-1. Navigate to [Daytona Wallet ↗](https://app.daytona.io/dashboard/billing/wallet)
+1. Go to [Daytona Wallet ↗](https://app.daytona.io/dashboard/billing/wallet)
 2. Click the three dots button (**:::**) next to the invoice you want to view
 3. Click the **View** button to see the invoice details
 4. Optionally, download the invoice

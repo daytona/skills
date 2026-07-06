@@ -28,25 +28,17 @@
 
 Execute Python, JavaScript, or TypeScript code and return output, exit code, and artifacts
 
-### Request Body
+### Parameters
 
-Code execution request
-
-Schema: **CodeRunRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `argv` | array of string | No |  |
-| `code` | string | Yes |  |
-| `envs` | object | No |  |
-| `language` | string | Yes | python, javascript, typescript |
-| `timeout` | integer | No |  |
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `request` | body | string | Yes | Code execution request |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | CodeRunResponse |
+| 200 | OK |  |
 
 ---
 
@@ -56,24 +48,17 @@ Schema: **CodeRunRequest**
 
 Execute a shell command and return the output and exit code
 
-### Request Body
+### Parameters
 
-Command execution request
-
-Schema: **ExecuteRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `command` | string | Yes |  |
-| `cwd` | string | No | Current working directory |
-| `envs` | object | No | Environment variables to set for the command |
-| `timeout` | integer | No | Timeout in seconds, defaults to 10 seconds |
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `request` | body | string | Yes | Command execution request |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | ExecuteResponse |
+| 200 | OK |  |
 
 ---
 
@@ -87,7 +72,7 @@ Get a list of all active pseudo-terminal sessions
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | PtyListResponse |
+| 200 | OK |  |
 
 ---
 
@@ -97,26 +82,17 @@ Get a list of all active pseudo-terminal sessions
 
 Create a new pseudo-terminal session with specified configuration
 
-### Request Body
+### Parameters
 
-PTY session creation request
-
-Schema: **PtyCreateRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cols` | integer | No |  |
-| `cwd` | string | No |  |
-| `envs` | object | No |  |
-| `id` | string | No |  |
-| `lazyStart` | boolean | No | Don't start PTY until first client connects |
-| `rows` | integer | No |  |
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `request` | body | string | Yes | PTY session creation request |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 201 | Created | PtyCreateResponse |
+| 201 | Created |  |
 
 ---
 
@@ -136,7 +112,7 @@ Get detailed information about a specific pseudo-terminal session
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | PtySessionInfo |
+| 200 | OK |  |
 
 ---
 
@@ -156,7 +132,7 @@ Delete a pseudo-terminal session and terminate its process
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | gin.H |
+| 200 | OK |  |
 
 ---
 
@@ -191,23 +167,13 @@ Resize the terminal dimensions of a pseudo-terminal session
 | Name | In | Type | Required | Description |
 |------|-----|------|----------|-------------|
 | `sessionId` | path | string | Yes | PTY session ID |
-
-### Request Body
-
-Resize request with new dimensions
-
-Schema: **PtyResizeRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cols` | integer | Yes |  |
-| `rows` | integer | Yes |  |
+| `request` | body | string | Yes | Resize request with new dimensions |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | PtySessionInfo |
+| 200 | OK |  |
 
 ---
 
@@ -221,7 +187,7 @@ Get a list of all active shell sessions
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | array of Session |
+| 200 | OK |  |
 
 ---
 
@@ -231,15 +197,11 @@ Get a list of all active shell sessions
 
 Create a new shell session for command execution
 
-### Request Body
+### Parameters
 
-Session creation request
-
-Schema: **CreateSessionRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `sessionId` | string | Yes |  |
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `request` | body | string | Yes | Session creation request |
 
 ### Responses
 
@@ -259,7 +221,7 @@ Get details of an entrypoint session including its commands
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | Session |
+| 200 | OK |  |
 
 ---
 
@@ -273,13 +235,13 @@ Get logs for a sandbox entrypoint session. Returns JSON with separated stdout/st
 
 | Name | In | Type | Required | Description |
 |------|-----|------|----------|-------------|
-| `follow` | query | boolean | No | Follow logs in real-time (WebSocket only) |
+| `follow` | query | string | No | Follow logs in real-time (WebSocket only) |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | Entrypoint log content | SessionCommandLogsResponse |
+| 200 | Entrypoint log content |  |
 
 ---
 
@@ -299,7 +261,7 @@ Get details of a specific session including its commands
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | Session |
+| 200 | OK |  |
 
 ---
 
@@ -340,7 +302,7 @@ Get details of a specific command within a session
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | Command |
+| 200 | OK |  |
 
 ---
 
@@ -356,16 +318,7 @@ Send input data to a running command in a session for interactive execution
 |------|-----|------|----------|-------------|
 | `sessionId` | path | string | Yes | Session ID |
 | `commandId` | path | string | Yes | Command ID |
-
-### Request Body
-
-Input send request
-
-Schema: **SessionSendInputRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `data` | string | Yes |  |
+| `request` | body | string | Yes | Input send request |
 
 ### Responses
 
@@ -387,13 +340,13 @@ Get logs for a specific command within a session. Returns JSON with separated st
 |------|-----|------|----------|-------------|
 | `sessionId` | path | string | Yes | Session ID |
 | `commandId` | path | string | Yes | Command ID |
-| `follow` | query | boolean | No | Follow logs in real-time (WebSocket only) |
+| `follow` | query | string | No | Follow logs in real-time (WebSocket only) |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | Log content (JSON for new SDKs, plain text for old SDKs) | SessionCommandLogsResponse |
+| 200 | Log content (JSON for new SDKs, plain text for old SDKs) |  |
 
 ---
 
@@ -408,25 +361,13 @@ Execute a command within an existing shell session
 | Name | In | Type | Required | Description |
 |------|-----|------|----------|-------------|
 | `sessionId` | path | string | Yes | Session ID |
-
-### Request Body
-
-Command execution request
-
-Schema: **SessionExecuteRequest**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `async` | boolean | No |  |
-| `command` | string | Yes |  |
-| `runAsync` | boolean | No |  |
-| `suppressInputEcho` | boolean | No |  |
+| `request` | body | string | Yes | Command execution request |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | SessionExecuteResponse |
-| 202 | Accepted | SessionExecuteResponse |
+| 200 | OK |  |
+| 202 | Accepted |  |
 
 ---

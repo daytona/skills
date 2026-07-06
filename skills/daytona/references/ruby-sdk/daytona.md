@@ -66,6 +66,17 @@ def volume()
 
 - `Daytona:VolumeService`
 
+#### secret()
+
+```ruby
+def secret()
+
+```
+
+**Returns**:
+
+- `Daytona:SecretService`
+
 #### object_storage_api()
 
 ```ruby

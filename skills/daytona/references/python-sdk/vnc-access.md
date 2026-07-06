@@ -11,12 +11,6 @@
 VNC (Virtual Network Computing) access provides a graphical desktop environment for your Daytona Sandbox directly in the browser. This allows you to interact with GUI applications, desktop tools, and visual interfaces running inside your sandbox.
 
 VNC and [Computer Use](./computer-use-guide.md) work together to enable both manual and automated desktop interactions. VNC provides the visual interface for users to manually interact with the desktop, while Computer Use provides the programmatic API for AI agents to automate mouse, keyboard, and screenshot operations. Through VNC, you can observe AI agents performing automated tasks via Computer Use in real-time.
-
-- **GUI application development**: build and test desktop applications with visual interfaces
-- **Browser testing**: run and debug web applications in a full browser environment
-- **Visual debugging**: inspect graphical output and UI behavior in real-time
-- **Desktop tool access**: use graphical IDEs, design tools, or other desktop software
-- **Agent observation**: watch AI agents perform automated tasks through Computer Use
 > **Note: Sandbox image requirement**
 > VNC and Computer Use require a sandbox with the default image. Sandboxes created with custom images do not include VNC support unless you install the [required packages](#required-packages).
 
@@ -24,7 +18,7 @@ VNC and [Computer Use](./computer-use-guide.md) work together to enable both man
 
 Access the VNC desktop environment directly from the [Daytona Dashboard ↗](https://app.daytona.io/dashboard/sandboxes).
 
-1. Navigate to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
 2. Locate the sandbox you want to access via VNC
 3. Click the options menu (**⋮**) next to the sandbox
 4. Select **VNC** from the dropdown menu
