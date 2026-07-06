@@ -6,6 +6,8 @@ Reads Daytona MDX docs and generates clean markdown skill reference files.
 Output goes to skills/daytona/references/.
 """
 
+import argparse
+import json
 import re
 import shutil
 import sys
@@ -19,11 +21,33 @@ import yaml
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
-if len(sys.argv) < 2:
-    print("Usage: python generate.py <path-to-daytona-docs>")
-    sys.exit(1)
 
-DOCS_ROOT = Path(sys.argv[1]).resolve()
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Generate Daytona skill references from docs and OpenAPI specs."
+    )
+    parser.add_argument(
+        "docs_root",
+        type=Path,
+        help="Path to Daytona docs content (src/content/docs/en)",
+    )
+    parser.add_argument(
+        "--main-api-spec",
+        type=Path,
+        required=True,
+        help="Path to the main Daytona API OpenAPI spec (JSON or YAML)",
+    )
+    parser.add_argument(
+        "--toolbox-api-spec",
+        type=Path,
+        required=True,
+        help="Path to the Toolbox API OpenAPI spec (JSON or YAML)",
+    )
+    return parser.parse_args()
+
+
+args = parse_args()
+DOCS_ROOT = args.docs_root.resolve()
 if not DOCS_ROOT.is_dir():
     print(f"Error: docs directory not found: {DOCS_ROOT}")
     sys.exit(1)
@@ -75,9 +99,8 @@ PLATFORM_DOCS = [
 ]
 
 # OpenAPI spec paths
-DAYTONA_REPO_ROOT = DOCS_ROOT.parent.parent.parent.parent.parent.parent
-MAIN_API_SPEC = DAYTONA_REPO_ROOT / "libs" / "api-client-go" / "api" / "openapi.yaml"
-TOOLBOX_API_SPEC = DAYTONA_REPO_ROOT / "libs" / "toolbox-api-client-go" / "api" / "openapi.yaml"
+MAIN_API_SPEC = args.main_api_spec.resolve()
+TOOLBOX_API_SPEC = args.toolbox_api_spec.resolve()
 API_OUTPUT = OUTPUT_ROOT / "api"
 PLATFORM_OUTPUT = OUTPUT_ROOT / "platform"
 
@@ -948,8 +971,10 @@ def generate_cli_reference():
 # ---------------------------------------------------------------------------
 
 def load_openapi_spec(path: Path) -> dict:
-    """Load and parse an OpenAPI YAML spec."""
+    """Load and parse an OpenAPI JSON or YAML spec."""
     with open(path, "r", encoding="utf-8") as f:
+        if path.suffix.lower() == ".json":
+            return json.load(f)
         return yaml.safe_load(f)
 
 

@@ -45,5 +45,5 @@ jobs:
           git push -u origin "$BRANCH"
           gh pr create \
             --title "Update skill references $(date +%Y-%m-%d)" \
-            --body "Automated update of skill reference docs from upstream Daytona repository." \
+            --body "Automated update of skill reference docs from https://github.com/daytona/docs and OpenAPI specs from https://github.com/daytona/clients." \
             --base main
