@@ -272,16 +272,22 @@ sandbox = await daytona.create(
 
 ```python
 @with_instrumentation()
-async def delete(sandbox: AsyncSandbox, timeout: float = 60) -> None
+async def delete(sandbox: AsyncSandbox,
+                 timeout: float = 60,
+                 wait: bool = False) -> None
 ```
 
 Deletes a Sandbox.
 
+By default returns as soon as the deletion request is accepted (fire-and-forget).
+Pass ``wait=True`` to block until the Sandbox reaches the 'destroyed' state.
+
 **Arguments**:
 
 - `sandbox` _Sandbox_ - The Sandbox instance to delete.
-- `timeout` _float_ - Timeout (in seconds) for sandbox deletion. 0 means no timeout.
-  Default is 60 seconds.
+- `timeout` _float_ - Timeout (in seconds) for the request and, when ``wait``
+  is True, for reaching 'destroyed'. 0 means no timeout. Default is 60 seconds.
+- `wait` _bool_ - If True, wait until the Sandbox is destroyed. Defaults to False.
 
 
 **Raises**:
@@ -302,7 +308,8 @@ await daytona.delete(sandbox)  # Clean up when done
 ```python
 @intercept_errors(message_prefix="Failed to get sandbox: ")
 @with_instrumentation()
-async def get(sandbox_id_or_name: str) -> AsyncSandbox
+async def get(sandbox_id_or_name: str,
+              request_timeout: float | None = None) -> AsyncSandbox
 ```
 
 Gets a Sandbox by its ID or name.
@@ -310,6 +317,10 @@ Gets a Sandbox by its ID or name.
 **Arguments**:
 
 - `sandbox_id_or_name` _str_ - The ID or name of the Sandbox to retrieve.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Returns**:
@@ -335,8 +346,8 @@ print(sandbox.state)
 @intercept_errors(message_prefix="Failed to list sandboxes: ")
 @with_instrumentation()
 async def list(
-        query: ListSandboxesQuery | None = None
-) -> AsyncIterator[AsyncSandbox]
+        query: ListSandboxesQuery | None = None,
+        request_timeout: float | None = None) -> AsyncIterator[AsyncSandbox]
 ```
 
 Iterates over Sandboxes matching the given query.
@@ -344,6 +355,10 @@ Iterates over Sandboxes matching the given query.
 **Arguments**:
 
 - `query` - Optional filters, sorting, and per-page size.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Yields**:
@@ -441,6 +456,13 @@ Configuration options for initializing the Daytona client.
   recommended when running many concurrent long-lived operations like `process.exec`.
 - `otel_enabled` _bool | None_ - Enable OpenTelemetry tracing for SDK operations. Defaults
   to `None`, which falls back to the `DAYTONA_OTEL_ENABLED` environment variable.
+- `use_deprecated_polling` _bool | None_ - Observe sandbox state by legacy polling instead
+  of WebSocket event streaming. Defaults to ``False`` (event streaming). Can also be
+  enabled via the ``DAYTONA_USE_DEPRECATED_POLLING`` environment variable.
+
+  .. deprecated::
+  Polling-only mode will be removed in a future release; event streaming is the
+  default and falls back to polling automatically when WebSockets are unavailable.
 - `_experimental` _dict[str, any] | None_ - Configuration for experimental features.
 
 
@@ -472,14 +494,24 @@ Base parameters for creating a new Sandbox.
 - `public` _bool | None_ - Whether the Sandbox should be public.
 - `timeout` _float | None_ - Timeout in seconds for Sandbox to be created and started.
 - `auto_stop_interval` _int | None_ - Interval in minutes after which Sandbox will
-  automatically stop if no Sandbox event occurs during that time. Default is 15 minutes.
-  0 means no auto-stop.
+  automatically stop if no Sandbox event occurs during that time. Default is 15 minutes
+  (for sandbox classes that support pausing, auto-pause defaults to 60 minutes instead
+  and auto-stop is disabled). 0 means no auto-stop.
+- `auto_pause_interval` _int | None_ - Auto-pause interval in minutes (0 means disabled).
+  Only supported for sandbox classes that support pausing.
+  Not allowed for ephemeral sandboxes. At most one of auto_stop_interval and
+  auto_pause_interval may be non-zero. For non-ephemeral sandbox classes that
+  support pausing, defaults to 60 minutes (with auto-stop disabled) when
+  neither interval is provided.
 - `auto_archive_interval` _int | None_ - Interval in minutes after which a continuously stopped Sandbox will
   automatically archive. Default is 7 days.
   0 means the maximum interval will be used.
 - `auto_delete_interval` _int | None_ - Interval in minutes after which a continuously stopped Sandbox will
   automatically be deleted. By default, auto-delete is disabled.
   Negative value means disabled, 0 means delete immediately upon stopping.
+- `ttl_minutes` _int | None_ - Maximum time to live in minutes, counted as wall-clock time since
+  creation regardless of sandbox state. When it elapses the sandbox is destroyed, even if
+  it is stopped, paused, or archived. 0 means disabled.
 - `volumes` _list[VolumeMount] | None_ - List of volumes mounts to attach to the Sandbox.
 - `secrets` _dict[str, str] | None_ - Map of environment variable name to the name of an existing
   organization Secret to mount into the Sandbox. The env var is set to the Secret's opaque

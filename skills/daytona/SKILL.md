@@ -1,6 +1,6 @@
 ---
 name: daytona
-description: Creates and manages isolated cloud sandboxes (secure code execution environments with dedicated runtimes) on the Daytona platform. Use when a task needs an isolated runtime, sandbox, secure compute, or Daytona SDK/API/CLI operations. Covers Python, TypeScript, Go, and Ruby SDKs.
+description: Creates and manages isolated cloud sandboxes (secure code execution environments with dedicated runtimes) on the Daytona platform. Use when a task needs an isolated runtime, sandbox, secure compute, or Daytona SDK/API/CLI operations. Covers Python, TypeScript, Java, Go, and Ruby SDKs.
 ---
 
 ## What is Daytona
@@ -9,7 +9,7 @@ Daytona provides **full composable computers** — **sandboxes** — for AI agen
 
 Sandboxes are built from OCI-compliant images or snapshots. Any language or tool that runs on Linux works.
 
-**Scope:** This skill covers Daytona Cloud (`app.daytona.io`). For self-hosted Daytona OSS deployment, see `./references/platform/oss-deployment.md`.
+**Scope:** This skill covers Daytona Cloud (`app.daytona.io`).
 
 ## Before You Start
 
@@ -287,7 +287,7 @@ View your usage at [Daytona Dashboard > Limits](https://app.daytona.io/dashboard
 | Store and retrieve objects (S3-compatible) | `./references/<lang>-sdk/object-storage.md` (Python sync/async, TypeScript, Ruby) |
 | SSH into a running sandbox | `./references/<lang>-sdk/ssh-access.md` |
 
-Replace `<lang>-sdk` with: `python-sdk`, `typescript-sdk`, `go-sdk`, or `ruby-sdk`.
+Replace `<lang>-sdk` with: `python-sdk`, `typescript-sdk`, `java-sdk`, `go-sdk`, or `ruby-sdk`.
 
 ## SDK Index
 
@@ -316,9 +316,9 @@ Async versions mirror the sync API: [python-sdk/async/](./references/python-sdk/
 
 Flat structure (no sync/async split like Python): [typescript-sdk/README.md](./references/typescript-sdk/README.md). Files: `daytona.md`, `sandbox.md`, `process.md`, `file-system.md`, `git.md`, `snapshot.md`, `volume.md`, `code-interpreter.md`, `computer-use.md`, `lsp-server.md`, `object-storage.md`, `execute-response.md`, `pty-handle.md`, `errors.md`, `image.md`.
 
-### Go SDK & Ruby SDK
+### Java SDK, Go SDK & Ruby SDK
 
-Both follow the same patterns. Go uses a compact single-file structure: [go-sdk/README.md](./references/go-sdk/README.md). Ruby mirrors TypeScript: [ruby-sdk/README.md](./references/ruby-sdk/README.md).
+All follow the same patterns. Java mirrors TypeScript's flat structure: [java-sdk/README.md](./references/java-sdk/README.md). Go uses a compact single-file structure: [go-sdk/README.md](./references/go-sdk/README.md). Ruby mirrors TypeScript: [ruby-sdk/README.md](./references/ruby-sdk/README.md).
 
 ## Feature Guides (per-SDK)
 
@@ -335,7 +335,6 @@ Each SDK folder contains the same set of feature guides with language-specific e
 | `ssh-access.md` | SSH into sandboxes |
 | `vnc-access.md` | VNC for desktop sandboxes |
 | `computer-use-guide.md` | Desktop automation (mouse/keyboard/screen) |
-| `configuration.md` | Environment variables, config precedence |
 | `declarative-builder.md` | Custom sandbox images with the Image builder |
 | `log-streaming.md` | Stream sandbox logs |
 | `network-limits.md` | Network firewall controls |
@@ -344,7 +343,6 @@ Each SDK folder contains the same set of feature guides with language-specific e
 | `pty.md` | PTY/terminal support |
 | `regions.md` | Available regions |
 | `vpn-connections.md` | VPN connections |
-| `getting-started.md` | Quick start guide |
 
 ## Platform Reference
 
@@ -358,8 +356,6 @@ Each SDK folder contains the same set of feature guides with language-specific e
 | [web-terminal.md](./references/platform/web-terminal.md) | Browser-based terminal access |
 | [webhooks.md](./references/platform/webhooks.md) | Webhook events |
 | [mcp.md](./references/platform/mcp.md) | MCP integration |
-| [runners.md](./references/platform/runners.md) | Runner infrastructure |
-| [oss-deployment.md](./references/platform/oss-deployment.md) | Self-hosted deployment |
 | [cli.md](./references/cli.md) | CLI command reference |
 
 ## API Reference

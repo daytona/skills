@@ -40,7 +40,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/daytonaio/daytona/libs/sdk-go/pkg/daytona"
+	"github.com/daytona/clients/sdk-go/pkg/daytona"
 )
 
 func main() {
@@ -108,7 +108,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/daytonaio/daytona/libs/sdk-go/pkg/daytona"
+	"github.com/daytona/clients/sdk-go/pkg/daytona"
 )
 
 func main() {
@@ -152,3 +152,4 @@ func main() {
 ## See Also
 - [Python SDK - log-streaming](../python-sdk/log-streaming.md)
 - [TypeScript SDK - log-streaming](../typescript-sdk/log-streaming.md)
+- [Java SDK - log-streaming](../java-sdk/log-streaming.md)

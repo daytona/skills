@@ -8,7 +8,7 @@ Daytona class for Daytona SDK.
 #### new Daytona()
 
 ```ruby
-def initialize(config)
+def initialize(config = Config.new)
 
 ```
 
@@ -126,7 +126,7 @@ Shuts down OTel providers, flushing any pending telemetry data.
 #### create()
 
 ```ruby
-def create(params, on_snapshot_create_logs:)
+def create(params = nil, on_snapshot_create_logs: nil)
 
 ```
 
@@ -142,12 +142,13 @@ Creates a sandbox with the specified parameters
 
 **Raises**:
 
-- `Daytona:Sdk:Error` - If auto_stop_interval or auto_archive_interval is negative
+- `Daytona:Sdk:Error` - If auto_stop_interval, auto_pause_interval, auto_archive_interval, or ttl_minutes is negative,
+or if auto_stop_interval and auto_pause_interval are both non-zero
 
 #### delete()
 
 ```ruby
-def delete(sandbox)
+def delete(sandbox, wait: false)
 
 ```
 
@@ -156,6 +157,7 @@ Deletes a Sandbox.
 **Parameters**:
 
 - `sandbox` _Daytona:Sandbox_ -
+- `wait` _Boolean_ - When +true+, block until the Sandbox is destroyed.
 
 **Returns**:
 
@@ -181,7 +183,7 @@ Gets a Sandbox by its ID.
 #### list()
 
 ```ruby
-def list(query)
+def list(query = nil)
 
 ```
 
@@ -211,7 +213,7 @@ end
 #### start()
 
 ```ruby
-def start(sandbox, timeout)
+def start(sandbox, timeout = Sandbox::DEFAULT_TIMEOUT)
 
 ```
 
@@ -229,7 +231,7 @@ Starts a Sandbox and waits for it to be ready.
 #### stop()
 
 ```ruby
-def stop(sandbox, timeout)
+def stop(sandbox, timeout = Sandbox::DEFAULT_TIMEOUT)
 
 ```
 
@@ -247,4 +249,5 @@ Stops a Sandbox and waits for it to be stopped.
 ## See Also
 - [Python SDK - daytona](../python-sdk/sync/daytona.md)
 - [TypeScript SDK - daytona](../typescript-sdk/daytona.md)
+- [Java SDK - daytona](../java-sdk/daytona.md)
 - [Go SDK - daytona](../go-sdk/daytona.md)

@@ -30,13 +30,13 @@ entries, depth=2 also includes their children, and so on.
 | Name | In | Type | Required | Description |
 |------|-----|------|----------|-------------|
 | `path` | query | string | No | Directory path to list (defaults to working directory) |
-| `depth` | query | string | No | How many levels deep to list (default: 1, must be >= 1) |
+| `depth` | query | integer | No | How many levels deep to list (default: 1, must be >= 1) |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK |  |
+| 200 | OK | array of FileInfo |
 
 ---
 
@@ -51,7 +51,7 @@ Delete a file or directory at the specified path
 | Name | In | Type | Required | Description |
 |------|-----|------|----------|-------------|
 | `path` | query | string | Yes | File or directory path to delete |
-| `recursive` | query | string | No | Enable recursive deletion for directories |
+| `recursive` | query | boolean | No | Enable recursive deletion for directories |
 
 ### Responses
 
@@ -67,17 +67,21 @@ Delete a file or directory at the specified path
 
 Download multiple files by providing their paths. Successful files are returned as multipart parts named `file`. Per-file failures are returned as multipart parts named `error` with JSON payloads shaped like ErrorResponse.
 
-### Parameters
+### Request Body
 
-| Name | In | Type | Required | Description |
-|------|-----|------|----------|-------------|
-| `downloadFiles` | body | string | Yes | Paths of files to download |
+Paths of files to download
+
+Schema: **FilesDownloadRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `paths` | array of string | Yes |  |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | Multipart response with file parts and JSON error parts |  |
+| 200 | Multipart response with file parts and JSON error parts | gin.H |
 
 ---
 
@@ -111,7 +115,7 @@ Download a file by providing its path
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK |  |
+| 200 | OK | string |
 
 ---
 
@@ -132,7 +136,7 @@ Search for text pattern within files in a directory
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK |  |
+| 200 | OK | array of Match |
 
 ---
 
@@ -173,7 +177,7 @@ Get detailed information about a file or directory
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK |  |
+| 200 | OK | FileInfo |
 
 ---
 
@@ -227,17 +231,23 @@ Set file permissions, ownership, and group for a file or directory
 
 Replace text pattern with new value in multiple files
 
-### Parameters
+### Request Body
 
-| Name | In | Type | Required | Description |
-|------|-----|------|----------|-------------|
-| `request` | body | string | Yes | Replace request |
+Replace request
+
+Schema: **ReplaceRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `files` | array of string | Yes |  |
+| `newValue` | string | Yes |  |
+| `pattern` | string | Yes |  |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK |  |
+| 200 | OK | array of ReplaceResult |
 
 ---
 
@@ -258,7 +268,7 @@ Search for files matching a specific pattern in a directory
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK |  |
+| 200 | OK | SearchFilesResponse |
 
 ---
 
@@ -273,12 +283,19 @@ Upload a file to the specified path
 | Name | In | Type | Required | Description |
 |------|-----|------|----------|-------------|
 | `path` | query | string | Yes | Destination path for the uploaded file |
-| `file` | formData | string | Yes | File to upload |
+
+### Request Body
+
+Schema: **UploadFile_request**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `file` | string (binary) | Yes | File to upload |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK |  |
+| 200 | OK | gin.H |
 
 ---

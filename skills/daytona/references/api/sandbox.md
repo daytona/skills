@@ -25,9 +25,12 @@
 - POST `/sandbox/{sandboxIdOrName}/public/{isPublic}`/public/{isPublic}}
 - POST `/sandbox/{sandboxId}/last-activity`/last-activity}
 - POST `/sandbox/{sandboxIdOrName}/autostop/{interval}`/autostop/{interval}}
+- POST `/sandbox/{sandboxIdOrName}/autopause/{interval}`/autopause/{interval}}
+- POST `/sandbox/{sandboxIdOrName}/ttl/{ttlMinutes}`/ttl/{ttlMinutes}}
 - POST `/sandbox/{sandboxIdOrName}/autoarchive/{interval}`/autoarchive/{interval}}
 - POST `/sandbox/{sandboxIdOrName}/autodelete/{interval}`/autodelete/{interval}}
 - POST `/sandbox/{sandboxIdOrName}/network-settings`/network-settings}
+- PUT `/sandbox/{sandboxIdOrName}/secrets`/secrets}
 - POST `/sandbox/{sandboxIdOrName}/archive`/archive}
 - GET `/sandbox/{sandboxIdOrName}/ports/{port}/preview-url`/ports/{port}/preview-url}
 - GET `/sandbox/{sandboxIdOrName}/ports/{port}/signed-preview-url`/ports/{port}/signed-preview-url}
@@ -122,8 +125,10 @@ Schema: **CreateSandbox**
 | `memory` | integer | No | Memory allocated to the sandbox in GB |
 | `disk` | integer | No | Disk space allocated to the sandbox in GB |
 | `autoStopInterval` | integer | No | Auto-stop interval in minutes (0 means disabled) |
+| `autoPauseInterval` | integer | No | Auto-pause interval in minutes (0 means disabled). Only supported for sandbox classes that support pausing. Not allowed for ephemeral sandboxes. At most one of autoStopInterval and autoPauseInterval may be non-zero. For non-ephemeral sandbox classes that support pausing, defaults to 60 minutes (with auto-stop disabled) when neither interval is provided. |
 | `autoArchiveInterval` | integer | No | Auto-archive interval in minutes (0 means the maximum interval will be used) |
 | `autoDeleteInterval` | integer | No | Auto-delete interval in minutes (negative value means disabled, 0 means delete immediately upon stopping) |
+| `ttlMinutes` | integer | No | Maximum time to live in minutes, counted as wall-clock time since creation regardless of sandbox state (0 means disabled). When it elapses the sandbox is destroyed, even if it is stopped, paused, or archived. |
 | `volumes` | array of [SandboxVolume](#schema-sandboxvolume) | No | Array of volumes to attach to the sandbox |
 | `buildInfo` | object | No | Build information for the sandbox |
 | `linkedSandbox` | string | No | ID or name of an existing sandbox to link the new sandbox to. The new sandbox will be scheduled on the same runner as the linked sandbox so a local network can be established between them. Linked sandboxes must be ephemeral (autoDeleteInterval=0) and cannot themselves be linked to another sandbox. |
@@ -589,6 +594,46 @@ Schema: **ForkSandbox**
 
 ---
 
+## POST `/sandbox/{sandboxIdOrName}/autopause/{interval}` {#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/autopause/{interval}}
+
+**Set sandbox auto-pause interval**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes | ID or name of the sandbox |
+| `interval` | path | number | Yes | Auto-pause interval in minutes (0 to disable) |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Auto-pause interval has been set | Sandbox |
+
+---
+
+## POST `/sandbox/{sandboxIdOrName}/ttl/{ttlMinutes}` {#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/ttl/{ttlMinutes}}
+
+**Set sandbox TTL**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes | ID or name of the sandbox |
+| `ttlMinutes` | path | number | Yes | Maximum time to live in minutes, re-anchored from the current time (0 to disable). When it elapses the sandbox is destroyed, even if it is stopped, paused, or archived |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | TTL has been set | Sandbox |
+
+---
+
 ## POST `/sandbox/{sandboxIdOrName}/autoarchive/{interval}` {#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/autoarchive/{interval}}
 
 **Set sandbox auto-archive interval**
@@ -657,6 +702,35 @@ Schema: **UpdateSandboxNetworkSettings**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | Network settings have been updated | Sandbox |
+
+---
+
+## PUT `/sandbox/{sandboxIdOrName}/secrets` {#daytona/tag/sandbox/PUT/sandbox/{sandboxIdOrName}/secrets}
+
+**Update sandbox secrets**
+
+Replaces the set of vault secrets mounted in the sandbox. Attached, detached and rotated secrets take effect for outbound requests within seconds. New env vars become visible to processes spawned after the update; a sandbox created without any secrets must be restarted for newly attached secrets to work.
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxIdOrName` | path | string | Yes | ID or name of the sandbox |
+
+### Request Body
+
+Schema: **UpdateSandboxSecrets**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `secrets` | array of object | Yes | Secrets to mount in this sandbox, replacing the previously mounted set. Each entry maps an env var name to a vault secret name. Pass an empty array to detach all secrets. |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Sandbox secrets have been updated | Sandbox |
 
 ---
 
@@ -913,7 +987,7 @@ This endpoint is deprecated. Use `getBuildLogsUrl` instead.
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | Decrypted secret key-value pairs for this sandbox | array |
+| 200 | Decrypted secret key-value pairs for this sandbox | array of resolveSandboxSecrets_200_response_inner |
 
 ---
 

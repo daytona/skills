@@ -10,7 +10,7 @@ such as `Image.base()`, `Image.debian_slim()`, or `Image.from_dockerfile()`.
 #### new Image()
 
 ```ruby
-def initialize(dockerfile:, context_list:)
+def initialize(dockerfile: nil, context_list: [])
 
 ```
 
@@ -50,7 +50,7 @@ def context_list()
 #### pip_install()
 
 ```ruby
-def pip_install(*packages, find_links:, index_url:, extra_index_urls:, pre:, extra_options:)
+def pip_install(*packages, find_links: nil, index_url: nil, extra_index_urls: nil, pre: false, extra_options: '')
 
 ```
 
@@ -79,7 +79,7 @@ image = Image.debian_slim("3.12").pip_install("requests", "pandas")
 #### pip_install_from_requirements()
 
 ```ruby
-def pip_install_from_requirements(requirements_txt, find_links:, index_url:, extra_index_urls:, pre:, extra_options:)
+def pip_install_from_requirements(requirements_txt, find_links: nil, index_url: nil, extra_index_urls: nil, pre: false, extra_options: '')
 
 ```
 
@@ -112,7 +112,7 @@ image = Image.debian_slim("3.12").pip_install_from_requirements("requirements.tx
 #### pip_install_from_pyproject()
 
 ```ruby
-def pip_install_from_pyproject(pyproject_toml, optional_dependencies:, find_links:, index_url:, extra_index_url:, pre:, extra_options:)
+def pip_install_from_pyproject(pyproject_toml, optional_dependencies: [], find_links: nil, index_url: nil, extra_index_url: nil, pre: false, extra_options: '')
 
 ```
 
@@ -320,7 +320,7 @@ image = Image.debian_slim("3.12").cmd(["/bin/bash"])
 #### dockerfile_commands()
 
 ```ruby
-def dockerfile_commands(dockerfile_commands, context_dir:)
+def dockerfile_commands(dockerfile_commands, context_dir: nil)
 
 ```
 
@@ -344,3 +344,4 @@ image = Image.debian_slim("3.12").dockerfile_commands(["RUN echo 'Hello, world!'
 
 ## See Also
 - [TypeScript SDK - image](../typescript-sdk/image.md)
+- [Java SDK - image](../java-sdk/image.md)

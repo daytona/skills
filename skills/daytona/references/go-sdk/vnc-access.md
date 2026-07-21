@@ -125,3 +125,4 @@ The default sandbox image includes all packages required for VNC and Computer Us
 ## See Also
 - [Python SDK - vnc-access](../python-sdk/vnc-access.md)
 - [TypeScript SDK - vnc-access](../typescript-sdk/vnc-access.md)
+- [Java SDK - vnc-access](../java-sdk/vnc-access.md)

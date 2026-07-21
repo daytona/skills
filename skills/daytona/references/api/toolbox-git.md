@@ -30,11 +30,16 @@
 
 Add files to the Git staging area
 
-### Parameters
+### Request Body
 
-| Name | In | Type | Required | Description |
-|------|-----|------|----------|-------------|
-| `request` | body | string | Yes | Add files request |
+Add files request
+
+Schema: **GitAddRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `files` | array of string | Yes | files to add (use . for all files) |
+| `path` | string | Yes |  |
 
 ### Responses
 
@@ -60,7 +65,7 @@ Get a list of all branches in the Git repository
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK |  |
+| 200 | OK | ListBranchResponse |
 
 ---
 
@@ -70,11 +75,16 @@ Get a list of all branches in the Git repository
 
 Create a new branch in the Git repository
 
-### Parameters
+### Request Body
 
-| Name | In | Type | Required | Description |
-|------|-----|------|----------|-------------|
-| `request` | body | string | Yes | Create branch request |
+Create branch request
+
+Schema: **GitBranchRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | Yes |  |
+| `path` | string | Yes |  |
 
 ### Responses
 
@@ -90,11 +100,16 @@ Create a new branch in the Git repository
 
 Delete a branch from the Git repository
 
-### Parameters
+### Request Body
 
-| Name | In | Type | Required | Description |
-|------|-----|------|----------|-------------|
-| `request` | body | string | Yes | Delete branch request |
+Delete branch request
+
+Schema: **GitDeleteBranchRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | Yes |  |
+| `path` | string | Yes |  |
 
 ### Responses
 
@@ -110,11 +125,16 @@ Delete a branch from the Git repository
 
 Switch to a different branch or commit in the Git repository
 
-### Parameters
+### Request Body
 
-| Name | In | Type | Required | Description |
-|------|-----|------|----------|-------------|
-| `request` | body | string | Yes | Checkout request |
+Checkout request
+
+Schema: **GitCheckoutRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `branch` | string | Yes |  |
+| `path` | string | Yes |  |
 
 ### Responses
 
@@ -130,11 +150,22 @@ Switch to a different branch or commit in the Git repository
 
 Clone a Git repository to the specified path. Defaults to strict TLS verification; set insecure_skip_tls=true to skip verification for self-signed or private-CA Git servers.
 
-### Parameters
+### Request Body
 
-| Name | In | Type | Required | Description |
-|------|-----|------|----------|-------------|
-| `request` | body | string | Yes | Clone repository request |
+Clone repository request
+
+Schema: **GitCloneRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `branch` | string | No |  |
+| `commit_id` | string | No |  |
+| `depth` | integer | No | Depth creates a shallow clone truncated to the given number of commits. |
+| `insecure_skip_tls` | boolean | No | Skip TLS certificate verification for this clone. Defaults to false (verify). Set to true ONLY for trusted internal Git servers with self-signed or private-CA certs; credentials, if supplied, will be transmitted over an unverified TLS connection and are exposed to any MITM on the route. |
+| `password` | string | No |  |
+| `path` | string | Yes |  |
+| `url` | string | Yes |  |
+| `username` | string | No |  |
 
 ### Responses
 
@@ -150,17 +181,25 @@ Clone a Git repository to the specified path. Defaults to strict TLS verificatio
 
 Commit staged changes to the Git repository
 
-### Parameters
+### Request Body
 
-| Name | In | Type | Required | Description |
-|------|-----|------|----------|-------------|
-| `request` | body | string | Yes | Commit request |
+Commit request
+
+Schema: **GitCommitRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `allow_empty` | boolean | No |  |
+| `author` | string | Yes |  |
+| `email` | string | Yes |  |
+| `message` | string | Yes |  |
+| `path` | string | Yes |  |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK |  |
+| 200 | OK | GitCommitResponse |
 
 ---
 
@@ -182,7 +221,7 @@ Get a Git config value at the given scope (null when unset)
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK |  |
+| 200 | OK | GitConfigResponse |
 
 ---
 
@@ -192,11 +231,18 @@ Get a Git config value at the given scope (null when unset)
 
 Set a Git config key/value at the given scope
 
-### Parameters
+### Request Body
 
-| Name | In | Type | Required | Description |
-|------|-----|------|----------|-------------|
-| `request` | body | string | Yes | Set config request |
+Set config request
+
+Schema: **GitSetConfigRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `key` | string | Yes |  |
+| `path` | string | No | Path is the repository path, required when scope is "local". |
+| `scope` | string | No | Scope is one of global (default), local or system. |
+| `value` | string | Yes |  |
 
 ### Responses
 
@@ -212,11 +258,18 @@ Set a Git config key/value at the given scope
 
 Configure the Git user name and email at the given scope
 
-### Parameters
+### Request Body
 
-| Name | In | Type | Required | Description |
-|------|-----|------|----------|-------------|
-| `request` | body | string | Yes | Configure user request |
+Configure user request
+
+Schema: **GitConfigureUserRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `email` | string | Yes |  |
+| `name` | string | Yes |  |
+| `path` | string | No | Path is the repository path, required when scope is "local". |
+| `scope` | string | No | Scope is one of global (default), local or system. |
 
 ### Responses
 
@@ -232,11 +285,18 @@ Configure the Git user name and email at the given scope
 
 Persist Git credentials globally via the credential store. Stores the password in plaintext on disk.
 
-### Parameters
+### Request Body
 
-| Name | In | Type | Required | Description |
-|------|-----|------|----------|-------------|
-| `request` | body | string | Yes | Authenticate request |
+Authenticate request
+
+Schema: **GitAuthenticateRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `host` | string | No | Host defaults to github.com. |
+| `password` | string | Yes |  |
+| `protocol` | string | No | Protocol defaults to https. |
+| `username` | string | Yes |  |
 
 ### Responses
 
@@ -262,7 +322,7 @@ Get the commit history of the Git repository
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK |  |
+| 200 | OK | array of GitCommitInfo |
 
 ---
 
@@ -272,11 +332,17 @@ Get the commit history of the Git repository
 
 Initialize a new Git repository at the specified path
 
-### Parameters
+### Request Body
 
-| Name | In | Type | Required | Description |
-|------|-----|------|----------|-------------|
-| `request` | body | string | Yes | Init repository request |
+Init repository request
+
+Schema: **GitInitRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `bare` | boolean | No | Bare creates a repository without a working tree. |
+| `initial_branch` | string | No | InitialBranch sets the name of the initial branch. |
+| `path` | string | Yes |  |
 
 ### Responses
 
@@ -292,11 +358,19 @@ Initialize a new Git repository at the specified path
 
 Pull changes from the remote Git repository
 
-### Parameters
+### Request Body
 
-| Name | In | Type | Required | Description |
-|------|-----|------|----------|-------------|
-| `request` | body | string | Yes | Pull request |
+Pull request
+
+Schema: **GitPullRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `branch` | string | No | Branch to pull (defaults to the current branch's upstream). |
+| `password` | string | No |  |
+| `path` | string | Yes |  |
+| `remote` | string | No | Remote to pull from (defaults to "origin"). |
+| `username` | string | No |  |
 
 ### Responses
 
@@ -312,11 +386,20 @@ Pull changes from the remote Git repository
 
 Push local changes to the remote Git repository
 
-### Parameters
+### Request Body
 
-| Name | In | Type | Required | Description |
-|------|-----|------|----------|-------------|
-| `request` | body | string | Yes | Push request |
+Push request
+
+Schema: **GitPushRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `branch` | string | No | Branch to push (defaults to the current branch). |
+| `password` | string | No |  |
+| `path` | string | Yes |  |
+| `remote` | string | No | Remote to push to (defaults to "origin"). |
+| `set_upstream` | boolean | No | SetUpstream records the pushed branch as the upstream tracking branch. |
+| `username` | string | No |  |
 
 ### Responses
 
@@ -342,7 +425,7 @@ List the remotes configured in the Git repository
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK |  |
+| 200 | OK | ListRemotesResponse |
 
 ---
 
@@ -352,11 +435,19 @@ List the remotes configured in the Git repository
 
 Add (or overwrite) a remote in the Git repository
 
-### Parameters
+### Request Body
 
-| Name | In | Type | Required | Description |
-|------|-----|------|----------|-------------|
-| `request` | body | string | Yes | Add remote request |
+Add remote request
+
+Schema: **GitAddRemoteRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `fetch` | boolean | No | Fetch fetches from the remote immediately after adding it. |
+| `name` | string | Yes |  |
+| `overwrite` | boolean | No | Overwrite replaces an existing remote with the same name. |
+| `path` | string | Yes |  |
+| `url` | string | Yes |  |
 
 ### Responses
 
@@ -372,11 +463,18 @@ Add (or overwrite) a remote in the Git repository
 
 Reset the current HEAD to the specified state
 
-### Parameters
+### Request Body
 
-| Name | In | Type | Required | Description |
-|------|-----|------|----------|-------------|
-| `request` | body | string | Yes | Reset request |
+Reset request
+
+Schema: **GitResetRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `files` | array of string | No | Files constrains the reset to the given paths. |
+| `mode` | string | No | Mode is one of soft, mixed (default), hard, merge or keep. |
+| `path` | string | Yes |  |
+| `target` | string | No | Target is the revision to reset to (defaults to HEAD). |
 
 ### Responses
 
@@ -392,11 +490,19 @@ Reset the current HEAD to the specified state
 
 Restore working tree files or unstage changes
 
-### Parameters
+### Request Body
 
-| Name | In | Type | Required | Description |
-|------|-----|------|----------|-------------|
-| `request` | body | string | Yes | Restore request |
+Restore request
+
+Schema: **GitRestoreRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `files` | array of string | Yes |  |
+| `path` | string | Yes |  |
+| `source` | string | No | Source restores file contents from the given revision instead of the index. |
+| `staged` | boolean | No | Staged restores the staging index for the given files. |
+| `worktree` | boolean | No | Worktree restores the working tree for the given files. |
 
 ### Responses
 
@@ -422,6 +528,6 @@ Get the Git status of the repository at the specified path
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK |  |
+| 200 | OK | GitStatus |
 
 ---

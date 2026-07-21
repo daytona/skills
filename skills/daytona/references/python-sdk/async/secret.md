@@ -2,6 +2,7 @@
 
 - Secret
 - AsyncSecretService
+- ListSecretsResponse
 - CreateSecretParams
 - UpdateSecretParams
 
@@ -49,23 +50,46 @@ real value is substituted at the network egress layer for the Secret's allowed h
 #### AsyncSecretService.list
 
 ```python
-async def list() -> list[Secret]
+@with_instrumentation()
+async def list(cursor: str | None = None,
+               limit: int | None = None,
+               name: str | None = None,
+               sort: str | None = None,
+               order: str | None = None) -> ListSecretsResponse
 ```
 
-List all Secrets in the organization.
+List Secrets in the organization using cursor-based pagination.
+
+**Arguments**:
+
+- `cursor` _str | None_ - Pagination cursor from a previous response. Omit to start
+  from the first page.
+- `limit` _int | None_ - Number of results per page (1-200). Defaults to 100.
+- `name` _str | None_ - Filter by partial name match.
+- `sort` _str | None_ - Field to sort by (``name``, ``createdAt`` or ``updatedAt``).
+  Defaults to ``createdAt``.
+- `order` _str | None_ - Direction to sort by (``asc`` or ``desc``). Defaults to ``desc``.
+
 
 **Returns**:
 
-- `list[Secret]` - List of all Secrets in the organization.
+- `ListSecretsResponse` - The current page of Secrets, the total number of Secrets
+  matching the filters and the cursor for the next page (``None`` when there
+  are no more pages).
 
 
 **Example**:
 
 ```python
 async with AsyncDaytona() as daytona:
-    secrets = await daytona.secret.list()
-    for secret in secrets:
-        print(f"{secret.name} ({secret.id})")
+    cursor = None
+    while True:
+        page = await daytona.secret.list(cursor=cursor, limit=50)
+        for secret in page.items:
+            print(f"{secret.name} ({secret.id})")
+        if page.next_cursor is None:
+            break
+        cursor = page.next_cursor
 ```
 
 #### AsyncSecretService.get
@@ -202,6 +226,21 @@ async with AsyncDaytona() as daytona:
     await daytona.secret.delete("secret-id")
     print("Secret deleted")
 ```
+
+## ListSecretsResponse
+
+```python
+class ListSecretsResponse(ListSecretsResponseDto)
+```
+
+Represents a paginated list of Daytona Secrets.
+
+**Attributes**:
+
+- `items` _list[Secret]_ - List of Secret instances in the current page.
+- `total` _int_ - Total number of Secrets matching the filters.
+- `next_cursor` _str | None_ - Cursor for the next page of results, or ``None``
+  when there are no more pages.
 
 ## CreateSecretParams
 

@@ -42,7 +42,9 @@ Initializes a new FileSystem instance.
 ```python
 @intercept_errors(message_prefix="Failed to create folder: ")
 @with_instrumentation()
-def create_folder(path: str, mode: str) -> None
+def create_folder(path: str,
+                  mode: str,
+                  request_timeout: float | None = None) -> None
 ```
 
 Creates a new directory in the Sandbox at the specified path with the given
@@ -53,6 +55,10 @@ permissions.
 - `path` _str_ - Path where the folder should be created. Relative paths are resolved based
   on the sandbox working directory.
 - `mode` _str_ - Folder permissions in octal format (e.g., "755" for rwxr-xr-x).
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Example**:
@@ -70,7 +76,9 @@ sandbox.fs.create_folder("workspace/secrets", "700")
 ```python
 @intercept_errors(message_prefix="Failed to delete file: ")
 @with_instrumentation()
-def delete_file(path: str, recursive: bool = False) -> None
+def delete_file(path: str,
+                recursive: bool = False,
+                request_timeout: float | None = None) -> None
 ```
 
 Deletes a file from the Sandbox.
@@ -79,6 +87,10 @@ Deletes a file from the Sandbox.
 
 - `path` _str_ - Path to the file to delete. Relative paths are resolved based on the sandbox working directory.
 - `recursive` _bool_ - If the file is a directory, this must be true to delete it.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Example**:
@@ -259,7 +271,9 @@ for result in results:
 ```python
 @intercept_errors(message_prefix="Failed to find files: ")
 @with_instrumentation()
-def find_files(path: str, pattern: str) -> list[Match]
+def find_files(path: str,
+               pattern: str,
+               request_timeout: float | None = None) -> list[Match]
 ```
 
 Searches for files containing a pattern, similar to
@@ -271,6 +285,10 @@ the grep command.
   the search will be performed recursively. Relative paths are resolved based
   on the sandbox working directory.
 - `pattern` _str_ - Search pattern to match against file contents.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Returns**:
@@ -295,7 +313,7 @@ for match in matches:
 ```python
 @intercept_errors(message_prefix="Failed to get file info: ")
 @with_instrumentation()
-def get_file_info(path: str) -> FileInfo
+def get_file_info(path: str, request_timeout: float | None = None) -> FileInfo
 ```
 
 Gets detailed information about a file or directory, including its
@@ -305,6 +323,10 @@ size, permissions, and timestamps.
 
 - `path` _str_ - Path to the file or directory. Relative paths are resolved based
   on the sandbox working directory.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Returns**:
@@ -340,7 +362,9 @@ if info.is_dir:
 ```python
 @intercept_errors(message_prefix="Failed to list files: ")
 @with_instrumentation()
-def list_files(path: str) -> list[FileInfo]
+def list_files(path: str,
+               depth: int | None = None,
+               request_timeout: float | None = None) -> list[FileInfo]
 ```
 
 Lists files and directories in a given path and returns their information, similar to the ls -l command.
@@ -349,6 +373,13 @@ Lists files and directories in a given path and returns their information, simil
 
 - `path` _str_ - Path to the directory to list contents from. Relative paths are resolved
   based on the sandbox working directory.
+- `depth` _int | None_ - How many levels deep to list. depth=1 (default) lists the
+  directory's entries, depth=2 also includes their children, and so on. Must be >= 1.
+  Each returned FileInfo carries a full `path` field.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Returns**:
@@ -368,9 +399,9 @@ for file in files:
     if not file.is_dir:
         print(f"{file.name}: {file.size} bytes")
 
-# List only directories
-dirs = [f for f in files if f.is_dir]
-print("Subdirectories:", ", ".join(d.name for d in dirs))
+# List recursively two levels deep
+tree = sandbox.fs.list_files("workspace/data", depth=2)
+print("Paths:", ", ".join(f.path for f in tree))
 ```
 
 #### FileSystem.move\_files
@@ -378,7 +409,9 @@ print("Subdirectories:", ", ".join(d.name for d in dirs))
 ```python
 @intercept_errors(message_prefix="Failed to move files: ")
 @with_instrumentation()
-def move_files(source: str, destination: str) -> None
+def move_files(source: str,
+               destination: str,
+               request_timeout: float | None = None) -> None
 ```
 
 Moves or renames a file or directory. The parent directory of the destination must exist.
@@ -389,6 +422,10 @@ Moves or renames a file or directory. The parent directory of the destination mu
   based on the sandbox working directory.
 - `destination` _str_ - Path to the destination. Relative paths are resolved based on
   the sandbox working directory.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Example**:
@@ -418,8 +455,11 @@ sandbox.fs.move_files(
 ```python
 @intercept_errors(message_prefix="Failed to replace in files: ")
 @with_instrumentation()
-def replace_in_files(files: list[str], pattern: str,
-                     new_value: str) -> list[ReplaceResult]
+def replace_in_files(
+        files: list[str],
+        pattern: str,
+        new_value: str,
+        request_timeout: float | None = None) -> list[ReplaceResult]
 ```
 
 Performs search and replace operations across multiple files.
@@ -430,6 +470,10 @@ Performs search and replace operations across multiple files.
   resolved based on the sandbox working directory.
 - `pattern` _str_ - Pattern to search for.
 - `new_value` _str_ - Text to replace matches with.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Returns**:
@@ -464,7 +508,9 @@ for result in results:
 ```python
 @intercept_errors(message_prefix="Failed to search files: ")
 @with_instrumentation()
-def search_files(path: str, pattern: str) -> SearchFilesResponse
+def search_files(path: str,
+                 pattern: str,
+                 request_timeout: float | None = None) -> SearchFilesResponse
 ```
 
 Searches for files and directories whose names match the
@@ -476,6 +522,10 @@ specified pattern. The pattern can be a simple string or a glob pattern.
   based on the sandbox working directory.
 - `pattern` _str_ - Pattern to match against file names. Supports glob
   patterns (e.g., "*.py" for Python files).
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Returns**:
@@ -505,7 +555,8 @@ print(f"Found {len(result.files)} test files")
 def set_file_permissions(path: str,
                          mode: str | None = None,
                          owner: str | None = None,
-                         group: str | None = None) -> None
+                         group: str | None = None,
+                         request_timeout: float | None = None) -> None
 ```
 
 Sets permissions and ownership for a file or directory. Any of the parameters can be None
@@ -519,6 +570,10 @@ to leave that attribute unchanged.
   (e.g., "644" for rw-r--r--).
 - `owner` _str | None_ - User owner of the file.
 - `group` _str | None_ - Group owner of the file.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Example**:

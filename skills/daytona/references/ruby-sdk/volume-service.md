@@ -8,7 +8,7 @@ Service for managing Daytona Volumes. Can be used to list, get, create and delet
 #### new VolumeService()
 
 ```ruby
-def initialize(volumes_api, otel_state:)
+def initialize(volumes_api, otel_state: nil)
 
 ```
 
@@ -62,7 +62,7 @@ Delete a Volume.
 #### get()
 
 ```ruby
-def get(name, create:)
+def get(name, create: false)
 
 ```
 
@@ -89,3 +89,6 @@ List all Volumes.
 **Returns**:
 
 - `Array\<Daytona:Volume\>`
+
+## See Also
+- [Java SDK - volume-service](../java-sdk/volume-service.md)

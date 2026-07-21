@@ -2,6 +2,7 @@
 
 - Sandbox
 - ListSandboxesQuery
+- SandboxMetrics
 - See Also
 
 
@@ -15,6 +16,8 @@ Represents a Daytona Sandbox.
 
 - `autoArchiveInterval?` _number_ - Auto-archive interval in minutes
 - `autoDeleteInterval?` _number_ - Auto-delete interval in minutes
+- `autoDestroyAt?` _string_ - When the Sandbox will be automatically destroyed (only set when a TTL is configured)
+- `autoPauseInterval?` _number_ - Auto-pause interval in minutes
 - `autoStopInterval?` _number_ - Auto-stop interval in minutes
 - `backupCreatedAt?` _string_ - When the backup was created (not returned by list results;
     call `refreshData()` on each item to populate)
@@ -70,17 +73,24 @@ new Sandbox(
    sandboxDto: SandboxListItem | Sandbox,
    clientConfig: Configuration,
    axiosInstance: AxiosInstance,
-   sandboxApi: SandboxApi): Sandbox
+   sandboxApi: SandboxApi,
+   getAnalyticsApiUrl: () => Promise<string>,
+   subscriptionManager: EventSubscriptionManager): Sandbox
 ```
 
-Creates a new Sandbox instance
+Creates a new Sandbox instance.
+
+Internal: obtain sandboxes via Daytona.create, Daytona.get, or
+Daytona.list rather than constructing directly.
 
 **Parameters**:
 
 - `sandboxDto` _The API Sandbox instance_ - `SandboxListItem` | `Sandbox`
 - `clientConfig` _Configuration_
 - `axiosInstance` _AxiosInstance_
-- `sandboxApi` _SandboxApi_
+- `sandboxApi` _SandboxApi_ - API client for Sandbox operations
+- `getAnalyticsApiUrl` _\(\) =\> Promise\<string\>_
+- `subscriptionManager` _EventSubscriptionManager_ - Event subscription manager for real-time updates
 
 
 **Returns**:
@@ -237,14 +247,21 @@ Creates an SSH access token for the sandbox.
 #### delete()
 
 ```ts
-delete(timeout: number): Promise<void>
+delete(timeout?: number, wait?: boolean): Promise<void>
 ```
 
 Deletes the Sandbox.
 
+By default this returns as soon as the deletion request is accepted (matching
+historical behavior). Pass `wait = true` to block until the Sandbox reaches
+the 'destroyed' state.
+
 **Parameters**:
 
-- `timeout` _number = 60_
+- `timeout?` _number = 60_ - Timeout in seconds for the request — and, when
+    `wait` is true, for reaching 'destroyed'. 0 means no timeout.
+    Defaults to 60-second timeout.
+- `wait?` _boolean = false_ - If true, wait until the Sandbox is destroyed. Defaults to false.
 
 
 **Returns**:
@@ -270,6 +287,59 @@ Expires a signed preview url for the sandbox at the specified port.
 **Returns**:
 
 - `Promise<void>`
+
+***
+
+#### getMetrics()
+
+```ts
+getMetrics(start?: Date, end?: Date): Promise<SandboxMetrics[]>
+```
+
+Gets historical time-series resource usage metrics for the Sandbox.
+
+**Parameters**:
+
+- `start?` _Date_ - Start of the time range. Defaults to the Sandbox creation time.
+- `end?` _Date_ - End of the time range. Defaults to the current time.
+
+
+**Returns**:
+
+- `Promise<SandboxMetrics[]>` - Time-ordered usage samples over the requested range.
+
+**Example:**
+
+```ts
+const samples = await sandbox.getMetrics()
+for (const s of samples) {
+  console.log(`${s.timestamp.toISOString()} CPU: ${s.cpuUsedPct}% mem: ${s.memUsed}/${s.memTotal}`)
+}
+```
+
+***
+
+#### getMetricsLatest()
+
+```ts
+getMetricsLatest(): Promise<SandboxMetrics>
+```
+
+Gets the most recent resource usage sample directly from the sandbox daemon.
+
+Unlike getMetrics, which returns aggregated historical samples, this returns the
+single current reading without going through the telemetry backend.
+
+**Returns**:
+
+- `Promise<SandboxMetrics>` - The current resource usage sample for the sandbox.
+
+**Example:**
+
+```ts
+const m = await sandbox.getMetricsLatest()
+console.log(`CPU: ${m.cpuUsedPct}%, mem: ${m.memUsed}/${m.memTotal}`)
+```
 
 ***
 
@@ -627,6 +697,48 @@ await sandbox.setAutoDeleteInterval(-1);
 
 ***
 
+#### setAutoPauseInterval()
+
+```ts
+setAutoPauseInterval(interval: number): Promise<void>
+```
+
+Set the auto-pause interval for the Sandbox.
+
+The Sandbox will automatically pause after being idle (no new events) for the specified interval.
+Events include any state changes or interactions with the Sandbox through the sdk.
+Interactions using Sandbox Previews are not included.
+
+Only supported for sandbox classes that support pausing. At most one of the auto-stop
+and auto-pause intervals may be non-zero, so disable auto-stop first by setting its
+interval to 0.
+
+**Parameters**:
+
+- `interval` _number_ - Number of minutes of inactivity before auto-pausing.
+    Set to 0 to disable auto-pause. For pause-supporting sandbox
+    classes, creation defaults to 60 minutes when neither interval is provided.
+
+
+**Returns**:
+
+- `Promise<void>`
+
+**Throws**:
+
+- `DaytonaError` - If interval is not a non-negative integer
+
+**Example:**
+
+```ts
+// Auto-pause after 1 hour
+await sandbox.setAutoPauseInterval(60);
+// Or disable auto-pause
+await sandbox.setAutoPauseInterval(0);
+```
+
+***
+
 #### setAutostopInterval()
 
 ```ts
@@ -696,6 +808,43 @@ await sandbox.setLabels({
 
 ***
 
+#### setTtl()
+
+```ts
+setTtl(ttlMinutes: number): Promise<void>
+```
+
+Set the TTL (maximum time to live) for the Sandbox.
+
+The Sandbox will be destroyed once the TTL elapses, counted as wall-clock time regardless of the
+Sandbox state - even if it is stopped, paused, or archived. Calling this method re-anchors the
+deadline from the current time. Call `refreshData()` afterwards to read the updated `autoDestroyAt`.
+
+**Parameters**:
+
+- `ttlMinutes` _number_ - Number of minutes from now after which the Sandbox will be destroyed.
+    Set to 0 to disable the TTL.
+
+
+**Returns**:
+
+- `Promise<void>`
+
+**Throws**:
+
+- `DaytonaError` - If ttlMinutes is not a non-negative integer
+
+**Example:**
+
+```ts
+// Destroy the Sandbox 1 hour from now
+await sandbox.setTtl(60);
+// Or disable the TTL
+await sandbox.setTtl(0);
+```
+
+***
+
 #### start()
 
 ```ts
@@ -761,6 +910,40 @@ console.log('Sandbox stopped successfully');
 
 ***
 
+#### updateEnv()
+
+```ts
+updateEnv(env: Record<string, string>, options?: {
+  unset: string[];
+}): Promise<void>
+```
+
+Updates the Sandbox daemon's process environment.
+
+Variables in `env` are set (added or overwritten) and variables listed in `options.unset`
+are removed. Newly spawned processes, sessions and PTYs inherit the change; already-running
+processes keep their environment.
+
+**Parameters**:
+
+- `env` _Record\<string, string\>_ - Map of environment variable names to values to set.
+- `options?` _Optional settings._
+- `unset?` _string\[\]_ - Names of environment variables to remove before `env` is applied.
+
+
+**Returns**:
+
+- `Promise<void>`
+
+**Example:**
+
+```ts
+// Set a variable and remove another
+await sandbox.updateEnv({ NODE_ENV: 'production' }, { unset: ['DEBUG'] });
+```
+
+***
+
 #### updateNetworkSettings()
 
 ```ts
@@ -793,6 +976,44 @@ await sandbox.updateNetworkSettings({ networkBlockAll: true });
 await sandbox.updateNetworkSettings({ networkBlockAll: false });
 // Allow only specific domains
 await sandbox.updateNetworkSettings({ domainAllowList: 'example.com,*.daytona.io' });
+```
+
+***
+
+#### updateSecrets()
+
+```ts
+updateSecrets(secrets: Record<string, string>): Promise<void>
+```
+
+Replaces the set of vault secrets mounted in the Sandbox.
+
+Each key is an environment variable name and each value is the name of an existing
+organization Secret to mount under that name. The provided map replaces the previously
+mounted set — pass an empty object to detach all secrets.
+
+Attached, detached, or rotated secrets take effect for outbound requests within seconds.
+However, newly attached env vars only become visible to processes spawned after the update;
+already-running processes keep their environment. A Sandbox created without any secrets
+must be restarted for newly attached secrets to work.
+
+**Parameters**:
+
+- `secrets` _Record\<string, string\>_ - Map of environment variable name to the name of an
+    existing organization Secret. Every referenced Secret name must already exist in the organization.
+
+
+**Returns**:
+
+- `Promise<void>`
+
+**Example:**
+
+```ts
+// Mount two secrets
+await sandbox.updateSecrets({ API_KEY: 'my-api-key', DB_PASSWORD: 'prod-db-password' });
+// Detach all secrets
+await sandbox.updateSecrets({});
 ```
 
 ***
@@ -917,6 +1138,20 @@ or encounters an error.
 - `sort?` _SandboxListSortField_ - Sort by field
 - `states?` _SandboxState\[\]_ - Filter by states
 - `targets?` _string\[\]_ - Filter by targets
+## SandboxMetrics
+
+A single point-in-time sample of historical Sandbox resource usage.
+
+**Properties**:
+
+- `cpuCount` _number_ - Number of CPU cores allocated to the Sandbox.
+- `cpuUsedPct` _number_ - CPU utilization as a percentage of the allocated limit.
+- `diskTotal` _number_ - Total disk space in bytes.
+- `diskUsed` _number_ - Used disk space in bytes.
+- `memCache` _number_ - Memory used by the page cache in bytes.
+- `memTotal` _number_ - Total memory in bytes.
+- `memUsed` _number_ - Used memory in bytes.
+- `timestamp` _Date_ - Timestamp of this sample.
 
 ## See Also
 - [Python SDK - sandbox](../python-sdk/sync/sandbox.md)

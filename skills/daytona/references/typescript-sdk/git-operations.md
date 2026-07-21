@@ -11,7 +11,9 @@
 
 
 
-Daytona provides built-in Git support through the `git` module in sandboxes.
+Git operations are available through the `git` module of a sandbox. Operations run through the Daytona API, so your application works with repositories in a sandbox directly, without installing Git clients or executing shell commands inside it.
+
+The `git` module covers cloning repositories, checking status, managing branches, staging and committing changes, pushing and pulling with authentication, and inspecting commit history. Private repositories authenticate with personal access tokens passed per operation.
 
 ## Basic operations
 
@@ -268,60 +270,62 @@ curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/git/history?path=workspac
 
 ### Manage remotes
 
-List configured remotes or add (and optionally overwrite) a remote by providing the path to the repository, the name of the remote, the URL of the remote, and whether to fetch from the remote immediately after adding it.
+Add a remote or get the URL of a remote by providing the path to the repository, the name of the remote, and the URL of the remote.
 
-**API:**
+1. Set **`fetch`** to **`true`** to fetch from the remote immediately after adding it
+2. Set **`overwrite`** to **`true`** to replace an existing remote with the same name
 
-```bash
-# List remotes
-curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/git/remotes?path=workspace/repo'
+```typescript
+// Add a remote
+await sandbox.git.remoteAdd('workspace/repo', 'origin', 'https://github.com/user/repo.git');
 
-# Add a remote
-curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/git/remotes' \
-  --request POST \
-  --header 'Content-Type: application/json' \
-  --data '{
-  "fetch": false,
-  "name": "origin",
-  "overwrite": false,
-  "path": "workspace/repo",
-  "url": "https://github.com/user/repo.git"
-}'
+// Add a remote, fetch from it, and replace an existing remote with the same name
+await sandbox.git.remoteAdd(
+  'workspace/repo',
+  'upstream',
+  'https://github.com/other/repo.git',
+  true,
+  true
+);
+
+// Get the URL of a remote (undefined when it does not exist)
+const url = await sandbox.git.remoteGet('workspace/repo', 'origin');
 ```
 
 ### Configure Git
 
-Read or write Git config values, or set the user name and email at a given scope by providing the path to the repository, the key to get or set, and the value to set.
+Read or write Git config values by providing the key and the value. Set **`scope`** to **`local`** together with the repository **`path`** to configure a single repository.
 
-Scope: `global` (default), `local`, or `system`.
+- **Scope**: **`global`** (default), **`local`**, or **`system`**
 
-**API:**
+```typescript
+// Set a config value at the global scope
+await sandbox.git.setConfig('core.editor', 'vim');
 
-```bash
-# Get a config value
-curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/git/config?key=user.name&scope=global'
+// Set a config value for a single repository
+await sandbox.git.setConfig('core.editor', 'vim', 'local', 'workspace/repo');
 
-# Set a config value
-curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/git/config' \
-  --request POST \
-  --header 'Content-Type: application/json' \
-  --data '{
-  "key": "core.editor",
-  "path": "",
-  "scope": "global",
-  "value": "vim"
-}'
+// Get a config value (undefined when unset)
+const editor = await sandbox.git.getConfig('core.editor');
+```
 
-# Configure user name and email
-curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/git/config/user' \
-  --request POST \
-  --header 'Content-Type: application/json' \
-  --data '{
-  "email": "john@example.com",
-  "name": "John Doe",
-  "path": "",
-  "scope": "global"
-}'
+### Configure user
+
+Configure the Git user name and email by providing the `name` and `email` values. Set `scope` to `local` together with the repository `path` to configure the user for a single repository.
+
+- **Scope**: **`global`** (default), **`local`**
+
+```typescript
+// Configure the global Git user
+await sandbox.git.configureUser('John Doe', 'john@example.com');
+
+// Configure the user for a single repository
+await sandbox.git.configureUser(
+  'John Doe',
+  'john@example.com',
+  'local',
+  'workspace/repo'
+);
 ```
 
 ### Authenticate credentials

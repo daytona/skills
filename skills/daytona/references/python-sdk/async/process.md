@@ -162,7 +162,8 @@ if chart.type == ChartType.LINE and isinstance(chart, LineChart):
 ```python
 @intercept_errors(message_prefix="Failed to create session: ")
 @with_instrumentation()
-async def create_session(session_id: str) -> None
+async def create_session(session_id: str,
+                         request_timeout: float | None = None) -> None
 ```
 
 Creates a new long-running background session in the Sandbox.
@@ -174,6 +175,10 @@ long-running commands and monitor process status.
 **Arguments**:
 
 - `session_id` _str_ - Unique identifier for the new session.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Example**:
@@ -191,7 +196,8 @@ await sandbox.process.delete_session(session_id)
 
 ```python
 @intercept_errors(message_prefix="Failed to get session: ")
-async def get_session(session_id: str) -> Session
+async def get_session(session_id: str,
+                      request_timeout: float | None = None) -> Session
 ```
 
 Gets a session in the Sandbox.
@@ -199,6 +205,10 @@ Gets a session in the Sandbox.
 **Arguments**:
 
 - `session_id` _str_ - Unique identifier of the session to retrieve.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Returns**:
@@ -220,10 +230,19 @@ for cmd in session.commands:
 
 ```python
 @intercept_errors(message_prefix="Failed to get sandbox entrypoint session: ")
-async def get_entrypoint_session() -> Session
+async def get_entrypoint_session(
+        request_timeout: float | None = None) -> Session
 ```
 
 Gets the sandbox entrypoint session.
+
+**Arguments**:
+
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
+
 
 **Returns**:
 
@@ -245,7 +264,9 @@ for cmd in session.commands:
 ```python
 @intercept_errors(message_prefix="Failed to get session command: ")
 @with_instrumentation()
-async def get_session_command(session_id: str, command_id: str) -> Command
+async def get_session_command(session_id: str,
+                              command_id: str,
+                              request_timeout: float | None = None) -> Command
 ```
 
 Gets information about a specific command executed in a session.
@@ -254,6 +275,10 @@ Gets information about a specific command executed in a session.
 
 - `session_id` _str_ - Unique identifier of the session.
 - `command_id` _str_ - Unique identifier of the command.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Returns**:
@@ -330,7 +355,9 @@ print(f"Command stderr: {result.stderr}")
 @intercept_errors(message_prefix="Failed to get session command logs: ")
 @with_instrumentation()
 async def get_session_command_logs(
-        session_id: str, command_id: str) -> SessionCommandLogsResponse
+        session_id: str,
+        command_id: str,
+        request_timeout: float | None = None) -> SessionCommandLogsResponse
 ```
 
 Get the logs for a command executed in a session.
@@ -339,6 +366,10 @@ Get the logs for a command executed in a session.
 
 - `session_id` _str_ - Unique identifier of the session.
 - `command_id` _str_ - Unique identifier of the command.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Returns**:
@@ -399,10 +430,19 @@ await sandbox.process.get_session_command_logs_async(
 ```python
 @intercept_errors(message_prefix="Failed to get entrypoint logs: ")
 @with_instrumentation()
-async def get_entrypoint_logs() -> SessionCommandLogsResponse
+async def get_entrypoint_logs(
+        request_timeout: float | None = None) -> SessionCommandLogsResponse
 ```
 
 Get the logs for the entrypoint session.
+
+**Arguments**:
+
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
+
 
 **Returns**:
 
@@ -449,8 +489,11 @@ await sandbox.process.get_entrypoint_logs_async(
 
 ```python
 @intercept_errors(message_prefix="Failed to send session command input: ")
-async def send_session_command_input(session_id: str, command_id: str,
-                                     data: str) -> None
+async def send_session_command_input(
+        session_id: str,
+        command_id: str,
+        data: str,
+        request_timeout: float | None = None) -> None
 ```
 
 Sends input data to a command executed in a session.
@@ -460,16 +503,28 @@ Sends input data to a command executed in a session.
 - `session_id` _str_ - Unique identifier of the session.
 - `command_id` _str_ - Unique identifier of the command.
 - `data` _str_ - Input data to send.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 #### AsyncProcess.list\_sessions
 
 ```python
 @intercept_errors(message_prefix="Failed to list sessions: ")
 @with_instrumentation()
-async def list_sessions() -> list[Session]
+async def list_sessions(request_timeout: float | None = None) -> list[Session]
 ```
 
 Lists all sessions in the Sandbox.
+
+**Arguments**:
+
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
+
 
 **Returns**:
 
@@ -490,7 +545,8 @@ for session in sessions:
 ```python
 @intercept_errors(message_prefix="Failed to delete session: ")
 @with_instrumentation()
-async def delete_session(session_id: str) -> None
+async def delete_session(session_id: str,
+                         request_timeout: float | None = None) -> None
 ```
 
 Terminates and removes a session from the Sandbox, cleaning up any resources
@@ -499,6 +555,10 @@ associated with it.
 **Arguments**:
 
 - `session_id` _str_ - Unique identifier of the session to delete.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Example**:
@@ -586,12 +646,21 @@ interact with a previously created terminal session.
 ```python
 @intercept_errors(message_prefix="Failed to list PTY sessions: ")
 @with_instrumentation()
-async def list_pty_sessions() -> list[PtySessionInfo]
+async def list_pty_sessions(
+        request_timeout: float | None = None) -> list[PtySessionInfo]
 ```
 
 Lists all PTY sessions in the Sandbox.
 
 Retrieves information about all PTY sessions in this Sandbox.
+
+**Arguments**:
+
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
+
 
 **Returns**:
 
@@ -616,7 +685,9 @@ for session in sessions:
 ```python
 @intercept_errors(message_prefix="Failed to get PTY session info: ")
 @with_instrumentation()
-async def get_pty_session_info(session_id: str) -> PtySessionInfo
+async def get_pty_session_info(
+        session_id: str,
+        request_timeout: float | None = None) -> PtySessionInfo
 ```
 
 Gets detailed information about a specific PTY session.
@@ -627,6 +698,10 @@ configuration, and metadata.
 **Arguments**:
 
 - `session_id` - Unique identifier of the PTY session to retrieve information for.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Returns**:
@@ -657,7 +732,8 @@ print(f"Terminal Size: {session_info.cols}x{session_info.rows}")
 ```python
 @intercept_errors(message_prefix="Failed to kill PTY session: ")
 @with_instrumentation()
-async def kill_pty_session(session_id: str) -> None
+async def kill_pty_session(session_id: str,
+                           request_timeout: float | None = None) -> None
 ```
 
 Kills a PTY session and terminates its associated process.
@@ -669,6 +745,10 @@ This operation is irreversible. Any unsaved work in the terminal session will be
 **Arguments**:
 
 - `session_id` - Unique identifier of the PTY session to kill.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Raises**:
@@ -693,8 +773,10 @@ for pty_session in pty_sessions:
 ```python
 @intercept_errors(message_prefix="Failed to resize PTY session: ")
 @with_instrumentation()
-async def resize_pty_session(session_id: str,
-                             pty_size: PtySize) -> PtySessionInfo
+async def resize_pty_session(
+        session_id: str,
+        pty_size: PtySize,
+        request_timeout: float | None = None) -> PtySessionInfo
 ```
 
 Resizes a PTY session's terminal dimensions.
@@ -707,6 +789,10 @@ output requirements.
 
 - `session_id` - Unique identifier of the PTY session to resize.
 - `pty_size` - New terminal dimensions containing the desired columns and rows.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Returns**:
@@ -827,10 +913,7 @@ Response from the command logs.
 ##### OutputHandler
 
 ```python
-OutputHandler = Union[
-    Callable[[T], None],
-    Callable[[T], Awaitable[None]],
-]
+OutputHandler = Callable[[T], None] | Callable[[T], Awaitable[None]]
 ```
 
 Callback type that accepts both sync and async handlers.

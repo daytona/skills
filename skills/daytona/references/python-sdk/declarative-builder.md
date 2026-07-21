@@ -1,6 +1,13 @@
+## Contents
+
+- Build declarative images
+- Create pre-built snapshots
+- Image configuration
 
 
-Declarative Builder provides a powerful, code-first approach to defining dependencies for Daytona Sandboxes. Instead of importing images from a container registry, you can programmatically define them using the Daytona SDK.
+
+
+Declarative Builder provides a powerful, code-first approach to defining dependencies for Daytona sandboxes. Instead of importing images from a container registry, you can programmatically define them using the Daytona SDK.
 
 The declarative builder system supports two primary workflows:
 
@@ -9,7 +16,7 @@ The declarative builder system supports two primary workflows:
 
 ## Build declarative images
 
-Daytona provides an option to create declarative images on-the-fly when creating sandboxes. This is ideal for iterating quickly without creating separate snapshots.
+Create a declarative image by defining the dependencies for the sandbox.
 
 Declarative images are cached for 24 hours, and are automatically reused when running the same script. Thus, subsequent runs on the same runner will be almost instantaneous.
 
@@ -27,6 +34,28 @@ sandbox = daytona.create(
   timeout=0,
   on_snapshot_create_logs=print,
 )
+```
+
+## Create pre-built snapshots
+
+Create a pre-built snapshot by building a declarative image and registering it as a [snapshot](./snapshots.md).
+
+```python
+# Define the declarative image for the snapshot
+image = (
+  Image.debian_slim("3.12")
+  .pip_install(["numpy", "pandas"])
+  .workdir("/home/daytona")
+)
+
+# Create and register the snapshot, streaming the build logs
+daytona.snapshot.create(
+  CreateSnapshotParams(name="my-snapshot", image=image),
+  on_logs=print,
+)
+
+# Create a new sandbox from the pre-built snapshot
+sandbox = daytona.create(CreateSandboxFromSnapshotParams(snapshot="my-snapshot"))
 ```
 
 ## Image configuration

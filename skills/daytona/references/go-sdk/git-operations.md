@@ -11,7 +11,9 @@
 
 
 
-Daytona provides built-in Git support through the `git` module in sandboxes.
+Git operations are available through the `git` module of a sandbox. Operations run through the Daytona API, so your application works with repositories in a sandbox directly, without installing Git clients or executing shell commands inside it.
+
+The `git` module covers cloning repositories, checking status, managing branches, staging and committing changes, pushing and pulling with authentication, and inspecting commit history. Private repositories authenticate with personal access tokens passed per operation.
 
 ## Basic operations
 
@@ -314,60 +316,86 @@ curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/git/history?path=workspac
 
 ### Manage remotes
 
-List configured remotes or add (and optionally overwrite) a remote by providing the path to the repository, the name of the remote, the URL of the remote, and whether to fetch from the remote immediately after adding it.
+Add a remote or get the URL of a remote by providing the path to the repository, the name of the remote, and the URL of the remote.
 
-**API:**
+1. Set **`fetch`** to **`true`** to fetch from the remote immediately after adding it
+2. Set **`overwrite`** to **`true`** to replace an existing remote with the same name
 
-```bash
-# List remotes
-curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/git/remotes?path=workspace/repo'
+```go
+// Add a remote
+err := sandbox.Git.RemoteAdd(ctx, "workspace/repo", "origin", "https://github.com/user/repo.git")
+if err != nil {
+	log.Fatal(err)
+}
 
-# Add a remote
-curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/git/remotes' \
-  --request POST \
-  --header 'Content-Type: application/json' \
-  --data '{
-  "fetch": false,
-  "name": "origin",
-  "overwrite": false,
-  "path": "workspace/repo",
-  "url": "https://github.com/user/repo.git"
-}'
+// Add a remote, fetch from it, and replace an existing remote with the same name
+err = sandbox.Git.RemoteAdd(ctx, "workspace/repo", "upstream", "https://github.com/other/repo.git",
+	options.WithRemoteFetch(true),
+	options.WithRemoteOverwrite(true),
+)
+if err != nil {
+	log.Fatal(err)
+}
+
+// Get the URL of a remote (empty string when it does not exist)
+url, err := sandbox.Git.RemoteGet(ctx, "workspace/repo", "origin")
+if err != nil {
+	log.Fatal(err)
+}
+fmt.Printf("Remote URL: %s\n", url)
 ```
 
 ### Configure Git
 
-Read or write Git config values, or set the user name and email at a given scope by providing the path to the repository, the key to get or set, and the value to set.
+Read or write Git config values by providing the key and the value. Set **`scope`** to **`local`** together with the repository **`path`** to configure a single repository.
 
-Scope: `global` (default), `local`, or `system`.
+- **Scope**: **`global`** (default), **`local`**, or **`system`**
 
-**API:**
+```go
+// Set a config value at the global scope
+err := sandbox.Git.SetConfig(ctx, "core.editor", "vim")
+if err != nil {
+	log.Fatal(err)
+}
 
-```bash
-# Get a config value
-curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/git/config?key=user.name&scope=global'
+// Set a config value for a single repository
+err = sandbox.Git.SetConfig(ctx, "core.editor", "vim",
+	options.WithConfigScope("local"),
+	options.WithConfigPath("workspace/repo"),
+)
+if err != nil {
+	log.Fatal(err)
+}
 
-# Set a config value
-curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/git/config' \
-  --request POST \
-  --header 'Content-Type: application/json' \
-  --data '{
-  "key": "core.editor",
-  "path": "",
-  "scope": "global",
-  "value": "vim"
-}'
+// Get a config value
+editor, err := sandbox.Git.GetConfig(ctx, "core.editor")
+if err != nil {
+	log.Fatal(err)
+}
+fmt.Printf("Editor: %s\n", editor)
+```
 
-# Configure user name and email
-curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/git/config/user' \
-  --request POST \
-  --header 'Content-Type: application/json' \
-  --data '{
-  "email": "john@example.com",
-  "name": "John Doe",
-  "path": "",
-  "scope": "global"
-}'
+### Configure user
+
+Configure the Git user name and email by providing the `name` and `email` values. Set `scope` to `local` together with the repository `path` to configure the user for a single repository.
+
+- **Scope**: **`global`** (default), **`local`**
+
+```go
+// Configure the global Git user
+err := sandbox.Git.ConfigureUser(ctx, "John Doe", "john@example.com")
+if err != nil {
+	log.Fatal(err)
+}
+
+// Configure the user for a single repository
+err = sandbox.Git.ConfigureUser(ctx, "John Doe", "john@example.com",
+	options.WithConfigScope("local"),
+	options.WithConfigPath("workspace/repo"),
+)
+if err != nil {
+	log.Fatal(err)
+}
 ```
 
 ### Authenticate credentials
@@ -391,3 +419,4 @@ curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/git/credentials' \
 ## See Also
 - [Python SDK - git-operations](../python-sdk/git-operations.md)
 - [TypeScript SDK - git-operations](../typescript-sdk/git-operations.md)
+- [Java SDK - git-operations](../java-sdk/git-operations.md)

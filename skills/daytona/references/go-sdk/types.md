@@ -24,9 +24,12 @@
 - type FileStatus
 - type FileUpload
 - type GitCommitResponse
+- type GitRemote
 - type GitStatus
 - type GpuType
 - type ImageParams
+- type ListSecretsQuery
+- type ListSecretsResponse
 - type LspLanguageID
 - type OutputMessage
 - type PaginatedSnapshots
@@ -73,9 +76,12 @@ import "github.com/daytona/clients/sdk-go/pkg/types"
 - [type FileStatus](https://www.daytona.io/docs/en<#FileStatus>)
 - [type FileUpload](https://www.daytona.io/docs/en<#FileUpload>)
 - [type GitCommitResponse](https://www.daytona.io/docs/en<#GitCommitResponse>)
+- [type GitRemote](https://www.daytona.io/docs/en<#GitRemote>)
 - [type GitStatus](https://www.daytona.io/docs/en<#GitStatus>)
 - [type GpuType](https://www.daytona.io/docs/en<#GpuType>)
 - [type ImageParams](https://www.daytona.io/docs/en<#ImageParams>)
+- [type ListSecretsQuery](https://www.daytona.io/docs/en<#ListSecretsQuery>)
+- [type ListSecretsResponse](https://www.daytona.io/docs/en<#ListSecretsResponse>)
 - [type LspLanguageID](https://www.daytona.io/docs/en<#LspLanguageID>)
 - [type OutputMessage](https://www.daytona.io/docs/en<#OutputMessage>)
 - [type PaginatedSnapshots](https://www.daytona.io/docs/en<#PaginatedSnapshots>)
@@ -195,7 +201,22 @@ type DaytonaConfig struct {
     APIUrl         string
     Target         string
     OtelEnabled    bool // Enable OpenTelemetry tracing for SDK operations.
-    Experimental   *ExperimentalConfig
+    // UseDeprecatedPolling observes sandbox state by legacy polling instead of
+    // WebSocket event streaming. Defaults to false (event streaming). Can also be
+    // enabled via the DAYTONA_USE_DEPRECATED_POLLING environment variable.
+    //
+    // Deprecated: polling-only mode will be removed in a future release; event
+    // streaming is the default and falls back to polling automatically when
+    // WebSockets are unavailable.
+    UseDeprecatedPolling *bool
+    // Timeout overrides the default per-request HTTP timeout (60s). A
+    // non-positive value disables the client-wide timeout entirely. Executions
+    // with an explicit execution timeout are not capped by this value.
+    Timeout *time.Duration
+    // HTTPClient supplies a custom *http.Client for API requests. It is copied
+    // before use (Transport shared); Timeout, when set, overrides the copy's.
+    HTTPClient   *http.Client
+    Experimental *ExperimentalConfig
 }
 ```
 
@@ -296,6 +317,7 @@ FileInfo represents file metadata
 ```go
 type FileInfo struct {
     Name         string
+    Path         string
     Size         int64
     Mode         string
     ModifiedTime time.Time
@@ -338,6 +360,18 @@ type GitCommitResponse struct {
 }
 ```
 
+<a name="GitRemote"></a>
+## type GitRemote
+
+GitRemote describes a configured Git remote.
+
+```go
+type GitRemote struct {
+    Name string
+    URL  string
+}
+```
+
 <a name="GitStatus"></a>
 ## type GitStatus
 
@@ -350,6 +384,10 @@ type GitStatus struct {
     Behind          int
     BranchPublished bool
     FileStatus      []FileStatus
+    // Detached is true when HEAD is not on a branch (detached HEAD state).
+    Detached bool
+    // Upstream is the upstream tracking branch (e.g. "origin/main"), empty when unset.
+    Upstream string
 }
 ```
 
@@ -381,6 +419,41 @@ type ImageParams struct {
     SandboxBaseParams
     Image     any // string or *Image
     Resources *Resources
+}
+```
+
+<a name="ListSecretsQuery"></a>
+## type ListSecretsQuery
+
+ListSecretsQuery contains query parameters for filtering, sorting, and paginating when listing secrets. All fields are optional.
+
+```go
+type ListSecretsQuery struct {
+    // Pagination cursor from a previous response's NextCursor
+    Cursor *string
+    // Number of results per page (1-200, default 100)
+    Limit *int
+    // Filter by partial name match
+    Name *string
+    // Sort by field: "name", "createdAt", or "updatedAt" (default "createdAt")
+    Sort *string
+    // Sort direction: "asc" or "desc" (default "desc")
+    Order *string
+}
+```
+
+<a name="ListSecretsResponse"></a>
+## type ListSecretsResponse
+
+ListSecretsResponse represents a paginated list of secrets
+
+```go
+type ListSecretsResponse struct {
+    Items []*Secret
+    // Total number of secrets matching the filters
+    Total int
+    // Cursor for the next page of results; nil when there are no further pages
+    NextCursor *string
 }
 ```
 
@@ -525,8 +598,10 @@ type SandboxBaseParams struct {
     Labels              map[string]string
     Public              bool
     AutoStopInterval    *int // nil = no auto-stop, 0 = immediate stop
+    AutoPauseInterval   *int // nil = server default when AutoStopInterval is also nil (60 for non-ephemeral pause-supporting classes, with auto-stop disabled), 0 = disabled. Only supported for sandbox classes that support pausing. Not allowed for ephemeral sandboxes. At most one of AutoPauseInterval and AutoStopInterval may be non-zero.
     AutoArchiveInterval *int // nil = no auto-archive, 0 = immediate archive
     AutoDeleteInterval  *int // nil = no auto-delete, 0 = immediate delete
+    TtlMinutes          *int // Wall-clock max lifetime in minutes; 0 disables TTL
     Volumes             []VolumeMount
     // Secrets maps an environment variable name to the name of an existing
     // organization secret. For each entry, the env var is injected into the

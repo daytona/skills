@@ -8,7 +8,7 @@ Initialize a new Process instance
 #### new Process()
 
 ```ruby
-def initialize(sandbox_id:, toolbox_api:, get_preview_link:, language:, otel_state:)
+def initialize(sandbox_id:, toolbox_api:, get_preview_link:, language: 'python', otel_state: nil)
 
 ```
 
@@ -75,7 +75,7 @@ def language()
 #### exec()
 
 ```ruby
-def exec(command:, cwd:, env:, timeout:)
+def exec(command:, cwd: nil, env: nil, timeout: nil)
 
 ```
 
@@ -111,7 +111,7 @@ result = sandbox.process.exec("sleep 10", timeout: 5)
 #### code_run()
 
 ```ruby
-def code_run(code:, params:, timeout:)
+def code_run(code:, params: nil, timeout: nil)
 
 ```
 
@@ -471,7 +471,7 @@ sandbox.process.delete_session("temp-session")
 #### create_pty_session()
 
 ```ruby
-def create_pty_session(id:, cwd:, envs:, pty_size:)
+def create_pty_session(id:, cwd: nil, envs: nil, pty_size: nil)
 
 ```
 
@@ -666,3 +666,4 @@ puts "Terminal Size: #{session_info.cols}x#{session_info.rows}"
 ## See Also
 - [Python SDK - process](../python-sdk/sync/process.md)
 - [TypeScript SDK - process](../typescript-sdk/process.md)
+- [Java SDK - process](../java-sdk/process.md)

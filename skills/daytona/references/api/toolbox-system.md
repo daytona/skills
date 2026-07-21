@@ -12,6 +12,6 @@ window (0 until the first sample completes). Byte fields are in bytes.
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK |  |
+| 200 | OK | SystemMetrics |
 
 ---

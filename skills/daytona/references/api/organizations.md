@@ -13,6 +13,7 @@
 - GET `/organizations/{organizationId}`}
 - DELETE `/organizations/{organizationId}`}
 - GET `/organizations/{organizationId}/usage`/usage}
+- GET `/organizations/{organizationId}/available-sandbox-classes`/available-sandbox-classes}
 - PATCH `/organizations/{organizationId}/quota`/quota}
 - PATCH `/organizations/{organizationId}/quota/{regionId}`/quota/{regionId}}
 - POST `/organizations/{organizationId}/leave`/leave}
@@ -23,6 +24,7 @@
 - PUT `/organizations/{organizationId}/otel-config`/otel-config}
 - DELETE `/organizations/{organizationId}/otel-config`/otel-config}
 - POST `/organizations/{organizationId}/sandbox-default-limited-network-egress`/sandbox-default-limited-network-egress}
+- POST `/organizations/{organizationId}/preview-warning`/preview-warning}
 - PUT `/organizations/{organizationId}/experimental-config`/experimental-config}
 - GET `/organizations/{organizationId}/roles`/roles}
 - POST `/organizations/{organizationId}/roles`/roles}
@@ -217,6 +219,24 @@ Schema: **UpdateOrganizationDefaultRegion**
 
 ---
 
+## GET `/organizations/{organizationId}/available-sandbox-classes` {#daytona/tag/organizations/GET/organizations/{organizationId}/available-sandbox-classes}
+
+**List available sandbox classes for organization**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `organizationId` | path | string | Yes | Organization ID |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Available sandbox classes | array of AvailableSandboxClass |
+
+---
+
 ## PATCH `/organizations/{organizationId}/quota` {#daytona/tag/organizations/PATCH/organizations/{organizationId}/quota}
 
 **Update organization quota**
@@ -240,6 +260,7 @@ Schema: **UpdateOrganizationQuota**
 | `maxSnapshotSize` | number | Yes |  |
 | `volumeQuota` | number | Yes |  |
 | `secretQuota` | number | Yes |  |
+| `maxSecretsPerSandbox` | number | Yes | Maximum number of secrets that can be mounted to a single sandbox |
 | `authenticatedRateLimit` | number | Yes |  |
 | `sandboxCreateRateLimit` | number | Yes |  |
 | `sandboxLifecycleRateLimit` | number | Yes |  |
@@ -465,6 +486,32 @@ Schema: **OrganizationSandboxDefaultLimitedNetworkEgress**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 204 | Sandbox default limited network egress updated successfully |  |
+
+---
+
+## POST `/organizations/{organizationId}/preview-warning` {#daytona/tag/organizations/POST/organizations/{organizationId}/preview-warning}
+
+**Update organization preview warning**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `organizationId` | path | string | Yes | Organization ID |
+
+### Request Body
+
+Schema: **OrganizationPreviewWarning**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `previewWarningEnabled` | boolean | Yes | Whether the proxy shows the preview URL warning page for this organization |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 204 | Preview warning updated successfully |  |
 
 ---
 

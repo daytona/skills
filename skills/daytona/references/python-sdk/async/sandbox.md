@@ -3,6 +3,7 @@
 - AsyncSandbox
 - Resources
 - ListSandboxesQuery
+- SandboxMetrics
 
 
 > For the sync version, see [sync/sandbox.md](../sync/sandbox.md)
@@ -11,6 +12,7 @@
 ## AsyncSandbox
 
 ```python
+@with_events
 class AsyncSandbox(SandboxDto)
 ```
 
@@ -45,6 +47,9 @@ Represents a Daytona Sandbox.
 - `backup_created_at` _str | None_ - When the backup was created (not returned by list results;
   call `refresh_data()` on each item to populate).
 - `auto_stop_interval` _int | None_ - Auto-stop interval in minutes.
+- `auto_pause_interval` _int | None_ - Auto-pause interval in minutes (0 means disabled).
+  Only supported for sandbox classes that support pausing.
+  At most one of auto_stop_interval and auto_pause_interval may be non-zero.
 - `auto_archive_interval` _int | None_ - Auto-archive interval in minutes.
 - `auto_delete_interval` _int | None_ - Auto-delete interval in minutes.
 - `volumes` _list[SandboxVolume] | None_ - Volumes attached to the Sandbox (not returned by list
@@ -54,6 +59,8 @@ Represents a Daytona Sandbox.
 - `created_at` _str | None_ - When the Sandbox was created.
 - `updated_at` _str | None_ - When the Sandbox was last updated.
 - `last_activity_at` _str | None_ - When the Sandbox last had activity.
+- `auto_destroy_at` _str | None_ - When the Sandbox will be automatically destroyed (only set when a TTL
+  is configured).
 - `network_block_all` _bool | None_ - Whether to block all network access for the Sandbox
   (not returned by list results; call `refresh_data()` on each item to populate).
 - `network_allow_list` _str | None_ - Comma-separated list of allowed CIDR network addresses for
@@ -78,15 +85,47 @@ network_block_all = None
 
 pyright: ignore[reportRedeclaration]
 
+#### AsyncSandbox.\_\_init\_\_
+
+```python
+def __init__(sandbox_dto: SandboxDto | SandboxListItem,
+             toolbox_api: ApiClient,
+             sandbox_api: SandboxApi,
+             language: str,
+             subscription_manager: AsyncEventSubscriptionManager,
+             pool_tracker: AsyncPoolSaturationTracker | None = None,
+             analytics_api_url_provider: Callable[[], Awaitable[str | None]]
+             | None = None)
+```
+
+Initialize a new Sandbox instance.
+
+**Arguments**:
+
+- `sandbox_dto` _SandboxDto | SandboxListItem_ - The sandbox data from the API.
+- `toolbox_api` _ApiClient_ - API client for toolbox operations.
+- `sandbox_api` _SandboxApi_ - API client for Sandbox operations.
+- `language` _str_ - Language code for the Sandbox code_run.
+- `subscription_manager` - AsyncEventSubscriptionManager for real-time updates.
+- `pool_tracker` _AsyncPoolSaturationTracker | None_ - Tracker for connection pool saturation.
+
 #### AsyncSandbox.refresh\_data
 
 ```python
 @intercept_errors(message_prefix="Failed to refresh sandbox data: ")
 @with_instrumentation()
-async def refresh_data() -> None
+async def refresh_data(request_timeout: float | None = None) -> None
 ```
 
 Refreshes the Sandbox data from the API.
+
+**Arguments**:
+
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
+
 
 **Example**:
 
@@ -142,6 +181,48 @@ work_dir = await sandbox.get_work_dir()
 print(f"Sandbox working directory: {work_dir}")
 ```
 
+#### AsyncSandbox.get\_metrics\_latest
+
+```python
+@intercept_errors(message_prefix="Failed to get sandbox metrics: ")
+@with_instrumentation()
+async def get_metrics_latest() -> SandboxMetrics
+```
+
+Gets the most recent resource usage sample directly from the Sandbox daemon.
+
+Unlike :meth:`get_metrics`, which returns aggregated historical samples, this returns
+the single current reading without going through the telemetry backend.
+
+**Returns**:
+
+- `SandboxMetrics` - The current CPU, memory, and disk usage sample for the Sandbox.
+
+#### AsyncSandbox.get\_metrics
+
+```python
+@intercept_errors(message_prefix="Failed to get sandbox metrics: ")
+@with_instrumentation()
+async def get_metrics(start: datetime | None = None,
+                      end: datetime | None = None) -> list[SandboxMetrics]
+```
+
+Gets historical time-series resource usage metrics for the Sandbox.
+
+When the deployment runs a dedicated Analytics API, metrics are fetched from it
+directly; otherwise they are fetched through the control-plane telemetry proxy.
+
+**Arguments**:
+
+- `start` _datetime | None_ - Start of the time range. Defaults to the Sandbox
+  creation time.
+- `end` _datetime | None_ - End of the time range. Defaults to the current time.
+
+
+**Returns**:
+
+- `list[SandboxMetrics]` - Time-ordered usage samples over the requested range.
+
 #### AsyncSandbox.create\_lsp\_server
 
 ```python
@@ -178,7 +259,8 @@ lsp = sandbox.create_lsp_server("python", "workspace/project")
 ```python
 @intercept_errors(message_prefix="Failed to set labels: ")
 @with_instrumentation()
-async def set_labels(labels: dict[str, str]) -> dict[str, str]
+async def set_labels(labels: dict[str, str],
+                     request_timeout: float | None = None) -> dict[str, str]
 ```
 
 Sets labels for the Sandbox.
@@ -188,6 +270,10 @@ Labels are key-value pairs that can be used to organize and identify Sandboxes.
 **Arguments**:
 
 - `labels` _dict[str, str]_ - Dictionary of key-value pairs representing Sandbox labels.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Returns**:
@@ -299,15 +385,19 @@ print("Sandbox stopped successfully")
 @intercept_errors(message_prefix="Failed to remove sandbox: ")
 @with_timeout()
 @with_instrumentation()
-async def delete(timeout: float | None = 60) -> None
+async def delete(timeout: float | None = 60, wait: bool = False) -> None
 ```
 
 Deletes the Sandbox.
 
+By default returns as soon as the deletion request is accepted (fire-and-forget).
+Pass ``wait=True`` to block until the Sandbox reaches the 'destroyed' state.
+
 **Arguments**:
 
-- `timeout` _float | None_ - Timeout (in seconds) for sandbox deletion. 0 means no timeout.
-  Default is 60 seconds.
+- `timeout` _float | None_ - Timeout (in seconds) for the request and, when ``wait``
+  is True, for reaching 'destroyed'. 0 means no timeout. Default is 60 seconds.
+- `wait` _bool_ - If True, wait until the Sandbox is destroyed. Defaults to False.
 
 #### AsyncSandbox.wait\_for\_sandbox\_start
 
@@ -319,8 +409,7 @@ Deletes the Sandbox.
 async def wait_for_sandbox_start(timeout: float | None = 60) -> None
 ```
 
-Waits for the Sandbox to reach the 'started' state. Polls the Sandbox status until it
-reaches the 'started' state, encounters an error or times out.
+Waits for the Sandbox to reach the 'started' state.
 
 **Arguments**:
 
@@ -329,7 +418,7 @@ reaches the 'started' state, encounters an error or times out.
 
 **Raises**:
 
-- `DaytonaError` - If timeout is negative; If Sandbox fails to start or times out
+- `DaytonaError` - If timeout is negative; If Sandbox fails to start or times out;
 
 #### AsyncSandbox.wait\_for\_sandbox\_stop
 
@@ -341,9 +430,7 @@ reaches the 'started' state, encounters an error or times out.
 async def wait_for_sandbox_stop(timeout: float | None = 60) -> None
 ```
 
-Waits for the Sandbox to reach the 'stopped' state. Polls the Sandbox status until it
-reaches the 'stopped' state, encounters an error or times out. It will wait up to 60 seconds
-for the Sandbox to stop.
+Waits for the Sandbox to reach the 'stopped' state.
 Treats destroyed as stopped to cover ephemeral sandboxes that are automatically deleted after stopping.
 
 **Arguments**:
@@ -360,7 +447,8 @@ Treats destroyed as stopped to cover ephemeral sandboxes that are automatically 
 ```python
 @intercept_errors(message_prefix="Failed to set auto-stop interval: ")
 @with_instrumentation()
-async def set_autostop_interval(interval: int) -> None
+async def set_autostop_interval(interval: int,
+                                request_timeout: float | None = None) -> None
 ```
 
 Sets the auto-stop interval for the Sandbox.
@@ -373,6 +461,10 @@ Interactions using Sandbox Previews are not included.
 
 - `interval` _int_ - Number of minutes of inactivity before auto-stopping.
   Set to 0 to disable auto-stop. Defaults to 15.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Raises**:
@@ -389,12 +481,86 @@ sandbox.set_autostop_interval(60)
 sandbox.set_autostop_interval(0)
 ```
 
+#### AsyncSandbox.set\_auto\_pause\_interval
+
+```python
+@intercept_errors(message_prefix="Failed to set auto-pause interval: ")
+@with_instrumentation()
+async def set_auto_pause_interval(interval: int) -> None
+```
+
+Sets the auto-pause interval for the Sandbox.
+
+The Sandbox will automatically pause after being idle (no new events) for the specified interval.
+Only supported for sandbox classes that support pausing.
+
+**Arguments**:
+
+- `interval` _int_ - Number of minutes of inactivity before auto-pausing.
+  Set to 0 to disable auto-pause.
+
+
+**Raises**:
+
+- `DaytonaValidationError` - If interval is negative
+
+
+**Example**:
+
+```python
+# Auto-pause after 1 hour
+await sandbox.set_auto_pause_interval(60)
+# Or disable auto-pause
+await sandbox.set_auto_pause_interval(0)
+```
+
+#### AsyncSandbox.set\_ttl
+
+```python
+@intercept_errors(message_prefix="Failed to set TTL: ")
+@with_instrumentation()
+async def set_ttl(ttl_minutes: int,
+                  request_timeout: float | None = None) -> None
+```
+
+Sets the TTL (time to live) for the Sandbox.
+
+The Sandbox will be destroyed after the specified number of minutes, counted as
+wall-clock time from the current moment, regardless of its state (started, stopped,
+paused, or archived). Setting to 0 disables the TTL.
+
+**Arguments**:
+
+- `ttl_minutes` _int_ - Number of minutes until the Sandbox is destroyed.
+  Set to 0 to disable the TTL.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
+
+
+**Raises**:
+
+- `DaytonaValidationError` - If ttl_minutes is negative
+
+
+**Example**:
+
+```python
+# Set TTL to 1 hour
+await sandbox.set_ttl(60)
+# Or disable TTL
+await sandbox.set_ttl(0)
+```
+
 #### AsyncSandbox.set\_auto\_archive\_interval
 
 ```python
 @intercept_errors(message_prefix="Failed to set auto-archive interval: ")
 @with_instrumentation()
-async def set_auto_archive_interval(interval: int) -> None
+async def set_auto_archive_interval(interval: int,
+                                    request_timeout: float | None = None
+                                    ) -> None
 ```
 
 Sets the auto-archive interval for the Sandbox.
@@ -405,6 +571,10 @@ The Sandbox will automatically archive after being continuously stopped for the 
 
 - `interval` _int_ - Number of minutes after which a continuously stopped Sandbox will be auto-archived.
   Set to 0 for the maximum interval. Default is 7 days.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Raises**:
@@ -426,7 +596,9 @@ sandbox.set_auto_archive_interval(0)
 ```python
 @intercept_errors(message_prefix="Failed to set auto-delete interval: ")
 @with_instrumentation()
-async def set_auto_delete_interval(interval: int) -> None
+async def set_auto_delete_interval(interval: int,
+                                   request_timeout: float | None = None
+                                   ) -> None
 ```
 
 Sets the auto-delete interval for the Sandbox.
@@ -438,6 +610,10 @@ The Sandbox will automatically delete after being continuously stopped for the s
 - `interval` _int_ - Number of minutes after which a continuously stopped Sandbox will be auto-deleted.
   Set to negative value to disable auto-delete. Set to 0 to delete immediately upon stopping.
   By default, auto-delete is disabled.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Example**:
@@ -460,7 +636,8 @@ async def update_network_settings(
         *,
         network_block_all: bool | None = None,
         network_allow_list: str | None = None,
-        domain_allow_list: str | None = None) -> None
+        domain_allow_list: str | None = None,
+        request_timeout: float | None = None) -> None
 ```
 
 Updates outbound network policy on the runner (block all, restore access, or CIDR allow list).
@@ -471,6 +648,10 @@ Updates outbound network policy on the runner (block all, restore access, or CID
   outbound access (and clears a stored allow list).
 - `network_allow_list` - Comma-separated IPv4 CIDRs to allow; implies not blocking all.
 - `domain_allow_list` - Comma-separated domains to allow; implies not blocking all.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Raises**:
@@ -485,12 +666,68 @@ await sandbox.update_network_settings(network_block_all=True)
 await sandbox.update_network_settings(network_block_all=False)
 ```
 
+#### AsyncSandbox.update\_secrets
+
+```python
+@intercept_errors(message_prefix="Failed to update secrets: ")
+@with_instrumentation()
+async def update_secrets(secrets: dict[str, str]) -> None
+```
+
+Updates the set of vault secrets mounted in the Sandbox, replacing the previously mounted set.
+
+Attached, detached and rotated secrets take effect for outbound requests within seconds.
+New environment variables only become visible to processes spawned after the update, and a
+Sandbox created without any secrets must be restarted for newly attached secrets to work.
+
+**Arguments**:
+
+- `secrets` _dict[str, str]_ - Map of environment variable name to the name of an existing
+  organization Secret. Pass an empty dict to detach all secrets.
+
+
+**Example**:
+
+```python
+await sandbox.update_secrets({"ANTHROPIC_API_KEY": "anthropic-prod"})
+await sandbox.update_secrets({})  # detach all
+```
+
+#### AsyncSandbox.update\_env
+
+```python
+@intercept_errors(message_prefix="Failed to update environment: ")
+@with_instrumentation()
+async def update_env(env: dict[str, str],
+                     *,
+                     unset: list[str] | None = None) -> None
+```
+
+Updates the Sandbox daemon's process environment.
+
+Newly spawned processes, sessions and PTYs inherit the change; already-running processes
+keep their environment.
+
+**Arguments**:
+
+- `env` _dict[str, str]_ - Environment variables to set.
+- `unset` _list[str] | None_ - Environment variable names to remove before `env` is applied.
+
+
+**Example**:
+
+```python
+await sandbox.update_env({"MY_VAR": "value"}, unset=["OLD_VAR"])
+```
+
 #### AsyncSandbox.get\_preview\_link
 
 ```python
 @intercept_errors(message_prefix="Failed to get preview link: ")
 @with_instrumentation()
-async def get_preview_link(port: int) -> PortPreviewUrl
+async def get_preview_link(port: int,
+                           request_timeout: float | None = None
+                           ) -> PortPreviewUrl
 ```
 
 Retrieves the preview link for the sandbox at the specified port. If the port is closed,
@@ -500,6 +737,10 @@ to the URL.
 **Arguments**:
 
 - `port` _int_ - The port to open the preview link on.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Returns**:
@@ -522,7 +763,8 @@ print(f"Token: {preview_link.token}")
 @intercept_errors(message_prefix="Failed to create signed preview url: ")
 async def create_signed_preview_url(
         port: int,
-        expires_in_seconds: int | None = None) -> SignedPortPreviewUrl
+        expires_in_seconds: int | None = None,
+        request_timeout: float | None = None) -> SignedPortPreviewUrl
 ```
 
 Creates a signed preview URL for the sandbox at the specified port.
@@ -532,6 +774,10 @@ Creates a signed preview URL for the sandbox at the specified port.
 - `port` _int_ - The port to open the preview link on.
 - `expires_in_seconds` _int | None_ - The number of seconds the signed preview
   url will be valid for. Defaults to 60 seconds.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Returns**:
@@ -542,7 +788,10 @@ Creates a signed preview URL for the sandbox at the specified port.
 
 ```python
 @intercept_errors(message_prefix="Failed to expire signed preview url: ")
-async def expire_signed_preview_url(port: int, token: str) -> None
+async def expire_signed_preview_url(port: int,
+                                    token: str,
+                                    request_timeout: float | None = None
+                                    ) -> None
 ```
 
 Expires a signed preview URL for the sandbox at the specified port.
@@ -551,13 +800,17 @@ Expires a signed preview URL for the sandbox at the specified port.
 
 - `port` _int_ - The port to expire the signed preview url on.
 - `token` _str_ - The token to expire the signed preview url on.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 #### AsyncSandbox.archive
 
 ```python
 @intercept_errors(message_prefix="Failed to archive sandbox: ")
 @with_instrumentation()
-async def archive() -> None
+async def archive(request_timeout: float | None = None) -> None
 ```
 
 Archives the sandbox, making it inactive and preserving its state. When sandboxes are
@@ -565,6 +818,13 @@ archived, the entire filesystem state is moved to cost-effective object storage,
 possible to keep sandboxes available for an extended period. The tradeoff between archived
 and stopped states is that starting an archived sandbox takes more time, depending on its size.
 Sandbox must be stopped before archiving.
+
+**Arguments**:
+
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 #### AsyncSandbox.resize
 
@@ -615,8 +875,7 @@ await sandbox.resize(Resources(cpu=2, memory=4, disk=30))
 async def wait_for_resize_complete(timeout: float | None = 60) -> None
 ```
 
-Waits for the Sandbox resize operation to complete. Polls the Sandbox status until
-the state is no longer 'resizing'.
+Waits for the Sandbox resize operation to complete.
 
 **Arguments**:
 
@@ -633,7 +892,8 @@ the state is no longer 'resizing'.
 @intercept_errors(message_prefix="Failed to create SSH access: ")
 @with_instrumentation()
 async def create_ssh_access(
-        expires_in_minutes: int | None = None) -> SshAccessDto
+        expires_in_minutes: int | None = None,
+        request_timeout: float | None = None) -> SshAccessDto
 ```
 
 Creates an SSH access token for the sandbox.
@@ -641,13 +901,18 @@ Creates an SSH access token for the sandbox.
 **Arguments**:
 
 - `expires_in_minutes` _int | None_ - The number of minutes the SSH access token will be valid for.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 #### AsyncSandbox.revoke\_ssh\_access
 
 ```python
 @intercept_errors(message_prefix="Failed to revoke SSH access: ")
 @with_instrumentation()
-async def revoke_ssh_access(token: str) -> None
+async def revoke_ssh_access(token: str,
+                            request_timeout: float | None = None) -> None
 ```
 
 Revokes an SSH access token for the sandbox.
@@ -655,13 +920,19 @@ Revokes an SSH access token for the sandbox.
 **Arguments**:
 
 - `token` _str_ - The token to revoke.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 #### AsyncSandbox.validate\_ssh\_access
 
 ```python
 @intercept_errors(message_prefix="Failed to validate SSH access: ")
 @with_instrumentation()
-async def validate_ssh_access(token: str) -> SshAccessValidationDto
+async def validate_ssh_access(
+        token: str,
+        request_timeout: float | None = None) -> SshAccessValidationDto
 ```
 
 Validates an SSH access token for the sandbox.
@@ -669,18 +940,30 @@ Validates an SSH access token for the sandbox.
 **Arguments**:
 
 - `token` _str_ - The token to validate.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 #### AsyncSandbox.refresh\_activity
 
 ```python
 @intercept_errors(message_prefix="Failed to refresh sandbox activity: ")
-async def refresh_activity() -> None
+async def refresh_activity(request_timeout: float | None = None) -> None
 ```
 
 Refreshes the sandbox activity to reset the timer for automated lifecycle management actions.
 
 This method updates the sandbox's last activity timestamp without changing its state.
 It is useful for keeping long-running sessions alive while there is still user activity.
+
+**Arguments**:
+
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
+
 
 **Example**:
 
@@ -692,6 +975,7 @@ await sandbox.refresh_activity()
 
 ```python
 @intercept_errors(message_prefix="Failed to pause sandbox")
+@with_timeout()
 @with_instrumentation()
 async def pause(timeout: float = 60) -> None
 ```
@@ -781,3 +1065,46 @@ Query parameters for filtering and sorting when listing Sandboxes.
 - `last_activity_before` _datetime_ - Include sandboxes with last activity before this timestamp.
 - `sort` - Field to sort by.
 - `order` - Sort direction.
+
+## SandboxMetrics
+
+```python
+@dataclass
+class SandboxMetrics()
+```
+
+A single point-in-time sample of historical Sandbox resource usage.
+
+Each instance corresponds to one aggregation bucket returned by the telemetry
+backend. Use :meth:`Sandbox.get_metrics` to fetch a time-ordered list of these,
+or :meth:`Sandbox.get_metrics_latest` for the current sample.
+
+**Attributes**:
+
+- `cpu_count` _int_ - Number of CPU cores allocated to the Sandbox.
+- `cpu_used_pct` _float_ - CPU utilization as a percentage of the allocated limit.
+- `disk_total` _int_ - Total disk space in bytes.
+- `disk_used` _int_ - Used disk space in bytes.
+- `mem_total` _int_ - Total memory in bytes.
+- `mem_used` _int_ - Used memory in bytes.
+- `mem_cache` _int_ - Memory used by the page cache in bytes.
+- `timestamp` _datetime_ - Timestamp of this sample.
+
+#### sandbox\_metrics\_from\_system\_metrics
+
+```python
+def sandbox_metrics_from_system_metrics(
+        system_metrics: _SystemMetrics) -> SandboxMetrics
+```
+
+Converts a live daemon ``SystemMetrics`` snapshot into a ``SandboxMetrics`` sample.
+
+#### pivot\_sandbox\_metrics
+
+```python
+def pivot_sandbox_metrics(
+    points: Iterable[tuple[str | None, str | None, float | None]]
+) -> list[SandboxMetrics]
+```
+
+Buckets ``(metric_name, timestamp, value)`` triples by timestamp into ``SandboxMetrics`` samples.

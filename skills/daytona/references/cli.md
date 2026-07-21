@@ -72,13 +72,13 @@ Alternatively, install directly without Homebrew:
 For Apple Silicon (`arm64`):
 
   ```bash
-  sudo curl -fL https://github.com/daytonaio/daytona/releases/latest/download/daytona-darwin-arm64 -o /usr/local/bin/daytona && sudo chmod +x /usr/local/bin/daytona
+  sudo curl -fL https://github.com/daytona/clients/releases/latest/download/daytona-darwin-arm64 -o /usr/local/bin/daytona && sudo chmod +x /usr/local/bin/daytona
   ```
 
 For Intel (`amd64`):
 
   ```bash
-  sudo curl -fL https://github.com/daytonaio/daytona/releases/latest/download/daytona-darwin-amd64 -o /usr/local/bin/daytona && sudo chmod +x /usr/local/bin/daytona
+  sudo curl -fL https://github.com/daytona/clients/releases/latest/download/daytona-darwin-amd64 -o /usr/local/bin/daytona && sudo chmod +x /usr/local/bin/daytona
   ```
 
 **Linux:**
@@ -88,13 +88,13 @@ Choose the command for your Linux architecture. Both commands download the lates
 For `amd64` (`x86_64`):
 
   ```bash
-  sudo curl -fL https://github.com/daytonaio/daytona/releases/latest/download/daytona-linux-amd64 -o /usr/local/bin/daytona && sudo chmod +x /usr/local/bin/daytona
+  sudo curl -fL https://github.com/daytona/clients/releases/latest/download/daytona-linux-amd64 -o /usr/local/bin/daytona && sudo chmod +x /usr/local/bin/daytona
   ```
 
 For `arm64` (`aarch64`):
 
   ```bash
-  sudo curl -fL https://github.com/daytonaio/daytona/releases/latest/download/daytona-linux-arm64 -o /usr/local/bin/daytona && sudo chmod +x /usr/local/bin/daytona
+  sudo curl -fL https://github.com/daytona/clients/releases/latest/download/daytona-linux-arm64 -o /usr/local/bin/daytona && sudo chmod +x /usr/local/bin/daytona
   ```
 
 **Windows:**
@@ -621,5 +621,6 @@ __Flags__
 
 - [Python SDK](./python-sdk/README.md)
 - [TypeScript SDK](./typescript-sdk/README.md)
+- [Java SDK](./java-sdk/README.md)
 - [Go SDK](./go-sdk/README.md)
 - [Ruby SDK](./ruby-sdk/README.md)

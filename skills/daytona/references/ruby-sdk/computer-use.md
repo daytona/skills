@@ -15,7 +15,7 @@ Initialize a new ComputerUse instance.
 #### new ComputerUse()
 
 ```ruby
-def initialize(sandbox_id:, toolbox_api:, otel_state:)
+def initialize(sandbox_id:, toolbox_api:, otel_state: nil)
 
 ```
 
@@ -321,7 +321,7 @@ Accessibility operations for computer use functionality.
 #### new Accessibility()
 
 ```ruby
-def initialize(sandbox_id:, toolbox_api:, otel_state:)
+def initialize(sandbox_id:, toolbox_api:, otel_state: nil)
 
 ```
 
@@ -362,7 +362,7 @@ def toolbox_api()
 #### get_tree()
 
 ```ruby
-def get_tree(scope:, pid:, max_depth:)
+def get_tree(scope: nil, pid: nil, max_depth: nil)
 
 ```
 
@@ -393,7 +393,7 @@ puts tree.root.name
 #### find_nodes()
 
 ```ruby
-def find_nodes(scope:, pid:, role:, name:, name_match:, states:, limit:)
+def find_nodes(scope: nil, pid: nil, role: nil, name: nil, name_match: nil, states: nil, limit: nil)
 
 ```
 
@@ -457,7 +457,7 @@ sandbox.computer_use.accessibility.focus_node(id: node.id)
 #### invoke_node()
 
 ```ruby
-def invoke_node(id:, action:)
+def invoke_node(id:, action: nil)
 
 ```
 
@@ -507,3 +507,4 @@ sandbox.computer_use.accessibility.set_node_value(id: node.id, value: "hello")
 ## See Also
 - [Python SDK - computer-use](../python-sdk/sync/computer-use.md)
 - [TypeScript SDK - computer-use](../typescript-sdk/computer-use.md)
+- [Java SDK - computer-use](../java-sdk/computer-use.md)

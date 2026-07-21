@@ -240,7 +240,10 @@ const sandbox = await daytona.create(params, { timeout: 100, onSnapshotCreateLog
 #### delete()
 
 ```ts
-delete(sandbox: Sandbox, timeout: number): Promise<void>
+delete(
+   sandbox: Sandbox,
+   timeout: number,
+wait: boolean): Promise<void>
 ```
 
 Deletes a Sandbox.
@@ -249,6 +252,7 @@ Deletes a Sandbox.
 
 - `sandbox` _Sandbox_ - The Sandbox to delete
 - `timeout` _number = 60_ - Timeout in seconds (0 means no timeout, default is 60)
+- `wait` _boolean = false_ - If true, wait until the Sandbox is destroyed (default is false)
 
 
 **Returns**:
@@ -388,7 +392,8 @@ Base parameters for creating a new Sandbox.
 
 - `autoArchiveInterval?` _number_ - Auto-archive interval in minutes (0 means the maximum interval will be used). Default is 7 days.
 - `autoDeleteInterval?` _number_ - Auto-delete interval in minutes (negative value means disabled, 0 means delete immediately upon stopping). By default, auto-delete is disabled.
-- `autoStopInterval?` _number_ - Auto-stop interval in minutes (0 means disabled). Default is 15 minutes.
+- `autoPauseInterval?` _number_ - Auto-pause interval in minutes (0 means disabled). Only supported for sandbox classes that support pausing. Not allowed for ephemeral sandboxes. At most one of autoStopInterval and autoPauseInterval may be non-zero. For non-ephemeral sandbox classes that support pausing, defaults to 60 minutes (with auto-stop disabled) when neither interval is provided.
+- `autoStopInterval?` _number_ - Auto-stop interval in minutes (0 means disabled). Default is 15 minutes (for sandbox classes that support pausing, auto-pause defaults to 60 minutes instead and auto-stop is disabled).
 - `domainAllowList?` _string_ - Comma-separated list of allowed domains for the Sandbox
 - `envVars?` _Record\<string, string\>_ - Optional environment variables to set in the Sandbox
 - `ephemeral?` _boolean_ - Whether the Sandbox should be ephemeral. If true, autoDeleteInterval will be set to 0.
@@ -400,6 +405,7 @@ Base parameters for creating a new Sandbox.
 - `networkBlockAll?` _boolean_ - Whether to block all network access for the Sandbox
 - `public?` _boolean_ - Is the Sandbox port preview public
 - `secrets?` _Record\<string, string\>_ - Optional map of environment variable name to the name of an existing organization Secret to mount into the Sandbox. The env var is set to the Secret's opaque placeholder; the real value is substituted transparently on outbound requests to the Secret's allowed hosts. Every referenced Secret name must already exist in the organization.
+- `ttlMinutes?` _number_ - Maximum time to live in minutes, counted as wall-clock time since creation regardless of sandbox state (0 means disabled). When it elapses the Sandbox is destroyed, even if it is stopped, paused, or archived.
 - `user?` _string_ - Optional os user to use for the Sandbox
 - `volumes?` _VolumeMount\[\]_ - Optional array of volumes to mount to the Sandbox
 ## CreateSandboxFromImageParams
@@ -410,6 +416,7 @@ Parameters for creating a new Sandbox.
 
 - `autoArchiveInterval?` _number_
 - `autoDeleteInterval?` _number_
+- `autoPauseInterval?` _number_
 - `autoStopInterval?` _number_
 - `domainAllowList?` _string_
 - `envVars?` _Record\<string, string\>_
@@ -426,6 +433,7 @@ Parameters for creating a new Sandbox.
 - `resources?` _Resources_ - Resource allocation for the Sandbox. If not provided, sandbox will
     have default resources.
 - `secrets?` _Record\<string, string\>_
+- `ttlMinutes?` _number_
 - `user?` _string_
 - `volumes?` _VolumeMount\[\]_
 ## CreateSandboxFromSnapshotParams
@@ -436,6 +444,7 @@ Parameters for creating a new Sandbox from a snapshot.
 
 - `autoArchiveInterval?` _number_
 - `autoDeleteInterval?` _number_
+- `autoPauseInterval?` _number_
 - `autoStopInterval?` _number_
 - `domainAllowList?` _string_
 - `envVars?` _Record\<string, string\>_
@@ -449,6 +458,7 @@ Parameters for creating a new Sandbox from a snapshot.
 - `public?` _boolean_
 - `secrets?` _Record\<string, string\>_
 - `snapshot?` _string_ - Name of the snapshot to use for the Sandbox.
+- `ttlMinutes?` _number_
 - `user?` _string_
 - `volumes?` _VolumeMount\[\]_
 ## DaytonaConfig
@@ -469,7 +479,14 @@ Configuration options for initializing the Daytona client.
     If set, all SDK operations will be traced.
 - ~~`serverUrl?`~~ _string_ - **_Deprecated_** - Use `apiUrl` instead. This property will be removed in future versions.
 - `target?` _string_ - Target location for Sandboxes
+- ~~`useDeprecatedPolling?`~~ _boolean_ - Observe sandbox state by legacy polling instead of WebSocket event streaming.
+    Defaults to `false`, where state changes are streamed over WebSocket. Can also
+    be enabled via the `DAYTONA_USE_DEPRECATED_POLLING` environment variable.
 
+    streaming is the default and falls back to polling automatically when
+    WebSockets are unavailable.
+
+    - **_Deprecated_** - Polling-only mode will be removed in a future release. Event
 
 
 **Example:**

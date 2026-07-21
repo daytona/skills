@@ -2,6 +2,8 @@
 
 - SecretService
 - CreateSecretParams
+- ListSecretsQuery
+- ListSecretsResponse
 - UpdateSecretParams
 - Secret
 - See Also
@@ -137,22 +139,32 @@ console.log(`Secret ${secret.name} can be used on ${secret.hosts.join(', ')}`);
 #### list()
 
 ```ts
-list(): Promise<Secret[]>
+list(query?: ListSecretsQuery): Promise<ListSecretsResponse>
 ```
 
-Lists all Secrets in the organization.
+Lists Secrets in the organization with cursor-based pagination.
+
+**Parameters**:
+
+- `query?` _ListSecretsQuery_ - Optional filters, sorting, pagination cursor, and per-page size
+
 
 **Returns**:
 
-- `Promise<Secret[]>` - List of all Secrets in the organization
+- `Promise<ListSecretsResponse>` - A page of Secrets together with the total count and the
+    cursor for the next page
 
 **Example:**
 
 ```ts
 const daytona = new Daytona();
-const secrets = await daytona.secret.list();
-console.log(`Found ${secrets.length} secrets`);
-secrets.forEach(secret => console.log(`${secret.name} (${secret.id})`));
+let cursor: string | undefined = undefined;
+do {
+  const page = await daytona.secret.list({ cursor, limit: 50 });
+  console.log(`Fetched ${page.items.length} of ${page.total} secrets`);
+  page.items.forEach(secret => console.log(`${secret.name} (${secret.id})`));
+  cursor = page.nextCursor ?? undefined;
+} while (cursor);
 ```
 
 ***
@@ -205,6 +217,34 @@ Parameters for creating a new Secret.
 - `name` _string_ - Name of the Secret. Must match `^[a-zA-Z_][a-zA-Z0-9_-]*$` and be
     unique within the organization.
 - `value` _string_ - The plaintext Secret value. Stored encrypted and never returned by the API.
+## ListSecretsQuery
+
+Query parameters for listing Secrets with pagination.
+
+**Properties**:
+
+- `cursor?` _string_ - Pagination cursor from a previous response. Omit to fetch the first page.
+- `limit?` _number_ - Number of results per page (1-200). Defaults to 100.
+- `name?` _string_ - Filters the results to Secrets whose name partially matches the value
+- `order?` _ListSecretsPaginatedOrderEnum_ - Direction to sort by. Defaults to `desc`.
+- `sort?` _ListSecretsPaginatedSortEnum_ - Field to sort by. Defaults to `createdAt`.
+## ListSecretsResponse
+
+Represents a paginated list of Daytona Secrets.
+
+**Properties**:
+
+- `items` _Secret\[\]_ - List of Secrets in the current page.
+- `nextCursor` _string_ - Cursor for the next page of results. `null` when there are no more pages.
+    - _Inherited from_: `ListSecretsResponseDto.nextCursor`
+- `total` _number_ - Total number of Secrets matching the filters.
+
+    - _Inherited from_: `ListSecretsResponseDto.total`
+
+
+**Extends:**
+
+- `Omit`\<`ListSecretsResponseDto`, `"items"`\>
 ## UpdateSecretParams
 
 Parameters for updating an existing Secret. Omitted fields are left unchanged.

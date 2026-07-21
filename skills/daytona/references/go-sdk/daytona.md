@@ -34,6 +34,7 @@
 - type SandboxIterator
 - type SandboxListSortDirection
 - type SandboxListSortField
+- type SandboxMetrics
 - type SandboxState
 - type ScreenshotService
 - type SecretService
@@ -186,7 +187,7 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(f \*FileSystemService\) DownloadFileStream\(ctx context.Context, remotePath string, opts ...DownloadStreamOption\) \(io.ReadCloser, error\)](https://www.daytona.io/docs/en<#FileSystemService.DownloadFileStream>)
   - [func \(f \*FileSystemService\) FindFiles\(ctx context.Context, path, pattern string\) \(any, error\)](https://www.daytona.io/docs/en<#FileSystemService.FindFiles>)
   - [func \(f \*FileSystemService\) GetFileInfo\(ctx context.Context, path string\) \(\*types.FileInfo, error\)](https://www.daytona.io/docs/en<#FileSystemService.GetFileInfo>)
-  - [func \(f \*FileSystemService\) ListFiles\(ctx context.Context, path string\) \(\[\]\*types.FileInfo, error\)](<#FileSystemService.ListFiles>)
+  - [func \(f \*FileSystemService\) ListFiles\(ctx context.Context, path string, opts ...func\(\*options.ListFiles\)\) \(\[\]\*types.FileInfo, error\)](<#FileSystemService.ListFiles>)
   - [func \(f \*FileSystemService\) MoveFiles\(ctx context.Context, source, destination string\) error](https://www.daytona.io/docs/en<#FileSystemService.MoveFiles>)
   - [func \(f \*FileSystemService\) ReplaceInFiles\(ctx context.Context, files \[\]string, pattern, newValue string\) \(any, error\)](<#FileSystemService.ReplaceInFiles>)
   - [func \(f \*FileSystemService\) SearchFiles\(ctx context.Context, path, pattern string\) \(any, error\)](https://www.daytona.io/docs/en<#FileSystemService.SearchFiles>)
@@ -200,10 +201,20 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(g \*GitService\) Checkout\(ctx context.Context, path, name string\) error](https://www.daytona.io/docs/en<#GitService.Checkout>)
   - [func \(g \*GitService\) Clone\(ctx context.Context, url, path string, opts ...func\(\*options.GitClone\)\) error](https://www.daytona.io/docs/en<#GitService.Clone>)
   - [func \(g \*GitService\) Commit\(ctx context.Context, path, message, author, email string, opts ...func\(\*options.GitCommit\)\) \(\*types.GitCommitResponse, error\)](https://www.daytona.io/docs/en<#GitService.Commit>)
+  - [func \(g \*GitService\) ConfigureUser\(ctx context.Context, name, email string, opts ...func\(\*options.GitConfig\)\) error](https://www.daytona.io/docs/en<#GitService.ConfigureUser>)
   - [func \(g \*GitService\) CreateBranch\(ctx context.Context, path, name string\) error](https://www.daytona.io/docs/en<#GitService.CreateBranch>)
+  - [func \(g \*GitService\) DangerouslyAuthenticate\(ctx context.Context, username, password string, opts ...func\(\*options.GitAuthenticate\)\) error](https://www.daytona.io/docs/en<#GitService.DangerouslyAuthenticate>)
   - [func \(g \*GitService\) DeleteBranch\(ctx context.Context, path, name string, opts ...func\(\*options.GitDeleteBranch\)\) error](https://www.daytona.io/docs/en<#GitService.DeleteBranch>)
+  - [func \(g \*GitService\) GetConfig\(ctx context.Context, key string, opts ...func\(\*options.GitConfig\)\) \(string, error\)](https://www.daytona.io/docs/en<#GitService.GetConfig>)
+  - [func \(g \*GitService\) Init\(ctx context.Context, path string, opts ...func\(\*options.GitInit\)\) error](https://www.daytona.io/docs/en<#GitService.Init>)
   - [func \(g \*GitService\) Pull\(ctx context.Context, path string, opts ...func\(\*options.GitPull\)\) error](https://www.daytona.io/docs/en<#GitService.Pull>)
   - [func \(g \*GitService\) Push\(ctx context.Context, path string, opts ...func\(\*options.GitPush\)\) error](https://www.daytona.io/docs/en<#GitService.Push>)
+  - [func \(g \*GitService\) RemoteAdd\(ctx context.Context, path, name, url string, opts ...func\(\*options.GitRemoteAdd\)\) error](https://www.daytona.io/docs/en<#GitService.RemoteAdd>)
+  - [func \(g \*GitService\) RemoteGet\(ctx context.Context, path, name string\) \(string, error\)](https://www.daytona.io/docs/en<#GitService.RemoteGet>)
+  - [func \(g \*GitService\) Remotes\(ctx context.Context, path string\) \(\[\]types.GitRemote, error\)](<#GitService.Remotes>)
+  - [func \(g \*GitService\) Reset\(ctx context.Context, path string, opts ...func\(\*options.GitReset\)\) error](https://www.daytona.io/docs/en<#GitService.Reset>)
+  - [func \(g \*GitService\) Restore\(ctx context.Context, path string, files \[\]string, opts ...func\(\*options.GitRestore\)\) error](<#GitService.Restore>)
+  - [func \(g \*GitService\) SetConfig\(ctx context.Context, key, value string, opts ...func\(\*options.GitConfig\)\) error](https://www.daytona.io/docs/en<#GitService.SetConfig>)
   - [func \(g \*GitService\) Status\(ctx context.Context, path string\) \(\*types.GitStatus, error\)](https://www.daytona.io/docs/en<#GitService.Status>)
 - [type KeyboardService](https://www.daytona.io/docs/en<#KeyboardService>)
   - [func NewKeyboardService\(toolboxClient \*toolbox.APIClient, otel \*otelState\) \*KeyboardService](https://www.daytona.io/docs/en<#NewKeyboardService>)
@@ -274,16 +285,19 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(r \*RecordingService\) Start\(ctx context.Context, label \*string\) \(\*toolbox.Recording, error\)](https://www.daytona.io/docs/en<#RecordingService.Start>)
   - [func \(r \*RecordingService\) Stop\(ctx context.Context, id string\) \(\*toolbox.Recording, error\)](https://www.daytona.io/docs/en<#RecordingService.Stop>)
 - [type Sandbox](https://www.daytona.io/docs/en<#Sandbox>)
-  - [func NewSandbox\(client \*Client, toolboxClient \*toolbox.APIClient, dto sandboxDTO, language types.CodeLanguage\) \*Sandbox](https://www.daytona.io/docs/en<#NewSandbox>)
+  - [func NewSandbox\(client \*Client, toolboxClient \*toolbox.APIClient, dto sandboxDTO, language types.CodeLanguage, subscriptionManager \*common.EventSubscriptionManager\) \*Sandbox](https://www.daytona.io/docs/en<#NewSandbox>)
   - [func \(s \*Sandbox\) Archive\(ctx context.Context\) error](https://www.daytona.io/docs/en<#Sandbox.Archive>)
   - [func \(s \*Sandbox\) CreateLspServer\(languageID types.LspLanguageID, pathToProject string\) \*LspServerService](https://www.daytona.io/docs/en<#Sandbox.CreateLspServer>)
   - [func \(s \*Sandbox\) Delete\(ctx context.Context\) error](https://www.daytona.io/docs/en<#Sandbox.Delete>)
+  - [func \(s \*Sandbox\) DeleteAndWait\(ctx context.Context, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.DeleteAndWait>)
   - [func \(s \*Sandbox\) DeleteWithTimeout\(ctx context.Context, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.DeleteWithTimeout>)
   - [func \(s \*Sandbox\) ExperimentalCreateSnapshot\(ctx context.Context, name string\) error](https://www.daytona.io/docs/en<#Sandbox.ExperimentalCreateSnapshot>)
   - [func \(s \*Sandbox\) ExperimentalCreateSnapshotWithTimeout\(ctx context.Context, name string, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.ExperimentalCreateSnapshotWithTimeout>)
   - [func \(s \*Sandbox\) ExperimentalFork\(ctx context.Context, name \*string\) \(\*Sandbox, error\)](https://www.daytona.io/docs/en<#Sandbox.ExperimentalFork>)
   - [func \(s \*Sandbox\) ExperimentalForkWithTimeout\(ctx context.Context, name \*string, timeout time.Duration\) \(\*Sandbox, error\)](https://www.daytona.io/docs/en<#Sandbox.ExperimentalForkWithTimeout>)
   - [func \(s \*Sandbox\) ExpireSignedPreviewLink\(ctx context.Context, port int, token string\) error](https://www.daytona.io/docs/en<#Sandbox.ExpireSignedPreviewLink>)
+  - [func \(s \*Sandbox\) GetMetrics\(ctx context.Context, start, end \*time.Time\) \(\[\]SandboxMetrics, error\)](<#Sandbox.GetMetrics>)
+  - [func \(s \*Sandbox\) GetMetricsLatest\(ctx context.Context\) \(SandboxMetrics, error\)](https://www.daytona.io/docs/en<#Sandbox.GetMetricsLatest>)
   - [func \(s \*Sandbox\) GetPreviewLink\(ctx context.Context, port int\) \(\*types.PreviewLink, error\)](https://www.daytona.io/docs/en<#Sandbox.GetPreviewLink>)
   - [func \(s \*Sandbox\) GetSignedPreviewLink\(ctx context.Context, port int, expiresInSeconds int\) \(\*types.SignedPreviewLink, error\)](https://www.daytona.io/docs/en<#Sandbox.GetSignedPreviewLink>)
   - [func \(s \*Sandbox\) GetUserHomeDir\(ctx context.Context\) \(string, error\)](https://www.daytona.io/docs/en<#Sandbox.GetUserHomeDir>)
@@ -300,7 +314,9 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(s \*Sandbox\) StartWithTimeout\(ctx context.Context, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.StartWithTimeout>)
   - [func \(s \*Sandbox\) Stop\(ctx context.Context\) error](https://www.daytona.io/docs/en<#Sandbox.Stop>)
   - [func \(s \*Sandbox\) StopWithTimeout\(ctx context.Context, timeout time.Duration, force bool\) error](https://www.daytona.io/docs/en<#Sandbox.StopWithTimeout>)
+  - [func \(s \*Sandbox\) UpdateEnv\(ctx context.Context, env map\[string\]string, unset \[\]string\) error](<#Sandbox.UpdateEnv>)
   - [func \(s \*Sandbox\) UpdateNetworkSettings\(ctx context.Context, settings apiclient.UpdateSandboxNetworkSettings\) error](https://www.daytona.io/docs/en<#Sandbox.UpdateNetworkSettings>)
+  - [func \(s \*Sandbox\) UpdateSecrets\(ctx context.Context, secrets map\[string\]string\) error](<#Sandbox.UpdateSecrets>)
   - [func \(s \*Sandbox\) WaitForResize\(ctx context.Context, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.WaitForResize>)
   - [func \(s \*Sandbox\) WaitForStart\(ctx context.Context, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.WaitForStart>)
   - [func \(s \*Sandbox\) WaitForStop\(ctx context.Context, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.WaitForStop>)
@@ -310,6 +326,7 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(it \*SandboxIterator\) Value\(\) \*Sandbox](https://www.daytona.io/docs/en<#SandboxIterator.Value>)
 - [type SandboxListSortDirection](https://www.daytona.io/docs/en<#SandboxListSortDirection>)
 - [type SandboxListSortField](https://www.daytona.io/docs/en<#SandboxListSortField>)
+- [type SandboxMetrics](https://www.daytona.io/docs/en<#SandboxMetrics>)
 - [type SandboxState](https://www.daytona.io/docs/en<#SandboxState>)
 - [type ScreenshotService](https://www.daytona.io/docs/en<#ScreenshotService>)
   - [func NewScreenshotService\(toolboxClient \*toolbox.APIClient, otel \*otelState\) \*ScreenshotService](https://www.daytona.io/docs/en<#NewScreenshotService>)
@@ -320,7 +337,7 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(s \*SecretService\) Create\(ctx context.Context, params \*types.CreateSecretParams\) \(\*types.Secret, error\)](https://www.daytona.io/docs/en<#SecretService.Create>)
   - [func \(s \*SecretService\) Delete\(ctx context.Context, secretID string\) error](https://www.daytona.io/docs/en<#SecretService.Delete>)
   - [func \(s \*SecretService\) Get\(ctx context.Context, secretID string\) \(\*types.Secret, error\)](https://www.daytona.io/docs/en<#SecretService.Get>)
-  - [func \(s \*SecretService\) List\(ctx context.Context\) \(\[\]\*types.Secret, error\)](<#SecretService.List>)
+  - [func \(s \*SecretService\) List\(ctx context.Context, query \*types.ListSecretsQuery\) \(\*types.ListSecretsResponse, error\)](https://www.daytona.io/docs/en<#SecretService.List>)
   - [func \(s \*SecretService\) Update\(ctx context.Context, secretID string, params \*types.UpdateSecretParams\) \(\*types.Secret, error\)](https://www.daytona.io/docs/en<#SecretService.Update>)
 - [type SnapshotService](https://www.daytona.io/docs/en<#SnapshotService>)
   - [func NewSnapshotService\(client \*Client\) \*SnapshotService](https://www.daytona.io/docs/en<#NewSnapshotService>)
@@ -365,6 +382,9 @@ const (
     SandboxStateResizing         = apiclient.SANDBOXSTATE_RESIZING
     SandboxStateSnapshotting     = apiclient.SANDBOXSTATE_SNAPSHOTTING
     SandboxStateForking          = apiclient.SANDBOXSTATE_FORKING
+    SandboxStatePausing          = apiclient.SANDBOXSTATE_PAUSING
+    SandboxStatePaused           = apiclient.SANDBOXSTATE_PAUSED
+    SandboxStateResuming         = apiclient.SANDBOXSTATE_RESUMING
 )
 ```
 
@@ -1787,7 +1807,7 @@ Returns an error if the path doesn't exist.
 ### func \(\*FileSystemService\) ListFiles
 
 ```go
-func (f *FileSystemService) ListFiles(ctx context.Context, path string) ([]*types.FileInfo, error)
+func (f *FileSystemService) ListFiles(ctx context.Context, path string, opts ...func(*options.ListFiles)) ([]*types.FileInfo, error)
 ```
 
 ListFiles lists files and directories in the specified path.
@@ -2198,6 +2218,26 @@ resp, err := sandbox.Git.Commit(ctx, "/home/user/repo",
 
 Returns the \[types.GitCommitResponse\] containing the commit SHA, or an error if the commit fails.
 
+<a name="GitService.ConfigureUser"></a>
+### func \(\*GitService\) ConfigureUser
+
+```go
+func (g *GitService) ConfigureUser(ctx context.Context, name, email string, opts ...func(*options.GitConfig)) error
+```
+
+ConfigureUser configures the git user name and email at the given scope.
+
+Optional parameters can be configured using functional options:
+
+- \[options.WithConfigScope\]: Config scope \("global" \(default\), "local" or "system"\)
+- \[options.WithConfigPath\]: Repository path, required when scope is "local"
+
+Example:
+
+```
+err := sandbox.Git.ConfigureUser(ctx, "John Doe", "john@example.com")
+```
+
 <a name="GitService.CreateBranch"></a>
 ### func \(\*GitService\) CreateBranch
 
@@ -2225,6 +2265,28 @@ err = sandbox.Git.Checkout(ctx, "/home/user/repo", "feature/new-feature")
 ```
 
 Returns an error if the branch creation fails \(e.g., branch already exists\).
+
+<a name="GitService.DangerouslyAuthenticate"></a>
+### func \(\*GitService\) DangerouslyAuthenticate
+
+```go
+func (g *GitService) DangerouslyAuthenticate(ctx context.Context, username, password string, opts ...func(*options.GitAuthenticate)) error
+```
+
+DangerouslyAuthenticate persists git credentials globally so that subsequent operations against the given host authenticate automatically.
+
+This stores the password in plaintext on disk via the git credential store.
+
+Optional parameters can be configured using functional options:
+
+- \[options.WithAuthHost\]: Host to authenticate against \(defaults to "github.com"\)
+- \[options.WithAuthProtocol\]: Protocol to authenticate against \(defaults to "https"\)
+
+Example:
+
+```
+err := sandbox.Git.DangerouslyAuthenticate(ctx, "user", "github_token")
+```
 
 <a name="GitService.DeleteBranch"></a>
 ### func \(\*GitService\) DeleteBranch
@@ -2256,6 +2318,46 @@ err := sandbox.Git.DeleteBranch(ctx, "/home/user/repo", "feature/abandoned",
 ```
 
 Returns an error if the deletion fails.
+
+<a name="GitService.GetConfig"></a>
+### func \(\*GitService\) GetConfig
+
+```go
+func (g *GitService) GetConfig(ctx context.Context, key string, opts ...func(*options.GitConfig)) (string, error)
+```
+
+GetConfig returns a git config value at the given scope, or an empty string when the key is not set.
+
+Optional parameters can be configured using functional options:
+
+- \[options.WithConfigScope\]: Config scope \("global" \(default\), "local" or "system"\)
+- \[options.WithConfigPath\]: Repository path, required when scope is "local"
+
+Example:
+
+```
+name, err := sandbox.Git.GetConfig(ctx, "user.name")
+```
+
+<a name="GitService.Init"></a>
+### func \(\*GitService\) Init
+
+```go
+func (g *GitService) Init(ctx context.Context, path string, opts ...func(*options.GitInit)) error
+```
+
+Init initializes a new Git repository at the specified path.
+
+Optional parameters can be configured using functional options:
+
+- \[options.WithBare\]: Create a bare repository without a working tree
+- \[options.WithInitialBranch\]: Name of the initial branch
+
+Example:
+
+```
+err := sandbox.Git.Init(ctx, "/home/user/repo", options.WithInitialBranch("main"))
+```
 
 <a name="GitService.Pull"></a>
 ### func \(\*GitService\) Pull
@@ -2318,6 +2420,134 @@ err := sandbox.Git.Push(ctx, "/home/user/repo",
 ```
 
 Returns an error if the push fails \(e.g., authentication failure, remote rejection\).
+
+<a name="GitService.RemoteAdd"></a>
+### func \(\*GitService\) RemoteAdd
+
+```go
+func (g *GitService) RemoteAdd(ctx context.Context, path, name, url string, opts ...func(*options.GitRemoteAdd)) error
+```
+
+RemoteAdd adds \(or overwrites\) a remote in the repository.
+
+Optional parameters can be configured using functional options:
+
+- \[options.WithRemoteFetch\]: Fetch from the remote immediately after adding it
+- \[options.WithRemoteOverwrite\]: Replace an existing remote with the same name
+
+Example:
+
+```
+err := sandbox.Git.RemoteAdd(ctx, "/home/user/repo", "origin", "https://github.com/user/repo.git")
+```
+
+<a name="GitService.RemoteGet"></a>
+### func \(\*GitService\) RemoteGet
+
+```go
+func (g *GitService) RemoteGet(ctx context.Context, path, name string) (string, error)
+```
+
+RemoteGet returns the URL of a remote, or an empty string when it does not exist.
+
+Example:
+
+```
+url, err := sandbox.Git.RemoteGet(ctx, "/home/user/repo", "origin")
+```
+
+<a name="GitService.Remotes"></a>
+### func \(\*GitService\) Remotes
+
+```go
+func (g *GitService) Remotes(ctx context.Context, path string) ([]types.GitRemote, error)
+```
+
+Remotes lists the remotes configured in the repository.
+
+Example:
+
+```
+remotes, err := sandbox.Git.Remotes(ctx, "/home/user/repo")
+for _, r := range remotes {
+    fmt.Printf("%s: %s\n", r.Name, r.URL)
+}
+```
+
+<a name="GitService.Reset"></a>
+### func \(\*GitService\) Reset
+
+```go
+func (g *GitService) Reset(ctx context.Context, path string, opts ...func(*options.GitReset)) error
+```
+
+Reset resets the current HEAD to the specified state.
+
+Optional parameters can be configured using functional options:
+
+- \[options.WithResetMode\]: Reset mode \("soft", "mixed", "hard", "merge" or "keep"\)
+- \[options.WithResetTarget\]: Revision to reset to \(defaults to HEAD\)
+- \[options.WithResetFiles\]: Constrain the reset to the given paths
+
+Example:
+
+```
+// Unstage all changes (mixed reset to HEAD)
+err := sandbox.Git.Reset(ctx, "/home/user/repo")
+
+// Hard reset to a previous commit
+err := sandbox.Git.Reset(ctx, "/home/user/repo",
+    options.WithResetMode("hard"),
+    options.WithResetTarget("HEAD~1"),
+)
+```
+
+<a name="GitService.Restore"></a>
+### func \(\*GitService\) Restore
+
+```go
+func (g *GitService) Restore(ctx context.Context, path string, files []string, opts ...func(*options.GitRestore)) error
+```
+
+Restore restores working tree files or unstages changes for the given paths.
+
+Optional parameters can be configured using functional options:
+
+- \[options.WithRestoreStaged\]: Restore the staging index for the given files
+- \[options.WithRestoreWorktree\]: Restore the working tree for the given files
+- \[options.WithRestoreSource\]: Restore from the given revision instead of the index
+
+Example:
+
+```
+// Discard working tree changes
+err := sandbox.Git.Restore(ctx, "/home/user/repo", []string{"file.txt"})
+
+// Unstage changes
+err := sandbox.Git.Restore(ctx, "/home/user/repo", []string{"file.txt"},
+    options.WithRestoreStaged(true),
+)
+```
+
+<a name="GitService.SetConfig"></a>
+### func \(\*GitService\) SetConfig
+
+```go
+func (g *GitService) SetConfig(ctx context.Context, key, value string, opts ...func(*options.GitConfig)) error
+```
+
+SetConfig sets a git config value at the given scope.
+
+Optional parameters can be configured using functional options:
+
+- \[options.WithConfigScope\]: Config scope \("global" \(default\), "local" or "system"\)
+- \[options.WithConfigPath\]: Repository path, required when scope is "local"
+
+Example:
+
+```
+err := sandbox.Git.SetConfig(ctx, "user.name", "John Doe")
+```
 
 <a name="GitService.Status"></a>
 ### func \(\*GitService\) Status
@@ -4121,6 +4351,11 @@ type Sandbox struct {
     // 0 means disabled.
     AutoStopInterval int
 
+    // AutoPauseInterval is the time in minutes of inactivity before auto-pausing.
+    // 0 means disabled. Only supported for sandbox classes that support pausing.
+    // Mutually exclusive with AutoStopInterval.
+    AutoPauseInterval int
+
     // AutoArchiveInterval is the time in minutes after stopping before auto-archiving.
     // Set to 0 to disable auto-archiving.
     AutoArchiveInterval int
@@ -4130,9 +4365,11 @@ type Sandbox struct {
     // Set to 0 to delete immediately upon stopping.
     AutoDeleteInterval int
 
-    CreatedAt      *string // When the sandbox was created
-    UpdatedAt      *string // When the sandbox was last updated
-    LastActivityAt *string // When the sandbox last had activity
+    CreatedAt       *string // When the sandbox was created
+    UpdatedAt       *string // When the sandbox was last updated
+    LastActivityAt  *string // When the sandbox last had activity
+    ToolboxProxyUrl string  // Toolbox proxy URL for the sandbox
+    AutoDestroyAt   *string // When the sandbox will be automatically destroyed (based on TTL)
 
     // Env contains environment variables set in the sandbox.
     // Not populated by [Client.List]; call [Sandbox.RefreshData] on each item to populate.
@@ -4175,7 +4412,7 @@ type Sandbox struct {
 ### func NewSandbox
 
 ```go
-func NewSandbox(client *Client, toolboxClient *toolbox.APIClient, dto sandboxDTO, language types.CodeLanguage) *Sandbox
+func NewSandbox(client *Client, toolboxClient *toolbox.APIClient, dto sandboxDTO, language types.CodeLanguage, subscriptionManager *common.EventSubscriptionManager) *Sandbox
 ```
 
 NewSandbox creates a new Sandbox instance from an API DTO.
@@ -4235,12 +4472,27 @@ func (s *Sandbox) Delete(ctx context.Context) error
 
 Delete deletes the sandbox with a default timeout of 60 seconds.
 
-This operation is irreversible. All data in the sandbox will be lost. For custom timeout, use [Sandbox.DeleteWithTimeout](https://www.daytona.io/docs/en<#Sandbox.DeleteWithTimeout>).
+The method issues the delete API call and returns immediately without waiting for the sandbox to reach the "destroyed" state. This matches the historical behavior. Use [Sandbox.DeleteAndWait](https://www.daytona.io/docs/en<#Sandbox.DeleteAndWait>) to block until destruction.
 
 Example:
 
 ```
 err := sandbox.Delete(ctx)
+```
+
+<a name="Sandbox.DeleteAndWait"></a>
+### func \(\*Sandbox\) DeleteAndWait
+
+```go
+func (s *Sandbox) DeleteAndWait(ctx context.Context, timeout time.Duration) error
+```
+
+DeleteAndWait deletes the sandbox and blocks until it reaches the "destroyed" state or the timeout is exceeded. 0 means no timeout.
+
+Example:
+
+```
+err := sandbox.DeleteAndWait(ctx, 60*time.Second)
 ```
 
 <a name="Sandbox.DeleteWithTimeout"></a>
@@ -4250,7 +4502,9 @@ err := sandbox.Delete(ctx)
 func (s *Sandbox) DeleteWithTimeout(ctx context.Context, timeout time.Duration) error
 ```
 
-DeleteWithTimeout deletes the sandbox with a custom timeout. 0 means no timeout.
+DeleteWithTimeout deletes the sandbox with a custom timeout for the API call. 0 means no timeout.
+
+Like [Sandbox.Delete](https://www.daytona.io/docs/en<#Sandbox.Delete>), this returns as soon as the API call completes without waiting for the "destroyed" state. Use [Sandbox.DeleteAndWait](https://www.daytona.io/docs/en<#Sandbox.DeleteAndWait>) to block until destruction.
 
 Example:
 
@@ -4353,6 +4607,50 @@ err := sandbox.ExpireSignedPreviewLink(ctx, 3000, "preview-token-to-expire")
 if err != nil {
     return err
 }
+```
+
+<a name="Sandbox.GetMetrics"></a>
+### func \(\*Sandbox\) GetMetrics
+
+```go
+func (s *Sandbox) GetMetrics(ctx context.Context, start, end *time.Time) ([]SandboxMetrics, error)
+```
+
+GetMetrics returns historical time\-series resource usage metrics for the sandbox.
+
+A nil start defaults to the sandbox creation time; a nil end defaults to the current time. Samples are returned ordered ascending by timestamp.
+
+Example:
+
+```
+samples, err := sandbox.GetMetrics(ctx, nil, nil)
+if err != nil {
+    return err
+}
+for _, m := range samples {
+    fmt.Printf("%s CPU: %.1f%%\n", m.Timestamp.Format(time.RFC3339), m.CPUUsedPct)
+}
+```
+
+<a name="Sandbox.GetMetricsLatest"></a>
+### func \(\*Sandbox\) GetMetricsLatest
+
+```go
+func (s *Sandbox) GetMetricsLatest(ctx context.Context) (SandboxMetrics, error)
+```
+
+GetMetricsLatest returns the most recent resource usage sample directly from the sandbox daemon.
+
+Unlike GetMetrics, which returns aggregated historical samples, this returns the single current reading without going through the telemetry backend.
+
+Example:
+
+```
+m, err := sandbox.GetMetricsLatest(ctx)
+if err != nil {
+    return err
+}
+fmt.Printf("CPU: %.1f%%\n", m.CPUUsedPct)
 ```
 
 <a name="Sandbox.GetPreviewLink"></a>
@@ -4681,6 +4979,17 @@ Example:
 err := sandbox.StopWithTimeout(ctx, 2*time.Minute, false)
 ```
 
+<a name="Sandbox.UpdateEnv"></a>
+### func \(\*Sandbox\) UpdateEnv
+
+```go
+func (s *Sandbox) UpdateEnv(ctx context.Context, env map[string]string, unset []string) error
+```
+
+UpdateEnv updates the sandbox daemon's process environment, setting the variables in env and removing the names in unset.
+
+Newly spawned processes, sessions, and PTYs inherit the change; already\-running processes keep their existing environment.
+
 <a name="Sandbox.UpdateNetworkSettings"></a>
 ### func \(\*Sandbox\) UpdateNetworkSettings
 
@@ -4689,6 +4998,19 @@ func (s *Sandbox) UpdateNetworkSettings(ctx context.Context, settings apiclient.
 ```
 
 UpdateNetworkSettings updates outbound network policy for this sandbox on the runner \(for example block all traffic, restore general internet access, or apply a CIDR allow list\) without stopping the sandbox.
+
+<a name="Sandbox.UpdateSecrets"></a>
+### func \(\*Sandbox\) UpdateSecrets
+
+```go
+func (s *Sandbox) UpdateSecrets(ctx context.Context, secrets map[string]string) error
+```
+
+UpdateSecrets replaces the set of vault secrets mounted in this sandbox.
+
+Each key is an environment variable name and each value is the name of an existing organization secret \(see the Secrets field on \[types.SandboxBaseParams\]\). Pass an empty map to detach all secrets; a nil map is rejected so an uninitialized map can't detach them by accident.
+
+Attached, detached, and rotated secrets take effect for outbound requests within seconds. New environment variables only become visible to processes spawned after the update, and a sandbox created without any secrets must be restarted before newly attached secrets work.
 
 <a name="Sandbox.WaitForResize"></a>
 ### func \(\*Sandbox\) WaitForResize
@@ -4803,6 +5125,24 @@ SandboxListSortField selects the field used to order results from [Client.List](
 type SandboxListSortField = apiclient.SandboxListSortField
 ```
 
+<a name="SandboxMetrics"></a>
+## type SandboxMetrics
+
+SandboxMetrics is a single point\-in\-time sample of historical sandbox resource usage.
+
+```go
+type SandboxMetrics struct {
+    CPUCount   int32
+    CPUUsedPct float64
+    DiskTotal  int64
+    DiskUsed   int64
+    MemTotal   int64
+    MemUsed    int64
+    MemCache   int64
+    Timestamp  time.Time
+}
+```
+
 <a name="SandboxState"></a>
 ## type SandboxState
 
@@ -4911,8 +5251,8 @@ if err != nil {
     return err
 }
 
-// List all secrets
-secrets, err := client.Secret.List(ctx)
+// List secrets page by page
+page, err := client.Secret.List(ctx, nil)
 ```
 
 ```go
@@ -5021,26 +5361,37 @@ Returns the \[types.Secret\] or an error if the ID is unknown \(404\).
 ### func \(\*SecretService\) List
 
 ```go
-func (s *SecretService) List(ctx context.Context) ([]*types.Secret, error)
+func (s *SecretService) List(ctx context.Context, query *types.ListSecretsQuery) (*types.ListSecretsResponse, error)
 ```
 
-List returns all secrets in the organization.
+List returns one page of the organization's secrets.
 
-The plaintext value is never returned; each secret carries only its opaque placeholder.
+The plaintext value is never returned; each secret carries only its opaque placeholder. Pass the NextCursor of a response as the Cursor of the next query to fetch the following page; a nil NextCursor means there are no further pages.
+
+Parameters:
+
+- query: Optional filtering, sorting, and pagination parameters. May be nil, in which case the first page is returned with server defaults \(100 results sorted by creation time, newest first\).
 
 Example:
 
 ```
-secrets, err := client.Secret.List(ctx)
-if err != nil {
-    return err
-}
-for _, secret := range secrets {
-    fmt.Printf("Secret %s -> %s\n", secret.Name, secret.Placeholder)
+query := &types.ListSecretsQuery{}
+for {
+    page, err := client.Secret.List(ctx, query)
+    if err != nil {
+        return err
+    }
+    for _, secret := range page.Items {
+        fmt.Printf("Secret %s -> %s\n", secret.Name, secret.Placeholder)
+    }
+    if page.NextCursor == nil {
+        break
+    }
+    query.Cursor = page.NextCursor
 }
 ```
 
-Returns a slice of \[types.Secret\] or an error if the request fails.
+Returns a \[types.ListSecretsResponse\] holding the page's secrets, the total number of secrets matching the filters, and the next\-page cursor, or an error if the request fails.
 
 <a name="SecretService.Update"></a>
 ### func \(\*SecretService\) Update
@@ -5461,3 +5812,4 @@ Returns the updated \[types.Volume\] when ready, or an error if the timeout expi
 ## See Also
 - [Python SDK - daytona](../python-sdk/sync/daytona.md)
 - [TypeScript SDK - daytona](../typescript-sdk/daytona.md)
+- [Java SDK - daytona](../java-sdk/daytona.md)

@@ -1,6 +1,8 @@
 ## Contents
 
 - Create sandboxes
+- GPU sandboxes
+- VM sandboxes
 - Ephemeral sandboxes
 - Linked sandboxes
 - Start sandboxes
@@ -8,13 +10,14 @@
 - List sandboxes
 - Stop sandboxes
 - Archive sandboxes
+- Pause / resume sandboxes
 - Recover sandboxes
 - Resize sandboxes
 - Label sandboxes
-- Create snapshot from sandbox
 - Delete sandboxes
+- Create snapshot from sandbox
+- Fork sandboxes
 - Sandbox lifecycle
-- Multiple runtime support
 - Automated lifecycle management
 
 
@@ -24,36 +27,7 @@ Daytona provides **full composable computers** — **sandboxes** — for AI agen
 
 Sandboxes are isolated runtime environments you can manage programmatically to run code. Each sandbox runs in isolation, giving it a dedicated kernel, filesystem, network stack, and allocated vCPU, RAM, and disk. Agents and developers get access to a full composable computer where they can install packages, run servers, compile code, and manage processes.
 
-Sandboxes have **1 vCPU**, **1GB RAM**, and **3GiB disk** by default. Organizations get a maximum sandbox resource limit of **4 vCPUs**, **8GB RAM**, and **10GB disk**.
-
-Sandboxes can use [snapshots](./snapshots.md) to capture a fully configured environment (base operating system, installed packages, dependencies and configuration) to create new sandboxes.
-
-<DocLinkCardGrid>
-  <DocLinkCard
-    title="Container"
-    href="#create-sandboxes"
-    icon="package"
-    description="Default Linux container runtime."
-  />
-  <DocLinkCard
-    title="Linux"
-    href="/docs/en/sandboxes/vm-sandboxes#linux-vm"
-    icon="vm"
-    description="Linux OS runtime in a virtual machine for running Linux-specific tools and workflows."
-  />
-  <DocLinkCard
-    title="Windows"
-    href="/docs/en/sandboxes/vm-sandboxes#windows"
-    icon="vm"
-    description="Windows OS runtime in a virtual machine for running Windows applications and tooling."
-  />
-  <DocLinkCard
-    title="GPU"
-    href="/docs/en/sandboxes/gpu-sandboxes"
-    icon="gpu"
-    description="NVIDIA GPU runtime for model inference, fine-tuning, and CUDA-accelerated compute."
-  />
-</DocLinkCardGrid>
+Sandboxes run as **Linux containers** by default. Daytona also provides [VM sandboxes](#vm-sandboxes) with a dedicated **Linux VM** or **Windows** operating system, and [GPU sandboxes](#gpu-sandboxes) with **NVIDIA GPU** acceleration for model inference, fine-tuning, and CUDA-accelerated compute.
 
 ## Create sandboxes
 
@@ -73,6 +47,8 @@ sandbox = daytona.create()
 ### Snapshots
 
 Create a sandbox from a [default snapshot](./snapshots.md#default-snapshots).
+
+[Snapshots](./snapshots.md) are persistent captures of sandbox state, including the filesystem, installed packages, and settings. They serve as pre-configured environments for creating sandboxes, and you can [capture them from an existing sandbox](#create-snapshot-from-sandbox) to save its state and restore it later.
 
 | **Snapshot**            | **vCPU** | **Memory** | **Storage** | **GPU** | **Sandbox Class** |
 | ----------------------- | -------- | ---------- | ----------- | ------- | ----------------- |
@@ -105,6 +81,8 @@ sandbox = daytona.create(
 
 ### Resources
 
+Create a sandbox with custom resources.
+
 Sandboxes have **1 vCPU**, **1GB RAM**, and **3GiB disk** by default. Organizations get a maximum sandbox resource limit of **4 vCPUs**, **8GB RAM**, and **10GB disk**.
 
 | **Resource** | **Unit** | **Default** | **Minimum** | **Maximum** |
@@ -127,6 +105,198 @@ sandbox = daytona.create(
     CreateSandboxFromImageParams(
         image="ubuntu:22.04",
         resources=Resources(cpu=2, memory=4, disk=8),
+    )
+)
+```
+
+<a id="multiple-runtime-support"></a>
+### Languages
+
+Create a sandbox with a specific language runtime.
+
+Daytona sandboxes support **Python**, **TypeScript**, and **JavaScript** programming language runtimes for direct code execution inside the sandbox. The `language` parameter controls which programming language runtime is used for the sandbox. If omitted, it defaults to `python`.
+
+- **`python`**
+- **`typescript`**
+- **`javascript`**
+
+```python
+from daytona import Daytona, CreateSandboxFromSnapshotParams
+
+daytona = Daytona()
+
+# Python runtime (default)
+sandbox = daytona.create(CreateSandboxFromSnapshotParams(language="python"))
+response = sandbox.process.code_run('print("Hello from Python")')
+print(response.result)
+
+# TypeScript runtime
+sandbox = daytona.create(CreateSandboxFromSnapshotParams(language="typescript"))
+response = sandbox.process.code_run('console.log("Hello from TypeScript")')
+print(response.result)
+
+# JavaScript runtime
+sandbox = daytona.create(CreateSandboxFromSnapshotParams(language="javascript"))
+response = sandbox.process.code_run('console.log("Hello from JavaScript")')
+print(response.result)
+```
+
+## GPU sandboxes
+
+Daytona provides **GPU sandboxes** for workloads that require NVIDIA GPU acceleration, such as model inference, fine-tuning, and CUDA-accelerated compute. GPU sandboxes are ephemeral and support up to **16 vCPUs**, **192GB RAM**, and **512GB disk**. Supported GPU types:
+
+- **NVIDIA H100**
+- **NVIDIA H200**
+- **NVIDIA RTX Pro 6000**
+- **NVIDIA RTX 4090**
+- **NVIDIA RTX 5090**
+
+> Due to possible events of temporary GPU scarcity, the target/region requested for GPU sandboxes is ignored by default. If you need access to a specific geographical location, contact us at support@daytona.io.
+
+**Create from snapshot:**
+
+Create a GPU sandbox from a default snapshot.
+
+1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+2. Click **Create Sandbox**
+3. Select a **`daytona-gpu`** snapshot
+4. Select **`ephemeral`** or set **`auto-delete interval`** to **`0`**
+5. Click **Create**
+
+```python
+from daytona import Daytona, CreateSandboxFromSnapshotParams
+
+daytona = Daytona()
+sandbox = daytona.create(
+    CreateSandboxFromSnapshotParams(
+        snapshot="daytona-gpu",
+        auto_delete_interval=0,
+    ),
+)
+```
+
+**Create with custom resources:**
+
+Create a GPU sandbox with custom GPU resources: units and types.
+
+1. Create a sandbox from an **`image`**
+2. Set the **`auto-delete interval`** to **`0`** (ephemeral)
+3. Set the **`GPU`** to the number of GPU units
+4. Specify the **`GPU type`**(s):
+
+    The GPU type field accepts a single value or an ordered list of preferred types.
+
+    Daytona uses the first available type in the order you provide. This lets you fall back from a preferred GPU to an alternative when the first choice is not available.
+
+    - **`H100`**
+    - **`H200`**
+    - **`RTX-PRO-6000`**
+    - **`RTX-4090`**
+    - **`RTX-5090`**
+
+```python
+from daytona import Daytona, CreateSandboxFromImageParams, Image, Resources, GpuType
+
+daytona = Daytona()
+sandbox = daytona.create(
+    CreateSandboxFromImageParams(
+        image=Image.debian_slim("3.12"),
+        auto_delete_interval=0,
+        resources=Resources(
+            gpu=1,
+            gpu_type=[GpuType.H100, GpuType.RTX_PRO_6000],
+        ),
+    )
+)
+```
+
+## VM sandboxes
+
+Daytona provides **VM sandboxes** for workloads that require a full virtual machine with a dedicated **Linux** or **Windows** operating system. VM sandboxes are distinct from container sandboxes and support VM-only capabilities:
+
+- [Fork sandboxes](#fork-sandboxes)
+- [Pause/resume sandboxes](#pause--resume-sandboxes)
+- [Create snapshot from sandbox](#create-snapshot-from-sandbox)
+> **Note: Limitations**
+> VM sandboxes can currently only be created from existing VM snapshots. Dynamic builds through the declarative builder are supported for container sandboxes only.
+
+### Linux VM
+
+Create a Linux VM sandbox.
+
+**Create from snapshot:**
+
+Create a Linux VM sandbox from a default snapshot.
+
+1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+2. Click **Create Sandbox**
+3. Select a Linux VM snapshot:
+
+    - **`daytona-vm-small`**
+    - **`daytona-vm-medium`**
+    - **`daytona-vm-large`**
+
+4. Click **Create**
+
+```python
+from daytona import Daytona, CreateSandboxFromSnapshotParams
+
+daytona = Daytona()
+sandbox = daytona.create(CreateSandboxFromSnapshotParams(snapshot="daytona-vm-small"))
+```
+
+**Create from custom snapshot:**
+
+Create a Linux VM sandbox from a custom snapshot.
+
+1. Create a snapshot from a base **`image`**
+2. Set sandbox class to **`LINUX_VM`**
+3. Create a Linux VM sandbox from the snapshot
+
+```python
+from daytona import (
+    Daytona,
+    CreateSnapshotParams,
+    CreateSandboxFromSnapshotParams,
+    SandboxClass,
+)
+
+daytona = Daytona()
+
+# 1. Create a VM snapshot (linux-vm class)
+daytona.snapshot.create(
+    CreateSnapshotParams(
+        name="my-vm-snapshot",
+        image="ubuntu:22.04",
+        sandbox_class=SandboxClass.LINUX_VM,
+    )
+)
+
+# 2. Create a VM sandbox from the snapshot
+sandbox = daytona.create(CreateSandboxFromSnapshotParams(snapshot="my-vm-snapshot"))
+```
+
+### Windows
+
+Create a Windows sandbox.
+
+1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+2. Click **Create Sandbox**
+3. Select a Windows snapshot:
+
+    - **`windows-small`**
+    - **`windows-medium`**
+    - **`windows-large`**
+
+4. Click **Create**
+
+```python
+from daytona import Daytona, CreateSandboxFromSnapshotParams
+
+daytona = Daytona()
+sandbox = daytona.create(
+    CreateSandboxFromSnapshotParams(
+        snapshot="windows-small",
     )
 )
 ```
@@ -218,11 +388,11 @@ for sandbox in daytona.list():
 
 ## Stop sandboxes
 
-Stop a sandbox.
+For [container sandboxes](#create-sandboxes), stopping terminates the running container. The filesystem is preserved, but memory state is not. Container sandboxes do not support pause; stop is the way to shut down a container sandbox when it is not in use.
 
-Stopped sandboxes maintain filesystem persistence while their memory state is cleared. They incur only disk usage costs and can be started again when needed.
+For [VM sandboxes](#vm-sandboxes) (Linux and Windows), stopping shuts down the virtual machine while preserving the filesystem, and memory state is cleared. To preserve running process state without consuming CPU, use [pause / resume](#pause--resume-sandboxes) instead.
 
-The stopped state should be used when a sandbox is expected to be started again. Otherwise, it is recommended to stop and then archive the sandbox to eliminate disk usage costs.
+The sandbox moves to the **stopped** state when shutdown completes. While a stop is in progress, the sandbox is in the **stopping** state and does not accept new requests.
 
 1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
 2. Click the stop icon (**⏹**) next to the sandbox you want to stop
@@ -230,25 +400,38 @@ The stopped state should be used when a sandbox is expected to be started again.
 ```python
 sandbox.stop()
 ```
-
-If you need a faster shutdown, use force stop (`force=true` / `--force`) to terminate the sandbox immediately. Force stop is ungraceful and should be used when quick termination is more important than process cleanup. Avoid force stop for normal shutdowns where the process should flush buffers, write final state, or run cleanup hooks.
-
-Common use cases for force stop include:
-
-- you need to reduce stop time and can accept immediate termination
-- the entrypoint ignores termination signals or hangs during shutdown
+> **Note: Force stop**
+> If you need a faster shutdown, use force stop (`force=true` / `--force`) to terminate the sandbox immediately. Force stop is ungraceful and should be used when quick termination is more important than process cleanup. Avoid force stop for normal shutdowns where the process should flush buffers, write final state, or run cleanup.
 
 ## Archive sandboxes
 
-Archive a sandbox.
+Archive moves a stopped container sandbox's filesystem to object storage and free disk quota. Archive is supported for [container sandboxes](#create-sandboxes) only.
+
+[VM sandboxes](#vm-sandboxes) (Linux and Windows) do not support archive. Stopping a VM sandbox already offloads filesystem state and releases disk quota, so a separate archive step is not needed.
 
 1. Ensure the sandbox is **stopped**
 2. **Archive** the sandbox
-3. Wait for the sandbox to reach the **archived** state to move filesystem state to object storage
+3. Wait for the sandbox to reach the **archived** state
 4. **Start** the sandbox again when you need to use it
 
 ```python
 sandbox.archive()
+```
+
+<a id="pause-sandboxes"></a>
+## Pause / resume sandboxes
+
+For [container sandboxes](#create-sandboxes), pause is not supported. The filesystem can be preserved on [stop](#stop-sandboxes), but memory state is not. Use stop to shut down a container sandbox when it is not in use.
+
+For [VM sandboxes](#vm-sandboxes) (Linux and Windows), pausing freezes the virtual machine. The filesystem and memory state are preserved, and CPU is no longer consumed.
+
+1. Ensure the VM sandbox is **started**
+2. **Pause** the VM sandbox
+3. Wait for the VM sandbox to reach the **paused** state
+4. **Resume** (start) the VM sandbox again when you need to resume it
+
+```python
+sandbox.pause()
 ```
 
 ## Recover sandboxes
@@ -272,11 +455,9 @@ sandbox.recover()
 
 ## Resize sandboxes
 
-Resize [sandbox resources](#resources) after creation.
+Resizing updates the sandbox resource allocation (`cpu`, `memory`, and `disk`) for that sandbox. CPU and memory control compute capacity for running workloads, while disk controls persistent filesystem capacity.
 
 On a running sandbox, you can increase CPU and memory without interruption. To decrease CPU or memory, or to increase disk capacity, stop the sandbox first. Disk size can only be increased and cannot be decreased.
-
-Resizing updates the sandbox resource allocation (`cpu`, `memory`, and `disk`) for that sandbox only. CPU and memory control compute capacity for running workloads, while disk controls persistent filesystem capacity. Values must be integers and stay within your organization's per-sandbox resource limits.
 
 1. Choose the new **CPU**, **memory**, and **disk** values within your organization's limits
 2. Ensure the sandbox is **stopped** if you need to decrease CPU or memory, or increase disk
@@ -317,34 +498,70 @@ sandbox.set_labels({
 })
 ```
 
-## Create snapshot from sandbox
-
-Create a snapshot from an existing sandbox.
-
-A snapshot captures a point-in-time copy of a sandbox that you can use as a base to create new sandboxes, templating a known-good environment for reuse.
-
-Container sandboxes capture filesystem state only. For hot and cold snapshots on VM sandboxes (Linux and Windows), see [VM sandboxes](https://www.daytona.io/docs/en/sandboxes/vm-sandboxes).
-
-```python
-sandbox._experimental_create_snapshot("my-sandbox-snapshot")
-```
-
 ## Delete sandboxes
 
 Delete a sandbox.
+
+By default `delete` is fire-and-forget: it returns as soon as the API accepts the deletion request, without waiting for the sandbox to be destroyed. Pass the `wait` flag to block until the sandbox reaches the destroyed state.
 
 1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
 2. Click the **Delete** button next to the sandbox you want to delete.
 
 ```python
 sandbox.delete()
+
+# Block until the sandbox is destroyed
+sandbox.delete(timeout=60, wait=True)
+```
+
+## Create snapshot from sandbox
+
+Container sandboxes capture filesystem state only (**cold snapshot**). VM sandboxes capture filesystem and memory state (**hot snapshot**) through the `includeMemory` parameter:
+
+| **Snapshot type** | **Include memory**    | **Snapshot contents** | **Required sandbox state** |
+| ----------------- | --------------------- | --------------------- | -------------------------- |
+| Cold              | **`false`** (default) | Filesystem only       | Stopped                    |
+| Hot               | **`true`**            | Filesystem and memory | Started                    |
+
+```python
+# Cold snapshot (filesystem only, sandbox stopped)
+sandbox._experimental_create_snapshot("my-snapshot")
+
+# Hot snapshot (filesystem and memory, sandbox running)
+sandbox._experimental_create_snapshot("my-vm-snapshot", include_memory=True)
+```
+
+## Fork sandboxes
+
+Forking is supported for [VM sandboxes](#vm-sandboxes) only. Forking creates a duplicate of a sandbox's filesystem and memory state in a new sandbox. The forked sandbox is fully independent: it can be started, stopped, and deleted without affecting the original.
+
+Daytona tracks the parent-child relationship in a fork tree, so you can trace a fork's lineage back to the sandbox it was created from. You can fork a fork to build branches. The parent sandbox cannot be deleted while it has active fork children.
+
+1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+2. Click the three-dot menu (**⋮**) next to the started VM sandbox you want to fork
+3. Select **Fork**
+
+```python
+# Fork sandbox through the Sandbox instance
+forked = sandbox._experimental_fork(name="my-forked-sandbox")
 ```
 
 ## Sandbox lifecycle
 
+| **Lifecycle feature**                             | **Container** | **Linux VM** | **Windows** | **GPU** |
+| ------------------------------------------------- | ------------- | ------------ | ----------- | ------- |
+| Start sandboxes                                   | ✓             | ✓            | ✓           | ✓       |
+| Stop sandboxes                                    | ✓             | ✓            | ✓           | ✓       |
+| Pause / resume sandboxes                          | ✗             | ✓            | ✓           | ✗       |
+| Archive sandboxes                                 | ✓             | ✗            | ✗           | ✗       |
+| Fork sandboxes                                    | ✗             | ✓            | ✓           | ✗       |
+| Snapshot from sandbox <br />(filesystem only)     | ✓             | ✓            | ✓           | ✓       |
+| Snapshot from sandbox <br />(filesystem + memory) | ✗             | ✓            | ✓           | ✗       |
+
 A sandbox can have several different states. Each state reflects the status of your sandbox.
 
-<Collapsible title="Sandbox states">
+**Sandbox states**
+
 
 | **State**         | **Description**                                                                             |
 | ----------------- | ------------------------------------------------------------------------------------------- |
@@ -356,13 +573,13 @@ A sandbox can have several different states. Each state reflects the status of y
 | Starting          | The sandbox is starting and will be ready to use.                                           |
 | Started           | The sandbox has started and is ready to use.                                                |
 | Stopping          | The sandbox is stopping and will no longer accept requests.                                 |
-| Stopped           | The sandbox has stopped and is no longer running.                                           |
-| Pausing           | The sandbox is pausing while its filesystem and memory state are preserved.                 |
-| Paused            | The sandbox is paused with its filesystem and memory state preserved.                       |
-| Resuming          | The sandbox is resuming from a paused state and will be ready to use.                       |
-| Archiving         | The sandbox is archiving and its state will be preserved.                                   |
-| Archived          | The sandbox has been archived and its state is preserved.                                   |
-| Restoring         | The sandbox is being restored from archive and will be ready to use shortly.                |
+| Stopped           | The sandbox has stopped and is no longer running. Container sandboxes keep their filesystem on the runner. VM sandboxes offload filesystem state to nearby storage. |
+| Pausing           | The VM sandbox is pausing while its filesystem and memory state are preserved.              |
+| Paused            | The VM sandbox is paused with filesystem and memory state preserved. State is offloaded to nearby storage. |
+| Resuming          | The VM sandbox is resuming from a paused state and will be ready to use.                    |
+| Archiving         | The container sandbox filesystem is being moved to object storage.                          |
+| Archived          | The container sandbox filesystem is stored in object storage.                               |
+| Restoring         | The sandbox is being restored and will be ready to use shortly.                             |
 | Resizing          | The sandbox is being resized to a new set of resources.                                     |
 | Snapshotting      | The sandbox is creating a [**snapshot**](./snapshots.md) of its filesystem and memory.  |
 | Forking           | The sandbox is being forked into a new independent sandbox.                                 |
@@ -371,7 +588,6 @@ A sandbox can have several different states. Each state reflects the status of y
 | Error             | The sandbox is in an error state and needs to be recovered.                                 |
 | Unknown           | The default sandbox state before it is created.                                             |
 
-</Collapsible>
 
 The diagram demonstrates the states and possible transitions between them.
 
@@ -380,7 +596,8 @@ The diagram demonstrates the states and possible transitions between them.
 
 A sandbox can transition between states in response to various actions. The following table lists the initial state, target state, and trigger for the transition.
 
-<Collapsible title="State transitions">
+**State transitions**
+
 
 | **Initial state** | **Target state**  | **Trigger**                                                                       |
 | ----------------- | ----------------- | --------------------------------------------------------------------------------- |
@@ -398,7 +615,7 @@ A sandbox can transition between states in response to various actions. The foll
 | Starting          | Started           | The sandbox is running and ready to accept requests.                              |
 | Started           | Stopping          | A stop is requested, or the auto-stop interval is exceeded.                       |
 | Stopping          | Stopped           | The sandbox process exits and its memory state is cleared.                        |
-| Started           | Pausing           | A pause is requested.                                                             |
+| Started           | Pausing           | A pause is requested, or the auto-pause interval is exceeded.                     |
 | Pausing           | Paused            | The filesystem and memory state are preserved.                                    |
 | Paused            | Resuming          | A start is requested on a paused sandbox.                                         |
 | Paused            | Stopping          | A stop is requested on a paused sandbox.                                          |
@@ -423,31 +640,17 @@ A sandbox can transition between states in response to various actions. The foll
 | Error             | Restoring         | A recover is requested for a recoverable error and the sandbox is restored.       |
 | Error             | Archiving         | An errored sandbox with a completed backup is archived to preserve its state.     |
 
-</Collapsible>
-
-## Multiple runtime support
-
-Daytona sandboxes support Python, TypeScript, and JavaScript programming language runtimes for direct code execution inside the sandbox. The `language` parameter controls which programming language runtime is used for the sandbox:
-
-- **`python`**
-- **`typescript`**
-- **`javascript`**
-
-If omitted, the Daytona SDK will default to `python`. To override this, explicitly set the `language` value when creating the sandbox.
 
 ## Automated lifecycle management
 
-Sandboxes can be automatically stopped, archived, and deleted based on user-defined intervals. The intervals act as a TTL (time-to-live) mechanism for the sandbox. You can also refresh the last activity timestamp to explicitly signal activity when lifecycle behavior depends on inactivity intervals.
+Sandboxes can be managed automatically based on user-defined intervals. The intervals act as a TTL (time-to-live) mechanism for the sandbox.
 
-### Update sandbox last activity
-
-Update a sandbox's last activity timestamp.
-
-This updates the sandbox's recorded activity time without changing its runtime state. It is useful when your workflow is driven by external systems or background orchestration that may not reset inactivity tracking.
-
-```python
-sandbox.refresh_activity()
-```
+- **[Auto-stop interval](#auto-stop-interval)**: stop a sandbox after a specified period of inactivity
+- **[Auto-pause interval](#auto-pause-interval)**: pause a VM sandbox after a specified period of inactivity
+- **[Auto-archive interval](#auto-archive-interval)**: archive a sandbox after a specified period of inactivity
+- **[Auto-delete interval](#auto-delete-interval)**: delete a sandbox after a specified period of inactivity
+- **[Update sandbox last activity](#update-sandbox-last-activity)**: signal activity to reset the inactivity timer
+- **[Running indefinitely](#running-indefinitely)**: run a sandbox indefinitely
 
 ### Auto-stop interval
 
@@ -490,9 +693,34 @@ The following do not reset the timer:
 
 If you run a long-running task like LLM inference that takes more than 15 minutes to complete without any external interaction, the sandbox may auto-stop mid-process because the process itself doesn't count as "activity", therefore the timer is not reset.
 
+### Auto-pause interval
+
+The auto-pause interval sets the amount of time after which an idle VM sandbox is automatically [paused](#pause--resume-sandboxes). Auto-pause applies only to [VM sandboxes](#vm-sandboxes) (Linux and Windows) and is mutually exclusive with the [auto-stop interval](#auto-stop-interval): at most one of the two intervals may be non-zero. Ephemeral sandboxes cannot have auto-pause enabled.
+
+The interval is set in minutes:
+
+- **`0`**: disables the auto-pause functionality
+- if neither auto-pause nor auto-stop is set, non-ephemeral sandbox classes that support pausing default to an auto-pause interval of 60 minutes with auto-stop disabled
+
+The sandbox pauses after no new events occur for the specified interval. Events include sandbox state changes and interactions with the sandbox through the SDK. Interactions through [sandbox previews](./preview.md) do not reset the timer.
+
+```python
+sandbox = daytona.create(CreateSandboxFromSnapshotParams(
+    snapshot="daytona-vm-small",
+    # Auto-pause after 1 hour of inactivity
+    auto_pause_interval=60,
+))
+
+# Update the auto-pause interval on an existing sandbox
+sandbox.set_auto_pause_interval(60)
+
+# Disable auto-pause
+sandbox.set_auto_pause_interval(0)
+```
+
 ### Auto-archive interval
 
-The auto-archive interval sets the amount of time after which a continuously stopped sandbox is automatically archived.
+The auto-archive interval sets the amount of time after which a continuously stopped sandbox is automatically archived. Auto-archive applies only to container sandboxes. VM sandboxes are excluded.
 
 1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
 2. Click **Create Sandbox**
@@ -533,6 +761,16 @@ sandbox.set_auto_delete_interval(0)
 
 # Disable auto-deletion
 sandbox.set_auto_delete_interval(-1)
+```
+
+### Update sandbox last activity
+
+Update a sandbox's last activity timestamp.
+
+This updates the sandbox's recorded activity time without changing its runtime state. It is useful when your workflow is driven by external systems or background orchestration that may not reset inactivity tracking.
+
+```python
+sandbox.refresh_activity()
 ```
 
 ### Running indefinitely

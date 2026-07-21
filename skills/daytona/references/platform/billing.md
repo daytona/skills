@@ -1,5 +1,6 @@
 ## Contents
 
+- Sandbox billing
 - Wallet
 - Spending
 - Cancellation & post-cancellation
@@ -7,7 +8,22 @@
 
 
 
-Daytona provides an overview of your organization's [wallet](#wallet) and [spending](#spending). Daytona uses a pay-as-you-go billing model where you are charged based on the resources your sandboxes consume. For information on resource quotas, rate limits, and tier-based access, see [limits](./limits.md).
+Daytona provides an overview of your organization's [wallet](#wallet) and [spending](#spending). Daytona uses a pay-as-you-go billing model where you are charged based on the resources reserved for your sandboxes. For information on resource quotas, rate limits, and tier-based access, see [limits](./limits.md).
+
+## Sandbox billing
+
+Sandboxes are billed for the resources reserved: **vCPU**, **RAM**, and **disk**, depending on the sandbox [lifecycle state](../python-sdk/sandboxes.md#sandbox-lifecycle). The table below details which reserved resources and states are billed for [container sandboxes](../python-sdk/sandboxes.md#create-sandboxes), [VM sandboxes](../python-sdk/sandboxes.md#vm-sandboxes) (Linux VM and Windows), and [GPU sandboxes](../python-sdk/sandboxes.md#gpu-sandboxes).
+
+| **State**                                               | **vCPU** | **RAM** | **Disk** | **Description**                                                                                                                                                                                                                                              |
+| ------------------------------------------------------- | -------- | ------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Started                                                 | ✓        | ✓       | ✓        | Billed for all reserved resources.                                                                                                                                                                                                                           |
+| Creating <br /> Starting <br /> Stopping <br /> Pausing | ✓        | ✓       | ✓        | Billed the same as started. Resources remain reserved during these transitions, so reduced billing applies once the sandbox reaches the stopped or paused state, not when the stop or pause operation begins.                                                |
+| Stopped                                                 | ✗        | ✗       | ✓        | Billed for reserved disk only. <u>[**Ephemeral sandboxes**](../python-sdk/sandboxes.md#ephemeral-sandboxes) </u> and <u>[**GPU sandboxes**](../python-sdk/sandboxes.md#gpu-sandboxes)</u> are automatically deleted when stopped, so stopped billing does not apply to them. |
+| Paused                                                  | ✗        | ✗       | ✓        | Billed for reserved disk only. The preserved memory state is not billed. Supported for <u>[**VM sandboxes**](../python-sdk/sandboxes.md#vm-sandboxes)</u> only.                                                                                                      |
+| Archived                                                | ✗        | ✗       | ✗        | Not billed. Supported for <u>[**container sandboxes**](../python-sdk/sandboxes.md#create-sandboxes)</u> only.                                                                                                                                                        |
+| Deleted                                                 | ✗        | ✗       | ✗        | Not billed. <u>[**Snapshots created from sandbox**](../python-sdk/snapshots.md#create-snapshot-from-sandbox)</u> remain billed for storage.                                                                                                                          |
+
+Disk billing and [disk quota](./limits.md#disk-quota) are separate: a sandbox can be billed for reserved disk without counting against your organization's storage limit.
 
 ## Wallet
 
@@ -140,5 +156,6 @@ Daytona will provide detailed usage records supporting the disputed charges upon
 
 - [Python SDK](../python-sdk/README.md)
 - [TypeScript SDK](../typescript-sdk/README.md)
+- [Java SDK](../java-sdk/README.md)
 - [Go SDK](../go-sdk/README.md)
 - [Ruby SDK](../ruby-sdk/README.md)

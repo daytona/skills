@@ -117,5 +117,6 @@ MCP server provides the following tools for interacting with Daytona Sandboxes:
 
 - [Python SDK](../python-sdk/README.md)
 - [TypeScript SDK](../typescript-sdk/README.md)
+- [Java SDK](../java-sdk/README.md)
 - [Go SDK](../go-sdk/README.md)
 - [Ruby SDK](../ruby-sdk/README.md)

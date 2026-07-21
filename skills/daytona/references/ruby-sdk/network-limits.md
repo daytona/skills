@@ -5,17 +5,23 @@
 - Update network settings while a sandbox is running
 - Network allow list format
 - Domain allow list format
-- Organization configuration
 - Test network access
 - Security benefits
 - Essential services
-- Troubleshooting
 - See Also
 
 
 
 
-Daytona provides network egress limiting for sandboxes to control internet access. This feature can be automatically applied based on your [organization's limits](../platform/limits.md) or manually configured for specific sandboxes.
+Network limits control outbound internet access from sandboxes. Each sandbox runs behind a firewall that restricts which external IP addresses and domains it can reach, preventing untrusted code from exfiltrating data or contacting arbitrary hosts.
+
+Default network policies are applied automatically based on your organization's tier. You can also configure access per sandbox using three parameters:
+
+- **`networkAllowList`** for IPv4 CIDR ranges
+- **`domainAllowList`** for domains and wildcard domains
+- **`networkBlockAll`** to block all outbound traffic
+
+Set these parameters when [creating a sandbox](#create-sandboxes-with-network-restrictions) or [update them while the sandbox is running](#update-network-settings-while-a-sandbox-is-running).
 
 ## Tier-based network restrictions
 
@@ -24,13 +30,13 @@ Network limits are automatically applied to sandboxes based on your organization
 - **Tier 1 & Tier 2**: Network access is restricted and cannot be overridden at the sandbox level. Organization-level network restrictions take precedence over sandbox-level settings. Even with [`networkAllowList`](#create-sandboxes-with-network-restrictions) or [`domainAllowList`](#create-sandboxes-with-network-restrictions) specified when creating a sandbox, the organization's network restrictions still apply
 - **Tier 3 & Tier 4**: Full internet access is available by default, with the ability to configure custom network settings
 
-> To learn more about organization tiers and limits, see [limits](../platform/limits.md).
-
-[Essential services](#essential-services) are available on all tiers and include services essential for development: package registries, container registries, Git repositories, CDN services, platform services, and system package managers.
+[Essential services](#essential-services) are available on all tiers and include services essential for development: package registries, container registries, Git repositories, CDN services, platform services, system package managers, and more
 
 ## Create sandboxes with network restrictions
 
-Control network access when [creating sandboxes](./sandboxes.md#create-sandboxes) by using the `networkAllowList`, `domainAllowList`, and `networkBlockAll` parameters. Use `networkAllowList` for IPv4 CIDR ranges, `domainAllowList` for domains and wildcard domains, and `networkBlockAll` to block outbound network access:
+Create a sandbox with network restrictions to control outbound internet access.
+
+The options are mutually exclusive. Set at most one non-empty value. Sending a conflicting combination returns a `400` error. Empty-string allow lists count as unset and never conflict.
 
 ```ruby
 require 'daytona'
@@ -58,21 +64,19 @@ sandbox = daytona.create(
   )
 )
 ```
-> **Note:**
-> These options are mutually exclusive. Set at most one non-empty value among `networkAllowList`, `domainAllowList`, and `networkBlockAll: true`. Empty-string allow lists count as unset and never conflict. Sending a conflicting combination returns a `400` error.
 
 ## Update network settings while a sandbox is running
 
-Update network settings for running sandboxes. Organizations on [Tier 3 and Tier 4](#tier-based-network-restrictions) can change outbound firewall policy after the sandbox is created. The API applies the new rules on the runner and persists them on the sandbox record. The sandbox keeps running; stop or start are not required.
+Update network settings for running sandboxes.
 
-The request must include at least one of `networkBlockAll`, `networkAllowList`, or `domainAllowList`. Rules match create-time behavior and use the same [network allow list](#network-allow-list-format) and [domain allow list](#domain-allow-list-format) formats.
+This operation requires the `WRITE_SANDBOXES` permission. Organizations on [Tier 3 and Tier 4](#tier-based-network-restrictions) can change outbound firewall policy on a running sandbox. The API applies the new rules and persists them on the sandbox. The sandbox keeps running; stop or start are not required.
+
+Organizations on Tier 1 or Tier 2 cannot override network policy at the sandbox level, and the API returns an error in that case.
 
 - Sending `networkAllowList` as an empty string clears a stored CIDR allow list
 - Sending `domainAllowList` as an empty string clears a stored domain allow list
 - Sending `networkBlockAll: true` blocks all outbound traffic and clears both the stored CIDR and domain allow lists
 - Sending only `networkBlockAll: false` removes the block-all rule and clears both the stored CIDR and domain allow lists
-
-This operation requires the `WRITE_SANDBOXES` permission. Organizations on Tier 1 or Tier 2 cannot override network policy at the sandbox level, and the API returns an error in that case.
 
 ```ruby
 # Block all outbound traffic (clears the CIDR allow list)
@@ -100,7 +104,7 @@ sandbox.update_network_settings(domain_allow_list: '')
 
 ## Network allow list format
 
-The network allow list is a comma-separated list of IPv4 CIDR blocks. Set your allowed networks using the `networkAllowList` parameter when [creating a sandbox](./sandboxes.md#create-sandboxes) or when [updating settings on a running sandbox](#update-network-settings-while-a-sandbox-is-running). To allow hostnames or DNS domains instead, use [**`domainAllowList`**](#domain-allow-list-format).
+The network allow list is a comma-separated list of IPv4 CIDR blocks.
 
 - **IPv4 only**: hostnames, domains, and IPv6 are not supported
 - **CIDR required**: every entry must include a `/` prefix length integer in the range `0` to `32` (inclusive), for example: `/32`
@@ -108,7 +112,7 @@ The network allow list is a comma-separated list of IPv4 CIDR blocks. Set your a
 - **Max 10 entries**: the list cannot contain more than 10 comma-separated items
 - **Whitespace is ignored**: entries are trimmed, so spaces around commas are ok
 
-The following examples are valid:
+Examples:
 
 - **Single IP**: `208.80.154.232/32` (Wikipedia)
 - **Subnet**: `192.168.1.0/24` (Private network)
@@ -116,7 +120,7 @@ The following examples are valid:
 
 ## Domain allow list format
 
-The domain allow list is a comma-separated list of DNS domains. Set your allowed domains using the `domainAllowList` parameter when [creating a sandbox](./sandboxes.md#create-sandboxes) or when [updating settings on a running sandbox](#update-network-settings-while-a-sandbox-is-running). When a domain allow list is set, outbound traffic is limited to the listed domains and other external domains are blocked.
+The domain allow list is a comma-separated list of DNS domains. When a domain allow list is set, outbound traffic is limited to the listed domains and other external domains are blocked.
 
 - **Domains only**: use hostnames such as `example.com` or `api.openai.com`. Do not include protocols, paths, ports, or query strings
 - **Wildcards supported**: prefix a domain with `*.` to allow the base domain and its subdomains, for example `*.daytona.io`
@@ -124,15 +128,11 @@ The domain allow list is a comma-separated list of DNS domains. Set your allowed
 - **Whitespace is ignored**: entries are trimmed, so spaces around commas are ok
 - **Clear on update**: send `domainAllowList` as an empty string when updating network settings to clear a stored domain allow list
 
-The following examples are valid:
+Examples:
 
 - **Single domain**: `example.com`
 - **Wildcard domain**: `*.daytona.io`
 - **Multiple domains**: `example.com,*.daytona.io,api.openai.com`
-
-## Organization configuration
-
-The network access policies for your organization are set automatically depending on your organization's limits tier and cannot be modified by organization administrators. These policies determine the default network behavior for all sandboxes in your organization.
 
 ## Test network access
 
@@ -160,126 +160,219 @@ Network limits provide several security advantages:
 - **Complies with security policies** for development environments
 - **Enables fine-grained control** over network access
 > **Caution:**
-> Enabling unrestricted network access may pose security risks when executing untrusted code. It is recommended to allow only the network addresses or domains you need using `networkAllowList` or `domainAllowList`, or block all network access using `networkBlockAll`.
->
-> Test network connectivity before starting critical development work and consider upgrading your tier if you need access to many external services.
+> Enabling unrestricted network access may pose security risks when executing untrusted code. It is recommended to allow only the network addresses or domains you need, or block all network access. Test network connectivity before starting critical development work and consider upgrading your tier if you need access to many external services.
 
 ## Essential services
 
-Daytona provides a list of essential services that are available on all tiers and can be used for development.
-> **Note:**
-> This list is continuously updated. If you require access to additional essential development services, submit a request in the [sandbox network whitelist](https://github.com/daytonaio/sandbox-network-whitelist) repository or contact [support@daytona.io](mailto:support@daytona.io).
+Essential services are available on all tiers and include services essential for development.
 
 ### NPM registry and package managers
 
-- **NPM Registry**: `registry.npmjs.org`, `registry.npmjs.com`, `nodejs.org`, `nodesource.com`, `npm.pkg.github.com`
-- **Yarn Packages**: `yarnpkg.com`, `*.yarnpkg.com`, `yarn.npmjs.org`, `yarnpkg.netlify.com`
-- **Bun**: `bun.sh`, `*.bun.sh`
+| **Service**   | **Domains**                                                                                                                                    |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| NPM Registry  | **`registry.npmjs.org`**, **`registry.npmjs.com`**, **`nodejs.org`**, **`nodesource.com`**, **`deb.nodesource.com`**, **`npm.pkg.github.com`** |
+| Yarn Packages | **`yarnpkg.com`**, **`*.yarnpkg.com`**, **`yarn.npmjs.org`**, **`yarnpkg.netlify.com`**                                                        |
+| Bun           | **`bun.sh`**, **`*.bun.sh`**                                                                                                                   |
+
+### Nix package manager
+
+| **Service** | **Domains**                                                                   |
+| ----------- | ------------------------------------------------------------------------- |
+| Nix         | **`cache.nixos.org`**, **`channels.nixos.org`**, **`releases.nixos.org`** |
 
 ### Git hosting and version control
 
-- **GitHub**: `github.com`, `*.github.com`, `*.githubusercontent.com`, `ghcr.io`
-- **GitLab**: `gitlab.com`, `*.gitlab.com`
-- **Bitbucket**: `bitbucket.org`
-- **Azure DevOps**: `dev.azure.com`, `*.dev.azure.com`, `login.microsoftonline.com`, `visualstudio.com`, `*.visualstudio.com`, `ssh.dev.azure.com`, `vs-ssh.visualstudio.com`
+| **Service**  | **Domains**                                                                                                                                                                           |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GitHub       | **`github.com`**, **`*.github.com`**, **`*.githubusercontent.com`**, **`gh.io`**, **`ghcr.io`**                                                                                       |
+| GitLab       | **`gitlab.com`**, **`*.gitlab.com`**                                                                                                                                                  |
+| Bitbucket    | **`bitbucket.org`**                                                                                                                                                                   |
+| Code Storage | **`code.storage`**, **`*.code.storage`**                                                                                                                                              |
+| Azure DevOps | **`dev.azure.com`**, **`*.dev.azure.com`**, **`login.microsoftonline.com`**, **`visualstudio.com`**, **`*.visualstudio.com`**, **`ssh.dev.azure.com`**, **`vs-ssh.visualstudio.com`** |
 
 ### Python package managers
 
-- **PyPI**: `pypi.org`, `pypi.python.org`, `files.pythonhosted.org`, `bootstrap.pypa.io`, `astral.sh`
+| **Service** | **Domains**                                                                                                                      |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| PyPI        | **`pypi.org`**, **`pypi.python.org`**, **`files.pythonhosted.org`**, **`bootstrap.pypa.io`**, **`astral.sh`**, **`*.astral.sh`** |
+| Conda       | **`repo.anaconda.com`**                                                                                                          |
+
+### Rust package manager and toolchain
+
+| **Service** | **Domains**                                                                                                                                              |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Rust        | **`crates.io`**, **`static.crates.io`**, **`index.crates.io`**, **`static.rust-lang.org`**, **`rustup.rs`**, **`sh.rustup.rs`**, **`doc.rust-lang.org`** |
+
+### Go module proxy and toolchain
+
+| **Service** | **Domains**                                                                                                              |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Go          | **`proxy.golang.org`**, **`sum.golang.org`**, **`index.golang.org`**, **`go.dev`**, **`golang.org`**, **`*.golang.org`** |
+
+### C/C++ build tools
+
+| **Service** | **Domains**     |
+| ----------- | --------------- |
+| CMake       | **`cmake.org`** |
 
 ### Composer packages
 
-- **Composer**: `*.packagist.org`, `packagist.com`
+| **Service** | **Domains**                                                     |
+| ----------- | --------------------------------------------------------------- |
+| Composer    | **`packagist.org`**, **`*.packagist.org`**, **`packagist.com`** |
+
+### NuGet packages
+
+| **Service** | **Domains**                        |
+| ----------- | ---------------------------------- |
+| NuGet       | **`nuget.org`**, **`*.nuget.org`** |
+
+### Elixir/Erlang packages
+
+| **Service** | **Domains**                  |
+| ----------- | ---------------------------- |
+| Hex         | **`hex.pm`**, **`*.hex.pm`** |
+
+### Ruby packages
+
+| **Service** | **Domains**                              |
+| ----------- | ---------------------------------------- |
+| RubyGems    | **`rubygems.org`**, **`*.rubygems.org`** |
 
 ### Ubuntu/Debian package repositories
 
-- **Ubuntu Repos**: `*.ubuntu.com`
-- **Debian Repos**: `*.debian.org`, `cdn-fastly.deb.debian.org`
+| **Service**  | **Domains**                                         |
+| ------------ | --------------------------------------------------- |
+| Ubuntu Repos | **`*.ubuntu.com`**                                  |
+| Debian Repos | **`*.debian.org`**, **`cdn-fastly.deb.debian.org`** |
 
 ### CDN and content delivery
 
-- **CDN Services**: `fastly.com`, `cloudflare.com`, `r2.cloudflarestorage.com`, `*.r2.cloudflarestorage.com`
-- **JavaScript CDNs**: `unpkg.com`, `jsdelivr.net`
+| **Service**     | **Domains**                                                                                                                                                    |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CDN Services    | **`fastly.com`**, **`cloudflare.com`**, **`gateway.ai.cloudflare.com`**, **`*.workers.dev`**, **`r2.cloudflarestorage.com`**, **`*.r2.cloudflarestorage.com`** |
+| JavaScript CDNs | **`unpkg.com`**, **`jsdelivr.net`**                                                                                                                            |
 
 ### AI/ML services
 
-- **Anthropic**: `*.anthropic.com`, `claude.ai`, `platform.claude.com`
-- **OpenAI**: `openai.com`, `*.openai.com`, `chatgpt.com`
-- **Google AI**: `generativelanguage.googleapis.com`, `gemini.google.com`, `aistudio.google.com`, `ai.google.dev`, `models.dev`
-- **Perplexity**: `api.perplexity.ai`
-- **DeepSeek**: `api.deepseek.com`
-- **Groq**: `api.groq.com`
-- **Expo**: `api.expo.dev`
-- **OpenRouter**: `openrouter.ai`
-- **Qwen**: `chat.qwen.ai`, `dashscope.aliyuncs.com`, `dashscope-intl.aliyuncs.com`
-- **Cursor**: `*.cursor.com`
-- **OpenCode**: `opencode.ai`, `*.opencode.ai`
-- **Other AI Services**: `api.letta.com`, `api.fireworks.ai`, `open.bigmodel.cn`, `*.z.ai`, `*.moonshot.ai`, `ai-gateway.vercel.sh`, `api.featherless.ai`
+| **Service**       | **Domains**                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Anthropic         | **`*.anthropic.com`**, **`claude.ai`**, **`*.claude.ai`**, **`platform.claude.com`**                                                                                                                                                                                                                                                                                                                                                                    |
+| OpenAI            | **`openai.com`**, **`*.openai.com`**, **`chatgpt.com`**                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Google AI         | **`generativelanguage.googleapis.com`**, **`gemini.google.com`**, **`aistudio.google.com`**, **`ai.google.dev`**, **`models.dev`**                                                                                                                                                                                                                                                                                                                      |
+| Perplexity        | **`api.perplexity.ai`**                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| DeepSeek          | **`api.deepseek.com`**                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| Groq              | **`api.groq.com`**                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Expo              | **`api.expo.dev`**                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| OpenRouter        | **`openrouter.ai`**                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Qwen              | **`chat.qwen.ai`**, **`dashscope.aliyuncs.com`**, **`dashscope-intl.aliyuncs.com`**                                                                                                                                                                                                                                                                                                                                                                     |
+| Cursor            | **`cursor.com`**, **`*.cursor.com`**, **`*.cursor.sh`**                                                                                                                                                                                                                                                                                                                                                                                                 |
+| OpenCode          | **`opencode.ai`**, **`*.opencode.ai`**                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| Aider             | **`aider.chat`**                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| Hugging Face      | **`huggingface.co`**, **`*.huggingface.co`**, **`hf.co`**, **`*.hf.co`**, **`*.xethub.hf.co`**, **`*.cdn.hf.co`**, **`*.aws.cdn.hf.co`**, **`*.gcp.cdn.hf.co`**                                                                                                                                                                                                                                                                                         |
+| Other AI Services | **`api.letta.com`**, **`api.fireworks.ai`**, **`open.bigmodel.cn`**, **`*.z.ai`**, **`*.moonshot.ai`**, **`*.minimax.io`**, **`*.kimi.com`**, **`ai-gateway.vercel.sh`**, **`api.elevenlabs.io`**, **`api.featherless.ai`**, **`ampcode.com`**, **`*.ampcode.com`**, **`*.openai.azure.com`**, **`*.services.ai.azure.com`**, **`trynia.ai`**, **`*.trynia.ai`**, **`api.x.ai`**, **`copass.id`**, **`*.copass.id`**, **`zenmux.ai`**, **`*.devin.ai`** |
 
 ### Docker registries and container services
 
-- **Docker Registries**: `docker.io`, `*.docker.io`, `*.docker.com`
-- **Microsoft Container Registry**: `mcr.microsoft.com`
-- **Kubernetes Registry**: `registry.k8s.io`
-- **Google Container Registry**: `gcr.io`, `*.gcr.io`, `registry.cloud.google.com`
-- **Quay**: `quay.io`, `quay-registry.s3.amazonaws.com`
+| **Service**                  | **Domains**                                                                    |
+| ---------------------------- | ------------------------------------------------------------------------------ |
+| Docker Registries            | **`docker.io`**, **`*.docker.io`**, **`*.docker.com`**                         |
+| Microsoft Container Registry | **`mcr.microsoft.com`**                                                        |
+| Kubernetes Registry          | **`registry.k8s.io`**                                                          |
+| Google Container Registry    | **`gcr.io`**, **`*.gcr.io`**, **`*.pkg.dev`**, **`registry.cloud.google.com`** |
+| Quay                         | **`quay.io`**, **`quay-registry.s3.amazonaws.com`**                            |
+| AWS ECR                      | **`public.ecr.aws`**, **`*.ecr.aws`**                                          |
 
 ### Maven repositories
 
-- **Maven Repos**: `repo1.maven.org`, `repo.maven.apache.org`
+| **Service** | **Domains**                                        |
+| ----------- | -------------------------------------------------- |
+| Maven Repos | **`repo1.maven.org`**, **`repo.maven.apache.org`** |
 
 ### Google Fonts
 
-- **Google Fonts**: `fonts.googleapis.com`, `fonts.gstatic.com`
+| **Service**  | **Domains**                                         |
+| ------------ | --------------------------------------------------- |
+| Google Fonts | **`fonts.googleapis.com`**, **`fonts.gstatic.com`** |
 
-### AWS S3 endpoints
+### AWS endpoints
 
-- **US East**: `s3.us-east-1.amazonaws.com`, `s3.us-east-2.amazonaws.com`
-- **US West**: `s3.us-west-1.amazonaws.com`, `s3.us-west-2.amazonaws.com`
-- **EU**: `s3.eu-central-1.amazonaws.com`, `s3.eu-west-1.amazonaws.com`, `s3.eu-west-2.amazonaws.com`
+| **Region**   | **Domains**                                                                                                                                                                                                                                                                     |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| US East      | **`*.us-east-1.amazonaws.com`**, **`*.us-east-2.amazonaws.com`**                                                                                                                                                                                                                |
+| US West      | **`*.us-west-1.amazonaws.com`**, **`*.us-west-2.amazonaws.com`**                                                                                                                                                                                                                |
+| EU           | **`*.eu-central-1.amazonaws.com`**, **`*.eu-central-2.amazonaws.com`**, **`*.eu-north-1.amazonaws.com`**, **`*.eu-south-1.amazonaws.com`**, **`*.eu-south-2.amazonaws.com`**, **`*.eu-west-1.amazonaws.com`**, **`*.eu-west-2.amazonaws.com`**, **`*.eu-west-3.amazonaws.com`** |
+| Asia Pacific | **`*.ap-south-1.amazonaws.com`**                                                                                                                                                                                                                                                |
 
-### Google Cloud Storage
+### Google Cloud
 
-- **GCS**: `storage.googleapis.com`
+| **Service**             | **Domains**                                                                                            |
+| ----------------------- | ------------------------------------------------------------------------------------------------------ |
+| Google Cloud Platform   | **`accounts.google.com`**, **`*.googleapis.com`**, **`*.storage.googleapis.com`**, **`*.gstatic.com`** |
+| Google Downloads        | **`dl.google.com`**                                                                                    |
+| Google Package Registry | **`packages.cloud.google.com`**                                                                        |
+
+### Cloud storage
+
+| **Service**        | **Domains**                                                                                                                                       |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Azure Blob Storage | **`*.blob.core.windows.net`**                                                                                                                     |
+| Box                | **`api.box.com`**, **`app.box.com`**, **`*.app.box.com`**, **`upload.box.com`**, **`account.box.com`**, **`*.ent.box.com`**, **`*.boxcloud.com`** |
 
 ### Daytona
 
-- **Daytona**: `app.daytona.io`
+| **Service** | **Domains**          |
+| ----------- | -------------------- |
+| Daytona     | **`app.daytona.io`** |
 
 ### Developer tools and services
 
-- **Convex**: `convex.dev`, `*.convex.dev`, `*.convex.cloud`, `*.convex.site`
-- **Heroku**: `herokuapp.com`, `*.herokuapp.com`
-- **Vercel**: `vercel.com`, `*.vercel.com`, `*.vercel.app`
-- **Supabase**: `supabase.com`, `*.supabase.com`, `supabase.co`, `*.supabase.co`
-- **Clerk**: `clerk.com`, `*.clerk.com`, `clerk.dev`, `*.clerk.dev`, `accounts.dev`, `*.accounts.dev`, `clerk.accounts.dev`, `*.clerk.accounts.dev`
-- **WorkOS**: `workos.com`, `*.workos.com`, `authkit.app`, `*.authkit.app`
-- **Inngest**: `inngest.com`, `*.inngest.com`
-- **PostHog**: `posthog.com`, `*.posthog.com`
-- **Sentry**: `sentry.io`, `*.sentry.io`, `sentry-cdn.com`, `*.sentry-cdn.com`
-- **Linear**: `linear.app`, `*.linear.app`
-- **Figma**: `figma.com`, `*.figma.com`, `*.figmafiles.com`
-- **ClickUp**: `clickup.com`, `*.clickup.com`
-- **Playwright**: `playwright.dev`, `cdn.playwright.dev`
+| **Service** | **Domains**                                                                                                                                                                                     |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Convex      | **`convex.dev`**, **`*.convex.dev`**, **`*.convex.cloud`**, **`*.convex.site`**                                                                                                                 |
+| Heroku      | **`herokuapp.com`**, **`*.herokuapp.com`**                                                                                                                                                      |
+| Vercel      | **`vercel.com`**, **`*.vercel.com`**, **`*.vercel.app`**                                                                                                                                        |
+| Supabase    | **`supabase.com`**, **`*.supabase.com`**, **`supabase.co`**, **`*.supabase.co`**                                                                                                                |
+| Clerk       | **`clerk.com`**, **`*.clerk.com`**, **`clerk.dev`**, **`*.clerk.dev`**, **`accounts.dev`**, **`*.accounts.dev`**, **`clerk.accounts.dev`**, **`*.clerk.accounts.dev`**                          |
+| WorkOS      | **`workos.com`**, **`*.workos.com`**, **`authkit.app`**, **`*.authkit.app`**                                                                                                                    |
+| Inngest     | **`inngest.com`**, **`*.inngest.com`**                                                                                                                                                          |
+| PostHog     | **`posthog.com`**, **`*.posthog.com`**                                                                                                                                                          |
+| Sentry      | **`sentry.io`**, **`*.sentry.io`**, **`sentry-cdn.com`**, **`*.sentry-cdn.com`**                                                                                                                |
+| Linear      | **`linear.app`**, **`*.linear.app`**                                                                                                                                                            |
+| Figma       | **`figma.com`**, **`*.figma.com`**, **`*.figmafiles.com`**                                                                                                                                      |
+| ClickUp     | **`clickup.com`**, **`*.clickup.com`**                                                                                                                                                          |
+| Atlassian   | **`acli.atlassian.com`**                                                                                                                                                                        |
+| Railway     | **`railway.app`**, **`*.railway.app`**, **`railway.com`**, **`*.railway.com`**                                                                                                                  |
+| Autumn      | **`api.useautumn.com`**                                                                                                                                                                         |
+| Playwright  | **`playwright.dev`**, **`cdn.playwright.dev`**                                                                                                                                                  |
+| Doppler     | **`doppler.com`**, **`*.doppler.com`**                                                                                                                                                          |
+| Auth0       | **`auth0.com`**, **`*.auth0.com`**                                                                                                                                                              |
+| Sanity      | **`sanity.io`**, **`*.sanity.io`**, **`sanity.work`**, **`*.sanity.work`**                                                                                                                      |
+| Shopify     | **`shopify.com`**, **`*.shopify.com`**, **`*.myshopify.com`**, **`*.shopify.dev`**, **`*.shopifycdn.com`**                                                                                      |
+| Mesa        | **`mesa.dev`**, **`*.mesa.dev`**                                                                                                                                                                |
+| Buildkite   | **`buildkite.com`**, **`*.buildkite.com`**                                                                                                                                                      |
+| Shortcut    | **`api.app.shortcut.com`**, **`app.shortcut.com`**                                                                                                                                              |
+| USAspending | **`api.usaspending.gov`**, **`files.usaspending.gov`**                                                                                                                                          |
+| Logo Dev    | **`img.logo.dev`**, **`logo.dev`**                                                                                                                                                              |
+| Kiro        | **`*.kiro.dev`**, **`*.us-east-1.kiro.dev`**, **`prod.download.cli.kiro.dev`**                                                                                                                  |
+| Browserbase | **`browserbase.com`**, **`*.browserbase.com`**, **`connect.usw2.browserbase.com`**, **`connect.use1.browserbase.com`**, **`connect.euc1.browserbase.com`**, **`connect.apse1.browserbase.com`** |
 
 ### Messaging services
 
-- **Telegram**: `api.telegram.org`
-- **WhatsApp**: `web.whatsapp.com`, `*.whatsapp.net`
+| **Service** | **Domains**                                  |
+| ----------- | -------------------------------------------- |
+| Telegram    | **`api.telegram.org`**                       |
+| WhatsApp    | **`web.whatsapp.com`**, **`*.whatsapp.net`** |
 
 ### LLM observability
 
-- **Langfuse**: `*.langfuse.com`, `*.cloud.langfuse.com`
-
-## Troubleshooting
-
-If you encounter network access issues or need unrestricted network access:
-
-1. Verify your [organization tier](../platform/limits.md#tiers) in the [Daytona Dashboard ↗](https://app.daytona.io/dashboard/limits)
-2. Verify your [network allow list](#network-allow-list-format) and [domain allow list](#domain-allow-list-format) configuration
-3. Contact [support@daytona.io](mailto:support@daytona.io) for assistance
+| **Service** | **Domains**                                      |
+| ----------- | ------------------------------------------------ |
+| Langfuse    | **`*.langfuse.com`**, **`*.cloud.langfuse.com`** |
+| LangSmith   | **`api.smith.langchain.com`**                    |
 
 ## See Also
 - [Python SDK - network-limits](../python-sdk/network-limits.md)
 - [TypeScript SDK - network-limits](../typescript-sdk/network-limits.md)
+- [Java SDK - network-limits](../java-sdk/network-limits.md)
 - [Go SDK - network-limits](../go-sdk/network-limits.md)

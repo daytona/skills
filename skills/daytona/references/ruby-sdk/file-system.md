@@ -8,7 +8,7 @@ Main class for a new FileSystem instance.
 #### new FileSystem()
 
 ```ruby
-def initialize(sandbox_id:, toolbox_api:, otel_state:)
+def initialize(sandbox_id:, toolbox_api:, otel_state: nil)
 
 ```
 
@@ -86,7 +86,7 @@ sandbox.fs.create_folder("workspace/secrets", "700")
 #### delete_file()
 
 ```ruby
-def delete_file(path, recursive:)
+def delete_file(path, recursive: false)
 
 ```
 
@@ -157,7 +157,7 @@ puts "Path is a directory" if info.is_dir
 #### list_files()
 
 ```ruby
-def list_files(path)
+def list_files(path, depth: nil)
 
 ```
 
@@ -167,6 +167,9 @@ Lists files and directories in a given path and returns their information, simil
 
 - `path` _String_ - Path to the directory to list contents from. Relative paths are resolved
 based on the sandbox working directory.
+- `depth` _Integer, nil_ - How many levels deep to list. depth=1 (default) lists the
+directory's entries, depth=2 also includes their children, and so on. Must be >= 1.
+Each returned FileInfo carries a full path field.
 
 **Returns**:
 
@@ -196,7 +199,7 @@ puts "Subdirectories: #{dirs.map(&:name).join(', ')}"
 #### download_file()
 
 ```ruby
-def download_file(remote_path, local_path)
+def download_file(remote_path, local_path = nil)
 
 ```
 
@@ -235,7 +238,7 @@ puts "Size of the downloaded file: #{size_mb} MB"
 #### download_file_stream()
 
 ```ruby
-def download_file_stream(remote_path, timeout:, on_progress:, cancel_event:)
+def download_file_stream(remote_path, timeout: 30 * 60, on_progress: nil, cancel_event: nil)
 
 ```
 
@@ -323,7 +326,7 @@ sandbox.fs.upload_file(data, "tmp/config.json")
 #### upload_file_stream()
 
 ```ruby
-def upload_file_stream(source, remote_path, timeout:, on_progress:, cancel_event:)
+def upload_file_stream(source, remote_path, timeout: 30 * 60, on_progress: nil, cancel_event: nil)
 
 ```
 
@@ -565,7 +568,7 @@ end
 #### set_file_permissions()
 
 ```ruby
-def set_file_permissions(path:, mode:, owner:, group:)
+def set_file_permissions(path:, mode: nil, owner: nil, group: nil)
 
 ```
 
@@ -609,3 +612,4 @@ sandbox.fs.set_file_permissions(
 ## See Also
 - [Python SDK - file-system](../python-sdk/sync/file-system.md)
 - [TypeScript SDK - file-system](../typescript-sdk/file-system.md)
+- [Java SDK - file-system](../java-sdk/file-system.md)

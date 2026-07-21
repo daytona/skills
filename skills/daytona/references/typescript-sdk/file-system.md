@@ -346,7 +346,9 @@ console.log(`Size: ${info.size}, Modified: ${info.modTime}`);
 #### listFiles()
 
 ```ts
-listFiles(path: string): Promise<FileInfo[]>
+listFiles(path: string, options?: {
+  depth: number;
+}): Promise<FileInfo[]>
 ```
 
 Lists contents of a directory in the Sandbox.
@@ -354,6 +356,10 @@ Lists contents of a directory in the Sandbox.
 **Parameters**:
 
 - `path` _string_ - Directory path to list. Relative paths are resolved based on the sandbox working directory.
+- `options?` _Listing options_
+- `depth?` _number_ - How many levels deep to list. depth=1 (default) lists the
+    directory's entries, depth=2 also includes their children, and so on. Must be an integer >= 1.
+    Each returned FileInfo carries a full `path` field.
 
 
 **Returns**:
@@ -368,6 +374,10 @@ const files = await fs.listFiles('app/src');
 files.forEach(file => {
   console.log(`${file.name} (${file.size} bytes)`);
 });
+
+// List recursively two levels deep
+const tree = await fs.listFiles('app/src', { depth: 2 });
+tree.forEach(file => console.log(file.path));
 ```
 
 ***

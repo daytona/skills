@@ -10,7 +10,7 @@ Get the current user home directory path.
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK |  |
+| 200 | OK | UserHomeDirResponse |
 
 ---
 
@@ -24,7 +24,7 @@ Get the current daemon version
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK |  |
+| 200 | OK | object |
 
 ---
 
@@ -38,6 +38,6 @@ Get the current working directory path. This is default directory used for runni
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK |  |
+| 200 | OK | WorkDirResponse |
 
 ---

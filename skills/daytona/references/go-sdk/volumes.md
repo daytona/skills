@@ -49,7 +49,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/daytonaio/daytona/libs/sdk-go/pkg/daytona"
+	"github.com/daytona/clients/sdk-go/pkg/daytona"
 )
 
 func main() {
@@ -75,7 +75,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/daytonaio/daytona/libs/sdk-go/pkg/daytona"
+	"github.com/daytona/clients/sdk-go/pkg/daytona"
 )
 
 ctx := context.Background()
@@ -120,8 +120,8 @@ import (
 	"context"
 	"log"
 
-	"github.com/daytonaio/daytona/libs/sdk-go/pkg/daytona"
-	"github.com/daytonaio/daytona/libs/sdk-go/pkg/types"
+	"github.com/daytona/clients/sdk-go/pkg/daytona"
+	"github.com/daytona/clients/sdk-go/pkg/types"
 )
 
 client, err := daytona.NewClient()
@@ -238,16 +238,14 @@ A producer sandbox writes to the volume and is then deleted; a separately create
 
 Sandboxes that mount the same volume see writes immediately, but FUSE-backed volumes are not transactional. If two sandboxes write to the same path concurrently, the last write wins. Coordinate access in your application when ordering matters.
 
-When you [fork a VM sandbox](https://www.daytona.io/docs/en/sandboxes/vm-sandboxes#fork-vm-sandboxes), the fork inherits the parent's volume mounts.
-
 ```go
 import (
 	"context"
 	"fmt"
 	"log"
 
-	"github.com/daytonaio/daytona/libs/sdk-go/pkg/daytona"
-	"github.com/daytonaio/daytona/libs/sdk-go/pkg/types"
+	"github.com/daytona/clients/sdk-go/pkg/daytona"
+	"github.com/daytona/clients/sdk-go/pkg/types"
 )
 
 ctx := context.Background()
@@ -399,3 +397,4 @@ You can view your current volume usage in the [Daytona Volumes ↗](https://app.
 ## See Also
 - [Python SDK - volumes](../python-sdk/volumes.md)
 - [TypeScript SDK - volumes](../typescript-sdk/volumes.md)
+- [Java SDK - volumes](../java-sdk/volumes.md)

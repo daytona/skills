@@ -30,6 +30,18 @@ Sandbox limits provides an overview of resource limits per sandbox.
 - **Memory**: the maximum amount of memory per sandbox in GiB
 - **Storage**: the maximum amount of storage per sandbox in GiB
 
+Sandboxes count against these limits based on their [lifecycle state](../python-sdk/sandboxes.md#sandbox-lifecycle): stopped, paused, archived, and deleted sandboxes free reserved CPU and memory, while disk quota depends on the sandbox type and state.
+
+### Disk quota
+
+Disk quota and [sandbox billing](./billing.md#sandbox-billing) are separate: a sandbox can be billed for reserved disk without counting against your organization's storage limit. The table below details which states occupy disk quota for [container sandboxes](../python-sdk/sandboxes.md#create-sandboxes) and [VM sandboxes](../python-sdk/sandboxes.md#vm-sandboxes) (Linux VM and Windows).
+
+| **State** | **Container Sandbox** | **VM Sandbox <br /> (Linux VM and Windows)** | **Description**                                                                                                                                                                                                                                                                                                                           |
+| --------- | --------------------- | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Stopped   | ✓                     | ✗                                            | Stopped container sandboxes occupy disk quota until archived. Stopped VM sandboxes free the quota: their state is offloaded to a storage layer, which keeps resume fast while releasing quota.                                                                                                                                            |
+| Paused    | ✗                     | ✗                                            | Paused VM sandboxes free the disk quota. Supported for <u>[**VM sandboxes**](../python-sdk/sandboxes.md#vm-sandboxes)</u> only.                                                                                                                                                                                                                   |
+| Archived  | ✗                     | ✗                                            | <u>[**Archiving**](../python-sdk/sandboxes.md#archive-sandboxes)</u> moves the container filesystem to object storage, frees the quota, and stops billing. Supported for <u>[**container sandboxes**](../python-sdk/sandboxes.md#create-sandboxes)</u> only. VM sandboxes have no archive state because stopping or pausing them already frees the quota. |
+
 ### Rate limits
 
 Rate limits control how many API requests you can make within a specific time window. These limits are applied based on your tier, authentication status, and the type of operation you're performing. Rate limits for general authenticated requests are tracked per organization.
@@ -41,15 +53,6 @@ Rate limits control how many API requests you can make within a specific time wi
 | Tier 3     | 40,000                         | 500                            | 40,000                          |
 | Tier 4     | 50,000                         | 600                            | 50,000                          |
 | Enterprise | Custom                         | Custom                         | Custom                          |
-
-Daytona supports managing your sandbox resources by [changing the sandbox state](../python-sdk/sandboxes.md#sandbox-lifecycle). The table below summarizes how each state affects sandbox resource usage:
-
-| **State** | **vCPU** | **Memory** | **Storage** | **Description**                               |
-| --------- | -------- | ---------- | ----------- | --------------------------------------------- |
-| Running   | ✅       | ✅         | ✅          | Counts against all limits                     |
-| Stopped   | ❌       | ❌         | ✅          | Frees CPU & memory, but storage is still used |
-| Archived  | ❌       | ❌         | ❌          | Data moved to cold storage, no quota impact   |
-| Deleted   | ❌       | ❌         | ❌          | All resources freed                           |
 
 #### Rate limit headers
 
@@ -64,7 +67,7 @@ Daytona includes rate limit information in API response headers. Header names in
 
 #### Rate limit errors
 
-Daytona [Python](./python-sdk/README.md), [TypeScript](./typescript-sdk/README.md), [Ruby](./ruby-sdk/README.md) and [Go](./go-sdk/README.md) SDKs raise or throw a `DaytonaRateLimitError` exception (Python) or error (TypeScript, Ruby and Go) when you exceed a rate limit.
+Daytona [Python](../python-sdk/README.md), [TypeScript](../typescript-sdk/README.md), [Ruby](../ruby-sdk/README.md) and [Go](../go-sdk/README.md) SDKs raise or throw a `DaytonaRateLimitError` exception (Python) or error (TypeScript, Ruby and Go) when you exceed a rate limit.
 
 The rate limit error response is a JSON object with the following properties:
 
@@ -199,5 +202,6 @@ async function createSandboxWithRetry() {
 
 - [Python SDK](../python-sdk/README.md)
 - [TypeScript SDK](../typescript-sdk/README.md)
+- [Java SDK](../java-sdk/README.md)
 - [Go SDK](../go-sdk/README.md)
 - [Ruby SDK](../ruby-sdk/README.md)

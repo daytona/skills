@@ -8,7 +8,7 @@ LspServer class for Daytona SDK.
 #### new LspServer()
 
 ```ruby
-def initialize(language_id:, path_to_project:, toolbox_api:, sandbox_id:, otel_state:)
+def initialize(language_id:, path_to_project:, toolbox_api:, sandbox_id:, otel_state: nil)
 
 ```
 
@@ -195,3 +195,4 @@ free up system resources.
 ## See Also
 - [Python SDK - lsp-server](../python-sdk/sync/lsp-server.md)
 - [TypeScript SDK - lsp-server](../typescript-sdk/lsp-server.md)
+- [Java SDK - lsp-server](../java-sdk/lsp-server.md)

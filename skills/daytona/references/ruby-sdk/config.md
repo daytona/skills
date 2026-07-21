@@ -8,7 +8,7 @@ Main class for a new Daytona::Config object.
 #### new Config()
 
 ```ruby
-def initialize(api_key:, jwt_token:, api_url:, organization_id:, target:, otel_enabled:, _experimental:)
+def initialize(api_key: nil, jwt_token: nil, api_url: nil, organization_id: nil, target: nil, otel_enabled: nil, use_deprecated_polling: nil, _experimental: nil)
 
 ```
 
@@ -22,6 +22,9 @@ Initializes a new Daytona::Config object.
 - `organization_id` _String, nil_ - Daytona organization ID. Defaults to ENV['DAYTONA_ORGANIZATION_ID'].
 - `target` _String, nil_ - Daytona target. Defaults to ENV['DAYTONA_TARGET'].
 - `otel_enabled` _Boolean, nil_ - Enable OpenTelemetry tracing for SDK operations.
+- `use_deprecated_polling` _Boolean, nil_ - Observe sandbox state by legacy polling instead of
+WebSocket event streaming. Defaults to false (event streaming). Can also be enabled via the
+DAYTONA_USE_DEPRECATED_POLLING environment variable.
 - `_experimental` _Hash, nil_ - Experimental configuration options.
 
 **Returns**:
@@ -186,6 +189,36 @@ Enable OpenTelemetry tracing for SDK operations.
 
 - `Boolean, nil`
 
+#### use_deprecated_polling()
+
+```ruby
+def use_deprecated_polling()
+
+```
+
+Observe sandbox state by legacy polling instead of WebSocket event streaming.
+Defaults to false (event streaming). Can also be enabled via the
+DAYTONA_USE_DEPRECATED_POLLING environment variable.
+
+**Returns**:
+
+- `Boolean`
+
+#### use_deprecated_polling=()
+
+```ruby
+def use_deprecated_polling=(value)
+
+```
+
+Observe sandbox state by legacy polling instead of WebSocket event streaming.
+Defaults to false (event streaming). Can also be enabled via the
+DAYTONA_USE_DEPRECATED_POLLING environment variable.
+
+**Returns**:
+
+- `Boolean`
+
 #### _experimental()
 
 ```ruby
@@ -234,3 +267,6 @@ Only names starting with DAYTONA_ are accepted.
 **Raises**:
 
 - `ArgumentError` - If name does not start with DAYTONA_.
+
+## See Also
+- [Java SDK - config](../java-sdk/config.md)

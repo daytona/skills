@@ -167,8 +167,6 @@ A producer sandbox writes to the volume and is then deleted; a separately create
 
 Sandboxes that mount the same volume see writes immediately, but FUSE-backed volumes are not transactional. If two sandboxes write to the same path concurrently, the last write wins. Coordinate access in your application when ordering matters.
 
-When you [fork a VM sandbox](https://www.daytona.io/docs/en/sandboxes/vm-sandboxes#fork-vm-sandboxes), the fork inherits the parent's volume mounts.
-
 ```python
 from daytona import CreateSandboxFromSnapshotParams, Daytona, VolumeMount
 

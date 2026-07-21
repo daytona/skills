@@ -452,3 +452,4 @@ if result.ExitCode != nil && *result.ExitCode != 0 {
 ## See Also
 - [Python SDK - pty](../python-sdk/pty.md)
 - [TypeScript SDK - pty](../typescript-sdk/pty.md)
+- [Java SDK - pty](../java-sdk/pty.md)

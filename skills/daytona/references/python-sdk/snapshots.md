@@ -2,6 +2,11 @@
 
 - Default snapshots
 - Create snapshots
+- VM snapshots
+- GPU snapshots
+- Create snapshot from sandbox
+- Snapshots from private registries
+- Snapshots from local images
 - Get a snapshot by name
 - List snapshots
 - Activate snapshots
@@ -14,15 +19,15 @@
 
 
 
-Snapshots are reusable sandbox templates that provide a consistent and reproducible environment for your dependencies, settings, and resources.
+Snapshots are persistent, point-in-time captures of sandbox state, including the filesystem, installed packages, dependencies, and settings. A snapshot saves a sandbox's state so you can restore it later, and any number of new sandboxes can start from the same snapshot.
 
-A snapshot defines the base operating system, language runtimes, system packages, and project-level setup that should exist when a sandbox starts. Instead of repeating bootstrap steps on every sandbox creation, you capture that setup once as a snapshot and reuse it.
+Daytona provides default snapshots for creating sandboxes. You can also create snapshots from images, capture the state of existing sandboxes, or create warm pools for a snapshot:
 
-You start with default snapshots for common stacks, or create custom snapshots for your own toolchain and constraints. Custom snapshots are useful when your workflow depends on specific package versions, private dependencies, startup scripts, or filesystem layout. A snapshot created for one sandbox class cannot create a sandbox of the other class.
+- [**Create snapshots from an image**](#create-snapshots): define the base operating system, language runtimes, packages, and project-level setup in an image or Dockerfile, and Daytona builds it into a snapshot you can use to create sandboxes
+- [**Create snapshots from a sandbox**](#create-snapshot-from-sandbox): captures and persists a sandbox's current state; container sandboxes capture filesystem state only (**cold snapshots**), and VM sandboxes (Linux VM and Windows) capture filesystem and memory state (**hot snapshots**)
+- [**Warm pools**](https://www.daytona.io/docs/en/warm-pools): keep a configured number of pre-created, running sandboxes built from a snapshot; matching sandbox create requests claim one warm sandbox from the pool instantly instead of provisioning a new sandbox
 
 ## Default snapshots
-
-Daytona provides default snapshots with fixed resource sizes for creating sandboxes.
 
 | **Snapshot**            | **vCPU** | **Memory** | **Storage** | **GPU** | **Sandbox Class** |
 | ----------------------- | -------- | ---------- | ----------- | ------- | ----------------- |
@@ -53,74 +58,16 @@ sandbox = daytona.create(
 )
 ```
 
-Default snapshots include pre-installed Python and Node.js packages.
-
-<Collapsible title="Python packages (pip)">
-
-| **Package**            | **Version** |
-| ---------------------- | ----------- |
-| **`anthropic`**        | v0.76.0     |
-| **`beautifulsoup4`**   | v4.14.3     |
-| **`claude-agent-sdk`** | v0.1.22     |
-| **`openai-agents`**    | v0.15.1     |
-| **`daytona`**          | v0.134.0    |
-| **`django`**           | v6.0.1      |
-| **`flask`**            | v3.1.2      |
-| **`huggingface-hub`**  | v0.36.0     |
-| **`instructor`**       | v1.14.4     |
-| **`keras`**            | v3.13.0     |
-| **`langchain`**        | v1.2.7      |
-| **`llama-index`**      | v0.14.13    |
-| **`matplotlib`**       | v3.10.8     |
-| **`numpy`**            | v2.4.1      |
-| **`ollama`**           | v0.6.1      |
-| **`openai`**           | v2.33.0     |
-| **`opencv-python`**    | v4.13.0.90  |
-| **`pandas`**           | v2.3.3      |
-| **`pillow`**           | v12.1.0     |
-| **`pipx`**             | v1.8.0      |
-| **`pydantic-ai`**      | v1.47.0     |
-| **`python-lsp-server`**    | v1.14.0     |
-| **`requests`**         | v2.32.5     |
-| **`scikit-learn`**     | v1.8.0      |
-| **`scipy`**            | v1.17.0     |
-| **`seaborn`**          | v0.13.2     |
-| **`sqlalchemy`**       | v2.0.46     |
-| **`torch`**            | v2.10.0     |
-| **`transformers`**     | v4.57.6     |
-| **`uv`**               | v0.9.26     |
-
-</Collapsible>
-
-<Collapsible title="Node.js packages (npm)">
-
-| **Package**                      | **Version** |
-| -------------------------------- | ----------- |
-| **`@anthropic-ai/claude-code`**  | v2.1.19     |
-| **`@openai/codex`**              | v0.128.0    |
-| **`bun`**                        | v1.3.6      |
-| **`openclaw`**                   | v2026.2.1   |
-| **`opencode-ai`**                | v1.1.35     |
-| **`ts-node`**                    | v10.9.2     |
-| **`typescript`**                 | v5.9.3      |
-| **`typescript-language-server`** | v5.1.3      |
-
-</Collapsible>
-
 ## Create snapshots
 
 Create a snapshot.
 
 1. Go to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
 2. Click **Create Snapshot**
-3. Enter the snapshot **`name`** and **`image`**
-
+3. Enter the snapshot **`name`** and **`image`** of any publicly accessible image or container registry
     - **Snapshot name**: identifier used to reference the snapshot
     - **Snapshot image**: base image for the snapshot, must include either a tag or a digest (e.g., **`ubuntu:22.04`**); the **`latest`**/**`lts`**/**`stable`** tags are not supported
-
 4. Click **Create**
-
-**Python:**
 
 ```python
 from daytona import Daytona, CreateSnapshotParams
@@ -131,93 +78,39 @@ snapshot = daytona.snapshot.create(
 )
 ```
 
-**TypeScript:**
+## VM snapshots
 
-```typescript
-import { Daytona } from "@daytona/sdk";
+Daytona provides methods to create VM snapshots for **Linux VM** and **Windows**.
 
-const daytona = new Daytona();
-const snapshot = await daytona.snapshot.create({
-  name: "my-awesome-snapshot",
-  image: "python:3.12",
-});
-```
+VM snapshots are used to create [VM sandboxes](./sandboxes.md#vm-sandboxes). VM snapshots are distinct from container snapshots and cannot be used to create container sandboxes. VM snapshots support VM-only capabilities such as [creating a snapshot from a sandbox](#create-snapshot-from-sandbox).
 
-**Ruby:**
+**Linux VM:**
 
-```ruby
-require 'daytona'
+Create a Linux VM snapshot.
 
-daytona = Daytona::Daytona.new
+1. Create a snapshot from a base **`image`**
+2. Set the snapshot's sandbox class to **`LINUX_VM`**
+
+```python
+from daytona import Daytona, CreateSnapshotParams, SandboxClass
+
+daytona = Daytona()
 snapshot = daytona.snapshot.create(
-  Daytona::CreateSnapshotParams.new(name: 'my-awesome-snapshot', image: 'python:3.12')
+    CreateSnapshotParams(
+        name="my-vm-snapshot",
+        image="ubuntu:22.04",
+        sandbox_class=SandboxClass.LINUX_VM,
+    )
 )
 ```
 
-**Go:**
+**Windows:**
 
-```go
-package main
+Windows snapshots are used to create [Windows sandboxes](./sandboxes.md#windows). They cannot be created from a base image. They are produced only through the [snapshot from sandbox](#create-snapshot-from-sandbox) by starting from an existing Windows sandbox and capturing its current state as a snapshot.
 
-import (
-	"context"
+## GPU snapshots
 
-	"github.com/daytonaio/daytona/libs/sdk-go/pkg/daytona"
-	"github.com/daytonaio/daytona/libs/sdk-go/pkg/types"
-)
-
-func main() {
-	client, _ := daytona.NewClient()
-	ctx := context.Background()
-	snapshot, logCh, _ := client.Snapshot.Create(ctx, &types.CreateSnapshotParams{
-		Name:  "my-awesome-snapshot",
-		Image: "python:3.12",
-	})
-	for range logCh {
-	}
-	_ = snapshot
-}
-```
-
-**Java:**
-
-```java
-import io.daytona.sdk.Daytona;
-import io.daytona.sdk.model.Snapshot;
-
-final class CreateSnapshot {
-    public static void main(String[] args) {
-        try (Daytona daytona = new Daytona()) {
-            Snapshot snapshot = daytona.snapshot().create("my-awesome-snapshot", "python:3.12");
-        }
-    }
-}
-```
-
-**CLI:**
-
-```bash
-daytona snapshot create my-awesome-snapshot --image python:3.11-slim --cpu 2 --memory 4
-```
-
-**API:**
-
-```bash
-curl https://app.daytona.io/api/snapshots \
-  --request POST \
-  --header 'Content-Type: application/json' \
-  --header 'Authorization: Bearer YOUR_SECRET_TOKEN' \
-  --data '{
-    "name": "my-awesome-snapshot",
-    "imageName": "python:3.11-slim",
-    "cpu": 2,
-    "memory": 4
-  }'
-```
-
-### GPU snapshots
-
-Create a GPU snapshot. GPU snapshots are used to create [GPU sandboxes](https://www.daytona.io/docs/en/sandboxes/gpu-sandboxes#create-gpu-sandboxes).
+Create a GPU snapshot. GPU snapshots are used to create [GPU sandboxes](./sandboxes.md#gpu-sandboxes).
 
 1. Go to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
 2. Click **Create Snapshot**
@@ -246,172 +139,27 @@ snapshot = daytona.snapshot.create(
 )
 ```
 
-### VM snapshots
+## Create snapshot from sandbox
 
-Daytona provides methods to create VM snapshots for **Linux** and **Windows**.
+Container sandboxes capture filesystem state only (**cold snapshot**). VM sandboxes capture filesystem and memory state (**hot snapshot**) through the `includeMemory` parameter:
 
-VM snapshots are used to create [VM sandboxes](https://www.daytona.io/docs/en/sandboxes/vm-sandboxes). VM snapshots are distinct from container snapshots and cannot be used to create container sandboxes. VM snapshots support VM-only capabilities such as [creating hot/cold snapshots from VM sandboxes](https://www.daytona.io/docs/en/sandboxes/vm-sandboxes#create-snapshot-from-vm-sandbox).
-
-#### Linux VM snapshots
-
-Create a Linux VM snapshot.
-
-1. Create a snapshot from a base **`image`**
-2. Set the snapshot's sandbox class to **`LINUX_VM`**
+| **Snapshot type** | **Include memory**    | **Snapshot contents** | **Required sandbox state** |
+| ----------------- | --------------------- | --------------------- | -------------------------- |
+| Cold              | **`false`** (default) | Filesystem only       | Stopped                    |
+| Hot               | **`true`**            | Filesystem and memory | Started                    |
 
 ```python
-from daytona import Daytona, CreateSnapshotParams, SandboxClass
+# Cold snapshot (filesystem only, sandbox stopped)
+sandbox._experimental_create_snapshot("my-snapshot")
 
-daytona = Daytona()
-snapshot = daytona.snapshot.create(
-    CreateSnapshotParams(
-        name="my-vm-snapshot",
-        image="ubuntu:22.04",
-        sandbox_class=SandboxClass.LINUX_VM,
-    )
-)
-```
-
-#### Windows VM snapshots
-
-Windows VM snapshots are used to create [Windows VM sandboxes](https://www.daytona.io/docs/en/sandboxes/vm-sandboxes#create-windows-sandboxes). They cannot be created from a base image. They are produced only through the [snapshot from VM sandbox](https://www.daytona.io/docs/en/sandboxes/vm-sandboxes#create-snapshot-from-vm-sandbox) by starting from an existing Windows sandbox and capturing its current state as a snapshot.
-
-<a id="using-public-images"></a>
-<a id="public-images"></a>
-### From public images
-
-Create a snapshot from any publicly accessible image or container registry.
-
-1. Go to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
-2. Click the **Create Snapshot** button
-3. Enter the snapshot **`name`** and **`image`** of any publicly accessible image or container registry
-
-**Python:**
-
-```python
-from daytona import Daytona, CreateSnapshotParams
-
-daytona = Daytona()
-daytona.snapshot.create(
-    CreateSnapshotParams(name="my-awesome-snapshot", image="python:3.11-slim"),
-    on_logs=lambda chunk: print(chunk, end=""),
-)
-```
-
-**TypeScript:**
-
-```typescript
-import { Daytona } from "@daytona/sdk";
-
-const daytona = new Daytona();
-await daytona.snapshot.create(
-  { name: "my-awesome-snapshot", image: "python:3.11-slim" },
-  { onLogs: console.log },
-);
-```
-
-**Ruby:**
-
-```ruby
-require 'daytona'
-
-daytona = Daytona::Daytona.new
-params = Daytona::CreateSnapshotParams.new(
-  name: 'my-awesome-snapshot',
-  image: 'python:3.11-slim'
-)
-snapshot = daytona.snapshot.create(params) do |chunk|
-  print chunk
-end
-```
-
-**Go:**
-
-```go
-package main
-
-import (
-	"context"
-	"github.com/daytonaio/daytona/libs/sdk-go/pkg/daytona"
-	"github.com/daytonaio/daytona/libs/sdk-go/pkg/types"
-)
-
-func main() {
-	client, _ := daytona.NewClient()
-	ctx := context.Background()
-	snapshot, logChan, _ := client.Snapshot.Create(ctx, &types.CreateSnapshotParams{
-		Name:  "my-awesome-snapshot",
-		Image: "python:3.11-slim",
-	})
-	_ = snapshot
-	for range logChan {
-	}
-}
-```
-
-**Java:**
-
-```java
-import io.daytona.sdk.Daytona;
-import io.daytona.sdk.model.Snapshot;
-
-public class App {
-    public static void main(String[] args) {
-        try (Daytona daytona = new Daytona()) {
-            Snapshot snapshot = daytona.snapshot().create("my-awesome-snapshot", "python:3.11-slim");
-        }
-    }
-}
-```
-
-**CLI:**
-
-```bash
-daytona snapshot create my-awesome-snapshot --image python:3.11-slim
-```
-
-**API:**
-
-```bash
-curl https://app.daytona.io/api/snapshots \
-  --request POST \
-  --header 'Content-Type: application/json' \
-  --header 'Authorization: Bearer YOUR_SECRET_TOKEN' \
-  --data '{
-    "name": "my-awesome-snapshot",
-    "imageName": "python:3.11-slim"
-  }'
-```
-
-<a id="using-local-images"></a>
-<a id="local-images"></a>
-### From local images
-
-Create a snapshot from local images or from local Dockerfiles.
-
-Daytona expects the local image to be built for AMD64 architecture. Therefore, the `--platform=linux/amd64` flag is required when building the Docker image if your machine is running on a different architecture.
-
-1. Ensure the image and tag you want to use is available
-
-```bash
-docker images
-```
-
-2. Create a snapshot and push it to Daytona:
-
-```bash
-daytona snapshot push custom-alpine:3.21 --name alpine-minimal
-```
-
-Alternatively, use the `--dockerfile` flag under `create` to pass the path to the Dockerfile you want to use and Daytona will build the snapshot for you. The `COPY`/`ADD` commands will be automatically parsed and added to the context. To manually add files to the context, use the `--context` flag.
-
-```bash
-daytona snapshot create my-awesome-snapshot --dockerfile ./Dockerfile
+# Hot snapshot (filesystem and memory, sandbox running)
+sandbox._experimental_create_snapshot("my-vm-snapshot", include_memory=True)
 ```
 
 <a id="using-images-from-private-registries"></a>
 <a id="images-from-private-registries"></a>
-### From private registries
+<a id="from-private-registries"></a>
+## Snapshots from private registries
 
 Create a snapshot from images from private container registries.
 
@@ -551,6 +299,33 @@ Daytona pulls private ECR images via cross-account IAM role assumption. You crea
     }
     ```
 
+<a id="using-local-images"></a>
+<a id="local-images"></a>
+<a id="from-local-images"></a>
+## Snapshots from local images
+
+Create a snapshot from local images or from local Dockerfiles.
+
+Daytona expects the local image to be built for AMD64 architecture. Therefore, the `--platform=linux/amd64` flag is required when building the Docker image if your machine is running on a different architecture.
+
+1. Ensure the image and tag you want to use is available
+
+```bash
+docker images
+```
+
+2. Create a snapshot and push it to Daytona:
+
+```bash
+daytona snapshot push custom-alpine:3.21 --name alpine-minimal
+```
+
+Alternatively, use the `--dockerfile` flag under `create` to pass the path to the Dockerfile you want to use and Daytona will build the snapshot for you. The `COPY`/`ADD` commands will be automatically parsed and added to the context. To manually add files to the context, use the `--context` flag.
+
+```bash
+daytona snapshot create my-awesome-snapshot --dockerfile ./Dockerfile
+```
+
 ## Get a snapshot by name
 
 Get a snapshot by name.
@@ -585,7 +360,7 @@ daytona.snapshot.activate("my-awesome-snapshot")
 
 Deactivate a snapshot.
 
-Deactivated snapshots are not available for new sandboxes.
+Deactivated snapshots are not available for new sandboxes. Deactivating a snapshot also pauses top-ups of its [warm pools](https://www.daytona.io/docs/en/warm-pools); the pool reports the reason in its `errorReason` field.
 
 1. Go to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
 2. Click the three dots at the end of the row for the snapshot you want to deactivate
@@ -595,7 +370,7 @@ Deactivated snapshots are not available for new sandboxes.
 
 Delete a snapshot.
 
-Deleted snapshots cannot be recovered.
+Deleted snapshots cannot be recovered. Deleting a snapshot also deletes its [warm pools](https://www.daytona.io/docs/en/warm-pools) and destroys their unclaimed warm sandboxes.
 
 1. Go to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
 2. Click the three dots at the end of the row for the snapshot you want to delete
@@ -617,6 +392,60 @@ A snapshot can have several different states. Each state reflects the snapshot's
 - **Error**: the snapshot creation failed
 - **Build Failed**: the snapshot build process failed
 - **Removing**: the snapshot is being deleted
+
+Default snapshots include pre-installed Python and Node.js packages.
+
+**Python (pip)**
+
+
+| **Package**            | **Version** |
+| ---------------------- | ----------- |
+| **`anthropic`**        | v0.76.0     |
+| **`beautifulsoup4`**   | v4.14.3     |
+| **`claude-agent-sdk`** | v0.1.22     |
+| **`openai-agents`**    | v0.15.1     |
+| **`daytona`**          | v0.134.0    |
+| **`django`**           | v6.0.1      |
+| **`flask`**            | v3.1.2      |
+| **`huggingface-hub`**  | v0.36.0     |
+| **`instructor`**       | v1.14.4     |
+| **`keras`**            | v3.13.0     |
+| **`langchain`**        | v1.2.7      |
+| **`llama-index`**      | v0.14.13    |
+| **`matplotlib`**       | v3.10.8     |
+| **`numpy`**            | v2.4.1      |
+| **`ollama`**           | v0.6.1      |
+| **`openai`**           | v2.33.0     |
+| **`opencv-python`**    | v4.13.0.90  |
+| **`pandas`**           | v2.3.3      |
+| **`pillow`**           | v12.1.0     |
+| **`pipx`**             | v1.8.0      |
+| **`pydantic-ai`**      | v1.47.0     |
+| **`python-lsp-server`**    | v1.14.0     |
+| **`requests`**         | v2.32.5     |
+| **`scikit-learn`**     | v1.8.0      |
+| **`scipy`**            | v1.17.0     |
+| **`seaborn`**          | v0.13.2     |
+| **`sqlalchemy`**       | v2.0.46     |
+| **`torch`**            | v2.10.0     |
+| **`transformers`**     | v4.57.6     |
+| **`uv`**               | v0.9.26     |
+
+
+**Node.js (npm)**
+
+
+| **Package**                      | **Version** |
+| -------------------------------- | ----------- |
+| **`@anthropic-ai/claude-code`**  | v2.1.19     |
+| **`@openai/codex`**              | v0.128.0    |
+| **`bun`**                        | v1.3.6      |
+| **`openclaw`**                   | v2026.2.1   |
+| **`opencode-ai`**                | v1.1.35     |
+| **`ts-node`**                    | v10.9.2     |
+| **`typescript`**                 | v5.9.3      |
+| **`typescript-language-server`** | v5.1.3      |
+
 
 ## Run Docker in a sandbox
 

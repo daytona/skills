@@ -11,6 +11,7 @@
 - Regions
 - Organization settings
 - Advanced operations
+- OpenTelemetry configuration
 - See Also
 
 
@@ -415,6 +416,36 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/default-region' \
 }'
 ```
 
+### Update region quota
+
+Update the resource quota for an organization in a specific region. `totalCpuQuota`, `totalMemoryQuota`, `totalDiskQuota`, and `totalGpuQuota` are required; per-sandbox limits and allowed GPU types are optional.
+
+**API:**
+
+```bash
+curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/quota/REGION_ID' \
+  --request PATCH \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: Bearer YOUR_API_KEY' \
+  --data '{
+  "totalCpuQuota": 100,
+  "totalMemoryQuota": 200,
+  "totalDiskQuota": 500,
+  "totalGpuQuota": 0
+}'
+```
+
+### List available sandbox classes
+
+List the sandbox classes available to an organization. Each entry includes the region ID, the sandbox class, whether GPUs are available, and the allowed GPU types.
+
+**API:**
+
+```bash
+curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/available-sandbox-classes' \
+  --header 'Authorization: Bearer YOUR_API_KEY'
+```
+
 ## Organization settings
 
 The settings page in the [Daytona Dashboard ↗](https://app.daytona.io/dashboard/settings) allows you to view the organization ID and name, and optionally delete the organization if you don't need it anymore. This action is irreversible, so please proceed with caution. Personal organizations are there by default and cannot be deleted.
@@ -432,6 +463,73 @@ Get the usage overview for an organization.
 ```bash
 curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/usage' \
   --header 'Authorization: Bearer YOUR_API_KEY'
+```
+
+### Update organization quota
+
+Update the resource quota for an organization. All fields are optional; omitted fields are left unchanged.
+
+**API:**
+
+```bash
+curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/quota' \
+  --request PATCH \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: Bearer YOUR_API_KEY' \
+  --data '{
+  "maxCpuPerSandbox": 4,
+  "maxMemoryPerSandbox": 8,
+  "maxDiskPerSandbox": 10,
+  "snapshotQuota": 100,
+  "volumeQuota": 100,
+  "secretQuota": 100
+}'
+```
+
+### Suspend organization
+
+Suspend an organization. `reason` and `until` are required. `suspensionCleanupGracePeriodHours` sets the number of hours before suspended resources are cleaned up.
+
+**API:**
+
+```bash
+curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/suspend' \
+  --request POST \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: Bearer YOUR_API_KEY' \
+  --data '{
+  "reason": "Payment overdue",
+  "until": "2030-01-01T00:00:00.000Z",
+  "suspensionCleanupGracePeriodHours": 24
+}'
+```
+
+### Unsuspend organization
+
+Remove the suspension from an organization.
+
+**API:**
+
+```bash
+curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/unsuspend' \
+  --request POST \
+  --header 'Authorization: Bearer YOUR_API_KEY'
+```
+
+### Update preview warning
+
+Enable or disable the preview URL warning page that the proxy shows for sandboxes in an organization.
+
+**API:**
+
+```bash
+curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/preview-warning' \
+  --request POST \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: Bearer YOUR_API_KEY' \
+  --data '{
+  "previewWarningEnabled": false
+}'
 ```
 
 ### Update sandbox default limited network egress
@@ -471,9 +569,67 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/experimental-conf
 }'
 ```
 
+## OpenTelemetry configuration
+
+Manage the OpenTelemetry (OTEL) configuration for an organization. The configuration consists of a collector endpoint and optional headers sent with each export request.
+
+### Get OTEL configuration
+
+Get the OTEL configuration for an organization.
+
+**API:**
+
+```bash
+curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/otel-config' \
+  --header 'Authorization: Bearer YOUR_API_KEY'
+```
+
+### Get OTEL configuration by sandbox auth token
+
+Get the OTEL configuration of the organization that owns a sandbox, identified by the sandbox auth token.
+
+**API:**
+
+```bash
+curl 'https://app.daytona.io/api/organizations/otel-config/by-sandbox-auth-token/SANDBOX_AUTH_TOKEN' \
+  --header 'Authorization: Bearer YOUR_API_KEY'
+```
+
+### Update OTEL configuration
+
+Update the OTEL configuration for an organization. `endpoint` is required; `headers` is optional.
+
+**API:**
+
+```bash
+curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/otel-config' \
+  --request PUT \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: Bearer YOUR_API_KEY' \
+  --data '{
+  "endpoint": "http://otel-collector:4317",
+  "headers": {
+    "x-api-key": "my-api-key"
+  }
+}'
+```
+
+### Delete OTEL configuration
+
+Delete the OTEL configuration for an organization.
+
+**API:**
+
+```bash
+curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/otel-config' \
+  --request DELETE \
+  --header 'Authorization: Bearer YOUR_API_KEY'
+```
+
 ## See Also
 
 - [Python SDK](../python-sdk/README.md)
 - [TypeScript SDK](../typescript-sdk/README.md)
+- [Java SDK](../java-sdk/README.md)
 - [Go SDK](../go-sdk/README.md)
 - [Ruby SDK](../ruby-sdk/README.md)

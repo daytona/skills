@@ -8,7 +8,7 @@ SnapshotService class for Daytona SDK.
 #### new SnapshotService()
 
 ```ruby
-def initialize(snapshots_api:, object_storage_api:, default_region_id:, otel_state:)
+def initialize(snapshots_api:, object_storage_api:, default_region_id: nil, otel_state: nil)
 
 ```
 
@@ -28,7 +28,7 @@ def initialize(snapshots_api:, object_storage_api:, default_region_id:, otel_sta
 #### list()
 
 ```ruby
-def list(page:, limit:)
+def list(page: nil, limit: nil)
 
 ```
 
@@ -112,7 +112,7 @@ puts "#{snapshot.name} (#{snapshot.image_name})"
 #### create()
 
 ```ruby
-def create(params, on_logs:)
+def create(params, on_logs: nil)
 
 ```
 
@@ -158,3 +158,4 @@ Activate a snapshot
 ## See Also
 - [Python SDK - snapshot](../python-sdk/sync/snapshot.md)
 - [TypeScript SDK - snapshot](../typescript-sdk/snapshot.md)
+- [Java SDK - snapshot](../java-sdk/snapshot.md)

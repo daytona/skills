@@ -360,12 +360,11 @@ By default, recordings are saved to `~/.daytona/recordings`. You can specify a c
 ```ruby
 require 'daytona'
 
-daytona = Daytona::Client.new
-sandbox = daytona.create(
+daytona = Daytona::Daytona.new
+sandbox = daytona.create(Daytona::CreateSandboxFromSnapshotParams.new(
   snapshot: 'daytonaio/sandbox:0.6.0',
-  name: 'my-sandbox',
-  env_vars: { DAYTONA_RECORDINGS_DIR: '/home/daytona/my-recordings' }
-)
+  env_vars: { 'DAYTONA_RECORDINGS_DIR' => '/home/daytona/my-recordings' }
+))
 ```
 
 ### Start Recording
@@ -492,4 +491,5 @@ end
 ## See Also
 - [Python SDK - computer-use-guide](../python-sdk/computer-use-guide.md)
 - [TypeScript SDK - computer-use-guide](../typescript-sdk/computer-use-guide.md)
+- [Java SDK - computer-use-guide](../java-sdk/computer-use-guide.md)
 - [Go SDK - computer-use-guide](../go-sdk/computer-use-guide.md)

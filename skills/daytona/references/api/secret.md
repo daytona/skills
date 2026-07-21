@@ -5,6 +5,7 @@
 
 - GET `/secret`
 - POST `/secret`
+- GET `/secret/paginated`
 - GET `/secret/{secretId}`}
 - PATCH `/secret/{secretId}`}
 - DELETE `/secret/{secretId}`}
@@ -12,6 +13,8 @@
 ## GET `/secret` {#daytona/tag/secret/GET/secret}
 
 **List secrets**
+
+This endpoint is deprecated and fails for organizations with more than 1500 secrets. Use `listSecretsPaginated` instead.
 
 ### Parameters
 
@@ -53,6 +56,29 @@ Schema: **CreateSecret**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 201 | The secret has been successfully created. | Secret |
+
+---
+
+## GET `/secret/paginated` {#daytona/tag/secret/GET/secret/paginated}
+
+**List secrets with pagination**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `cursor` | query | string | No | Pagination cursor from a previous response |
+| `limit` | query | number | No | Number of results per page |
+| `name` | query | string | No | Filter by partial name match |
+| `sort` | query | string | No | Field to sort by |
+| `order` | query | string | No | Direction to sort by |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Paginated list of secrets (metadata only, values are not returned) | ListSecretsResponse |
 
 ---
 

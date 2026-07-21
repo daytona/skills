@@ -356,8 +356,6 @@ verb 3
 
 The following snippets demonstrate connecting to an OpenVPN network using a client configuration file.
 
-**Python:**
-
 ```python
 from daytona import Daytona, DaytonaConfig
 import time
@@ -438,124 +436,6 @@ def setup_openvpn(ovpn_config: str):
 
 if __name__ == "__main__":
     sandbox = setup_openvpn(OPENVPN_CONFIG)
-
-    ```
-
-**TypeScript:**
-
-```typescript
-import { Daytona } from '@daytona/sdk';
-
-// Configuration
-const DAYTONA_API_KEY = "YOUR_API_KEY"; // Replace with your API key
-
-// OpenVPN client configuration (paste your .ovpn config here)
-const OPENVPN_CONFIG = `
-`.trim();
-
-// Initialize the Daytona client
-const daytona = new Daytona({
-  apiKey: DAYTONA_API_KEY,
-});
-
-function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function setupOpenvpn(ovpnConfig: string): Promise<void> {
-  /**
-   * Connect a Daytona sandbox to an OpenVPN network using the TypeScript SDK.
-   */
-
-  // Create the sandbox
-  console.log("Creating sandbox...");
-  const sandbox = await daytona.create();
-  console.log(`Sandbox created: ${sandbox.id}`);
-
-  // Step 1: Install OpenVPN
-  console.log("\nInstalling OpenVPN...");
-  let response = await sandbox.process.executeCommand(
-    "sudo apt update && sudo apt install -y openvpn",
-    undefined,  // cwd
-    undefined,  // env
-    120         // timeout
-  );
-  if (response.exitCode !== 0) {
-    console.log(`Error installing OpenVPN: ${response.result}`);
-    return;
-  }
-  console.log("OpenVPN installed successfully.");
-
-  // Step 2: Write the OpenVPN config file
-  console.log("\nWriting OpenVPN configuration...");
-  // Use heredoc to write the config file
-  await sandbox.process.executeCommand(
-    `cat << 'OVPNEOF' > /home/daytona/client.ovpn
-${ovpnConfig}
-OVPNEOF`,
-    undefined,
-    undefined,
-    30
-  );
-  console.log("Configuration written to /home/daytona/client.ovpn");
-
-  // Step 3: Start OpenVPN in background
-  console.log("\nStarting OpenVPN tunnel...");
-  await sandbox.process.executeCommand(
-    "nohup sudo openvpn /home/daytona/client.ovpn > /tmp/openvpn.log 2>&1 &",
-    undefined,  // cwd
-    undefined,  // env
-    10          // timeout
-  );
-
-  // Wait for connection to establish
-  console.log("Waiting for VPN connection to establish...");
-  await sleep(10000);
-
-  // Step 4: Verify connection
-  console.log("\nVerifying OpenVPN connection...");
-
-  // Check if tun interface exists
-  response = await sandbox.process.executeCommand(
-    "ip addr show tun0",
-    undefined,  // cwd
-    undefined,  // env
-    10          // timeout
-  );
-  if (response.exitCode === 0) {
-    console.log("VPN tunnel interface (tun0) is up:");
-    console.log(response.result);
-  } else {
-    console.log("Warning: tun0 interface not found. Checking OpenVPN logs...");
-    const logResponse = await sandbox.process.executeCommand(
-      "cat /tmp/openvpn.log",
-      undefined,  // cwd
-      undefined,  // env
-      10          // timeout
-    );
-    console.log(`OpenVPN log:\n${logResponse.result}`);
-    return;
-  }
-
-  // Get public IP through VPN
-  console.log("\nChecking public IP (should be VPN server IP)...");
-  response = await sandbox.process.executeCommand(
-    "curl -s ifconfig.me",
-    undefined,  // cwd
-    undefined,  // env
-    30          // timeout
-  );
-  if (response.exitCode === 0) {
-    console.log(`Public IP: ${response.result}`);
-  } else {
-    console.log(`Could not determine public IP: ${response.result}`);
-  }
-
-  console.log("\nOpenVPN connection established successfully.");
-}
-
-// Run the main function
-setupOpenvpn(OPENVPN_CONFIG).catch(console.error);
 
     ```
 

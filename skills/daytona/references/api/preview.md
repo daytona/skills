@@ -18,6 +18,25 @@
 
 ---
 
+## GET `/preview/{sandboxId}/preview-warning` {#daytona/tag/preview/GET/preview/{sandboxId}/preview-warning}
+
+**Check if the preview warning page is enabled for the sandbox**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `sandboxId` | path | string | Yes | ID of the sandbox, or a signed preview URL token (requires the port query param) |
+| `port` | query | number | No | Port the signed preview URL token was issued for. Required when sandboxId is a signed token. |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Whether the preview warning page is enabled for the sandbox | PreviewWarning |
+
+---
+
 ## GET `/preview/{sandboxId}/validate/{authToken}` {#daytona/tag/preview/GET/preview/{sandboxId}/validate/{authToken}}
 
 **Check if sandbox auth token is valid**

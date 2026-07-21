@@ -16,7 +16,7 @@
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | The Health Check is successful | object |
-| 503 | The Health Check is not successful | object |
+| 200 | The Health Check is successful | HealthController_check_200_response |
+| 503 | The Health Check is not successful | HealthController_check_503_response |
 
 ---

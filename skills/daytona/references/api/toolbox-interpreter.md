@@ -10,7 +10,7 @@ Returns information about all user-created interpreter contexts (excludes defaul
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK |  |
+| 200 | OK | ListContextsResponse |
 
 ---
 
@@ -20,19 +20,24 @@ Returns information about all user-created interpreter contexts (excludes defaul
 
 Creates a new isolated interpreter context with optional working directory and language
 
-### Parameters
+### Request Body
 
-| Name | In | Type | Required | Description |
-|------|-----|------|----------|-------------|
-| `request` | body | string | Yes | Context configuration |
+Context configuration
+
+Schema: **CreateContextRequest**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `cwd` | string | No |  |
+| `language` | string | No |  |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK |  |
-| 400 | Bad Request |  |
-| 500 | Internal Server Error |  |
+| 200 | OK | InterpreterContext |
+| 400 | Bad Request | object |
+| 500 | Internal Server Error | object |
 
 ---
 
@@ -52,9 +57,9 @@ Deletes an interpreter context and shuts down its worker process
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK |  |
-| 400 | Bad Request |  |
-| 404 | Not Found |  |
+| 200 | OK | object |
+| 400 | Bad Request | object |
+| 404 | Not Found | object |
 
 ---
 
@@ -68,6 +73,6 @@ Executes code in a specified context (or default context if not specified) via W
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 101 | Switching Protocols |  |
+| 101 | Switching Protocols | string |
 
 ---

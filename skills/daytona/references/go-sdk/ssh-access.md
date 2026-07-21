@@ -86,3 +86,4 @@ Revoke SSH access tokens before expiry:
 ## See Also
 - [Python SDK - ssh-access](../python-sdk/ssh-access.md)
 - [TypeScript SDK - ssh-access](../typescript-sdk/ssh-access.md)
+- [Java SDK - ssh-access](../java-sdk/ssh-access.md)

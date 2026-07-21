@@ -113,7 +113,9 @@ result = await sandbox.code_interpreter.run_code(
 
 ```python
 @intercept_errors(message_prefix="Failed to create interpreter context: ")
-async def create_context(cwd: str | None = None) -> InterpreterContext
+async def create_context(
+        cwd: str | None = None,
+        request_timeout: float | None = None) -> InterpreterContext
 ```
 
 Create a new isolated interpreter context.
@@ -124,6 +126,10 @@ Variables, imports, and functions defined in one context don't affect others.
 **Arguments**:
 
 - `cwd` _str | None_ - Working directory for the context. If not specified, uses sandbox working directory.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Returns**:
@@ -159,13 +165,22 @@ await sandbox.code_interpreter.delete_context(ctx)
 
 ```python
 @intercept_errors(message_prefix="Failed to list interpreter contexts: ")
-async def list_contexts() -> list[InterpreterContext]
+async def list_contexts(
+        request_timeout: float | None = None) -> list[InterpreterContext]
 ```
 
 List all user-created interpreter contexts.
 
 The default context is not included in this list. Only contexts created
 via `create_context()` are returned.
+
+**Arguments**:
+
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
+
 
 **Returns**:
 
@@ -189,7 +204,8 @@ for ctx in contexts:
 
 ```python
 @intercept_errors(message_prefix="Failed to delete interpreter context: ")
-async def delete_context(context: InterpreterContext) -> None
+async def delete_context(context: InterpreterContext,
+                         request_timeout: float | None = None) -> None
 ```
 
 Delete an interpreter context and shut down all associated processes.
@@ -200,6 +216,10 @@ The default context cannot be deleted.
 **Arguments**:
 
 - `context` _InterpreterContext_ - Context to delete.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Raises**:

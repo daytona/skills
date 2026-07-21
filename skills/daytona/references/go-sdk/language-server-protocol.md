@@ -13,7 +13,9 @@
 
 
 
-Daytona provides Language Server Protocol (LSP) support through sandbox instances. This enables code completion, document symbols, and workspace symbol search inside sandboxes.
+Language Server Protocol (LSP) support is available through LSP server instances created from a sandbox. A language server runs inside the sandbox and analyzes the project's code, so your application gets IDE-grade code intelligence for code that never leaves the sandbox.
+
+An LSP server covers code completions, file open and close notifications, document symbols, and sandbox-wide symbol search. Each server instance is scoped to one language and one project directory; Python and TypeScript language servers are available by default.
 
 ## Workflow
 
@@ -152,3 +154,4 @@ for _, symbol := range symbols {
 ## See Also
 - [Python SDK - language-server-protocol](../python-sdk/language-server-protocol.md)
 - [TypeScript SDK - language-server-protocol](../typescript-sdk/language-server-protocol.md)
+- [Java SDK - language-server-protocol](../java-sdk/language-server-protocol.md)

@@ -116,4 +116,5 @@ daytona.delete(sandbox)
 ## See Also
 - [Python SDK - log-streaming](../python-sdk/log-streaming.md)
 - [TypeScript SDK - log-streaming](../typescript-sdk/log-streaming.md)
+- [Java SDK - log-streaming](../java-sdk/log-streaming.md)
 - [Go SDK - log-streaming](../go-sdk/log-streaming.md)

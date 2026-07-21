@@ -425,19 +425,23 @@ By default, recordings are saved to `~/.daytona/recordings`. You can specify a c
 
 ```go
 import (
-	"github.com/daytonaio/daytona/pkg/client"
-	"github.com/daytonaio/daytona/pkg/types"
+	"github.com/daytona/clients/sdk-go/pkg/daytona"
+	"github.com/daytona/clients/sdk-go/pkg/types"
 )
 
-daytona := client.New()
-envVars := map[string]string{
-	"DAYTONA_RECORDINGS_DIR": "/home/daytona/my-recordings",
+client, err := daytona.NewClient()
+if err != nil {
+	log.Fatal(err)
 }
 
-sandbox, err := daytona.Create(ctx, &types.CreateSandboxParams{
+sandbox, err := client.Create(ctx, types.SnapshotParams{
+	SandboxBaseParams: types.SandboxBaseParams{
+		Name: "my-sandbox",
+		EnvVars: map[string]string{
+			"DAYTONA_RECORDINGS_DIR": "/home/daytona/my-recordings",
+		},
+	},
 	Snapshot: "daytonaio/sandbox:0.6.0",
-	Name:     "my-sandbox",
-	EnvVars:  envVars,
 })
 if err != nil {
 	log.Fatal(err)
@@ -593,3 +597,4 @@ fmt.Printf("Open windows: %v\n", result["windows"])
 ## See Also
 - [Python SDK - computer-use-guide](../python-sdk/computer-use-guide.md)
 - [TypeScript SDK - computer-use-guide](../typescript-sdk/computer-use-guide.md)
+- [Java SDK - computer-use-guide](../java-sdk/computer-use-guide.md)

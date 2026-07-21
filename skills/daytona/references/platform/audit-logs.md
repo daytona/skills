@@ -125,5 +125,6 @@ The outcome field indicates the result of the action. Statuses follow standard H
 
 - [Python SDK](../python-sdk/README.md)
 - [TypeScript SDK](../typescript-sdk/README.md)
+- [Java SDK](../java-sdk/README.md)
 - [Go SDK](../go-sdk/README.md)
 - [Ruby SDK](../ruby-sdk/README.md)

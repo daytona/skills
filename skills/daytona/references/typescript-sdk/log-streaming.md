@@ -32,7 +32,7 @@ This is ideal for:
 > When streaming with the Python SDK, avoid blocking operations inside stdout/stderr callbacks. Blocking synchronous callbacks can cause WebSocket disconnections. Use async callbacks where possible.
 
 ```typescript
-import { Daytona, SessionExecuteRequest } from '@daytona/sdk'
+import { Daytona } from '@daytona/sdk'
 
 async function main() {
   const daytona = new Daytona()
@@ -75,7 +75,7 @@ If the command has a predictable duration, or if you don't need to run it in the
 periodically check all existing logs, you can use the following example to get the logs up to the current point in time.
 
 ```typescript
-import { Daytona, SessionExecuteRequest } from '@daytona/sdk'
+import { Daytona } from '@daytona/sdk'
 
 async function main() {
   const daytona = new Daytona()

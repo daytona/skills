@@ -9,7 +9,7 @@ update and delete Secrets.
 #### new SecretService()
 
 ```ruby
-def initialize(secret_api, otel_state:)
+def initialize(secret_api, otel_state: nil)
 
 ```
 
@@ -34,7 +34,7 @@ that is resolved to the real value only for the Secret's allowed +hosts+.
 #### create()
 
 ```ruby
-def create(name, value, description:, hosts:)
+def create(name, value, description: nil, hosts: nil)
 
 ```
 
@@ -98,20 +98,47 @@ Get a Secret by ID.
 #### list()
 
 ```ruby
-def list()
+def list(cursor: nil, limit: nil, name: nil, sort: nil, order: nil)
 
 ```
 
-List all Secrets.
+List Secrets with cursor-based pagination.
+
+**Parameters**:
+
+- `cursor` _String, nil_ - Pagination cursor from a previous response.
+- `limit` _Integer, nil_ - Number of results per page (1-200, defaults to 100).
+- `name` _String, nil_ - Filter by partial name match.
+- `sort` _String, nil_ - Field to sort by: +name+, +createdAt+ or +updatedAt+
+(defaults to +createdAt+).
+- `order` _String, nil_ - Direction to sort by: +asc+ or +desc+ (defaults to +desc+).
 
 **Returns**:
 
-- `Array\<Daytona:Secret\>`
+- `Daytona:ListSecretsResponse`
+
+**Raises**:
+
+- `Daytona:Sdk:Error` -
+
+**Examples:**
+
+```ruby
+daytona = Daytona::Daytona.new
+cursor = nil
+loop do
+  page = daytona.secret.list(cursor:, limit: 100)
+  page.items.each { |secret| puts secret.name }
+  cursor = page.next_cursor
+  break if cursor.nil?
+end
+
+```
 
 #### update()
 
 ```ruby
-def update(secret_id, value:, description:, hosts:)
+def update(secret_id, value: nil, description: nil, hosts: nil)
 
 ```
 
@@ -132,3 +159,6 @@ hostnames and +*.+ wildcards (no ports).
 **Raises**:
 
 - `DaytonaApiClient:ApiError` - If no Secret with the given ID exists (404).
+
+## See Also
+- [Java SDK - secret-service](../java-sdk/secret-service.md)

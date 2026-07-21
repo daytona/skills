@@ -332,4 +332,5 @@ end
 ## See Also
 - [Python SDK - pty](../python-sdk/pty.md)
 - [TypeScript SDK - pty](../typescript-sdk/pty.md)
+- [Java SDK - pty](../java-sdk/pty.md)
 - [Go SDK - pty](../go-sdk/pty.md)

@@ -314,3 +314,4 @@ if result.exit_code != 0:
 
 ## See Also
 - [TypeScript SDK - pty](../typescript-sdk/pty.md)
+- [Java SDK - pty](../java-sdk/pty.md)

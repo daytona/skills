@@ -1,17 +1,20 @@
 
 
-Sandboxes are isolated runtime environments that run on [runners](https://www.daytona.io/docs/en/bring-your-own-compute) — machines that form Daytona's compute plane.
+Every Daytona sandbox runs in a **region**: a geographic or logical grouping of compute infrastructure. When creating a sandbox, you can target a specific region, and Daytona schedules the workload on available capacity within that region.
 
-Runners are organized into **regions**, which are geographic or logical groupings of compute infrastructure. When creating a sandbox, you can target a specific region, and Daytona will schedule your workload on an available runner within that region.
+Regions place sandboxes close to your users to reduce latency, keep data within a required jurisdiction, and let you attach your own compute infrastructure.
 
-As a result, you're able to:
+Regions come in three types, differing in who manages the infrastructure and who can use it:
 
-- Choose specific geographic locations for reduced latency
-- Comply with data residency requirements
-- Use your own runner machines for custom regions
-- Scale compute resources independently within each custom region
+| **Region type**                            | **Managed by**    | **Infrastructure**                                                          |
+| ------------------------------------------ | ----------------- | --------------------------------------------------------------------------- |
+| <u>[**Shared**](#shared-regions)</u>       | Daytona           | Shared across all organizations                                             |
+| <u>[**Dedicated**](#dedicated-regions)</u> | Daytona           | Provisioned exclusively for a single organization                           |
+| <u>[**Custom**](#custom-regions)</u>       | Your organization | <u>[**Bring your own compute (BYOC)**](https://www.daytona.io/docs/en/bring-your-own-compute)</u> |
 
-Regions are geographic or logical groupings of runners that execute sandbox workloads. The sandbox region is specified by setting the `target` parameter on initialization:
+## Select a region
+
+The sandbox region is set with the `target` parameter. In the SDKs, set it when initializing the client and every sandbox created by that client is scheduled in the specified region. In the API, pass it in the sandbox create request:
 
 ```typescript
 import { Daytona } from '@daytona/sdk';
@@ -22,30 +25,26 @@ const daytona: Daytona = new Daytona({
 });
 ```
 
-### Shared regions
+## Shared regions
 
-Shared regions are managed by Daytona and available to all organizations. These regions provide immediate access to Daytona's infrastructure without any setup required.
+Shared regions are managed by Daytona and available to all organizations.
 
-Limits are applied to your organization's default region. For access to a different shared region, contact [sales@daytona.io](mailto:sales@daytona.io).
+| **Region**    | **Target** |
+| ------------- | ---------- |
+| United States | **`us`**   |
+| Europe        | **`eu`**   |
 
-| Region        | Target   |
-| ------------- | -------- |
-| United States | **`us`** |
-| Europe        | **`eu`** |
+## Dedicated regions
 
-### Dedicated regions
-
-Dedicated regions are managed by Daytona and provisioned exclusively for individual organizations. These regions deliver dedicated infrastructure with the operational simplicity of a managed service.
+Dedicated regions are managed by Daytona and provisioned exclusively for a single organization. The infrastructure is not shared with other organizations, and Daytona operates it as a managed service.
 > **Note:**
 > Contact [sales@daytona.io](mailto:sales@daytona.io) to set up a dedicated region for your organization.
 
-### Custom regions
+## Custom regions
 
-Custom regions are created and managed by your organization, allowing you to use your own runner machines and scale compute resources independently within each region. This provides maximum control over data locality, compliance, and infrastructure configuration.
+Custom regions run on compute that your organization provides and manages. Attach your own machines through [bring your own compute (BYOC)](https://www.daytona.io/docs/en/bring-your-own-compute) to control data locality, compliance, and infrastructure configuration, and scale capacity independently within each region.
 
-Additionally, custom regions have no limits applied for concurrent resource usage, giving you full control over capacity and performance.
-
-For more information, see the [bring your own compute (BYOC)](https://www.daytona.io/docs/en/bring-your-own-compute) guide.
+Custom regions have no limits on concurrent resource usage: capacity is bounded only by the compute you attach.
 
 ## See Also
 - [Python SDK - regions](../python-sdk/regions.md)

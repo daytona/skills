@@ -7,7 +7,9 @@
 
 
 
-Daytona provides comprehensive file system operations through the `fs` module in sandboxes.
+File system operations are available through the `fs` module of a sandbox. Each sandbox has its own isolated filesystem, and operations run through the Daytona API, so your application manages files in a sandbox directly, without executing shell commands inside it.
+
+The `fs` module covers listing directories, reading file metadata, creating directories, uploading and downloading files, setting permissions, searching file contents, and moving, renaming, or deleting files. Uploads and downloads can stream to and from local paths, so large files transfer without being loaded into memory.
 
 ## Basic operations
 
@@ -259,4 +261,5 @@ sandbox.fs.move_files(
 ## See Also
 - [Python SDK - file-system-operations](../python-sdk/file-system-operations.md)
 - [TypeScript SDK - file-system-operations](../typescript-sdk/file-system-operations.md)
+- [Java SDK - file-system-operations](../java-sdk/file-system-operations.md)
 - [Go SDK - file-system-operations](../go-sdk/file-system-operations.md)

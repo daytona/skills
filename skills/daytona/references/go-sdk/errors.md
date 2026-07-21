@@ -334,3 +334,4 @@ func (e *DaytonaValidationError) Error() string
 
 ## See Also
 - [TypeScript SDK - errors](../typescript-sdk/errors.md)
+- [Java SDK - errors](../java-sdk/errors.md)

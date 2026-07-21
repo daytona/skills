@@ -112,4 +112,5 @@ sandbox.revoke_ssh_access(token: 'specific-token')
 ## See Also
 - [Python SDK - ssh-access](../python-sdk/ssh-access.md)
 - [TypeScript SDK - ssh-access](../typescript-sdk/ssh-access.md)
+- [Java SDK - ssh-access](../java-sdk/ssh-access.md)
 - [Go SDK - ssh-access](../go-sdk/ssh-access.md)

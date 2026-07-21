@@ -38,13 +38,21 @@ Initializes a new LSP server instance.
 ```python
 @intercept_errors(message_prefix="Failed to start LSP server: ")
 @with_instrumentation()
-async def start() -> None
+async def start(request_timeout: float | None = None) -> None
 ```
 
 Starts the language server.
 
 This method must be called before using any other LSP functionality.
 It initializes the language server for the specified language and project.
+
+**Arguments**:
+
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
+
 
 **Example**:
 
@@ -59,13 +67,21 @@ await lsp.start()  # Initialize the server
 ```python
 @intercept_errors(message_prefix="Failed to stop LSP server: ")
 @with_instrumentation()
-async def stop() -> None
+async def stop(request_timeout: float | None = None) -> None
 ```
 
 Stops the language server.
 
 This method should be called when the LSP server is no longer needed to
 free up system resources.
+
+**Arguments**:
+
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
+
 
 **Example**:
 
@@ -79,7 +95,7 @@ await lsp.stop()  # Clean up resources
 ```python
 @intercept_errors(message_prefix="Failed to open file: ")
 @with_instrumentation()
-async def did_open(path: str) -> None
+async def did_open(path: str, request_timeout: float | None = None) -> None
 ```
 
 Notifies the language server that a file has been opened.
@@ -92,6 +108,10 @@ will begin tracking the file's contents and providing language features.
 
 - `path` _str_ - Path to the opened file. Relative paths are resolved based on the project path
   set in the LSP server constructor.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Example**:
@@ -107,7 +127,7 @@ await lsp.did_open("workspace/project/src/index.ts")
 ```python
 @intercept_errors(message_prefix="Failed to close file: ")
 @with_instrumentation()
-async def did_close(path: str) -> None
+async def did_close(path: str, request_timeout: float | None = None) -> None
 ```
 
 Notify the language server that a file has been closed.
@@ -119,6 +139,10 @@ the language server to clean up any resources associated with that file.
 
 - `path` _str_ - Path to the closed file. Relative paths are resolved based on the project path
   set in the LSP server constructor.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Example**:
@@ -133,7 +157,9 @@ await lsp.did_close("workspace/project/src/index.ts")
 ```python
 @intercept_errors(message_prefix="Failed to get symbols from document: ")
 @with_instrumentation()
-async def document_symbols(path: str) -> list[LspSymbol]
+async def document_symbols(path: str,
+                           request_timeout: float | None = None
+                           ) -> list[LspSymbol]
 ```
 
 Gets symbol information (functions, classes, variables, etc.) from a document.
@@ -142,6 +168,10 @@ Gets symbol information (functions, classes, variables, etc.) from a document.
 
 - `path` _str_ - Path to the file to get symbols from. Relative paths are resolved based on the project path
   set in the LSP server constructor.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Returns**:
@@ -169,7 +199,9 @@ for symbol in symbols:
     "Method is deprecated. Use `sandbox_symbols` instead. This method will be removed in a future version."
 )
 @with_instrumentation()
-async def workspace_symbols(query: str) -> list[LspSymbol]
+async def workspace_symbols(query: str,
+                            request_timeout: float | None = None
+                            ) -> list[LspSymbol]
 ```
 
 Searches for symbols matching the query string across all files
@@ -178,6 +210,10 @@ in the Sandbox.
 **Arguments**:
 
 - `query` _str_ - Search query to match against symbol names.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Returns**:
@@ -189,7 +225,9 @@ in the Sandbox.
 ```python
 @intercept_errors(message_prefix="Failed to get symbols from sandbox: ")
 @with_instrumentation()
-async def sandbox_symbols(query: str) -> list[LspSymbol]
+async def sandbox_symbols(query: str,
+                          request_timeout: float | None = None
+                          ) -> list[LspSymbol]
 ```
 
 Searches for symbols matching the query string across all files
@@ -198,6 +236,10 @@ in the Sandbox.
 **Arguments**:
 
 - `query` _str_ - Search query to match against symbol names.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Returns**:
@@ -224,7 +266,8 @@ for symbol in symbols:
 @intercept_errors(message_prefix="Failed to get completions: ")
 @with_instrumentation()
 async def completions(path: str,
-                      position: LspCompletionPosition) -> CompletionList
+                      position: LspCompletionPosition,
+                      request_timeout: float | None = None) -> CompletionList
 ```
 
 Gets completion suggestions at a position in a file.
@@ -234,6 +277,10 @@ Gets completion suggestions at a position in a file.
 - `path` _str_ - Path to the file. Relative paths are resolved based on the project path
   set in the LSP server constructor.
 - `position` _LspCompletionPosition_ - Cursor position to get completions for.
+- `request_timeout` _float | None_ - Optional client-side request timeout in seconds. Client-side
+  only. It bounds how long the SDK waits for the HTTP response and does not cancel
+  the operation on the server. Positive values under 1 second are rounded up to 1
+  second; 0 disables the client-side timeout and negative values are rejected.
 
 
 **Returns**:

@@ -384,3 +384,4 @@ if (result.exitCode !== 0) {
 
 ## See Also
 - [Python SDK - pty](../python-sdk/pty.md)
+- [Java SDK - pty](../java-sdk/pty.md)

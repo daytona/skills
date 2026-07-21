@@ -61,6 +61,7 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `GET` | `/organizations/{organizationId}` | [Get organization by ID](./organizations.md#daytona/tag/organizations/GET/organizations/{organizationId}) | [organizations](./organizations.md) |
 | `DELETE` | `/organizations/{organizationId}` | [Delete organization](./organizations.md#daytona/tag/organizations/DELETE/organizations/{organizationId}) | [organizations](./organizations.md) |
 | `GET` | `/organizations/{organizationId}/usage` | [Get organization current usage overview](./organizations.md#daytona/tag/organizations/GET/organizations/{organizationId}/usage) | [organizations](./organizations.md) |
+| `GET` | `/organizations/{organizationId}/available-sandbox-classes` | [List available sandbox classes for organization](./organizations.md#daytona/tag/organizations/GET/organizations/{organizationId}/available-sandbox-classes) | [organizations](./organizations.md) |
 | `PATCH` | `/organizations/{organizationId}/quota` | [Update organization quota](./organizations.md#daytona/tag/organizations/PATCH/organizations/{organizationId}/quota) | [organizations](./organizations.md) |
 | `PATCH` | `/organizations/{organizationId}/quota/{regionId}` | [Update organization region quota](./organizations.md#daytona/tag/organizations/PATCH/organizations/{organizationId}/quota/{regionId}) | [organizations](./organizations.md) |
 | `POST` | `/organizations/{organizationId}/leave` | [Leave organization](./organizations.md#daytona/tag/organizations/POST/organizations/{organizationId}/leave) | [organizations](./organizations.md) |
@@ -71,6 +72,7 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `PUT` | `/organizations/{organizationId}/otel-config` | [Update organization OpenTelemetry configuration](./organizations.md#daytona/tag/organizations/PUT/organizations/{organizationId}/otel-config) | [organizations](./organizations.md) |
 | `DELETE` | `/organizations/{organizationId}/otel-config` | [Delete organization OpenTelemetry configuration](./organizations.md#daytona/tag/organizations/DELETE/organizations/{organizationId}/otel-config) | [organizations](./organizations.md) |
 | `POST` | `/organizations/{organizationId}/sandbox-default-limited-network-egress` | [Update sandbox default limited network egress](./organizations.md#daytona/tag/organizations/POST/organizations/{organizationId}/sandbox-default-limited-network-egress) | [organizations](./organizations.md) |
+| `POST` | `/organizations/{organizationId}/preview-warning` | [Update organization preview warning](./organizations.md#daytona/tag/organizations/POST/organizations/{organizationId}/preview-warning) | [organizations](./organizations.md) |
 | `PUT` | `/organizations/{organizationId}/experimental-config` | [Update experimental configuration](./organizations.md#daytona/tag/organizations/PUT/organizations/{organizationId}/experimental-config) | [organizations](./organizations.md) |
 | `GET` | `/organizations/{organizationId}/roles` | [List organization roles](./organizations.md#daytona/tag/organizations/GET/organizations/{organizationId}/roles) | [organizations](./organizations.md) |
 | `POST` | `/organizations/{organizationId}/roles` | [Create organization role](./organizations.md#daytona/tag/organizations/POST/organizations/{organizationId}/roles) | [organizations](./organizations.md) |
@@ -92,6 +94,7 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `POST` | `/regions/{id}/regenerate-ssh-gateway-api-key` | [Regenerate SSH gateway API key for a region](./organizations.md#daytona/tag/organizations/POST/regions/{id}/regenerate-ssh-gateway-api-key) | [organizations](./organizations.md) |
 | `POST` | `/regions/{id}/regenerate-snapshot-manager-credentials` | [Regenerate snapshot manager credentials for a region](./organizations.md#daytona/tag/organizations/POST/regions/{id}/regenerate-snapshot-manager-credentials) | [organizations](./organizations.md) |
 | `GET` | `/preview/{sandboxId}/public` | [Check if sandbox is public](./preview.md#daytona/tag/preview/GET/preview/{sandboxId}/public) | [preview](./preview.md) |
+| `GET` | `/preview/{sandboxId}/preview-warning` | [Check if the preview warning page is enabled for the sandbox](./preview.md#daytona/tag/preview/GET/preview/{sandboxId}/preview-warning) | [preview](./preview.md) |
 | `GET` | `/preview/{sandboxId}/validate/{authToken}` | [Check if sandbox auth token is valid](./preview.md#daytona/tag/preview/GET/preview/{sandboxId}/validate/{authToken}) | [preview](./preview.md) |
 | `GET` | `/preview/{sandboxId}/access` | [Check if user has access to the sandbox](./preview.md#daytona/tag/preview/GET/preview/{sandboxId}/access) | [preview](./preview.md) |
 | `GET` | `/preview/{signedPreviewToken}/{port}/sandbox-id` | [Get sandbox ID from signed preview URL token](./preview.md#daytona/tag/preview/GET/preview/{signedPreviewToken}/{port}/sandbox-id) | [preview](./preview.md) |
@@ -129,9 +132,12 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `POST` | `/sandbox/{sandboxIdOrName}/public/{isPublic}` | [Update public status](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/public/{isPublic}) | [sandbox](./sandbox.md) |
 | `POST` | `/sandbox/{sandboxId}/last-activity` | [Update sandbox last activity](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxId}/last-activity) | [sandbox](./sandbox.md) |
 | `POST` | `/sandbox/{sandboxIdOrName}/autostop/{interval}` | [Set sandbox auto-stop interval](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/autostop/{interval}) | [sandbox](./sandbox.md) |
+| `POST` | `/sandbox/{sandboxIdOrName}/autopause/{interval}` | [Set sandbox auto-pause interval](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/autopause/{interval}) | [sandbox](./sandbox.md) |
+| `POST` | `/sandbox/{sandboxIdOrName}/ttl/{ttlMinutes}` | [Set sandbox TTL](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/ttl/{ttlMinutes}) | [sandbox](./sandbox.md) |
 | `POST` | `/sandbox/{sandboxIdOrName}/autoarchive/{interval}` | [Set sandbox auto-archive interval](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/autoarchive/{interval}) | [sandbox](./sandbox.md) |
 | `POST` | `/sandbox/{sandboxIdOrName}/autodelete/{interval}` | [Set sandbox auto-delete interval](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/autodelete/{interval}) | [sandbox](./sandbox.md) |
 | `POST` | `/sandbox/{sandboxIdOrName}/network-settings` | [Update sandbox network settings](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/network-settings) | [sandbox](./sandbox.md) |
+| `PUT` | `/sandbox/{sandboxIdOrName}/secrets` | [Update sandbox secrets](./sandbox.md#daytona/tag/sandbox/PUT/sandbox/{sandboxIdOrName}/secrets) | [sandbox](./sandbox.md) |
 | `POST` | `/sandbox/{sandboxIdOrName}/archive` | [Archive sandbox](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/archive) | [sandbox](./sandbox.md) |
 | `GET` | `/sandbox/{sandboxIdOrName}/ports/{port}/preview-url` | [Get preview URL for a sandbox port](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxIdOrName}/ports/{port}/preview-url) | [sandbox](./sandbox.md) |
 | `GET` | `/sandbox/{sandboxIdOrName}/ports/{port}/signed-preview-url` | [Get signed preview URL for a sandbox port](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxIdOrName}/ports/{port}/signed-preview-url) | [sandbox](./sandbox.md) |
@@ -151,6 +157,7 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `GET` | `/sandbox/{sandboxId}/telemetry/metrics` | [Get sandbox metrics](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxId}/telemetry/metrics) | [sandbox](./sandbox.md) |
 | `GET` | `/secret` | [List secrets](./secret.md#daytona/tag/secret/GET/secret) | [secret](./secret.md) |
 | `POST` | `/secret` | [Create secret](./secret.md#daytona/tag/secret/POST/secret) | [secret](./secret.md) |
+| `GET` | `/secret/paginated` | [List secrets with pagination](./secret.md#daytona/tag/secret/GET/secret/paginated) | [secret](./secret.md) |
 | `GET` | `/secret/{secretId}` | [Get secret](./secret.md#daytona/tag/secret/GET/secret/{secretId}) | [secret](./secret.md) |
 | `PATCH` | `/secret/{secretId}` | [Update secret](./secret.md#daytona/tag/secret/PATCH/secret/{secretId}) | [secret](./secret.md) |
 | `DELETE` | `/secret/{secretId}` | [Delete secret](./secret.md#daytona/tag/secret/DELETE/secret/{secretId}) | [secret](./secret.md) |
@@ -162,74 +169,6 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `GET` | `/snapshots/{id}/build-logs-url` | [Get snapshot build logs URL](./snapshots.md#daytona/tag/snapshots/GET/snapshots/{id}/build-logs-url) | [snapshots](./snapshots.md) |
 | `POST` | `/snapshots/{id}/activate` | [Activate a snapshot](./snapshots.md#daytona/tag/snapshots/POST/snapshots/{id}/activate) | [snapshots](./snapshots.md) |
 | `POST` | `/snapshots/{id}/deactivate` | [Deactivate a snapshot](./snapshots.md#daytona/tag/snapshots/POST/snapshots/{id}/deactivate) | [snapshots](./snapshots.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/project-dir` | [[DEPRECATED] Get sandbox project dir](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/project-dir) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/user-home-dir` | [[DEPRECATED] Get sandbox user home dir](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/user-home-dir) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/work-dir` | [[DEPRECATED] Get sandbox work-dir](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/work-dir) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/files` | [[DEPRECATED] List files](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/files) | [toolbox](./toolbox.md) |
-| `DELETE` | `/toolbox/{sandboxId}/toolbox/files` | [[DEPRECATED] Delete file](./toolbox.md#daytona/tag/toolbox/DELETE/toolbox/{sandboxId}/toolbox/files) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/files/download` | [[DEPRECATED] Download file](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/files/download) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/files/bulk-download` | [[DEPRECATED] Download multiple files](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/files/bulk-download) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/files/find` | [[DEPRECATED] Search for text/pattern in files](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/files/find) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/files/folder` | [[DEPRECATED] Create folder](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/files/folder) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/files/info` | [[DEPRECATED] Get file info](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/files/info) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/files/move` | [[DEPRECATED] Move file](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/files/move) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/files/permissions` | [[DEPRECATED] Set file permissions](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/files/permissions) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/files/replace` | [[DEPRECATED] Replace in files](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/files/replace) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/files/search` | [[DEPRECATED] Search files](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/files/search) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/files/upload` | [[DEPRECATED] Upload file](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/files/upload) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/files/bulk-upload` | [[DEPRECATED] Upload multiple files](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/files/bulk-upload) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/git/add` | [[DEPRECATED] Add files](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/git/add) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/git/branches` | [[DEPRECATED] Get branch list](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/git/branches) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/git/branches` | [[DEPRECATED] Create branch](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/git/branches) | [toolbox](./toolbox.md) |
-| `DELETE` | `/toolbox/{sandboxId}/toolbox/git/branches` | [[DEPRECATED] Delete branch](./toolbox.md#daytona/tag/toolbox/DELETE/toolbox/{sandboxId}/toolbox/git/branches) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/git/clone` | [[DEPRECATED] Clone repository](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/git/clone) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/git/commit` | [[DEPRECATED] Commit changes](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/git/commit) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/git/history` | [[DEPRECATED] Get commit history](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/git/history) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/git/pull` | [[DEPRECATED] Pull changes](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/git/pull) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/git/push` | [[DEPRECATED] Push changes](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/git/push) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/git/checkout` | [[DEPRECATED] Checkout branch](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/git/checkout) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/git/status` | [[DEPRECATED] Get git status](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/git/status) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/process/execute` | [[DEPRECATED] Execute command](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/process/execute) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/process/session` | [[DEPRECATED] List sessions](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/process/session) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/process/session` | [[DEPRECATED] Create session](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/process/session) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/process/session/{sessionId}` | [[DEPRECATED] Get session](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/process/session/{sessionId}) | [toolbox](./toolbox.md) |
-| `DELETE` | `/toolbox/{sandboxId}/toolbox/process/session/{sessionId}` | [[DEPRECATED] Delete session](./toolbox.md#daytona/tag/toolbox/DELETE/toolbox/{sandboxId}/toolbox/process/session/{sessionId}) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/process/session/{sessionId}/exec` | [[DEPRECATED] Execute command in session](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/process/session/{sessionId}/exec) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/process/session/{sessionId}/command/{commandId}` | [[DEPRECATED] Get session command](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/process/session/{sessionId}/command/{commandId}) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/process/session/{sessionId}/command/{commandId}/logs` | [[DEPRECATED] Get command logs](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/process/session/{sessionId}/command/{commandId}/logs) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/process/pty` | [[DEPRECATED] List PTY sessions](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/process/pty) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/process/pty` | [[DEPRECATED] Create PTY session](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/process/pty) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/process/pty/{sessionId}` | [[DEPRECATED] Get PTY session](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/process/pty/{sessionId}) | [toolbox](./toolbox.md) |
-| `DELETE` | `/toolbox/{sandboxId}/toolbox/process/pty/{sessionId}` | [[DEPRECATED] Delete PTY session](./toolbox.md#daytona/tag/toolbox/DELETE/toolbox/{sandboxId}/toolbox/process/pty/{sessionId}) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/process/pty/{sessionId}/resize` | [[DEPRECATED] Resize PTY session](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/process/pty/{sessionId}/resize) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/lsp/completions` | [[DEPRECATED] Get Lsp Completions](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/lsp/completions) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/lsp/did-close` | [[DEPRECATED] Call Lsp DidClose](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/lsp/did-close) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/lsp/did-open` | [[DEPRECATED] Call Lsp DidOpen](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/lsp/did-open) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/lsp/document-symbols` | [[DEPRECATED] Call Lsp DocumentSymbols](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/lsp/document-symbols) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/lsp/start` | [[DEPRECATED] Start Lsp server](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/lsp/start) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/lsp/stop` | [[DEPRECATED] Stop Lsp server](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/lsp/stop) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/lsp/workspace-symbols` | [[DEPRECATED] Call Lsp WorkspaceSymbols](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/lsp/workspace-symbols) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/computeruse/start` | [[DEPRECATED] Start computer use processes](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/computeruse/start) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/computeruse/stop` | [[DEPRECATED] Stop computer use processes](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/computeruse/stop) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/computeruse/status` | [[DEPRECATED] Get computer use status](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/computeruse/status) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/computeruse/process/{processName}/status` | [[DEPRECATED] Get process status](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/computeruse/process/{processName}/status) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/computeruse/process/{processName}/restart` | [[DEPRECATED] Restart process](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/computeruse/process/{processName}/restart) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/computeruse/process/{processName}/logs` | [[DEPRECATED] Get process logs](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/computeruse/process/{processName}/logs) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/computeruse/process/{processName}/errors` | [[DEPRECATED] Get process errors](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/computeruse/process/{processName}/errors) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/computeruse/mouse/position` | [[DEPRECATED] Get mouse position](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/computeruse/mouse/position) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/computeruse/mouse/move` | [[DEPRECATED] Move mouse](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/computeruse/mouse/move) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/computeruse/mouse/click` | [[DEPRECATED] Click mouse](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/computeruse/mouse/click) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/computeruse/mouse/drag` | [[DEPRECATED] Drag mouse](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/computeruse/mouse/drag) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/computeruse/mouse/scroll` | [[DEPRECATED] Scroll mouse](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/computeruse/mouse/scroll) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/computeruse/keyboard/type` | [[DEPRECATED] Type text](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/computeruse/keyboard/type) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/computeruse/keyboard/key` | [[DEPRECATED] Press key](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/computeruse/keyboard/key) | [toolbox](./toolbox.md) |
-| `POST` | `/toolbox/{sandboxId}/toolbox/computeruse/keyboard/hotkey` | [[DEPRECATED] Press hotkey](./toolbox.md#daytona/tag/toolbox/POST/toolbox/{sandboxId}/toolbox/computeruse/keyboard/hotkey) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/computeruse/screenshot` | [[DEPRECATED] Take screenshot](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/computeruse/screenshot) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/computeruse/screenshot/region` | [[DEPRECATED] Take region screenshot](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/computeruse/screenshot/region) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/computeruse/screenshot/compressed` | [[DEPRECATED] Take compressed screenshot](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/computeruse/screenshot/compressed) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/computeruse/screenshot/region/compressed` | [[DEPRECATED] Take compressed region screenshot](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/computeruse/screenshot/region/compressed) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/computeruse/display/info` | [[DEPRECATED] Get display info](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/computeruse/display/info) | [toolbox](./toolbox.md) |
-| `GET` | `/toolbox/{sandboxId}/toolbox/computeruse/display/windows` | [[DEPRECATED] Get windows](./toolbox.md#daytona/tag/toolbox/GET/toolbox/{sandboxId}/toolbox/computeruse/display/windows) | [toolbox](./toolbox.md) |
 | `GET` | `/users/me` | [Get authenticated user](./users.md#daytona/tag/users/GET/users/me) | [users](./users.md) |
 | `GET` | `/users/account-providers` | [Get available account providers](./users.md#daytona/tag/users/GET/users/account-providers) | [users](./users.md) |
 | `POST` | `/users/linked-accounts` | [Link account](./users.md#daytona/tag/users/POST/users/linked-accounts) | [users](./users.md) |
@@ -254,14 +193,13 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 - [docker-registry](./docker-registry.md) (6 endpoints) {#daytona/tag/docker-registry}
 - [jobs](./jobs.md) (4 endpoints) {#daytona/tag/jobs}
 - [object-storage](./object-storage.md) (1 endpoints) {#daytona/tag/object-storage}
-- [organizations](./organizations.md) (40 endpoints) {#daytona/tag/organizations}
-- [preview](./preview.md) (4 endpoints) {#daytona/tag/preview}
+- [organizations](./organizations.md) (42 endpoints) {#daytona/tag/organizations}
+- [preview](./preview.md) (5 endpoints) {#daytona/tag/preview}
 - [regions](./regions.md) (1 endpoints) {#daytona/tag/regions}
 - [runners](./runners.md) (11 endpoints) {#daytona/tag/runners}
-- [sandbox](./sandbox.md) (42 endpoints) {#daytona/tag/sandbox}
-- [secret](./secret.md) (5 endpoints) {#daytona/tag/secret}
+- [sandbox](./sandbox.md) (45 endpoints) {#daytona/tag/sandbox}
+- [secret](./secret.md) (6 endpoints) {#daytona/tag/secret}
 - [snapshots](./snapshots.md) (8 endpoints) {#daytona/tag/snapshots}
-- [toolbox](./toolbox.md) (68 endpoints) {#daytona/tag/toolbox}
 - [users](./users.md) (5 endpoints) {#daytona/tag/users}
 - [volumes](./volumes.md) (5 endpoints) {#daytona/tag/volumes}
 - [webhooks](./webhooks.md) (4 endpoints) {#daytona/tag/webhooks}
@@ -374,6 +312,7 @@ The Toolbox API runs inside sandboxes and provides file system, git, process, an
 | `POST` | `/process/session/{sessionId}/command/{commandId}/input` | [Send input to command](./toolbox-process.md#daytona-toolbox/tag/process/POST/process/session/{sessionId}/command/{commandId}/input) | [process](./toolbox-process.md) |
 | `GET` | `/process/session/{sessionId}/command/{commandId}/logs` | [Get session command logs](./toolbox-process.md#daytona-toolbox/tag/process/GET/process/session/{sessionId}/command/{commandId}/logs) | [process](./toolbox-process.md) |
 | `POST` | `/process/session/{sessionId}/exec` | [Execute command in session](./toolbox-process.md#daytona-toolbox/tag/process/POST/process/session/{sessionId}/exec) | [process](./toolbox-process.md) |
+| `POST` | `/env` | [Update process environment](./toolbox-server.md#daytona-toolbox/tag/server/POST/env) | [server](./toolbox-server.md) |
 | `POST` | `/init` | [Initialize toolbox server](./toolbox-server.md#daytona-toolbox/tag/server/POST/init) | [server](./toolbox-server.md) |
 | `GET` | `/system/metrics` | [Get sandbox resource metrics](./toolbox-system.md#daytona-toolbox/tag/system/GET/system/metrics) | [system](./toolbox-system.md) |
 
@@ -387,5 +326,5 @@ The Toolbox API runs inside sandboxes and provides file system, git, process, an
 - [lsp](./toolbox-lsp.md) (7 endpoints) {#daytona-toolbox/tag/lsp}
 - [port](./toolbox-port.md) (2 endpoints) {#daytona-toolbox/tag/port}
 - [process](./toolbox-process.md) (18 endpoints) {#daytona-toolbox/tag/process}
-- [server](./toolbox-server.md) (1 endpoints) {#daytona-toolbox/tag/server}
+- [server](./toolbox-server.md) (2 endpoints) {#daytona-toolbox/tag/server}
 - [system](./toolbox-system.md) (1 endpoints) {#daytona-toolbox/tag/system}
