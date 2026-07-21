@@ -1,6 +1,6 @@
 # Daytona Skill
 
-An agent skill for creating and running sandboxes on the Daytona platform. Includes references and practical patterns for the Daytona API, CLI, Python, TypeScript, Go, and Ruby SDKs.
+An agent skill for creating and running sandboxes on the Daytona platform. Includes references and practical patterns for the Daytona API, CLI, Python, TypeScript, Java, Go, and Ruby SDKs.
 
 ## Installation
 
@@ -53,6 +53,7 @@ skills/daytona/
     │   ├── sync/           # Sync Python SDK reference documentation
     │   └── async/          # Async Python SDK reference documentation
     ├── typescript-sdk/     # TypeScript SDK reference documentation
+    ├── java-sdk/           # Java SDK reference documentation
     ├── go-sdk/             # Go SDK reference documentation
     ├── ruby-sdk/           # Ruby SDK reference documentation
     └── cli.md              # CLI reference documentation
