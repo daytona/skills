@@ -552,8 +552,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/daytonaio/sdk-go/daytona"
-	"github.com/daytonaio/sdk-go/types"
+	"github.com/daytona/clients/sdk-go/pkg/daytona"
+	"github.com/daytona/clients/sdk-go/pkg/types"
 )
 
 func main() {

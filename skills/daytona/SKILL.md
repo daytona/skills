@@ -15,7 +15,7 @@ Sandboxes are built from OCI-compliant images or snapshots. Any language or tool
 
 Before writing any Daytona code, verify setup:
 
-1. **SDK installed?** Check that the Daytona SDK is installed for the user's language (e.g. `pip show daytona` or check `package.json` for `@daytonaio/sdk`). If not, install it.
+1. **SDK installed?** Check that the Daytona SDK is installed for the user's language (e.g. `pip show daytona` or check `package.json` for `@daytona/sdk`). If not, install it.
 2. **API key set?** Check `DAYTONA_API_KEY` in the shell environment or in environment files. If not set, tell the user they need an API key and point them to [Daytona Dashboard > API Keys](https://app.daytona.io/dashboard/keys) to create one.
 
 ## SDK Essentials — Python
@@ -111,7 +111,7 @@ Wrap Daytona calls with `DaytonaError` for error handling. For async, use `Async
 
 ## SDK Essentials — TypeScript
 
-The TypeScript SDK (`@daytonaio/sdk`) mirrors the Python API. Key differences: `executeCommand` instead of `exec`, `codeRun` instead of `code_run`, `uploadFile`/`downloadFile`/`listFiles` for file ops, `DaytonaError` for error handling. Install with `npm install @daytonaio/sdk`.
+The TypeScript SDK (`@daytona/sdk`) mirrors the Python API. Key differences: `executeCommand` instead of `exec`, `codeRun` instead of `code_run`, `uploadFile`/`downloadFile`/`listFiles` for file ops, `DaytonaError` for error handling. Install with `npm install @daytona/sdk`.
 
 For full TypeScript SDK reference and examples, see [typescript-sdk/README.md](./references/typescript-sdk/README.md).
 
@@ -146,7 +146,7 @@ image = Image.base("node:20-slim")
 ```
 
 ```typescript
-import { Image } from '@daytonaio/sdk'
+import { Image } from '@daytona/sdk'
 
 const image = Image.debianSlim('3.12').pipInstall(['pandas', 'numpy', 'scikit-learn'])
 
