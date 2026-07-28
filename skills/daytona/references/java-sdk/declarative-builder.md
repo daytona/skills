@@ -21,6 +21,10 @@ Create a declarative image by defining the dependencies for the sandbox.
 
 Declarative images are cached for 24 hours, and are automatically reused when running the same script. Thus, subsequent runs on the same runner will be almost instantaneous.
 
+**Container:**
+
+Create a container sandbox from a declarative image.
+
 ```java
 // Define a declarative image with python packages
 Image declarativeImage = Image.debianSlim("3.12")
@@ -33,9 +37,34 @@ params.setImage(declarativeImage);
 Sandbox sandbox = daytona.create(params, 0L, System.out::println);
 ```
 
+**GPU:**
+
+Create a GPU sandbox from a declarative image.
+
+```java
+// Define a declarative image with python packages
+Image declarativeImage = Image.debianSlim("3.12")
+    .pipInstall("requests", "pytest")
+    .workdir("/home/daytona");
+
+// Create a GPU sandbox with the declarative image and stream the build logs
+CreateSandboxFromImageParams params = new CreateSandboxFromImageParams();
+params.setImage(declarativeImage);
+params.setAutoDeleteInterval(0);
+Resources resources = new Resources();
+resources.setGpu(1);
+params.setResources(resources);
+Sandbox sandbox = daytona.create(params, 0L, System.out::println);
+```
+
 ## Create pre-built snapshots
 
 Create a pre-built snapshot by building a declarative image and registering it as a [snapshot](./snapshots.md).
+
+**Container:**
+
+1. Create a container snapshot from a declarative image
+2. Create a sandbox from that snapshot
 
 ```java
 // Define the declarative image for the snapshot
@@ -49,6 +78,52 @@ Snapshot snapshot = daytona.snapshot().create("my-snapshot", image, System.out::
 // Create a new sandbox from the pre-built snapshot
 CreateSandboxFromSnapshotParams params = new CreateSandboxFromSnapshotParams();
 params.setSnapshot("my-snapshot");
+Sandbox sandbox = daytona.create(params);
+```
+
+**Linux VM:**
+
+1. Create a Linux VM snapshot from a declarative image
+2. Create a sandbox from that snapshot
+
+```java
+// Define the declarative image for the VM snapshot
+Image image = Image.debianSlim("3.12")
+    .pipInstall("numpy", "pandas")
+    .workdir("/home/daytona");
+
+// Create and register the VM snapshot, streaming the build logs
+Snapshot snapshot = daytona.snapshot().create(
+    "my-vm-snapshot", image, null, SandboxClass.LINUX_VM, System.out::println);
+
+// Create a new VM sandbox from the pre-built snapshot
+CreateSandboxFromSnapshotParams params = new CreateSandboxFromSnapshotParams();
+params.setSnapshot("my-vm-snapshot");
+Sandbox sandbox = daytona.create(params);
+```
+
+**GPU:**
+
+1. Create a GPU snapshot from a declarative image
+2. Create a sandbox from that snapshot
+
+```java
+// Define the declarative image for the GPU snapshot
+Image image = Image.debianSlim("3.12")
+    .pipInstall("numpy", "pandas")
+    .workdir("/home/daytona");
+
+Resources resources = new Resources();
+resources.setGpu(1);
+
+// Create and register the GPU snapshot, streaming the build logs
+Snapshot snapshot = daytona.snapshot().create(
+    "my-gpu-snapshot", image, resources, System.out::println);
+
+// Create a new GPU sandbox from the pre-built snapshot
+CreateSandboxFromSnapshotParams params = new CreateSandboxFromSnapshotParams();
+params.setSnapshot("my-gpu-snapshot");
+params.setAutoDeleteInterval(0);
 Sandbox sandbox = daytona.create(params);
 ```
 

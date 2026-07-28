@@ -61,6 +61,7 @@ Configuration for the ObjectStorage class.
 - `accessKeyId` _string_ - The access key ID for the object storage service.
 - `bucketName?` _string_ - The name of the bucket to use.
 - `endpointUrl` _string_ - The endpoint URL for the object storage service.
+- `region` _string_ - The region of the storage backend.
 - `secretAccessKey` _string_ - The secret access key for the object storage service.
 - `sessionToken?` _string_ - The session token for the object storage service. Used for temporary credentials.
 

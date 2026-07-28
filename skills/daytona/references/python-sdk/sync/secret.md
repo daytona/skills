@@ -33,7 +33,6 @@ to the Secret's allowed ``hosts``.
 - `created_at` _datetime_ - Date and time when the Secret was created.
 - `updated_at` _datetime_ - Date and time when the Secret was last updated.
 
-
 ## SecretService
 
 ```python

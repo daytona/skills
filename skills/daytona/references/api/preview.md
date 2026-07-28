@@ -1,5 +1,15 @@
 # Preview API
 
+
+## Contents
+
+- GET `/preview/{sandboxId}/public`/public}
+- GET `/preview/{sandboxId}/preview-warning`/preview-warning}
+- GET `/preview/{sandboxId}/validate/{authToken}`/validate/{authToken}}
+- GET `/preview/{sandboxId}/signing-key`/signing-key}
+- GET `/preview/{sandboxId}/access`/access}
+- GET `/preview/{signedPreviewToken}/{port}/sandbox-id`/{port}/sandbox-id}
+
 ## GET `/preview/{sandboxId}/public` {#daytona/tag/preview/GET/preview/{sandboxId}/public}
 
 **Check if sandbox is public**
@@ -56,6 +66,24 @@
 
 ---
 
+## GET `/preview/{sandboxId}/signing-key` {#daytona/tag/preview/GET/preview/{sandboxId}/signing-key}
+
+**Get the signing key for a sandbox**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `sandboxId` | path | string | Yes | ID of the sandbox |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Signing key of the sandbox | string |
+
+---
+
 ## GET `/preview/{sandboxId}/access` {#daytona/tag/preview/GET/preview/{sandboxId}/access}
 
 **Check if user has access to the sandbox**
@@ -71,6 +99,7 @@
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | User access status to the sandbox | boolean |
+| 404 | Sandbox not found. For members of the owning organization whose sandbox was deleted, the body carries code "SANDBOX_DESTROYED". |  |
 
 ---
 

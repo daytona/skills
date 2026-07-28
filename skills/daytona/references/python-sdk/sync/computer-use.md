@@ -257,7 +257,6 @@ errors = sandbox.computer_use.get_process_errors("x11vnc")
 print("X11VNC errors:", errors)
 ```
 
-
 ## Mouse
 
 ```python

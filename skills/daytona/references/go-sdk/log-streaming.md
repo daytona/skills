@@ -7,29 +7,13 @@
 
 
 
-Log streaming allows you to access and process logs as they are being produced, while the process is still running. When executing long-running processes in a sandbox, you often want to access and process their logs in **real-time**.
+Log streaming lets you access and process session command logs in real time while a process is still running, or retrieve a snapshot of all logs produced so far. Use streaming for long-running or background commands. Use snapshots when you only need the current output.
 
-Real-time streaming is especially useful for **debugging**, **monitoring**, or integrating with **observability tools**.
-
-- [**Log streaming**](#stream-logs-with-callbacks): stream logs as they are being produced, while the process is still running.
-- [**Fetching log snapshot**](#retrieve-all-existing-logs): retrieve all logs up to a certain point.
-
-This guide covers how to use log streaming with callbacks and fetching log snapshots in both asynchronous and synchronous modes.
-
-For entrypoint log streaming, see [Process & Code Execution](./process-code-execution.md#entrypoint-session). To stream logs while sending input to a running command, see [Execute interactive commands](./process-code-execution.md#execute-interactive-commands).
+For entrypoint log streaming, see [process & code execution](./process-code-execution.md#entrypoint-session). To stream logs while sending input to a running command, see [execute interactive commands](./process-code-execution.md#execute-interactive-commands).
 
 ## Stream logs with callbacks
 
-If your sandboxed process is part of a larger system and is expected to run for an extended period (or indefinitely),
-you can process logs asynchronously **in the background**, while the rest of your system continues executing.
-
-This is ideal for:
-
-- Continuous monitoring
-- Debugging long-running jobs
-- Live log forwarding or visualizations
-> **Tip: Python callbacks**
-> When streaming with the Python SDK, avoid blocking operations inside stdout/stderr callbacks. Blocking synchronous callbacks can cause WebSocket disconnections. Use async callbacks where possible.
+Stream logs in the background while the rest of your system continues executing. Use this for continuous monitoring, debugging long-running jobs, or forwarding logs to other systems.
 
 ```go
 package main
@@ -53,7 +37,7 @@ func main() {
 
 	// Execute async command that outputs to stdout and stderr
 	cmd := `for i in 1 2 3 4 5; do echo "Step $i"; echo "Error $i" >&2; sleep 1; done`
-	cmdResult, _ := sandbox.Process.ExecuteSessionCommand(ctx, sessionID, cmd, true)
+	cmdResult, _ := sandbox.Process.ExecuteSessionCommand(ctx, sessionID, cmd, true, false)
 	cmdID, _ := cmdResult["id"].(string)
 
 	// Create channels for stdout and stderr
@@ -96,8 +80,7 @@ func main() {
 
 ## Retrieve all existing logs
 
-If the command has a predictable duration, or if you don't need to run it in the background but want to
-periodically check all existing logs, you can use the following example to get the logs up to the current point in time.
+Retrieve all logs produced up to the current point in time. Use this when the command has a predictable duration, or when you prefer to poll for output instead of streaming.
 
 ```go
 package main
@@ -121,7 +104,7 @@ func main() {
 
 	// Execute a blocking command and wait for the result
 	cmd1, _ := sandbox.Process.ExecuteSessionCommand(ctx, sessionID,
-		`echo "Hello from stdout" && echo "Hello from stderr" >&2`, false)
+		`echo "Hello from stdout" && echo "Hello from stderr" >&2`, false, false)
 	if stdout, ok := cmd1["stdout"].(string); ok {
 		fmt.Printf("[STDOUT]: %s\n", stdout)
 	}
@@ -131,7 +114,7 @@ func main() {
 
 	// Or execute command in the background and get the logs later
 	cmd := `counter=1; while (( counter <= 5 )); do echo "Count: $counter"; ((counter++)); sleep 1; done`
-	cmdResult, _ := sandbox.Process.ExecuteSessionCommand(ctx, sessionID, cmd, true)
+	cmdResult, _ := sandbox.Process.ExecuteSessionCommand(ctx, sessionID, cmd, true, false)
 	cmdID, _ := cmdResult["id"].(string)
 
 	time.Sleep(5 * time.Second)

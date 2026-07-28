@@ -291,6 +291,7 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(s \*Sandbox\) Delete\(ctx context.Context\) error](https://www.daytona.io/docs/en<#Sandbox.Delete>)
   - [func \(s \*Sandbox\) DeleteAndWait\(ctx context.Context, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.DeleteAndWait>)
   - [func \(s \*Sandbox\) DeleteWithTimeout\(ctx context.Context, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.DeleteWithTimeout>)
+  - [func \(s \*Sandbox\) DownloadURL\(ctx context.Context, path string, ttlSeconds \*int\) \(string, error\)](https://www.daytona.io/docs/en<#Sandbox.DownloadURL>)
   - [func \(s \*Sandbox\) ExperimentalCreateSnapshot\(ctx context.Context, name string\) error](https://www.daytona.io/docs/en<#Sandbox.ExperimentalCreateSnapshot>)
   - [func \(s \*Sandbox\) ExperimentalCreateSnapshotWithTimeout\(ctx context.Context, name string, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.ExperimentalCreateSnapshotWithTimeout>)
   - [func \(s \*Sandbox\) ExperimentalFork\(ctx context.Context, name \*string\) \(\*Sandbox, error\)](https://www.daytona.io/docs/en<#Sandbox.ExperimentalFork>)
@@ -307,6 +308,7 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(s \*Sandbox\) RefreshData\(ctx context.Context\) error](https://www.daytona.io/docs/en<#Sandbox.RefreshData>)
   - [func \(s \*Sandbox\) Resize\(ctx context.Context, resources \*types.Resources\) error](https://www.daytona.io/docs/en<#Sandbox.Resize>)
   - [func \(s \*Sandbox\) ResizeWithTimeout\(ctx context.Context, resources \*types.Resources, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.ResizeWithTimeout>)
+  - [func \(s \*Sandbox\) RotateSigningKey\(ctx context.Context\) error](https://www.daytona.io/docs/en<#Sandbox.RotateSigningKey>)
   - [func \(s \*Sandbox\) SetAutoArchiveInterval\(ctx context.Context, intervalMinutes \*int\) error](https://www.daytona.io/docs/en<#Sandbox.SetAutoArchiveInterval>)
   - [func \(s \*Sandbox\) SetAutoDeleteInterval\(ctx context.Context, intervalMinutes \*int\) error](https://www.daytona.io/docs/en<#Sandbox.SetAutoDeleteInterval>)
   - [func \(s \*Sandbox\) SetLabels\(ctx context.Context, labels map\[string\]string\) error](<#Sandbox.SetLabels>)
@@ -317,6 +319,7 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(s \*Sandbox\) UpdateEnv\(ctx context.Context, env map\[string\]string, unset \[\]string\) error](<#Sandbox.UpdateEnv>)
   - [func \(s \*Sandbox\) UpdateNetworkSettings\(ctx context.Context, settings apiclient.UpdateSandboxNetworkSettings\) error](https://www.daytona.io/docs/en<#Sandbox.UpdateNetworkSettings>)
   - [func \(s \*Sandbox\) UpdateSecrets\(ctx context.Context, secrets map\[string\]string\) error](<#Sandbox.UpdateSecrets>)
+  - [func \(s \*Sandbox\) UploadURL\(ctx context.Context, path string, ttlSeconds \*int\) \(string, error\)](https://www.daytona.io/docs/en<#Sandbox.UploadURL>)
   - [func \(s \*Sandbox\) WaitForResize\(ctx context.Context, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.WaitForResize>)
   - [func \(s \*Sandbox\) WaitForStart\(ctx context.Context, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.WaitForStart>)
   - [func \(s \*Sandbox\) WaitForStop\(ctx context.Context, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.WaitForStop>)
@@ -661,15 +664,14 @@ func (c *Client) Get(ctx context.Context, sandboxIDOrName string) (*Sandbox, err
 
 Get retrieves an existing sandbox by its ID or name.
 
-The sandboxIDOrName parameter accepts either the sandbox's unique ID or its human\-readable name. If a sandbox with the given identifier is not found, a [errors.DaytonaNotFoundError](https://www.daytona.io/docs/en<https://pkg.go.dev/errors#DaytonaNotFoundError>) is returned.
+The sandboxIDOrName parameter accepts either the sandbox's unique ID or its human\-readable name. If a sandbox with the given identifier is not found, a [\\\*errors.DaytonaError](https://www.daytona.io/docs/en<https://pkg.go.dev/errors#DaytonaError>) matching [errors.ErrNotFound](https://www.daytona.io/docs/en<https://pkg.go.dev/errors#ErrNotFound>) is returned.
 
 Example:
 
 ```
 sandbox, err := client.Get(ctx, "my-sandbox")
 if err != nil {
-    var notFound *errors.DaytonaNotFoundError
-    if errors.As(err, &notFound) {
+    if errors.Is(err, sdkerrors.ErrNotFound) {
         log.Println("Sandbox not found")
     }
     return err
@@ -2735,6 +2737,10 @@ type ListSandboxesQuery struct {
     LastActivityAfter *time.Time
     // Include sandboxes with last activity before this timestamp
     LastActivityBefore *time.Time
+    // Include sandboxes scheduled for auto destroy after this timestamp
+    AutoDestroyAtAfter *time.Time
+    // Include sandboxes scheduled for auto destroy before this timestamp
+    AutoDestroyAtBefore *time.Time
     // Sort by field
     Sort *apiclient.SandboxListSortField
     // Sort direction
@@ -4110,6 +4116,7 @@ type PushAccessCredentials struct {
     SessionToken   string `json:"sessionToken"`
     Bucket         string `json:"bucket"`
     OrganizationID string `json:"organizationId"`
+    Region         string `json:"region"`
 }
 ```
 
@@ -4512,6 +4519,20 @@ Example:
 err := sandbox.DeleteWithTimeout(ctx, 2*time.Minute)
 ```
 
+<a name="Sandbox.DownloadURL"></a>
+### func \(\*Sandbox\) DownloadURL
+
+```go
+func (s *Sandbox) DownloadURL(ctx context.Context, path string, ttlSeconds *int) (string, error)
+```
+
+DownloadURL creates a pre\-signed URL for downloading a file from the sandbox. The URL works with any HTTP client without auth headers and stays valid across sandbox restarts \(downloads succeed only while the sandbox is running\). The signing key is cached locally for up to 15 seconds; if the key was rotated from another client, URLs may be rejected until the cache refreshes.
+
+```
+url, err := sandbox.DownloadURL(ctx, "/home/user/report.pdf", nil)
+// curl "$url" -o report.pdf
+```
+
 <a name="Sandbox.ExperimentalCreateSnapshot"></a>
 ### func \(\*Sandbox\) ExperimentalCreateSnapshot
 
@@ -4828,6 +4849,15 @@ Example:
 err := sandbox.ResizeWithTimeout(ctx, &types.Resources{CPU: 4, Memory: 8}, 2*time.Minute)
 ```
 
+<a name="Sandbox.RotateSigningKey"></a>
+### func \(\*Sandbox\) RotateSigningKey
+
+```go
+func (s *Sandbox) RotateSigningKey(ctx context.Context) error
+```
+
+RotateSigningKey rotates the sandbox signing key and invalidates previously signed URLs.
+
 <a name="Sandbox.SetAutoArchiveInterval"></a>
 ### func \(\*Sandbox\) SetAutoArchiveInterval
 
@@ -5011,6 +5041,20 @@ UpdateSecrets replaces the set of vault secrets mounted in this sandbox.
 Each key is an environment variable name and each value is the name of an existing organization secret \(see the Secrets field on \[types.SandboxBaseParams\]\). Pass an empty map to detach all secrets; a nil map is rejected so an uninitialized map can't detach them by accident.
 
 Attached, detached, and rotated secrets take effect for outbound requests within seconds. New environment variables only become visible to processes spawned after the update, and a sandbox created without any secrets must be restarted before newly attached secrets work.
+
+<a name="Sandbox.UploadURL"></a>
+### func \(\*Sandbox\) UploadURL
+
+```go
+func (s *Sandbox) UploadURL(ctx context.Context, path string, ttlSeconds *int) (string, error)
+```
+
+UploadURL creates a pre\-signed URL for uploading a file to the sandbox. Send a POST request with the file as multipart/form\-data. The URL works with any HTTP client without auth headers. The signing key is cached locally for up to 15 seconds; if the key was rotated from another client, URLs may be rejected until the cache refreshes.
+
+```
+url, err := sandbox.UploadURL(ctx, "/home/user/data.bin", nil)
+// curl -X POST -F "file=@local.bin" "$url"
+```
 
 <a name="Sandbox.WaitForResize"></a>
 ### func \(\*Sandbox\) WaitForResize

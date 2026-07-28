@@ -270,6 +270,38 @@ the 'destroyed' state.
 
 ***
 
+#### downloadUrl()
+
+```ts
+downloadUrl(path: string, ttlSeconds?: number): Promise<string>
+```
+
+Creates a pre-signed URL for downloading a file from the Sandbox.
+
+The URL works with any HTTP client without auth headers and stays valid across
+sandbox restarts (downloads succeed only while the sandbox is running). The signing
+key is cached locally for up to 15 seconds; if the key was rotated from another
+client, URLs may be rejected until the cache refreshes.
+
+**Parameters**:
+
+- `path` _string_ - Path to the file in the Sandbox.
+- `ttlSeconds?` _number_ - How long the URL stays valid, in seconds. Defaults to 3600. Zero or negative means the URL never expires.
+
+
+**Returns**:
+
+- `Promise<string>` - Pre-signed download URL.
+
+**Example:**
+
+```typescript
+const url = await sandbox.downloadUrl('/home/user/report.pdf')
+// curl "$url" -o report.pdf
+```
+
+***
+
 #### expireSignedPreviewUrl()
 
 ```ts
@@ -621,6 +653,20 @@ Revokes an SSH access token for the sandbox.
 
 - `token` _string_ - The token to revoke.
 
+
+**Returns**:
+
+- `Promise<void>`
+
+***
+
+#### rotateSigningKey()
+
+```ts
+rotateSigningKey(): Promise<void>
+```
+
+Rotates the sandbox signing key, invalidating all previously signed URLs.
 
 **Returns**:
 
@@ -1018,6 +1064,38 @@ await sandbox.updateSecrets({});
 
 ***
 
+#### uploadUrl()
+
+```ts
+uploadUrl(path: string, ttlSeconds?: number): Promise<string>
+```
+
+Creates a pre-signed URL for uploading a file to the Sandbox.
+
+Send a POST request with the file as multipart/form-data. The URL works with any
+HTTP client without auth headers. The signing key is cached locally for up to
+15 seconds; if the key was rotated from another client, URLs may be rejected
+until the cache refreshes.
+
+**Parameters**:
+
+- `path` _string_ - Destination path for the uploaded file in the Sandbox.
+- `ttlSeconds?` _number_ - How long the URL stays valid, in seconds. Defaults to 3600. Zero or negative means the URL never expires.
+
+
+**Returns**:
+
+- `Promise<string>` - Pre-signed upload URL.
+
+**Example:**
+
+```typescript
+const url = await sandbox.uploadUrl('/home/user/data.bin')
+// curl -X POST -F "file=@local.bin" "$url"
+```
+
+***
+
 #### validateSshAccess()
 
 ```ts
@@ -1117,6 +1195,8 @@ or encounters an error.
 
 **Properties**:
 
+- `autoDestroyAtAfter?` _Date_ - Include sandboxes scheduled for auto destroy after this timestamp
+- `autoDestroyAtBefore?` _Date_ - Include sandboxes scheduled for auto destroy before this timestamp
 - `createdAtAfter?` _Date_ - Include sandboxes created after this timestamp
 - `createdAtBefore?` _Date_ - Include sandboxes created before this timestamp
 - `id?` _string_ - Filter by ID prefix (case-insensitive)

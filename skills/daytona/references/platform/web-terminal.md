@@ -1,13 +1,3 @@
-## Contents
-
-- Access from Dashboard
-- Access via CLI
-- Access via URL
-- Security
-- Related
-- See Also
-
-
 
 
 Daytona provides a browser-based web terminal for interacting with your sandboxes. The web terminal allows you to run commands, view files, and debug directly from your browser without installing any local tools.
@@ -94,13 +84,6 @@ curl 'https://app.daytona.io/api/sandbox/{sandboxId}/ports/22222/preview-url' \
 Terminal access is restricted to authenticated members of your [Organization](./organizations.md). Even when a sandbox has its `public` parameter set to `true`, the web terminal remains accessible only to organization members.
 > **Warning:**
 > The web terminal provides full shell access to your sandbox. Treat terminal URLs with the same care as SSH credentials. Do not share terminal URLs with untrusted parties.
-
-## Related
-
-- [SSH Access](../python-sdk/ssh-access.md): connect to your sandbox from a local terminal or IDE
-- [Pseudo Terminal (PTY)](../python-sdk/pty.md): programmatic terminal sessions for automated workflows
-- [Process and Code Execution](../python-sdk/process-code-execution.md): execute commands and run code in sandboxes
-- [Preview](../python-sdk/preview.md): generate preview URLs for accessing sandbox services
 
 ## See Also
 

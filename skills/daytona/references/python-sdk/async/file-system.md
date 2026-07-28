@@ -768,7 +768,6 @@ async with aiofiles.open("large_dataset.csv", "rb") as f:
     )
 ```
 
-
 ## CancelEvent
 
 ```python
@@ -866,6 +865,9 @@ class FileDownloadErrorDetails()
 ```
 
 Structured error metadata for a failed bulk file download item.
+
+``error_code`` is a deprecated alias of ``code`` kept for backward
+compatibility; the two fields are kept in sync in ``__post_init__``.
 
 #### create\_file\_download\_error
 

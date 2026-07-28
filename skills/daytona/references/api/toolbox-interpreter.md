@@ -11,6 +11,7 @@ Returns information about all user-created interpreter contexts (excludes defaul
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | ListContextsResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -36,8 +37,8 @@ Schema: **CreateContextRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | InterpreterContext |
-| 400 | Bad Request | object |
-| 500 | Internal Server Error | object |
+| 400 | Bad Request | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -58,8 +59,9 @@ Deletes an interpreter context and shuts down its worker process
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | object |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
+| 400 | Bad Request | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 

@@ -304,7 +304,6 @@ for item in completions.items:
     print(f"{item.label} ({item.kind}): {item.detail}")
 ```
 
-
 ## LspLanguageId
 
 ```python

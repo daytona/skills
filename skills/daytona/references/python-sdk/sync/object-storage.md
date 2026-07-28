@@ -16,6 +16,7 @@ ObjectStorage class for interacting with object storage services.
 - `aws_secret_access_key` _str_ - The secret access key for the object storage service.
 - `aws_session_token` _str_ - The session token for the object storage service. Used for temporary credentials.
 - `bucket_name` _str_ - The name of the bucket to use. Defaults to "daytona-volume-builds".
+- `region` _str_ - The region of the storage backend.
 
 #### ObjectStorage.upload
 

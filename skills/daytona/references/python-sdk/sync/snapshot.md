@@ -36,7 +36,6 @@ Represents a Daytona Snapshot which is a pre-configured sandbox.
 - `updated_at` _str_ - Timestamp when the Snapshot was last updated.
 - `last_used_at` _str_ - Timestamp when the Snapshot was last used.
 
-
 ## SnapshotService
 
 ```python

@@ -291,6 +291,95 @@ new_labels = sandbox.set_labels({
 print(f"Updated labels: {new_labels}")
 ```
 
+#### Sandbox.download\_url
+
+```python
+@intercept_errors(message_prefix="Failed to create download URL: ")
+@with_instrumentation()
+def download_url(path: str, ttl_seconds: int | None = None) -> str
+```
+
+Creates a pre-signed URL for downloading a file from the Sandbox.
+
+The URL works with any HTTP client without auth headers and stays valid across
+sandbox restarts (downloads succeed only while the sandbox is running). The signing
+key is cached locally for up to 15 seconds; if the key was rotated from another
+client, URLs may be rejected until the cache refreshes.
+
+**Arguments**:
+
+- `path` _str_ - Path to the file in the Sandbox.
+- `ttl_seconds` _int | None_ - How long the URL stays valid, in seconds.
+  Defaults to 3600. Zero or negative means the URL never expires.
+
+
+**Returns**:
+
+- `str` - Pre-signed download URL.
+
+
+**Example**:
+
+```python
+url = sandbox.download_url("/home/user/report.pdf")
+```
+```bash
+curl "$url" -o report.pdf
+```
+
+#### Sandbox.upload\_url
+
+```python
+@intercept_errors(message_prefix="Failed to create upload URL: ")
+@with_instrumentation()
+def upload_url(path: str, ttl_seconds: int | None = None) -> str
+```
+
+Creates a pre-signed URL for uploading a file to the Sandbox.
+
+Send a POST request with the file as multipart/form-data. The URL works with any
+HTTP client without auth headers. The signing key is cached locally for up to
+15 seconds; if the key was rotated from another client, URLs may be rejected
+until the cache refreshes.
+
+**Arguments**:
+
+- `path` _str_ - Destination path for the uploaded file in the Sandbox.
+- `ttl_seconds` _int | None_ - How long the URL stays valid, in seconds.
+  Defaults to 3600. Zero or negative means the URL never expires.
+
+
+**Returns**:
+
+- `str` - Pre-signed upload URL.
+
+
+**Example**:
+
+```python
+url = sandbox.upload_url("/home/user/data.bin")
+```
+```bash
+curl -X POST -F "file=@local.bin" "$url"
+```
+
+#### Sandbox.rotate\_signing\_key
+
+```python
+@intercept_errors(message_prefix="Failed to rotate signing key: ")
+@with_instrumentation()
+def rotate_signing_key() -> None
+```
+
+Rotates the sandbox signing key, invalidating all previously signed URLs.
+
+**Example**:
+
+```python
+sandbox.rotate_signing_key()
+# all URLs created before this call now return 401
+```
+
 #### Sandbox.start
 
 ```python
@@ -986,7 +1075,6 @@ not consume CPU cycles.
 
 - `DaytonaError` - If timeout is negative or the operation fails/times out.
 
-
 ## Resources
 
 ```python
@@ -1053,6 +1141,8 @@ Query parameters for filtering and sorting when listing Sandboxes.
 - `created_at_before` _datetime_ - Include sandboxes created before this timestamp.
 - `last_activity_after` _datetime_ - Include sandboxes with last activity after this timestamp.
 - `last_activity_before` _datetime_ - Include sandboxes with last activity before this timestamp.
+- `auto_destroy_at_after` _datetime_ - Include sandboxes scheduled for auto destroy after this timestamp.
+- `auto_destroy_at_before` _datetime_ - Include sandboxes scheduled for auto destroy before this timestamp.
 - `sort` - Field to sort by.
 - `order` - Sort direction.
 

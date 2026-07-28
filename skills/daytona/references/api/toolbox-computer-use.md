@@ -64,10 +64,10 @@ Schema: **FindAccessibilityNodesRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | AccessibilityNodesResponse |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-| 503 | Service Unavailable | object |
+| 400 | Bad Request | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
+| 503 | Service Unavailable | ErrorResponse |
 
 ---
 
@@ -92,10 +92,10 @@ Schema: **AccessibilityNodeRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | Empty |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-| 503 | Service Unavailable | object |
+| 400 | Bad Request | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
+| 503 | Service Unavailable | ErrorResponse |
 
 ---
 
@@ -121,10 +121,10 @@ Schema: **AccessibilityInvokeRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | Empty |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-| 503 | Service Unavailable | object |
+| 400 | Bad Request | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
+| 503 | Service Unavailable | ErrorResponse |
 
 ---
 
@@ -150,10 +150,10 @@ Schema: **AccessibilitySetValueRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | Empty |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-| 503 | Service Unavailable | object |
+| 400 | Bad Request | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
+| 503 | Service Unavailable | ErrorResponse |
 
 ---
 
@@ -176,10 +176,10 @@ Fetch the AT-SPI accessibility tree for the focused application, a specific PID,
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | AccessibilityTreeResponse |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
-| 503 | Service Unavailable | object |
+| 400 | Bad Request | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
+| 503 | Service Unavailable | ErrorResponse |
 
 ---
 
@@ -194,6 +194,7 @@ Get information about all available displays
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | DisplayInfoResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -208,6 +209,7 @@ Get information about all open windows
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | WindowsResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -232,6 +234,8 @@ Schema: **KeyboardHotkeyRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | Empty |
+| 400 | Bad Request | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -257,6 +261,8 @@ Schema: **KeyboardPressRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | Empty |
+| 400 | Bad Request | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -282,6 +288,8 @@ Schema: **KeyboardTypeRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | Empty |
+| 400 | Bad Request | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -309,6 +317,8 @@ Schema: **MouseClickRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | MouseClickResponse |
+| 400 | Bad Request | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -337,6 +347,8 @@ Schema: **MouseDragRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | MouseDragResponse |
+| 400 | Bad Request | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -362,6 +374,8 @@ Schema: **MouseMoveRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | MousePositionResponse |
+| 400 | Bad Request | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -376,6 +390,7 @@ Get the current mouse cursor position
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | MousePositionResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -403,6 +418,8 @@ Schema: **MouseScrollRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | ScrollResponse |
+| 400 | Bad Request | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -511,7 +528,7 @@ Get a list of all recordings (active and completed)
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | ListRecordingsResponse |
-| 500 | Internal Server Error | object |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -536,8 +553,9 @@ Schema: **StartRecordingRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 201 | Created | Recording |
-| 400 | Bad Request | object |
-| 500 | Internal Server Error | object |
+| 400 | Bad Request | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
+| 503 | Service Unavailable | ErrorResponse |
 
 ---
 
@@ -562,8 +580,9 @@ Schema: **StopRecordingRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | Recording |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
+| 400 | Bad Request | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -584,8 +603,9 @@ Get details of a specific recording by ID
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | Recording |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
+| 400 | Bad Request | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -606,9 +626,10 @@ Delete a recording file by ID
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 204 | No Content |  |
-| 400 | Bad Request | object |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
+| 400 | Bad Request | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
+| 409 | Conflict | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -629,8 +650,9 @@ Download a recording by providing its ID
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | string |
-| 404 | Not Found | object |
-| 500 | Internal Server Error | object |
+| 400 | Bad Request | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -651,6 +673,8 @@ Take a screenshot of the entire screen
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | ScreenshotResponse |
+| 400 | Bad Request | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -674,6 +698,8 @@ Take a compressed screenshot of the entire screen
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | ScreenshotResponse |
+| 400 | Bad Request | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -698,6 +724,8 @@ Take a screenshot of a specific region of the screen
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | ScreenshotResponse |
+| 400 | Bad Request | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -725,6 +753,8 @@ Take a compressed screenshot of a specific region of the screen
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | ScreenshotResponse |
+| 400 | Bad Request | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -753,6 +783,7 @@ Get the current status of the computer use system
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | ComputerUseStatusResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 

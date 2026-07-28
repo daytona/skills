@@ -23,6 +23,8 @@
 - GET `/sandbox/{sandboxIdOrName}/parent`/parent}
 - GET `/sandbox/{sandboxIdOrName}/ancestors`/ancestors}
 - POST `/sandbox/{sandboxIdOrName}/public/{isPublic}`/public/{isPublic}}
+- GET `/sandbox/{sandboxId}/signing-key`/signing-key}
+- POST `/sandbox/{sandboxId}/signing-key/rotate`/signing-key/rotate}
 - POST `/sandbox/{sandboxId}/last-activity`/last-activity}
 - POST `/sandbox/{sandboxIdOrName}/autostop/{interval}`/autostop/{interval}}
 - POST `/sandbox/{sandboxIdOrName}/autopause/{interval}`/autopause/{interval}}
@@ -66,6 +68,7 @@ Advanced filtering and ordering. Eventually consistent.
 | `name` | query | string | No | Filter by name prefix (case-insensitive) |
 | `labels` | query | string | No | JSON encoded labels to filter by |
 | `includeErroredDeleted` | query | boolean | No | Include results with errored state and deleted desired state |
+| `includeWarm` | query | boolean | No | Include unclaimed warm pool sandboxes (excluded by default) |
 | `states` | query | array | No | List of states to filter by. |
 | `snapshots` | query | array | No | List of snapshot names to filter by |
 | `regionIds` | query | array | No | List of regions IDs to filter by |
@@ -82,6 +85,8 @@ Advanced filtering and ordering. Eventually consistent.
 | `createdAtBefore` | query | string (date-time) | No | Include items created before this timestamp |
 | `lastEventAfter` | query | string (date-time) | No | Include items with last event after this timestamp |
 | `lastEventBefore` | query | string (date-time) | No | Include items with last event before this timestamp |
+| `autoDestroyAtAfter` | query | string (date-time) | No | Include items scheduled for auto destroy after this timestamp |
+| `autoDestroyAtBefore` | query | string (date-time) | No | Include items scheduled for auto destroy before this timestamp |
 | `sort` | query | string | No | Field to sort by |
 | `order` | query | string | No | Direction to sort by |
 
@@ -131,7 +136,7 @@ Schema: **CreateSandbox**
 | `ttlMinutes` | integer | No | Maximum time to live in minutes, counted as wall-clock time since creation regardless of sandbox state (0 means disabled). When it elapses the sandbox is destroyed, even if it is stopped, paused, or archived. |
 | `volumes` | array of [SandboxVolume](#schema-sandboxvolume) | No | Array of volumes to attach to the sandbox |
 | `buildInfo` | object | No | Build information for the sandbox |
-| `linkedSandbox` | string | No | ID or name of an existing sandbox to link the new sandbox to. The new sandbox will be scheduled on the same runner as the linked sandbox so a local network can be established between them. Linked sandboxes must be ephemeral (autoDeleteInterval=0) and cannot themselves be linked to another sandbox. |
+| `linkedSandbox` | string | No | ID or name of an existing sandbox to link the new sandbox to. The new sandbox will be scheduled on the same runner as the linked sandbox so a local network can be established between them. Linked sandboxes must be ephemeral (autoDeleteInterval=0) and cannot themselves be linked to another sandbox. GPU sandboxes cannot participate in links in either direction: a GPU sandbox cannot specify linkedSandbox, and cannot be the link target of another sandbox. |
 | `secrets` | array of object | No | Secrets to mount in this sandbox. Each entry maps an env var name to a vault secret name. |
 
 ### Responses
@@ -407,6 +412,8 @@ Schema: **UpdateSandboxStateDto**
 
 **Create sandbox backup**
 
+Deprecated: backups are managed automatically. This endpoint is a no-op kept for compatibility.
+
 ### Parameters
 
 | Name | In | Type | Required | Description |
@@ -418,7 +425,7 @@ Schema: **UpdateSandboxStateDto**
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | Sandbox backup has been initiated | Sandbox |
+| 200 | Sandbox backup request acknowledged (no-op) | Sandbox |
 
 ---
 
@@ -555,6 +562,44 @@ Schema: **ForkSandbox**
 
 ---
 
+## GET `/sandbox/{sandboxId}/signing-key` {#daytona/tag/sandbox/GET/sandbox/{sandboxId}/signing-key}
+
+**Get the signing key for a sandbox**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxId` | path | string | Yes | ID of the sandbox |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Signing key of the sandbox | string |
+
+---
+
+## POST `/sandbox/{sandboxId}/signing-key/rotate` {#daytona/tag/sandbox/POST/sandbox/{sandboxId}/signing-key/rotate}
+
+**Rotate the signing key, invalidating all previously signed URLs**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
+| `sandboxId` | path | string | Yes | ID of the sandbox |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | New signing key | string |
+
+---
+
 ## POST `/sandbox/{sandboxId}/last-activity` {#daytona/tag/sandbox/POST/sandbox/{sandboxId}/last-activity}
 
 **Update sandbox last activity**
@@ -565,6 +610,14 @@ Schema: **ForkSandbox**
 |------|-----|------|----------|-------------|
 | `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
 | `sandboxId` | path | string | Yes | ID of the sandbox |
+
+### Request Body
+
+Schema: **UpdateLastActivity**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `activityType` | string | No | Optional type of interaction that reset the activity timer. |
 
 ### Responses
 

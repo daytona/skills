@@ -12,7 +12,7 @@ Daytona provides an overview of your organization's [wallet](#wallet) and [spend
 
 ## Sandbox billing
 
-Sandboxes are billed for the resources reserved: **vCPU**, **RAM**, and **disk**, depending on the sandbox [lifecycle state](../python-sdk/sandboxes.md#sandbox-lifecycle). The table below details which reserved resources and states are billed for [container sandboxes](../python-sdk/sandboxes.md#create-sandboxes), [VM sandboxes](../python-sdk/sandboxes.md#vm-sandboxes) (Linux VM and Windows), and [GPU sandboxes](../python-sdk/sandboxes.md#gpu-sandboxes).
+Sandboxes are billed for the resources reserved: **vCPU**, **RAM**, and **disk**, depending on the sandbox [lifecycle state](../python-sdk/sandboxes.md#sandbox-lifecycle). The table below details which reserved resources and states are billed for [container sandboxes](../python-sdk/sandboxes.md#create-sandboxes), [VM sandboxes](../python-sdk/sandboxes.md#vm-sandboxes), and [GPU sandboxes](../python-sdk/sandboxes.md#gpu-sandboxes).
 
 | **State**                                               | **vCPU** | **RAM** | **Disk** | **Description**                                                                                                                                                                                                                                              |
 | ------------------------------------------------------- | -------- | ------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |

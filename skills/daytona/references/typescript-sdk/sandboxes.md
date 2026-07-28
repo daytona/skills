@@ -1,8 +1,8 @@
 ## Contents
 
 - Create sandboxes
-- GPU sandboxes
 - VM sandboxes
+- GPU sandboxes
 - Ephemeral sandboxes
 - Linked sandboxes
 - Start sandboxes
@@ -48,8 +48,6 @@ const sandbox = await daytona.create()
 ### Snapshots
 
 Create a sandbox from a [default snapshot](./snapshots.md#default-snapshots).
-
-[Snapshots](./snapshots.md) are persistent captures of sandbox state, including the filesystem, installed packages, and settings. They serve as pre-configured environments for creating sandboxes, and you can [capture them from an existing sandbox](#create-snapshot-from-sandbox) to save its state and restore it later.
 
 | **Snapshot**            | **vCPU** | **Memory** | **Storage** | **GPU** | **Sandbox Class** |
 | ----------------------- | -------- | ---------- | ----------- | ------- | ----------------- |
@@ -138,6 +136,104 @@ response = await sandbox.process.codeRun('console.log("Hello from JavaScript")')
 console.log(response.result)
 ```
 
+### Regions
+
+Create a sandbox in a specific [region](./regions.md).
+
+| **Region**    | **Target** |
+| ------------- | ---------- |
+| United States | **`us`**   |
+| Europe        | **`eu`**   |
+
+```typescript
+import { Daytona } from '@daytona/sdk'
+
+const daytona = new Daytona({ target: 'us' })
+const sandbox = await daytona.create()
+```
+
+## VM sandboxes
+
+Daytona provides **VM sandboxes** for workloads that require a full virtual machine with a dedicated **Linux VM** or **Windows** operating system.
+
+VM sandboxes are distinct from container sandboxes and support VM-only capabilities:
+
+- [Fork sandboxes](#fork-sandboxes)
+- [Pause/resume sandboxes](#pause--resume-sandboxes)
+- [Create snapshot from sandbox](#create-snapshot-from-sandbox)
+> **Note: Limitations**
+> VM sandboxes can currently only be created from existing VM snapshots. Dynamic builds through the declarative builder are supported for container sandboxes only.
+
+**Linux VM:**
+
+**Create from snapshot:**
+
+Create a Linux VM sandbox from a default snapshot.
+
+1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+2. Click **Create Sandbox**
+3. Select a Linux VM snapshot:
+
+    - **`daytona-vm-small`**
+    - **`daytona-vm-medium`**
+    - **`daytona-vm-large`**
+
+4. Click **Create**
+
+```typescript
+import { Daytona } from '@daytona/sdk'
+
+const daytona = new Daytona()
+const sandbox = await daytona.create({ snapshot: 'daytona-vm-small' })
+```
+
+**Create from custom snapshot:**
+
+Create a Linux VM sandbox from a custom snapshot.
+
+1. Create a snapshot from a base **`image`**
+2. Set sandbox class to **`LINUX_VM`**
+3. Create a Linux VM sandbox from the snapshot
+
+```typescript
+import { Daytona, SandboxClass } from "@daytona/sdk";
+
+const daytona = new Daytona();
+
+// 1. Create a VM snapshot (linux-vm class)
+await daytona.snapshot.create({
+  name: "my-vm-snapshot",
+  image: "ubuntu:22.04",
+  sandboxClass: SandboxClass.LINUX_VM,
+});
+
+// 2. Create a VM sandbox from the snapshot
+const sandbox = await daytona.create({ snapshot: "my-vm-snapshot" });
+```
+
+**Windows:**
+
+Create a Windows sandbox.
+
+1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+2. Click **Create Sandbox**
+3. Select a Windows snapshot:
+
+    - **`windows-small`**
+    - **`windows-medium`**
+    - **`windows-large`**
+
+4. Click **Create**
+
+```typescript
+import { Daytona } from '@daytona/sdk'
+
+const daytona = new Daytona()
+const sandbox = await daytona.create({
+  snapshot: 'windows-small',
+})
+```
+
 ## GPU sandboxes
 
 Daytona provides **GPU sandboxes** for workloads that require NVIDIA GPU acceleration, such as model inference, fine-tuning, and CUDA-accelerated compute. GPU sandboxes are ephemeral and support up to **16 vCPUs**, **192GB RAM**, and **512GB disk**. Supported GPU types:
@@ -203,93 +299,9 @@ const sandbox = await daytona.create({
 });
 ```
 
-## VM sandboxes
-
-Daytona provides **VM sandboxes** for workloads that require a full virtual machine with a dedicated **Linux** or **Windows** operating system. VM sandboxes are distinct from container sandboxes and support VM-only capabilities:
-
-- [Fork sandboxes](#fork-sandboxes)
-- [Pause/resume sandboxes](#pause--resume-sandboxes)
-- [Create snapshot from sandbox](#create-snapshot-from-sandbox)
-> **Note: Limitations**
-> VM sandboxes can currently only be created from existing VM snapshots. Dynamic builds through the declarative builder are supported for container sandboxes only.
-
-### Linux VM
-
-Create a Linux VM sandbox.
-
-**Create from snapshot:**
-
-Create a Linux VM sandbox from a default snapshot.
-
-1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
-2. Click **Create Sandbox**
-3. Select a Linux VM snapshot:
-
-    - **`daytona-vm-small`**
-    - **`daytona-vm-medium`**
-    - **`daytona-vm-large`**
-
-4. Click **Create**
-
-```typescript
-import { Daytona } from '@daytona/sdk'
-
-const daytona = new Daytona()
-const sandbox = await daytona.create({ snapshot: 'daytona-vm-small' })
-```
-
-**Create from custom snapshot:**
-
-Create a Linux VM sandbox from a custom snapshot.
-
-1. Create a snapshot from a base **`image`**
-2. Set sandbox class to **`LINUX_VM`**
-3. Create a Linux VM sandbox from the snapshot
-
-```typescript
-import { Daytona, SandboxClass } from "@daytona/sdk";
-
-const daytona = new Daytona();
-
-// 1. Create a VM snapshot (linux-vm class)
-await daytona.snapshot.create({
-  name: "my-vm-snapshot",
-  image: "ubuntu:22.04",
-  sandboxClass: SandboxClass.LINUX_VM,
-});
-
-// 2. Create a VM sandbox from the snapshot
-const sandbox = await daytona.create({ snapshot: "my-vm-snapshot" });
-```
-
-### Windows
-
-Create a Windows sandbox.
-
-1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
-2. Click **Create Sandbox**
-3. Select a Windows snapshot:
-
-    - **`windows-small`**
-    - **`windows-medium`**
-    - **`windows-large`**
-
-4. Click **Create**
-
-```typescript
-import { Daytona } from '@daytona/sdk'
-
-const daytona = new Daytona()
-const sandbox = await daytona.create({
-  snapshot: 'windows-small',
-})
-```
-
 ## Ephemeral sandboxes
 
-Create an ephemeral sandbox.
-
-Ephemeral sandboxes are automatically deleted once they are stopped.
+Create an ephemeral sandbox. Ephemeral sandboxes are automatically deleted when stopped.
 
 1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
 2. Click **Create Sandbox**
@@ -374,7 +386,7 @@ for await (const sandbox of daytona.list()) {
 
 For [container sandboxes](#create-sandboxes), stopping terminates the running container. The filesystem is preserved, but memory state is not. Container sandboxes do not support pause; stop is the way to shut down a container sandbox when it is not in use.
 
-For [VM sandboxes](#vm-sandboxes) (Linux and Windows), stopping shuts down the virtual machine while preserving the filesystem, and memory state is cleared. To preserve running process state without consuming CPU, use [pause / resume](#pause--resume-sandboxes) instead.
+For [VM sandboxes](#vm-sandboxes), stopping shuts down the virtual machine while preserving the filesystem, and memory state is cleared. To preserve running process state without consuming CPU, use [pause / resume](#pause--resume-sandboxes) instead.
 
 The sandbox moves to the **stopped** state when shutdown completes. While a stop is in progress, the sandbox is in the **stopping** state and does not accept new requests.
 
@@ -391,7 +403,7 @@ await sandbox.stop()
 
 Archive moves a stopped container sandbox's filesystem to object storage and free disk quota. Archive is supported for [container sandboxes](#create-sandboxes) only.
 
-[VM sandboxes](#vm-sandboxes) (Linux and Windows) do not support archive. Stopping a VM sandbox already offloads filesystem state and releases disk quota, so a separate archive step is not needed.
+[VM sandboxes](#vm-sandboxes) do not support archive. Stopping a VM sandbox already offloads filesystem state and releases disk quota, so a separate archive step is not needed.
 
 1. Ensure the sandbox is **stopped**
 2. **Archive** the sandbox
@@ -407,7 +419,7 @@ await sandbox.archive()
 
 For [container sandboxes](#create-sandboxes), pause is not supported. The filesystem can be preserved on [stop](#stop-sandboxes), but memory state is not. Use stop to shut down a container sandbox when it is not in use.
 
-For [VM sandboxes](#vm-sandboxes) (Linux and Windows), pausing freezes the virtual machine. The filesystem and memory state are preserved, and CPU is no longer consumed.
+For [VM sandboxes](#vm-sandboxes), pausing freezes the virtual machine. The filesystem and memory state are preserved, and CPU is no longer consumed.
 
 1. Ensure the VM sandbox is **started**
 2. **Pause** the VM sandbox
@@ -683,7 +695,7 @@ If you run a long-running task like LLM inference that takes more than 15 minute
 
 ### Auto-pause interval
 
-The auto-pause interval sets the amount of time after which an idle VM sandbox is automatically [paused](#pause--resume-sandboxes). Auto-pause applies only to [VM sandboxes](#vm-sandboxes) (Linux and Windows) and is mutually exclusive with the [auto-stop interval](#auto-stop-interval): at most one of the two intervals may be non-zero. Ephemeral sandboxes cannot have auto-pause enabled.
+The auto-pause interval sets the amount of time after which an idle VM sandbox is automatically [paused](#pause--resume-sandboxes). Auto-pause applies only to [VM sandboxes](#vm-sandboxes) and is mutually exclusive with the [auto-stop interval](#auto-stop-interval): at most one of the two intervals may be non-zero. Ephemeral sandboxes cannot have auto-pause enabled.
 
 The interval is set in minutes:
 

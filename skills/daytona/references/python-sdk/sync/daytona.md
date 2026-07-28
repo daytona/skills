@@ -361,7 +361,6 @@ Stops a Sandbox and waits for it to be stopped.
 
 - `DaytonaError` - If timeout is negative; If Sandbox fails to stop or times out
 
-
 ## CodeLanguage
 
 ```python

@@ -26,7 +26,6 @@ Represents a Daytona Volume which is a shared storage volume for Sandboxes.
 - `updated_at` _str_ - Date and time when the Volume was last updated.
 - `last_used_at` _str_ - Date and time when the Volume was last used.
 
-
 ## VolumeService
 
 ```python

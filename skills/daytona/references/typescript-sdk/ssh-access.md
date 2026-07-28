@@ -1,15 +1,3 @@
-## Contents
-
-- Access from Dashboard
-- Access via CLI
-- Access via token
-- Connect with VS Code
-- Connect with JetBrains IDEs
-- Token management
-- Related
-- See Also
-
-
 
 
 Daytona provides SSH access to your sandboxes using token-based authentication. This allows you to connect from local terminals, IDEs, and development tools without installing additional software.
@@ -103,11 +91,6 @@ Revoke SSH access tokens before expiry:
 // Revoke specific SSH access token for the sandbox
 await sandbox.revokeSshAccess('specific-token')
 ```
-
-## Related
-
-- [Web Terminal](../platform/web-terminal.md): browser-based terminal access to sandboxes
-- [Preview](./preview.md): generate preview URLs for accessing sandbox services
 
 ## See Also
 - [Python SDK - ssh-access](../python-sdk/ssh-access.md)

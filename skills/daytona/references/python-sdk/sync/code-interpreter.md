@@ -235,7 +235,6 @@ ctx = sandbox.code_interpreter.create_context()
 sandbox.code_interpreter.delete_context(ctx)
 ```
 
-
 ## OutputMessage
 
 ```python

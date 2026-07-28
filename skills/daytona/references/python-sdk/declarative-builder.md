@@ -20,6 +20,10 @@ Create a declarative image by defining the dependencies for the sandbox.
 
 Declarative images are cached for 24 hours, and are automatically reused when running the same script. Thus, subsequent runs on the same runner will be almost instantaneous.
 
+**Container:**
+
+Create a container sandbox from a declarative image.
+
 ```python
 # Define a declarative image with python packages
 declarative_image = (
@@ -36,9 +40,38 @@ sandbox = daytona.create(
 )
 ```
 
+**GPU:**
+
+Create a GPU sandbox from a declarative image.
+
+```python
+# Define a declarative image with python packages
+declarative_image = (
+  Image.debian_slim("3.12")
+  .pip_install(["requests", "pytest"])
+  .workdir("/home/daytona")
+)
+
+# Create a GPU sandbox with the declarative image and stream the build logs
+sandbox = daytona.create(
+  CreateSandboxFromImageParams(
+    image=declarative_image,
+    auto_delete_interval=0,
+    resources=Resources(gpu=1),
+  ),
+  timeout=0,
+  on_snapshot_create_logs=print,
+)
+```
+
 ## Create pre-built snapshots
 
 Create a pre-built snapshot by building a declarative image and registering it as a [snapshot](./snapshots.md).
+
+**Container:**
+
+1. Create a container snapshot from a declarative image
+2. Create a sandbox from that snapshot
 
 ```python
 # Define the declarative image for the snapshot
@@ -56,6 +89,65 @@ daytona.snapshot.create(
 
 # Create a new sandbox from the pre-built snapshot
 sandbox = daytona.create(CreateSandboxFromSnapshotParams(snapshot="my-snapshot"))
+```
+
+**Linux VM:**
+
+1. Create a Linux VM snapshot from a declarative image
+2. Create a sandbox from that snapshot
+
+```python
+# Define the declarative image for the VM snapshot
+image = (
+  Image.debian_slim("3.12")
+  .pip_install(["numpy", "pandas"])
+  .workdir("/home/daytona")
+)
+
+# Create and register the VM snapshot, streaming the build logs
+daytona.snapshot.create(
+  CreateSnapshotParams(
+    name="my-vm-snapshot",
+    image=image,
+    sandbox_class=SandboxClass.LINUX_VM,
+  ),
+  on_logs=print,
+)
+
+# Create a new VM sandbox from the pre-built snapshot
+sandbox = daytona.create(CreateSandboxFromSnapshotParams(snapshot="my-vm-snapshot"))
+```
+
+**GPU:**
+
+1. Create a GPU snapshot from a declarative image
+2. Create a sandbox from that snapshot
+
+```python
+# Define the declarative image for the GPU snapshot
+image = (
+  Image.debian_slim("3.12")
+  .pip_install(["numpy", "pandas"])
+  .workdir("/home/daytona")
+)
+
+# Create and register the GPU snapshot, streaming the build logs
+daytona.snapshot.create(
+  CreateSnapshotParams(
+    name="my-gpu-snapshot",
+    image=image,
+    resources=Resources(gpu=1),
+  ),
+  on_logs=print,
+)
+
+# Create a new GPU sandbox from the pre-built snapshot
+sandbox = daytona.create(
+  CreateSandboxFromSnapshotParams(
+    snapshot="my-gpu-snapshot",
+    auto_delete_interval=0,
+  )
+)
 ```
 
 ## Image configuration

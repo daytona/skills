@@ -1,54 +1,166 @@
 ## Contents
 
+- DaytonaA11yUnavailableError
 - DaytonaAuthenticationError
-- DaytonaAuthorizationError
+- ~~DaytonaAuthorizationError~~
+- DaytonaBadGatewayError
+- DaytonaBadRequestError
+- DaytonaCommandAlreadyCompletedError
 - DaytonaConflictError
 - DaytonaConnectionError
+- DaytonaConnectionTimeoutError
 - DaytonaError
+- DaytonaFileAccessDeniedError
+- DaytonaFileNotFoundError
+- DaytonaForbiddenError
+- DaytonaGitAuthFailedError
+- DaytonaGitBranchExistsError
+- DaytonaGitBranchNotFoundError
+- DaytonaGitDirtyWorktreeError
+- DaytonaGitMergeConflictError
+- DaytonaGitPushRejectedError
+- DaytonaGitRepoNotFoundError
+- DaytonaGoneError
+- DaytonaInternalServerError
+- DaytonaLspServerNotInitializedError
 - DaytonaNotFoundError
+- DaytonaProcessExecutionTimeoutError
+- DaytonaProcessNotFoundError
 - DaytonaRateLimitError
+- DaytonaRecordingFfmpegNotFoundError
+- DaytonaRecordingStillActiveError
+- DaytonaServiceUnavailableError
+- DaytonaSessionEndedError
 - DaytonaTimeoutError
-- DaytonaValidationError
+- DaytonaUnprocessableEntityError
+- ~~DaytonaValidationError~~
 - createAxiosDaytonaError()
 - createDaytonaError()
 - errorClassFromStatusCode()
 - ResponseHeaders
+- SOURCE\_API
+- SOURCE\_DAEMON
+- SOURCE\_PROXY
 
 
 
 
-## DaytonaAuthenticationError
+## DaytonaA11yUnavailableError
 
-Error thrown when authentication fails (HTTP 401).
+The accessibility service is unavailable (code `A11Y_UNAVAILABLE`).
 
 **Properties**:
 
-- `errorCode?` _string_ - Machine-readable error code if available
-    - _Inherited from_: `DaytonaError.errorCode`
-- `headers?` _AxiosHeaders_ - Response headers if available
-    - _Inherited from_: `DaytonaError.headers`
-- `statusCode?` _number_ - HTTP status code if available
+- `code?` _string_
+    - _Inherited from_: `DaytonaServiceUnavailableError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaServiceUnavailableError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaServiceUnavailableError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaServiceUnavailableError.statusCode`
 
-    - _Inherited from_: `DaytonaError.statusCode`
 
+**Extends:**
 
-**Example:**
+- `DaytonaServiceUnavailableError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaServiceUnavailableError.errorCode`
+
+##### Get Signature
 
 ```ts
-try {
-  for await (const sandbox of daytona.list()) {
-    console.log(sandbox.id)
-  }
-} catch (error) {
-  if (error instanceof DaytonaAuthenticationError) {
-    console.log(error.statusCode)
-  }
-}
+get errorCode(): string
 ```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaA11yUnavailableError()
+
+```ts
+new DaytonaA11yUnavailableError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaA11yUnavailableError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaA11yUnavailableError`
+
+##### Inherited from
+
+`DaytonaServiceUnavailableError`.`constructor`
+## DaytonaAuthenticationError
+
+Authentication failed — missing or invalid credentials (HTTP 401).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaError.statusCode`
+
 
 **Extends:**
 
 - `DaytonaError`
+
+### Extended by
+
+- `DaytonaGitAuthFailedError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
 
 ### Constructors
 
@@ -59,7 +171,8 @@ new DaytonaAuthenticationError(
    message: string,
    statusCode?: number,
    headers?: AxiosHeaders,
-   errorCode?: string): DaytonaAuthenticationError
+   code?: string,
+   source?: string): DaytonaAuthenticationError
 ```
 
 **Parameters**:
@@ -67,7 +180,8 @@ new DaytonaAuthenticationError(
 - `message` _string_
 - `statusCode?` _number_
 - `headers?` _AxiosHeaders_
-- `errorCode?` _string_
+- `code?` _string_
+- `source?` _string_
 
 
 **Returns**:
@@ -77,36 +191,49 @@ new DaytonaAuthenticationError(
 ##### Inherited from
 
 `DaytonaError`.`constructor`
-## DaytonaAuthorizationError
+## ~~DaytonaAuthorizationError~~
 
-Error thrown when the request is forbidden (HTTP 403).
+### Deprecated
 
 **Properties**:
 
-- `errorCode?` _string_ - Machine-readable error code if available
-    - _Inherited from_: `DaytonaError.errorCode`
-- `headers?` _AxiosHeaders_ - Response headers if available
-    - _Inherited from_: `DaytonaError.headers`
-- `statusCode?` _number_ - HTTP status code if available
+- ~~`code?`~~ _string_
+    - _Inherited from_: `DaytonaForbiddenError.code`
+- ~~`headers?`~~ _AxiosHeaders_
+    - _Inherited from_: `DaytonaForbiddenError.headers`
+- ~~`source?`~~ _string_
+    - _Inherited from_: `DaytonaForbiddenError.source`
+- ~~`statusCode?`~~ _number_
+    - _Inherited from_: `DaytonaForbiddenError.statusCode`
 
-    - _Inherited from_: `DaytonaError.statusCode`
 
-
-**Example:**
-
-```ts
-try {
-  await daytona.get('sandbox-without-access')
-} catch (error) {
-  if (error instanceof DaytonaAuthorizationError) {
-    console.log(error.message)
-  }
-}
-```
+Use DaytonaForbiddenError instead.
 
 **Extends:**
 
-- `DaytonaError`
+- `DaytonaForbiddenError`
+
+### Accessors
+
+#### ~~errorCode~~
+
+_Inherited from_: `DaytonaForbiddenError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
 
 ### Constructors
 
@@ -117,7 +244,8 @@ new DaytonaAuthorizationError(
    message: string,
    statusCode?: number,
    headers?: AxiosHeaders,
-   errorCode?: string): DaytonaAuthorizationError
+   code?: string,
+   source?: string): DaytonaAuthorizationError
 ```
 
 **Parameters**:
@@ -125,7 +253,8 @@ new DaytonaAuthorizationError(
 - `message` _string_
 - `statusCode?` _number_
 - `headers?` _AxiosHeaders_
-- `errorCode?` _string_
+- `code?` _string_
+- `source?` _string_
 
 
 **Returns**:
@@ -134,37 +263,274 @@ new DaytonaAuthorizationError(
 
 ##### Inherited from
 
-`DaytonaError`.`constructor`
-## DaytonaConflictError
+`DaytonaForbiddenError`.`constructor`
+## DaytonaBadGatewayError
 
-Error thrown when a resource conflict occurs (HTTP 409).
+An upstream gateway returned an invalid response (HTTP 502).
 
 **Properties**:
 
-- `errorCode?` _string_ - Machine-readable error code if available
-    - _Inherited from_: `DaytonaError.errorCode`
-- `headers?` _AxiosHeaders_ - Response headers if available
+- `code?` _string_
+    - _Inherited from_: `DaytonaError.code`
+- `headers?` _AxiosHeaders_
     - _Inherited from_: `DaytonaError.headers`
-- `statusCode?` _number_ - HTTP status code if available
-
+- `source?` _string_
+    - _Inherited from_: `DaytonaError.source`
+- `statusCode?` _number_
     - _Inherited from_: `DaytonaError.statusCode`
 
-
-**Example:**
-
-```ts
-try {
-  await daytona.create({ name: 'existing-sandbox' })
-} catch (error) {
-  if (error instanceof DaytonaConflictError) {
-    console.log(error.errorCode)
-  }
-}
-```
 
 **Extends:**
 
 - `DaytonaError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaBadGatewayError()
+
+```ts
+new DaytonaBadGatewayError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaBadGatewayError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaBadGatewayError`
+
+##### Inherited from
+
+`DaytonaError`.`constructor`
+## DaytonaBadRequestError
+
+The request was malformed or invalid (HTTP 400).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaError.statusCode`
+
+
+**Extends:**
+
+- `DaytonaError`
+
+### Extended by
+
+- `DaytonaValidationError`
+- `DaytonaLspServerNotInitializedError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaBadRequestError()
+
+```ts
+new DaytonaBadRequestError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaBadRequestError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaBadRequestError`
+
+##### Inherited from
+
+`DaytonaError`.`constructor`
+## DaytonaCommandAlreadyCompletedError
+
+The session command already finished (code `COMMAND_ALREADY_COMPLETED`).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaGoneError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaGoneError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaGoneError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaGoneError.statusCode`
+
+
+**Extends:**
+
+- `DaytonaGoneError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaGoneError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaCommandAlreadyCompletedError()
+
+```ts
+new DaytonaCommandAlreadyCompletedError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaCommandAlreadyCompletedError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaCommandAlreadyCompletedError`
+
+##### Inherited from
+
+`DaytonaGoneError`.`constructor`
+## DaytonaConflictError
+
+The request conflicts with the current state of the resource (HTTP 409).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaError.statusCode`
+
+
+**Extends:**
+
+- `DaytonaError`
+
+### Extended by
+
+- `DaytonaGitBranchExistsError`
+- `DaytonaGitPushRejectedError`
+- `DaytonaGitDirtyWorktreeError`
+- `DaytonaGitMergeConflictError`
+- `DaytonaRecordingStillActiveError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
 
 ### Constructors
 
@@ -175,7 +541,8 @@ new DaytonaConflictError(
    message: string,
    statusCode?: number,
    headers?: AxiosHeaders,
-   errorCode?: string): DaytonaConflictError
+   code?: string,
+   source?: string): DaytonaConflictError
 ```
 
 **Parameters**:
@@ -183,7 +550,8 @@ new DaytonaConflictError(
 - `message` _string_
 - `statusCode?` _number_
 - `headers?` _AxiosHeaders_
-- `errorCode?` _string_
+- `code?` _string_
+- `source?` _string_
 
 
 **Returns**:
@@ -195,34 +563,49 @@ new DaytonaConflictError(
 `DaytonaError`.`constructor`
 ## DaytonaConnectionError
 
-Error thrown when a network connection fails.
+Network connection failure (can't connect or mid-request drop).
 
 **Properties**:
 
-- `errorCode?` _string_ - Machine-readable error code if available
-    - _Inherited from_: `DaytonaError.errorCode`
-- `headers?` _AxiosHeaders_ - Response headers if available
+- `code?` _string_
+    - _Inherited from_: `DaytonaError.code`
+- `headers?` _AxiosHeaders_
     - _Inherited from_: `DaytonaError.headers`
-- `statusCode?` _number_ - HTTP status code if available
-
+- `source?` _string_
+    - _Inherited from_: `DaytonaError.source`
+- `statusCode?` _number_
     - _Inherited from_: `DaytonaError.statusCode`
 
-
-**Example:**
-
-```ts
-try {
-  await ptyHandle.waitForConnection()
-} catch (error) {
-  if (error instanceof DaytonaConnectionError) {
-    console.log(error.message)
-  }
-}
-```
 
 **Extends:**
 
 - `DaytonaError`
+
+### Extended by
+
+- `DaytonaConnectionTimeoutError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
 
 ### Constructors
 
@@ -233,7 +616,8 @@ new DaytonaConnectionError(
    message: string,
    statusCode?: number,
    headers?: AxiosHeaders,
-   errorCode?: string): DaytonaConnectionError
+   code?: string,
+   source?: string): DaytonaConnectionError
 ```
 
 **Parameters**:
@@ -241,7 +625,8 @@ new DaytonaConnectionError(
 - `message` _string_
 - `statusCode?` _number_
 - `headers?` _AxiosHeaders_
-- `errorCode?` _string_
+- `code?` _string_
+- `source?` _string_
 
 
 **Returns**:
@@ -251,31 +636,90 @@ new DaytonaConnectionError(
 ##### Inherited from
 
 `DaytonaError`.`constructor`
-## DaytonaError
+## DaytonaConnectionTimeoutError
 
-Base error for Daytona SDK.
+Transport-layer timeout (connect / read). Subclass of DaytonaConnectionError.
 
 **Properties**:
 
-- `errorCode?` _string_ - Machine-readable error code if available
-- `headers?` _AxiosHeaders_ - Response headers if available
-- `statusCode?` _number_ - HTTP status code if available
+- `code?` _string_
+    - _Inherited from_: `DaytonaConnectionError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaConnectionError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaConnectionError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaConnectionError.statusCode`
 
 
+**Extends:**
 
-**Example:**
+- `DaytonaConnectionError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaConnectionError.errorCode`
+
+##### Get Signature
 
 ```ts
-try {
-  await daytona.get('missing-sandbox')
-} catch (error) {
-  if (error instanceof DaytonaError) {
-    console.log(error.statusCode)
-    console.log(error.errorCode)
-    console.log(error.message)
-  }
-}
+get errorCode(): string
 ```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaConnectionTimeoutError()
+
+```ts
+new DaytonaConnectionTimeoutError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaConnectionTimeoutError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaConnectionTimeoutError`
+
+##### Inherited from
+
+`DaytonaConnectionError`.`constructor`
+## DaytonaError
+
+Base error for Daytona SDK. `statusCode` and `code` are populated only
+for errors translated from a server response. `source` is `undefined`
+unless the caller (or the translation layer) sets it.
+
+**Properties**:
+
+- `code?` _string_
+- `headers?` _AxiosHeaders_
+- `source?` _string_
+- `statusCode?` _number_
+
 
 **Extends:**
 
@@ -283,14 +727,39 @@ try {
 
 ### Extended by
 
-- `DaytonaNotFoundError`
-- `DaytonaRateLimitError`
+- `DaytonaBadRequestError`
 - `DaytonaAuthenticationError`
-- `DaytonaAuthorizationError`
-- `DaytonaConflictError`
-- `DaytonaValidationError`
+- `DaytonaForbiddenError`
+- `DaytonaNotFoundError`
 - `DaytonaTimeoutError`
+- `DaytonaConflictError`
+- `DaytonaGoneError`
+- `DaytonaUnprocessableEntityError`
+- `DaytonaRateLimitError`
+- `DaytonaInternalServerError`
+- `DaytonaBadGatewayError`
+- `DaytonaServiceUnavailableError`
 - `DaytonaConnectionError`
+
+### Accessors
+
+#### errorCode
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
 
 ### Constructors
 
@@ -301,7 +770,8 @@ new DaytonaError(
    message: string,
    statusCode?: number,
    headers?: AxiosHeaders,
-   errorCode?: string): DaytonaError
+   code?: string,
+   source?: string): DaytonaError
 ```
 
 **Parameters**:
@@ -309,7 +779,8 @@ new DaytonaError(
 - `message` _string_
 - `statusCode?` _number_
 - `headers?` _AxiosHeaders_
-- `errorCode?` _string_
+- `code?` _string_
+- `source?` _string_
 
 
 **Returns**:
@@ -321,36 +792,987 @@ new DaytonaError(
 ```ts
 Error.constructor
 ```
-## DaytonaNotFoundError
+## DaytonaFileAccessDeniedError
 
-Error thrown when a resource is not found (HTTP 404).
+Access to the sandbox file was denied (code `FILE_ACCESS_DENIED`).
 
 **Properties**:
 
-- `errorCode?` _string_ - Machine-readable error code if available
-    - _Inherited from_: `DaytonaError.errorCode`
-- `headers?` _AxiosHeaders_ - Response headers if available
-    - _Inherited from_: `DaytonaError.headers`
-- `statusCode?` _number_ - HTTP status code if available
+- `code?` _string_
+    - _Inherited from_: `DaytonaForbiddenError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaForbiddenError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaForbiddenError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaForbiddenError.statusCode`
 
-    - _Inherited from_: `DaytonaError.statusCode`
 
+**Extends:**
 
-**Example:**
+- `DaytonaForbiddenError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaForbiddenError.errorCode`
+
+##### Get Signature
 
 ```ts
-try {
-  await sandbox.fs.downloadFile('/workspace/missing.txt')
-} catch (error) {
-  if (error instanceof DaytonaNotFoundError) {
-    console.log(error.statusCode)
-  }
-}
+get errorCode(): string
 ```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaFileAccessDeniedError()
+
+```ts
+new DaytonaFileAccessDeniedError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaFileAccessDeniedError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaFileAccessDeniedError`
+
+##### Inherited from
+
+`DaytonaForbiddenError`.`constructor`
+## DaytonaFileNotFoundError
+
+The file does not exist in the sandbox (code `FILE_NOT_FOUND`).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaNotFoundError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaNotFoundError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaNotFoundError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaNotFoundError.statusCode`
+
+
+**Extends:**
+
+- `DaytonaNotFoundError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaNotFoundError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaFileNotFoundError()
+
+```ts
+new DaytonaFileNotFoundError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaFileNotFoundError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaFileNotFoundError`
+
+##### Inherited from
+
+`DaytonaNotFoundError`.`constructor`
+## DaytonaForbiddenError
+
+The authenticated caller lacks permission for the operation (HTTP 403).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaError.statusCode`
+
 
 **Extends:**
 
 - `DaytonaError`
+
+### Extended by
+
+- `DaytonaAuthorizationError`
+- `DaytonaFileAccessDeniedError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaForbiddenError()
+
+```ts
+new DaytonaForbiddenError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaForbiddenError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaForbiddenError`
+
+##### Inherited from
+
+`DaytonaError`.`constructor`
+## DaytonaGitAuthFailedError
+
+Git authentication against the remote failed (code `GIT_AUTH_FAILED`).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaAuthenticationError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaAuthenticationError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaAuthenticationError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaAuthenticationError.statusCode`
+
+
+**Extends:**
+
+- `DaytonaAuthenticationError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaAuthenticationError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaGitAuthFailedError()
+
+```ts
+new DaytonaGitAuthFailedError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaGitAuthFailedError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaGitAuthFailedError`
+
+##### Inherited from
+
+`DaytonaAuthenticationError`.`constructor`
+## DaytonaGitBranchExistsError
+
+The git branch already exists (code `GIT_BRANCH_EXISTS`).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaConflictError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaConflictError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaConflictError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaConflictError.statusCode`
+
+
+**Extends:**
+
+- `DaytonaConflictError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaConflictError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaGitBranchExistsError()
+
+```ts
+new DaytonaGitBranchExistsError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaGitBranchExistsError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaGitBranchExistsError`
+
+##### Inherited from
+
+`DaytonaConflictError`.`constructor`
+## DaytonaGitBranchNotFoundError
+
+The git branch does not exist (code `GIT_BRANCH_NOT_FOUND`).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaNotFoundError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaNotFoundError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaNotFoundError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaNotFoundError.statusCode`
+
+
+**Extends:**
+
+- `DaytonaNotFoundError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaNotFoundError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaGitBranchNotFoundError()
+
+```ts
+new DaytonaGitBranchNotFoundError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaGitBranchNotFoundError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaGitBranchNotFoundError`
+
+##### Inherited from
+
+`DaytonaNotFoundError`.`constructor`
+## DaytonaGitDirtyWorktreeError
+
+The operation requires a clean worktree (code `GIT_DIRTY_WORKTREE`).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaConflictError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaConflictError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaConflictError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaConflictError.statusCode`
+
+
+**Extends:**
+
+- `DaytonaConflictError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaConflictError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaGitDirtyWorktreeError()
+
+```ts
+new DaytonaGitDirtyWorktreeError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaGitDirtyWorktreeError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaGitDirtyWorktreeError`
+
+##### Inherited from
+
+`DaytonaConflictError`.`constructor`
+## DaytonaGitMergeConflictError
+
+A git merge produced conflicts (code `GIT_MERGE_CONFLICT`).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaConflictError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaConflictError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaConflictError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaConflictError.statusCode`
+
+
+**Extends:**
+
+- `DaytonaConflictError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaConflictError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaGitMergeConflictError()
+
+```ts
+new DaytonaGitMergeConflictError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaGitMergeConflictError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaGitMergeConflictError`
+
+##### Inherited from
+
+`DaytonaConflictError`.`constructor`
+## DaytonaGitPushRejectedError
+
+The git push was rejected by the remote (code `GIT_PUSH_REJECTED`).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaConflictError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaConflictError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaConflictError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaConflictError.statusCode`
+
+
+**Extends:**
+
+- `DaytonaConflictError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaConflictError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaGitPushRejectedError()
+
+```ts
+new DaytonaGitPushRejectedError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaGitPushRejectedError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaGitPushRejectedError`
+
+##### Inherited from
+
+`DaytonaConflictError`.`constructor`
+## DaytonaGitRepoNotFoundError
+
+The git remote repository was not found (code `GIT_REPO_NOT_FOUND`).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaNotFoundError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaNotFoundError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaNotFoundError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaNotFoundError.statusCode`
+
+
+**Extends:**
+
+- `DaytonaNotFoundError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaNotFoundError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaGitRepoNotFoundError()
+
+```ts
+new DaytonaGitRepoNotFoundError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaGitRepoNotFoundError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaGitRepoNotFoundError`
+
+##### Inherited from
+
+`DaytonaNotFoundError`.`constructor`
+## DaytonaGoneError
+
+The resource existed but is permanently gone (HTTP 410).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaError.statusCode`
+
+
+**Extends:**
+
+- `DaytonaError`
+
+### Extended by
+
+- `DaytonaSessionEndedError`
+- `DaytonaCommandAlreadyCompletedError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaGoneError()
+
+```ts
+new DaytonaGoneError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaGoneError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaGoneError`
+
+##### Inherited from
+
+`DaytonaError`.`constructor`
+## DaytonaInternalServerError
+
+A Daytona service failed unexpectedly (HTTP 500).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaError.statusCode`
+
+
+**Extends:**
+
+- `DaytonaError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaInternalServerError()
+
+```ts
+new DaytonaInternalServerError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaInternalServerError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaInternalServerError`
+
+##### Inherited from
+
+`DaytonaError`.`constructor`
+## DaytonaLspServerNotInitializedError
+
+The LSP server must be initialized first (code `LSP_SERVER_NOT_INITIALIZED`).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaBadRequestError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaBadRequestError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaBadRequestError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaBadRequestError.statusCode`
+
+
+**Extends:**
+
+- `DaytonaBadRequestError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaBadRequestError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaLspServerNotInitializedError()
+
+```ts
+new DaytonaLspServerNotInitializedError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaLspServerNotInitializedError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaLspServerNotInitializedError`
+
+##### Inherited from
+
+`DaytonaBadRequestError`.`constructor`
+## DaytonaNotFoundError
+
+The requested resource does not exist (HTTP 404).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaError.statusCode`
+
+
+**Extends:**
+
+- `DaytonaError`
+
+### Extended by
+
+- `DaytonaGitRepoNotFoundError`
+- `DaytonaGitBranchNotFoundError`
+- `DaytonaFileNotFoundError`
+- `DaytonaProcessNotFoundError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
 
 ### Constructors
 
@@ -361,7 +1783,8 @@ new DaytonaNotFoundError(
    message: string,
    statusCode?: number,
    headers?: AxiosHeaders,
-   errorCode?: string): DaytonaNotFoundError
+   code?: string,
+   source?: string): DaytonaNotFoundError
 ```
 
 **Parameters**:
@@ -369,7 +1792,8 @@ new DaytonaNotFoundError(
 - `message` _string_
 - `statusCode?` _number_
 - `headers?` _AxiosHeaders_
-- `errorCode?` _string_
+- `code?` _string_
+- `source?` _string_
 
 
 **Returns**:
@@ -379,38 +1803,189 @@ new DaytonaNotFoundError(
 ##### Inherited from
 
 `DaytonaError`.`constructor`
-## DaytonaRateLimitError
+## DaytonaProcessExecutionTimeoutError
 
-Error thrown when rate limit is exceeded.
+Command execution exceeded its timeout (code `PROCESS_EXECUTION_TIMEOUT`).
 
 **Properties**:
 
-- `errorCode?` _string_ - Machine-readable error code if available
-    - _Inherited from_: `DaytonaError.errorCode`
-- `headers?` _AxiosHeaders_ - Response headers if available
-    - _Inherited from_: `DaytonaError.headers`
-- `statusCode?` _number_ - HTTP status code if available
+- `code?` _string_
+    - _Inherited from_: `DaytonaTimeoutError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaTimeoutError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaTimeoutError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaTimeoutError.statusCode`
 
-    - _Inherited from_: `DaytonaError.statusCode`
 
+**Extends:**
 
-**Example:**
+- `DaytonaTimeoutError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaTimeoutError.errorCode`
+
+##### Get Signature
 
 ```ts
-try {
-  for await (const sandbox of daytona.list()) {
-    console.log(sandbox.id)
-  }
-} catch (error) {
-  if (error instanceof DaytonaRateLimitError) {
-    console.log(error.errorCode)
-  }
-}
+get errorCode(): string
 ```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaProcessExecutionTimeoutError()
+
+```ts
+new DaytonaProcessExecutionTimeoutError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaProcessExecutionTimeoutError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaProcessExecutionTimeoutError`
+
+##### Inherited from
+
+`DaytonaTimeoutError`.`constructor`
+## DaytonaProcessNotFoundError
+
+The sandbox process does not exist (code `PROCESS_NOT_FOUND`).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaNotFoundError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaNotFoundError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaNotFoundError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaNotFoundError.statusCode`
+
+
+**Extends:**
+
+- `DaytonaNotFoundError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaNotFoundError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaProcessNotFoundError()
+
+```ts
+new DaytonaProcessNotFoundError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaProcessNotFoundError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaProcessNotFoundError`
+
+##### Inherited from
+
+`DaytonaNotFoundError`.`constructor`
+## DaytonaRateLimitError
+
+The caller exceeded a rate limit (HTTP 429).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaError.statusCode`
+
 
 **Extends:**
 
 - `DaytonaError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
 
 ### Constructors
 
@@ -421,7 +1996,8 @@ new DaytonaRateLimitError(
    message: string,
    statusCode?: number,
    headers?: AxiosHeaders,
-   errorCode?: string): DaytonaRateLimitError
+   code?: string,
+   source?: string): DaytonaRateLimitError
 ```
 
 **Parameters**:
@@ -429,7 +2005,8 @@ new DaytonaRateLimitError(
 - `message` _string_
 - `statusCode?` _number_
 - `headers?` _AxiosHeaders_
-- `errorCode?` _string_
+- `code?` _string_
+- `source?` _string_
 
 
 **Returns**:
@@ -439,36 +2016,340 @@ new DaytonaRateLimitError(
 ##### Inherited from
 
 `DaytonaError`.`constructor`
-## DaytonaTimeoutError
+## DaytonaRecordingFfmpegNotFoundError
 
-Error thrown when a timeout occurs.
+ffmpeg is not available for recording (code `RECORDING_FFMPEG_NOT_FOUND`).
 
 **Properties**:
 
-- `errorCode?` _string_ - Machine-readable error code if available
-    - _Inherited from_: `DaytonaError.errorCode`
-- `headers?` _AxiosHeaders_ - Response headers if available
-    - _Inherited from_: `DaytonaError.headers`
-- `statusCode?` _number_ - HTTP status code if available
+- `code?` _string_
+    - _Inherited from_: `DaytonaServiceUnavailableError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaServiceUnavailableError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaServiceUnavailableError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaServiceUnavailableError.statusCode`
 
-    - _Inherited from_: `DaytonaError.statusCode`
 
+**Extends:**
 
-**Example:**
+- `DaytonaServiceUnavailableError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaServiceUnavailableError.errorCode`
+
+##### Get Signature
 
 ```ts
-try {
-  await sandbox.waitUntilStarted(1)
-} catch (error) {
-  if (error instanceof DaytonaTimeoutError) {
-    console.log(error.message)
-  }
-}
+get errorCode(): string
 ```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaRecordingFfmpegNotFoundError()
+
+```ts
+new DaytonaRecordingFfmpegNotFoundError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaRecordingFfmpegNotFoundError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaRecordingFfmpegNotFoundError`
+
+##### Inherited from
+
+`DaytonaServiceUnavailableError`.`constructor`
+## DaytonaRecordingStillActiveError
+
+A screen recording is still active (code `RECORDING_STILL_ACTIVE`).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaConflictError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaConflictError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaConflictError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaConflictError.statusCode`
+
+
+**Extends:**
+
+- `DaytonaConflictError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaConflictError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaRecordingStillActiveError()
+
+```ts
+new DaytonaRecordingStillActiveError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaRecordingStillActiveError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaRecordingStillActiveError`
+
+##### Inherited from
+
+`DaytonaConflictError`.`constructor`
+## DaytonaServiceUnavailableError
+
+The service is temporarily unable to handle the request (HTTP 503).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaError.statusCode`
+
 
 **Extends:**
 
 - `DaytonaError`
+
+### Extended by
+
+- `DaytonaA11yUnavailableError`
+- `DaytonaRecordingFfmpegNotFoundError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaServiceUnavailableError()
+
+```ts
+new DaytonaServiceUnavailableError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaServiceUnavailableError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaServiceUnavailableError`
+
+##### Inherited from
+
+`DaytonaError`.`constructor`
+## DaytonaSessionEndedError
+
+The session has already ended (code `SESSION_ENDED`).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaGoneError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaGoneError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaGoneError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaGoneError.statusCode`
+
+
+**Extends:**
+
+- `DaytonaGoneError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaGoneError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaSessionEndedError()
+
+```ts
+new DaytonaSessionEndedError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaSessionEndedError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaSessionEndedError`
+
+##### Inherited from
+
+`DaytonaGoneError`.`constructor`
+## DaytonaTimeoutError
+
+The operation timed out (HTTP 408, or 504 when a gateway timed out).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaError.statusCode`
+
+
+**Extends:**
+
+- `DaytonaError`
+
+### Extended by
+
+- `DaytonaProcessExecutionTimeoutError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
 
 ### Constructors
 
@@ -479,7 +2360,8 @@ new DaytonaTimeoutError(
    message: string,
    statusCode?: number,
    headers?: AxiosHeaders,
-   errorCode?: string): DaytonaTimeoutError
+   code?: string,
+   source?: string): DaytonaTimeoutError
 ```
 
 **Parameters**:
@@ -487,7 +2369,8 @@ new DaytonaTimeoutError(
 - `message` _string_
 - `statusCode?` _number_
 - `headers?` _AxiosHeaders_
-- `errorCode?` _string_
+- `code?` _string_
+- `source?` _string_
 
 
 **Returns**:
@@ -497,36 +2380,122 @@ new DaytonaTimeoutError(
 ##### Inherited from
 
 `DaytonaError`.`constructor`
-## DaytonaValidationError
+## DaytonaUnprocessableEntityError
 
-Error thrown when input validation fails (HTTP 400 or client-side validation).
+The request was well-formed but semantically invalid (HTTP 422).
 
 **Properties**:
 
-- `errorCode?` _string_ - Machine-readable error code if available
-    - _Inherited from_: `DaytonaError.errorCode`
-- `headers?` _AxiosHeaders_ - Response headers if available
+- `code?` _string_
+    - _Inherited from_: `DaytonaError.code`
+- `headers?` _AxiosHeaders_
     - _Inherited from_: `DaytonaError.headers`
-- `statusCode?` _number_ - HTTP status code if available
-
+- `source?` _string_
+    - _Inherited from_: `DaytonaError.source`
+- `statusCode?` _number_
     - _Inherited from_: `DaytonaError.statusCode`
 
-
-**Example:**
-
-```ts
-try {
-  Image.debianSlim('3.8' as never)
-} catch (error) {
-  if (error instanceof DaytonaValidationError) {
-    console.log(error.message)
-  }
-}
-```
 
 **Extends:**
 
 - `DaytonaError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaUnprocessableEntityError()
+
+```ts
+new DaytonaUnprocessableEntityError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaUnprocessableEntityError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaUnprocessableEntityError`
+
+##### Inherited from
+
+`DaytonaError`.`constructor`
+## ~~DaytonaValidationError~~
+
+### Deprecated
+
+**Properties**:
+
+- ~~`code?`~~ _string_
+    - _Inherited from_: `DaytonaBadRequestError.code`
+- ~~`headers?`~~ _AxiosHeaders_
+    - _Inherited from_: `DaytonaBadRequestError.headers`
+- ~~`source?`~~ _string_
+    - _Inherited from_: `DaytonaBadRequestError.source`
+- ~~`statusCode?`~~ _number_
+    - _Inherited from_: `DaytonaBadRequestError.statusCode`
+
+
+Use DaytonaBadRequestError instead. Re-exported so
+existing `catch (err) { if (err instanceof DaytonaValidationError) ... }`
+blocks keep working.
+
+**Extends:**
+
+- `DaytonaBadRequestError`
+
+### Accessors
+
+#### ~~errorCode~~
+
+_Inherited from_: `DaytonaBadRequestError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
 
 ### Constructors
 
@@ -537,7 +2506,8 @@ new DaytonaValidationError(
    message: string,
    statusCode?: number,
    headers?: AxiosHeaders,
-   errorCode?: string): DaytonaValidationError
+   code?: string,
+   source?: string): DaytonaValidationError
 ```
 
 **Parameters**:
@@ -545,7 +2515,8 @@ new DaytonaValidationError(
 - `message` _string_
 - `statusCode?` _number_
 - `headers?` _AxiosHeaders_
-- `errorCode?` _string_
+- `code?` _string_
+- `source?` _string_
 
 
 **Returns**:
@@ -554,14 +2525,17 @@ new DaytonaValidationError(
 
 ##### Inherited from
 
-`DaytonaError`.`constructor`
+`DaytonaBadRequestError`.`constructor`
 ## createAxiosDaytonaError()
 
 ```ts
 function createAxiosDaytonaError(error: AxiosError): DaytonaError
 ```
 
-Creates the appropriate Daytona error subclass from an Axios error.
+Creates the appropriate Daytona error subclass from an Axios error. Maps
+client-side timeouts to DaytonaConnectionTimeoutError, networking failures
+(no response received) to DaytonaConnectionError, and HTTP responses to
+the most specific subclass via `createDaytonaError`.
 
 **Parameters**:
 
@@ -582,17 +2556,21 @@ function createDaytonaError(
    message: string,
    statusCode?: number,
    headers?: AxiosHeaders,
-   errorCode?: string): DaytonaError
+   code?: string,
+   source?: string): DaytonaError
 ```
 
 Creates the appropriate Daytona error subclass from structured error metadata.
+
+Resolution order: (source, code) override -> HTTP status code -> DaytonaError.
 
 **Parameters**:
 
 - `message` _string_
 - `statusCode?` _number_
 - `headers?` _AxiosHeaders_
-- `errorCode?` _string_
+- `code?` _string_
+- `source?` _string_
 
 
 **Returns**:
@@ -626,4 +2604,35 @@ Maps an HTTP status code to the corresponding Daytona error class.
 
 ```ts
 type ResponseHeaders = InstanceType<typeof AxiosHeaders>;
+```
+
+***
+
+
+## SOURCE\_API
+
+```ts
+const SOURCE_API: "DAYTONA_API" = 'DAYTONA_API';
+```
+
+Wire-format `source` identifiers set by the translation layer when a
+Daytona service stamps them on the wire envelope. `source = undefined`
+means the response did not carry a structured envelope (treat as opaque).
+
+***
+
+
+## SOURCE\_DAEMON
+
+```ts
+const SOURCE_DAEMON: "DAYTONA_DAEMON" = 'DAYTONA_DAEMON';
+```
+
+***
+
+
+## SOURCE\_PROXY
+
+```ts
+const SOURCE_PROXY: "DAYTONA_PROXY" = 'DAYTONA_PROXY';
 ```

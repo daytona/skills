@@ -305,9 +305,9 @@ Schema: **UpdateOrganizationRegionQuota**
 | `maxMemoryPerSandbox` | number | No |  |
 | `maxDiskPerSandbox` | number | No |  |
 | `maxDiskPerNonEphemeralSandbox` | number | No |  |
-| `maxCpuPerGpuSandbox` | number | No |  |
-| `maxMemoryPerGpuSandbox` | number | No |  |
-| `maxDiskPerGpuSandbox` | number | No |  |
+| `maxCpuPerGpu` | number | No | CPU maximum per requested GPU unit for GPU sandboxes. |
+| `maxMemoryPerGpu` | number | No | Memory maximum per requested GPU unit for GPU sandboxes. |
+| `maxDiskPerGpu` | number | No | Disk maximum per requested GPU unit for GPU sandboxes. |
 
 ### Responses
 

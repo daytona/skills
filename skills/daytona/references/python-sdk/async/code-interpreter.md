@@ -235,7 +235,6 @@ ctx = await sandbox.code_interpreter.create_context()
 await sandbox.code_interpreter.delete_context(ctx)
 ```
 
-
 ## OutputMessage
 
 ```python

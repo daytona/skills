@@ -46,6 +46,9 @@ Schema: **GitAddRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK |  |
+| 400 | Bad Request | ErrorResponse |
+| 409 | Conflict | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -66,6 +69,8 @@ Get a list of all branches in the Git repository
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | ListBranchResponse |
+| 404 | Not Found | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -91,6 +96,9 @@ Schema: **GitBranchRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 201 | Created |  |
+| 400 | Bad Request | ErrorResponse |
+| 409 | Conflict | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -116,6 +124,9 @@ Schema: **GitDeleteBranchRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 204 | No Content |  |
+| 400 | Bad Request | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -141,6 +152,10 @@ Schema: **GitCheckoutRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK |  |
+| 400 | Bad Request | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
+| 409 | Conflict | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -172,6 +187,11 @@ Schema: **GitCloneRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK |  |
+| 400 | Bad Request | ErrorResponse |
+| 401 | Unauthorized | ErrorResponse |
+| 403 | Forbidden | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -200,6 +220,9 @@ Schema: **GitCommitRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | GitCommitResponse |
+| 400 | Bad Request | ErrorResponse |
+| 409 | Conflict | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -323,6 +346,8 @@ Get the commit history of the Git repository
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | array of GitCommitInfo |
+| 404 | Not Found | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -377,6 +402,12 @@ Schema: **GitPullRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK |  |
+| 400 | Bad Request | ErrorResponse |
+| 401 | Unauthorized | ErrorResponse |
+| 403 | Forbidden | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
+| 409 | Conflict | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -509,6 +540,11 @@ Schema: **GitRestoreRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK |  |
+| 400 | Bad Request | ErrorResponse |
+| 401 | Unauthorized | ErrorResponse |
+| 403 | Forbidden | ErrorResponse |
+| 409 | Conflict | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -529,5 +565,8 @@ Get the Git status of the repository at the specified path
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | GitStatus |
+| 400 | Bad Request | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---

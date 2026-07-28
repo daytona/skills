@@ -24,7 +24,7 @@ Snapshots are persistent, point-in-time captures of sandbox state, including the
 Daytona provides default snapshots for creating sandboxes. You can also create snapshots from images, capture the state of existing sandboxes, or create warm pools for a snapshot:
 
 - [**Create snapshots from an image**](#create-snapshots): define the base operating system, language runtimes, packages, and project-level setup in an image or Dockerfile, and Daytona builds it into a snapshot you can use to create sandboxes
-- [**Create snapshots from a sandbox**](#create-snapshot-from-sandbox): captures and persists a sandbox's current state; container sandboxes capture filesystem state only (**cold snapshots**), and VM sandboxes (Linux VM and Windows) capture filesystem and memory state (**hot snapshots**)
+- [**Create snapshots from a sandbox**](#create-snapshot-from-sandbox): captures and persists a sandbox's current state; container sandboxes capture filesystem state only (**cold snapshots**), VM sandboxes capture filesystem and memory state (**hot snapshots**)
 - [**Warm pools**](https://www.daytona.io/docs/en/warm-pools): keep a configured number of pre-created, running sandboxes built from a snapshot; matching sandbox create requests claim one warm sandbox from the pool instantly instead of provisioning a new sandbox
 
 ## Default snapshots
@@ -106,7 +106,7 @@ snapshot = daytona.snapshot.create(
 
 **Windows:**
 
-Windows snapshots are used to create [Windows sandboxes](./sandboxes.md#windows). They cannot be created from a base image. They are produced only through the [snapshot from sandbox](#create-snapshot-from-sandbox) by starting from an existing Windows sandbox and capturing its current state as a snapshot.
+Windows snapshots are used to create [Windows sandboxes](./sandboxes.md#vm-sandboxes). They cannot be created from a base image. They are produced only through the [snapshot from sandbox](#create-snapshot-from-sandbox) by starting from an existing Windows sandbox and capturing its current state as a snapshot.
 
 ## GPU snapshots
 

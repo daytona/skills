@@ -36,6 +36,7 @@ Schema: **LspCompletionParams**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | CompletionList |
+| 400 | Bad Request | ErrorResponse |
 
 ---
 
@@ -62,6 +63,7 @@ Schema: **LspDocumentRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK |  |
+| 400 | Bad Request | ErrorResponse |
 
 ---
 
@@ -88,6 +90,7 @@ Schema: **LspDocumentRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK |  |
+| 400 | Bad Request | ErrorResponse |
 
 ---
 
@@ -110,6 +113,7 @@ Get symbols (functions, classes, etc.) from a document
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | array of LspSymbol |
+| 400 | Bad Request | ErrorResponse |
 
 ---
 
@@ -135,6 +139,8 @@ Schema: **LspServerRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK |  |
+| 400 | Bad Request | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -160,6 +166,8 @@ Schema: **LspServerRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK |  |
+| 400 | Bad Request | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -182,5 +190,6 @@ Search for symbols across the entire workspace
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | array of LspSymbol |
+| 400 | Bad Request | ErrorResponse |
 
 ---

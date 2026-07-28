@@ -180,6 +180,10 @@ Gets a Sandbox by its ID.
 
 - `Daytona:Sandbox`
 
+**Raises**:
+
+- `Daytona:Sdk:Error` -
+
 #### list()
 
 ```ruby

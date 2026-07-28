@@ -811,7 +811,6 @@ print(f"Terminal resized to {updated_info.cols}x{updated_info.rows}")
 pty_handle.resize(new_size)
 ```
 
-
 ## CodeRunParams
 
 ```python

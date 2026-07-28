@@ -15,7 +15,7 @@
 - POST `/files/permissions`
 - POST `/files/replace`
 - GET `/files/search`
-- POST `/files/upload`
+- POST `/files/upload-v2`
 
 ## GET `/files` {#daytona-toolbox/tag/file-system/GET/files}
 
@@ -37,6 +37,9 @@ entries, depth=2 also includes their children, and so on.
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | array of FileInfo |
+| 400 | Bad Request | ErrorResponse |
+| 403 | Forbidden | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
 
 ---
 
@@ -58,6 +61,9 @@ Delete a file or directory at the specified path
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 204 | No Content |  |
+| 400 | Bad Request | ErrorResponse |
+| 403 | Forbidden | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
 
 ---
 
@@ -82,6 +88,10 @@ Schema: **FilesDownloadRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | Multipart response with file parts and JSON error parts | gin.H |
+| 400 | Bad Request | ErrorResponse |
+| 403 | Forbidden | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -96,6 +106,7 @@ Upload multiple files with their destination paths
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK |  |
+| 400 | Bad Request | ErrorResponse |
 
 ---
 
@@ -116,6 +127,9 @@ Download a file by providing its path
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | string |
+| 400 | Bad Request | ErrorResponse |
+| 403 | Forbidden | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
 
 ---
 
@@ -137,6 +151,7 @@ Search for text pattern within files in a directory
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | array of Match |
+| 400 | Bad Request | ErrorResponse |
 
 ---
 
@@ -158,6 +173,7 @@ Create a folder with the specified path and optional permissions
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 201 | Created |  |
+| 400 | Bad Request | ErrorResponse |
 
 ---
 
@@ -178,6 +194,9 @@ Get detailed information about a file or directory
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | FileInfo |
+| 400 | Bad Request | ErrorResponse |
+| 403 | Forbidden | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
 
 ---
 
@@ -199,6 +218,10 @@ Move or rename a file or directory from source to destination
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK |  |
+| 400 | Bad Request | ErrorResponse |
+| 403 | Forbidden | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
+| 409 | Conflict | ErrorResponse |
 
 ---
 
@@ -222,6 +245,9 @@ Set file permissions, ownership, and group for a file or directory
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK |  |
+| 400 | Bad Request | ErrorResponse |
+| 403 | Forbidden | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
 
 ---
 
@@ -248,6 +274,7 @@ Schema: **ReplaceRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | array of ReplaceResult |
+| 400 | Bad Request | ErrorResponse |
 
 ---
 
@@ -269,14 +296,17 @@ Search for files matching a specific pattern in a directory
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | SearchFilesResponse |
+| 400 | Bad Request | ErrorResponse |
 
 ---
 
-## POST `/files/upload` {#daytona-toolbox/tag/file-system/POST/files/upload}
+## POST `/files/upload-v2` {#daytona-toolbox/tag/file-system/POST/files/upload-v2}
 
 **Upload a file**
 
-Upload a file to the specified path
+Upload a file to the specified path. Accepts either multipart/form-data
+(field "file") or a raw request body (e.g. application/octet-stream).
+Parent directories are created if missing; an existing file is overwritten.
 
 ### Parameters
 
@@ -290,12 +320,13 @@ Schema: **UploadFile_request**
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `file` | string (binary) | Yes | File to upload |
+| `file` | string (binary) | No | File to upload (multipart/form-data) |
 
 ### Responses
 
 | Status | Description | Schema |
 |--------|-------------|--------|
-| 200 | OK | gin.H |
+| 200 | OK | UploadedFile |
+| 400 | Bad Request | ErrorResponse |
 
 ---

@@ -31,5 +31,6 @@ Check if a specific port is currently in use
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | IsPortInUseResponse |
+| 400 | Bad Request | ErrorResponse |
 
 ---

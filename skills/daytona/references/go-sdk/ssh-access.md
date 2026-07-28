@@ -77,12 +77,6 @@ SSH access tokens expire automatically after 60 minutes. You can specify a custo
 
 Revoke SSH access tokens before expiry:
 
-
-## Related
-
-- [Web Terminal](../platform/web-terminal.md): browser-based terminal access to sandboxes
-- [Preview](./preview.md): generate preview URLs for accessing sandbox services
-
 ## See Also
 - [Python SDK - ssh-access](../python-sdk/ssh-access.md)
 - [TypeScript SDK - ssh-access](../typescript-sdk/ssh-access.md)

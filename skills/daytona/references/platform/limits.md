@@ -1,6 +1,11 @@
 ## Contents
 
 - Current usage
+- Resources
+- Sandbox limits
+- Disk quota
+- Rate limits
+- Tiers
 - Limits
 - Best practices
 - See Also
@@ -14,7 +19,7 @@
 
 Current usage provides a summary of your organization's resource usage, tier and region.
 
-### Resources
+## Resources
 
 Resources are shared across all running sandboxes. The number of sandboxes you can run at once depends on their individual usage. Organizations are automatically placed into a tier based on verification status and have access to a compute pool consisting of:
 
@@ -22,7 +27,7 @@ Resources are shared across all running sandboxes. The number of sandboxes you c
 - **Memory**: the total RAM available
 - **Storage**: the total disk space available
 
-### Sandbox limits
+## Sandbox limits
 
 Sandbox limits provides an overview of resource limits per sandbox.
 
@@ -32,9 +37,9 @@ Sandbox limits provides an overview of resource limits per sandbox.
 
 Sandboxes count against these limits based on their [lifecycle state](../python-sdk/sandboxes.md#sandbox-lifecycle): stopped, paused, archived, and deleted sandboxes free reserved CPU and memory, while disk quota depends on the sandbox type and state.
 
-### Disk quota
+## Disk quota
 
-Disk quota and [sandbox billing](./billing.md#sandbox-billing) are separate: a sandbox can be billed for reserved disk without counting against your organization's storage limit. The table below details which states occupy disk quota for [container sandboxes](../python-sdk/sandboxes.md#create-sandboxes) and [VM sandboxes](../python-sdk/sandboxes.md#vm-sandboxes) (Linux VM and Windows).
+Disk quota and [sandbox billing](./billing.md#sandbox-billing) are separate: a sandbox can be billed for reserved disk without counting against your organization's storage limit. The table below details which states occupy disk quota for [container sandboxes](../python-sdk/sandboxes.md#create-sandboxes) and [VM sandboxes](../python-sdk/sandboxes.md#vm-sandboxes).
 
 | **State** | **Container Sandbox** | **VM Sandbox <br /> (Linux VM and Windows)** | **Description**                                                                                                                                                                                                                                                                                                                           |
 | --------- | --------------------- | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -42,7 +47,7 @@ Disk quota and [sandbox billing](./billing.md#sandbox-billing) are separate: a s
 | Paused    | ✗                     | ✗                                            | Paused VM sandboxes free the disk quota. Supported for <u>[**VM sandboxes**](../python-sdk/sandboxes.md#vm-sandboxes)</u> only.                                                                                                                                                                                                                   |
 | Archived  | ✗                     | ✗                                            | <u>[**Archiving**](../python-sdk/sandboxes.md#archive-sandboxes)</u> moves the container filesystem to object storage, frees the quota, and stops billing. Supported for <u>[**container sandboxes**](../python-sdk/sandboxes.md#create-sandboxes)</u> only. VM sandboxes have no archive state because stopping or pausing them already frees the quota. |
 
-### Rate limits
+## Rate limits
 
 Rate limits control how many API requests you can make within a specific time window. These limits are applied based on your tier, authentication status, and the type of operation you're performing. Rate limits for general authenticated requests are tracked per organization.
 
@@ -54,7 +59,7 @@ Rate limits control how many API requests you can make within a specific time wi
 | Tier 4     | 50,000                         | 600                            | 50,000                          |
 | Enterprise | Custom                         | Custom                         | Custom                          |
 
-#### Rate limit headers
+### Rate limit headers
 
 Daytona includes rate limit information in API response headers. Header names include a suffix based on which rate limit is triggered (e.g., `-anonymous`, `-authenticated`, `-sandbox-create`, `-sandbox-lifecycle`):
 
@@ -65,7 +70,7 @@ Daytona includes rate limit information in API response headers. Header names in
 | **`X-RateLimit-Reset-{throttler}`**     | Time in seconds until the rate limit window resets                        |
 | **`Retry-After-{throttler}`**           | Time in seconds to wait before retrying (included when limit is exceeded) |
 
-#### Rate limit errors
+### Rate limit errors
 
 Daytona [Python](../python-sdk/README.md), [TypeScript](../typescript-sdk/README.md), [Ruby](../ruby-sdk/README.md) and [Go](../go-sdk/README.md) SDKs raise or throw a `DaytonaRateLimitError` exception (Python) or error (TypeScript, Ruby and Go) when you exceed a rate limit.
 
@@ -131,7 +136,7 @@ if err != nil {
 }
 ```
 
-### Tiers
+## Tiers
 
 Limits are applied to your organization's default region. To unlock higher limits, complete the following verification steps in the [Daytona Dashboard ↗](https://app.daytona.io/dashboard/limits):
 

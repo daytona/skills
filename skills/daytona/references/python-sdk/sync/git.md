@@ -802,7 +802,6 @@ given host authenticate automatically.
 sandbox.git.dangerously_authenticate("user", "github_token")
 ```
 
-
 ## GitCommitResponse
 
 ```python

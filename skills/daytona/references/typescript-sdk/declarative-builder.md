@@ -21,6 +21,10 @@ Create a declarative image by defining the dependencies for the sandbox.
 
 Declarative images are cached for 24 hours, and are automatically reused when running the same script. Thus, subsequent runs on the same runner will be almost instantaneous.
 
+**Container:**
+
+Create a container sandbox from a declarative image.
+
 ```typescript
 // Define a declarative image with python packages
 const declarativeImage = Image.debianSlim('3.12')
@@ -39,9 +43,38 @@ const sandbox = await daytona.create(
 )
 ```
 
+**GPU:**
+
+Create a GPU sandbox from a declarative image.
+
+```typescript
+// Define a declarative image with python packages
+const declarativeImage = Image.debianSlim('3.12')
+  .pipInstall(['requests', 'pytest'])
+  .workdir('/home/daytona')
+
+// Create a GPU sandbox with the declarative image and stream the build logs
+const sandbox = await daytona.create(
+  {
+    image: declarativeImage,
+    autoDeleteInterval: 0,
+    resources: { gpu: 1 },
+  },
+  {
+    timeout: 0,
+    onSnapshotCreateLogs: console.log,
+  }
+)
+```
+
 ## Create pre-built snapshots
 
 Create a pre-built snapshot by building a declarative image and registering it as a [snapshot](./snapshots.md).
+
+**Container:**
+
+1. Create a container snapshot from a declarative image
+2. Create a sandbox from that snapshot
 
 ```typescript
 // Define the declarative image for the snapshot
@@ -62,6 +95,63 @@ await daytona.snapshot.create(
 
 // Create a new sandbox from the pre-built snapshot
 const sandbox = await daytona.create({ snapshot: 'my-snapshot' })
+```
+
+**Linux VM:**
+
+1. Create a Linux VM snapshot from a declarative image
+2. Create a sandbox from that snapshot
+
+```typescript
+// Define the declarative image for the VM snapshot
+const image = Image.debianSlim('3.12')
+  .pipInstall(['numpy', 'pandas'])
+  .workdir('/home/daytona')
+
+// Create and register the VM snapshot, streaming the build logs
+await daytona.snapshot.create(
+  {
+    name: 'my-vm-snapshot',
+    image,
+    sandboxClass: SandboxClass.LINUX_VM,
+  },
+  {
+    onLogs: console.log,
+  }
+)
+
+// Create a new VM sandbox from the pre-built snapshot
+const sandbox = await daytona.create({ snapshot: 'my-vm-snapshot' })
+```
+
+**GPU:**
+
+1. Create a GPU snapshot from a declarative image
+2. Create a sandbox from that snapshot
+
+```typescript
+// Define the declarative image for the GPU snapshot
+const image = Image.debianSlim('3.12')
+  .pipInstall(['numpy', 'pandas'])
+  .workdir('/home/daytona')
+
+// Create and register the GPU snapshot, streaming the build logs
+await daytona.snapshot.create(
+  {
+    name: 'my-gpu-snapshot',
+    image,
+    resources: { gpu: 1 },
+  },
+  {
+    onLogs: console.log,
+  }
+)
+
+// Create a new GPU sandbox from the pre-built snapshot
+const sandbox = await daytona.create({
+  snapshot: 'my-gpu-snapshot',
+  autoDeleteInterval: 0,
+})
 ```
 
 ## Image configuration

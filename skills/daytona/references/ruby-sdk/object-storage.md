@@ -8,7 +8,7 @@ Initialize ObjectStorage with S3-compatible credentials
 #### new ObjectStorage()
 
 ```ruby
-def initialize(endpoint_url:, aws_access_key_id:, aws_secret_access_key:, aws_session_token:, bucket_name: DEFAULT_BUCKET_NAME, region: DEFAULT_REGION)
+def initialize(endpoint_url:, aws_access_key_id:, aws_secret_access_key:, aws_session_token:, region:, bucket_name: DEFAULT_BUCKET_NAME)
 
 ```
 
@@ -21,7 +21,7 @@ Initialize ObjectStorage with S3-compatible credentials
 - `aws_secret_access_key` _String_ - The secret access key for the object storage service
 - `aws_session_token` _String_ - The session token for the object storage service
 - `bucket_name` _String_ - The name of the bucket to use (defaults to "daytona-volume-builds")
-- `region` _String_ - AWS region (defaults to us-east-1)
+- `region` _String_ - Region of the storage backend
 
 **Returns**:
 

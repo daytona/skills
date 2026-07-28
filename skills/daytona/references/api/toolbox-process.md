@@ -47,6 +47,9 @@ Schema: **CodeRunRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | CodeRunResponse |
+| 400 | Bad Request | ErrorResponse |
+| 408 | Request Timeout | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -74,6 +77,8 @@ Schema: **ExecuteRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | ExecuteResponse |
+| 400 | Bad Request | ErrorResponse |
+| 408 | Request Timeout | ErrorResponse |
 
 ---
 
@@ -88,6 +93,7 @@ Get a list of all active pseudo-terminal sessions
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | PtyListResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -117,6 +123,9 @@ Schema: **PtyCreateRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 201 | Created | PtyCreateResponse |
+| 400 | Bad Request | ErrorResponse |
+| 409 | Conflict | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -137,6 +146,8 @@ Get detailed information about a specific pseudo-terminal session
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | PtySessionInfo |
+| 400 | Bad Request | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
 
 ---
 
@@ -157,6 +168,8 @@ Delete a pseudo-terminal session and terminate its process
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | gin.H |
+| 400 | Bad Request | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
 
 ---
 
@@ -177,6 +190,7 @@ Establish a WebSocket connection to interact with a pseudo-terminal session
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 101 | Switching Protocols - WebSocket connection established |  |
+| 400 | Bad Request | ErrorResponse |
 
 ---
 
@@ -208,6 +222,9 @@ Schema: **PtyResizeRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | PtySessionInfo |
+| 400 | Bad Request | ErrorResponse |
+| 410 | Gone | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -222,6 +239,7 @@ Get a list of all active shell sessions
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | array of Session |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -246,6 +264,9 @@ Schema: **CreateSessionRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 201 | Created |  |
+| 400 | Bad Request | ErrorResponse |
+| 409 | Conflict | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -260,6 +281,8 @@ Get details of an entrypoint session including its commands
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | Session |
+| 404 | Not Found | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -280,6 +303,8 @@ Get logs for a sandbox entrypoint session. Returns JSON with separated stdout/st
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | Entrypoint log content | SessionCommandLogsResponse |
+| 404 | Not Found | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -300,6 +325,8 @@ Get details of a specific session including its commands
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | Session |
+| 404 | Not Found | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -320,6 +347,9 @@ Delete an existing shell session
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 204 | No Content |  |
+| 400 | Bad Request | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -341,6 +371,8 @@ Get details of a specific command within a session
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | OK | Command |
+| 404 | Not Found | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -372,6 +404,10 @@ Schema: **SessionSendInputRequest**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 204 | No Content |  |
+| 400 | Bad Request | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
+| 410 | Gone | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -394,6 +430,10 @@ Get logs for a specific command within a session. Returns JSON with separated st
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | Log content (JSON for new SDKs, plain text for old SDKs) | SessionCommandLogsResponse |
+| 400 | Bad Request | ErrorResponse |
+| 403 | Forbidden | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---
 
@@ -428,5 +468,9 @@ Schema: **SessionExecuteRequest**
 |--------|-------------|--------|
 | 200 | OK | SessionExecuteResponse |
 | 202 | Accepted | SessionExecuteResponse |
+| 400 | Bad Request | ErrorResponse |
+| 404 | Not Found | ErrorResponse |
+| 409 | Conflict | ErrorResponse |
+| 500 | Internal Server Error | ErrorResponse |
 
 ---

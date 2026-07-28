@@ -21,6 +21,10 @@ Create a declarative image by defining the dependencies for the sandbox.
 
 Declarative images are cached for 24 hours, and are automatically reused when running the same script. Thus, subsequent runs on the same runner will be almost instantaneous.
 
+**Container:**
+
+Create a container sandbox from a declarative image.
+
 ```go
 // Define a declarative image with python packages
 version := "3.12"
@@ -44,9 +48,48 @@ if err != nil {
 }
 ```
 
+**GPU:**
+
+Create a GPU sandbox from a declarative image.
+
+```go
+// Define a declarative image with python packages
+version := "3.12"
+declarativeImage := daytona.DebianSlim(&version).
+  PipInstall([]string{"requests", "pytest"}).
+  Workdir("/home/daytona")
+
+// Create a GPU sandbox with the declarative image and stream the build logs
+autoDelete := 0
+logChan := make(chan string)
+go func() {
+  for log := range logChan {
+    fmt.Print(log)
+  }
+}()
+
+sandbox, err := client.Create(ctx, types.ImageParams{
+  Image: declarativeImage,
+  SandboxBaseParams: types.SandboxBaseParams{
+    AutoDeleteInterval: &autoDelete,
+  },
+  Resources: &types.Resources{
+    GPU: 1,
+  },
+}, options.WithTimeout(0), options.WithLogChannel(logChan))
+if err != nil {
+  // handle error
+}
+```
+
 ## Create pre-built snapshots
 
 Create a pre-built snapshot by building a declarative image and registering it as a [snapshot](./snapshots.md).
+
+**Container:**
+
+1. Create a container snapshot from a declarative image
+2. Create a sandbox from that snapshot
 
 ```go
 // Define the declarative image for the snapshot
@@ -70,6 +113,81 @@ for log := range logChan {
 // Create a new sandbox from the pre-built snapshot
 sandbox, err := client.Create(ctx, types.SnapshotParams{
   Snapshot: snapshot.Name,
+})
+if err != nil {
+  // handle error
+}
+```
+
+**Linux VM:**
+
+1. Create a Linux VM snapshot from a declarative image
+2. Create a sandbox from that snapshot
+
+```go
+// Define the declarative image for the VM snapshot
+version := "3.12"
+image := daytona.DebianSlim(&version).
+  PipInstall([]string{"numpy", "pandas"}).
+  Workdir("/home/daytona")
+
+// Create and register the VM snapshot, streaming the build logs
+sandboxClass := types.SandboxClassLinuxVM
+snapshot, logChan, err := client.Snapshot.Create(ctx, &types.CreateSnapshotParams{
+  Name:         "my-vm-snapshot",
+  Image:        image,
+  SandboxClass: &sandboxClass,
+})
+if err != nil {
+  // handle error
+}
+for log := range logChan {
+  fmt.Print(log)
+}
+
+// Create a new VM sandbox from the pre-built snapshot
+sandbox, err := client.Create(ctx, types.SnapshotParams{
+  Snapshot: snapshot.Name,
+})
+if err != nil {
+  // handle error
+}
+```
+
+**GPU:**
+
+1. Create a GPU snapshot from a declarative image
+2. Create a sandbox from that snapshot
+
+```go
+// Define the declarative image for the GPU snapshot
+version := "3.12"
+image := daytona.DebianSlim(&version).
+  PipInstall([]string{"numpy", "pandas"}).
+  Workdir("/home/daytona")
+
+// Create and register the GPU snapshot, streaming the build logs
+snapshot, logChan, err := client.Snapshot.Create(ctx, &types.CreateSnapshotParams{
+  Name:  "my-gpu-snapshot",
+  Image: image,
+  Resources: &types.Resources{
+    GPU: 1,
+  },
+})
+if err != nil {
+  // handle error
+}
+for log := range logChan {
+  fmt.Print(log)
+}
+
+// Create a new GPU sandbox from the pre-built snapshot
+autoDelete := 0
+sandbox, err := client.Create(ctx, types.SnapshotParams{
+  Snapshot: snapshot.Name,
+  SandboxBaseParams: types.SandboxBaseParams{
+    AutoDeleteInterval: &autoDelete,
+  },
 })
 if err != nil {
   // handle error

@@ -91,8 +91,3 @@ Revoke SSH access tokens before expiry:
 # Revoke specific SSH access token for the sandbox
 sandbox.revoke_ssh_access(token="specific-token")
 ```
-
-## Related
-
-- [Web Terminal](../platform/web-terminal.md): browser-based terminal access to sandboxes
-- [Preview](./preview.md): generate preview URLs for accessing sandbox services

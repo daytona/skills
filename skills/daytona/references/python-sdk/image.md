@@ -398,7 +398,6 @@ Creates a Debian slim image based on the official Python Docker image.
 image = Image.debian_slim("3.12")
 ```
 
-
 ## Context
 
 ```python

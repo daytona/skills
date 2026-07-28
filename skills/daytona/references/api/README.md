@@ -96,6 +96,7 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `GET` | `/preview/{sandboxId}/public` | [Check if sandbox is public](./preview.md#daytona/tag/preview/GET/preview/{sandboxId}/public) | [preview](./preview.md) |
 | `GET` | `/preview/{sandboxId}/preview-warning` | [Check if the preview warning page is enabled for the sandbox](./preview.md#daytona/tag/preview/GET/preview/{sandboxId}/preview-warning) | [preview](./preview.md) |
 | `GET` | `/preview/{sandboxId}/validate/{authToken}` | [Check if sandbox auth token is valid](./preview.md#daytona/tag/preview/GET/preview/{sandboxId}/validate/{authToken}) | [preview](./preview.md) |
+| `GET` | `/preview/{sandboxId}/signing-key` | [Get the signing key for a sandbox](./preview.md#daytona/tag/preview/GET/preview/{sandboxId}/signing-key) | [preview](./preview.md) |
 | `GET` | `/preview/{sandboxId}/access` | [Check if user has access to the sandbox](./preview.md#daytona/tag/preview/GET/preview/{sandboxId}/access) | [preview](./preview.md) |
 | `GET` | `/preview/{signedPreviewToken}/{port}/sandbox-id` | [Get sandbox ID from signed preview URL token](./preview.md#daytona/tag/preview/GET/preview/{signedPreviewToken}/{port}/sandbox-id) | [preview](./preview.md) |
 | `GET` | `/shared-regions` | [List all shared regions](./regions.md#daytona/tag/regions/GET/shared-regions) | [regions](./regions.md) |
@@ -130,6 +131,8 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `GET` | `/sandbox/{sandboxIdOrName}/parent` | [Get sandbox fork parent](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxIdOrName}/parent) | [sandbox](./sandbox.md) |
 | `GET` | `/sandbox/{sandboxIdOrName}/ancestors` | [Get sandbox fork ancestor chain](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxIdOrName}/ancestors) | [sandbox](./sandbox.md) |
 | `POST` | `/sandbox/{sandboxIdOrName}/public/{isPublic}` | [Update public status](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/public/{isPublic}) | [sandbox](./sandbox.md) |
+| `GET` | `/sandbox/{sandboxId}/signing-key` | [Get the signing key for a sandbox](./sandbox.md#daytona/tag/sandbox/GET/sandbox/{sandboxId}/signing-key) | [sandbox](./sandbox.md) |
+| `POST` | `/sandbox/{sandboxId}/signing-key/rotate` | [Rotate the signing key, invalidating all previously signed URLs](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxId}/signing-key/rotate) | [sandbox](./sandbox.md) |
 | `POST` | `/sandbox/{sandboxId}/last-activity` | [Update sandbox last activity](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxId}/last-activity) | [sandbox](./sandbox.md) |
 | `POST` | `/sandbox/{sandboxIdOrName}/autostop/{interval}` | [Set sandbox auto-stop interval](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/autostop/{interval}) | [sandbox](./sandbox.md) |
 | `POST` | `/sandbox/{sandboxIdOrName}/autopause/{interval}` | [Set sandbox auto-pause interval](./sandbox.md#daytona/tag/sandbox/POST/sandbox/{sandboxIdOrName}/autopause/{interval}) | [sandbox](./sandbox.md) |
@@ -179,6 +182,10 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `GET` | `/volumes/{volumeId}` | [Get volume details](./volumes.md#daytona/tag/volumes/GET/volumes/{volumeId}) | [volumes](./volumes.md) |
 | `DELETE` | `/volumes/{volumeId}` | [Delete volume](./volumes.md#daytona/tag/volumes/DELETE/volumes/{volumeId}) | [volumes](./volumes.md) |
 | `GET` | `/volumes/by-name/{name}` | [Get volume details by name](./volumes.md#daytona/tag/volumes/GET/volumes/by-name/{name}) | [volumes](./volumes.md) |
+| `GET` | `/warm-pools` | [List warm pools for the organization](./warm-pools.md#daytona/tag/warm-pools/GET/warm-pools) | [warm-pools](./warm-pools.md) |
+| `POST` | `/warm-pools` | [Create a warm pool](./warm-pools.md#daytona/tag/warm-pools/POST/warm-pools) | [warm-pools](./warm-pools.md) |
+| `PATCH` | `/warm-pools/{id}` | [Update a warm pool size](./warm-pools.md#daytona/tag/warm-pools/PATCH/warm-pools/{id}) | [warm-pools](./warm-pools.md) |
+| `DELETE` | `/warm-pools/{id}` | [Delete a warm pool](./warm-pools.md#daytona/tag/warm-pools/DELETE/warm-pools/{id}) | [warm-pools](./warm-pools.md) |
 | `POST` | `/webhooks/organizations/{organizationId}/app-portal-access` | [Get Svix Consumer App Portal access for an organization](./webhooks.md#daytona/tag/webhooks/POST/webhooks/organizations/{organizationId}/app-portal-access) | [webhooks](./webhooks.md) |
 | `GET` | `/webhooks/organizations/{organizationId}/initialization-status` | [Get webhook initialization status for an organization](./webhooks.md#daytona/tag/webhooks/GET/webhooks/organizations/{organizationId}/initialization-status) | [webhooks](./webhooks.md) |
 | `POST` | `/webhooks/organizations/{organizationId}/initialize` | [Initialize webhooks for an organization](./webhooks.md#daytona/tag/webhooks/POST/webhooks/organizations/{organizationId}/initialize) | [webhooks](./webhooks.md) |
@@ -194,14 +201,15 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 - [jobs](./jobs.md) (4 endpoints) {#daytona/tag/jobs}
 - [object-storage](./object-storage.md) (1 endpoints) {#daytona/tag/object-storage}
 - [organizations](./organizations.md) (42 endpoints) {#daytona/tag/organizations}
-- [preview](./preview.md) (5 endpoints) {#daytona/tag/preview}
+- [preview](./preview.md) (6 endpoints) {#daytona/tag/preview}
 - [regions](./regions.md) (1 endpoints) {#daytona/tag/regions}
 - [runners](./runners.md) (11 endpoints) {#daytona/tag/runners}
-- [sandbox](./sandbox.md) (45 endpoints) {#daytona/tag/sandbox}
+- [sandbox](./sandbox.md) (47 endpoints) {#daytona/tag/sandbox}
 - [secret](./secret.md) (6 endpoints) {#daytona/tag/secret}
 - [snapshots](./snapshots.md) (8 endpoints) {#daytona/tag/snapshots}
 - [users](./users.md) (5 endpoints) {#daytona/tag/users}
 - [volumes](./volumes.md) (5 endpoints) {#daytona/tag/volumes}
+- [warm-pools](./warm-pools.md) (4 endpoints) {#daytona/tag/warm-pools}
 - [webhooks](./webhooks.md) (4 endpoints) {#daytona/tag/webhooks}
 
 ---
@@ -257,7 +265,7 @@ The Toolbox API runs inside sandboxes and provides file system, git, process, an
 | `POST` | `/files/permissions` | [Set file permissions](./toolbox-file-system.md#daytona-toolbox/tag/file-system/POST/files/permissions) | [file-system](./toolbox-file-system.md) |
 | `POST` | `/files/replace` | [Replace text in files](./toolbox-file-system.md#daytona-toolbox/tag/file-system/POST/files/replace) | [file-system](./toolbox-file-system.md) |
 | `GET` | `/files/search` | [Search files by pattern](./toolbox-file-system.md#daytona-toolbox/tag/file-system/GET/files/search) | [file-system](./toolbox-file-system.md) |
-| `POST` | `/files/upload` | [Upload a file](./toolbox-file-system.md#daytona-toolbox/tag/file-system/POST/files/upload) | [file-system](./toolbox-file-system.md) |
+| `POST` | `/files/upload-v2` | [Upload a file](./toolbox-file-system.md#daytona-toolbox/tag/file-system/POST/files/upload-v2) | [file-system](./toolbox-file-system.md) |
 | `POST` | `/git/add` | [Add files to Git staging](./toolbox-git.md#daytona-toolbox/tag/git/POST/git/add) | [git](./toolbox-git.md) |
 | `GET` | `/git/branches` | [List branches](./toolbox-git.md#daytona-toolbox/tag/git/GET/git/branches) | [git](./toolbox-git.md) |
 | `POST` | `/git/branches` | [Create a new branch](./toolbox-git.md#daytona-toolbox/tag/git/POST/git/branches) | [git](./toolbox-git.md) |
