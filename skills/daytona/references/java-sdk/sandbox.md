@@ -541,6 +541,55 @@ Refreshes local Sandbox fields from latest API state. After refresh, all fields
 
 - `DaytonaException` - if refresh fails
 
+#### fork()
+```java
+public Sandbox fork()
+```
+
+Forks this Sandbox, creating a new Sandbox with an identical filesystem.
+Uses default timeout of 60 seconds.
+
+Example usage:
+```java
+Sandbox forked = sandbox.fork();
+System.out.println(forked.getId());
+```
+
+**Returns**:
+
+- `Sandbox` - the forked `Sandbox` in started state
+
+**Throws**:
+
+- `DaytonaException` - if the fork operation fails or times out
+
+#### fork()
+```java
+public Sandbox fork(String name, long timeoutSeconds)
+```
+
+Forks this Sandbox, creating a new Sandbox with an identical filesystem.
+The forked Sandbox is a copy-on-write clone of the original.
+
+Example usage:
+```java
+Sandbox forked = sandbox.fork("my-fork", 120);
+System.out.println(forked.getId());
+```
+
+**Parameters**:
+
+- `name` _String_ - optional name for the forked Sandbox; `null` for auto-generated
+- `timeoutSeconds` _long_ - maximum seconds to wait for the forked Sandbox to start; `0` disables timeout
+
+**Returns**:
+
+- `Sandbox` - the forked `Sandbox` in started state
+
+**Throws**:
+
+- `DaytonaException` - if the fork operation fails or times out
+
 #### experimentalFork()
 ```java
 public Sandbox experimentalFork()
@@ -548,6 +597,8 @@ public Sandbox experimentalFork()
 
 Forks this Sandbox, creating a new Sandbox with an identical filesystem.
 Uses default timeout of 60 seconds.
+
+**Deprecated**: Use `#fork()` instead. This method will be removed in a future version.
 
 **Returns**:
 
@@ -565,6 +616,8 @@ public Sandbox experimentalFork(String name, long timeoutSeconds)
 Forks this Sandbox, creating a new Sandbox with an identical filesystem.
 The forked Sandbox is a copy-on-write clone of the original.
 
+**Deprecated**: Use `#fork(String, long)` instead. This method will be removed in a future version.
+
 **Parameters**:
 
 - `name` _String_ - optional name for the forked Sandbox; `null` for auto-generated
@@ -578,6 +631,49 @@ The forked Sandbox is a copy-on-write clone of the original.
 
 - `DaytonaException` - if the fork operation fails or times out
 
+#### createSnapshot()
+```java
+public void createSnapshot(String name)
+```
+
+Creates a snapshot from the current state of this Sandbox.
+Uses default timeout of 60 seconds.
+
+Example usage:
+```java
+sandbox.createSnapshot("my-snapshot");
+```
+
+**Parameters**:
+
+- `name` _String_ - name for the new snapshot
+
+**Throws**:
+
+- `DaytonaException` - if the snapshot operation fails
+
+#### createSnapshot()
+```java
+public void createSnapshot(String name, long timeoutSeconds)
+```
+
+Creates a snapshot from the current state of this Sandbox.
+The Sandbox will temporarily enter a 'snapshotting' state and return to its previous state when complete.
+
+Example usage:
+```java
+sandbox.createSnapshot("my-snapshot", 120);
+```
+
+**Parameters**:
+
+- `name` _String_ - name for the new snapshot
+- `timeoutSeconds` _long_ - maximum seconds to wait for the snapshot operation to complete; `0` disables timeout
+
+**Throws**:
+
+- `DaytonaException` - if the snapshot operation fails
+
 #### experimentalCreateSnapshot()
 ```java
 public void experimentalCreateSnapshot(String name)
@@ -585,6 +681,8 @@ public void experimentalCreateSnapshot(String name)
 
 Creates a snapshot from the current state of this Sandbox.
 Uses default timeout of 60 seconds.
+
+**Deprecated**: Use `#createSnapshot(String)` instead. This method will be removed in a future version.
 
 **Parameters**:
 
@@ -602,10 +700,12 @@ public void experimentalCreateSnapshot(String name, long timeoutSeconds)
 Creates a snapshot from the current state of this Sandbox.
 The Sandbox will temporarily enter a 'snapshotting' state and return to its previous state when complete.
 
+**Deprecated**: Use `#createSnapshot(String, long)` instead. This method will be removed in a future version.
+
 **Parameters**:
 
 - `name` _String_ - name for the new snapshot
-- `timeoutSeconds` _long_ - reserved timeout parameter for parity with other SDKs
+- `timeoutSeconds` _long_ - maximum seconds to wait for the snapshot operation to complete; `0` disables timeout
 
 **Throws**:
 

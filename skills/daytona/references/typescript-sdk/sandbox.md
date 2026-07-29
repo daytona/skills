@@ -99,17 +99,11 @@ Daytona.list rather than constructing directly.
 
 ### Methods
 
-#### \_experimental\_createSnapshot()
+#### ~~\_experimental\_createSnapshot()~~
 
 ```ts
 _experimental_createSnapshot(name: string, timeout?: number): Promise<void>
 ```
-
-Creates a snapshot from the current state of the Sandbox.
-
-This captures the Sandbox's filesystem into a reusable snapshot that can be
-used to create new Sandboxes. The Sandbox will temporarily enter a
-'snapshotting' state and return to its previous state when complete.
 
 **Parameters**:
 
@@ -122,60 +116,39 @@ used to create new Sandboxes. The Sandbox will temporarily enter a
 
 - `Promise<void>`
 
-**Throws**:
+##### Deprecated
 
-- If timeout is a negative number
+Use `createSnapshot` instead. This method will be removed in a future version.
 
-- If the snapshot operation fails or times out
+##### See
 
-**Example:**
-
-```ts
-const sandbox = await daytona.get('my-sandbox');
-await sandbox._experimental_createSnapshot('my-snapshot');
-console.log('Snapshot created successfully');
-```
+Sandbox.createSnapshot
 
 ***
 
-#### \_experimental\_fork()
+#### ~~\_experimental\_fork()~~
 
 ```ts
-_experimental_fork(params?: {
-  name: string;
-}, timeout?: number): Promise<Sandbox>
+_experimental_fork(params?: ForkSandboxParams, timeout?: number): Promise<Sandbox>
 ```
-
-Forks the Sandbox, creating a new Sandbox with an identical filesystem.
-
-The forked Sandbox is a copy-on-write clone of the original. It starts
-with the same disk contents but operates independently from that point on.
 
 **Parameters**:
 
-- `params?` _Fork parameters_
-- `name?` _string_ - Optional name for the forked Sandbox. If not provided, a unique name will be generated.
-- `timeout?` _number = 60_ - Maximum time to wait in seconds. 0 means no timeout.
-    Defaults to 60-second timeout.
+- `params?` _ForkSandboxParams_
+- `timeout?` _number = 60_
 
 
 **Returns**:
 
-- `Promise<Sandbox>` - The forked Sandbox.
+- `Promise<Sandbox>`
 
-**Throws**:
+##### Deprecated
 
-- If timeout is a negative number
+Use `fork` instead. This method will be removed in a future version.
 
-- If the fork operation fails or times out
+##### See
 
-**Example:**
-
-```ts
-const sandbox = await daytona.get('my-sandbox');
-const forked = await sandbox._experimental_fork({ name: 'my-fork' });
-console.log(`Forked sandbox: ${forked.id}`);
-```
+Sandbox.fork
 
 ***
 
@@ -221,6 +194,45 @@ diagnostics, and more.
 
 ```ts
 const lsp = await sandbox.createLspServer('typescript', 'workspace/project');
+```
+
+***
+
+#### createSnapshot()
+
+```ts
+createSnapshot(name: string, timeout?: number): Promise<void>
+```
+
+Creates a snapshot from the current state of the Sandbox.
+
+This captures the Sandbox's filesystem into a reusable snapshot that can be
+used to create new Sandboxes. The Sandbox will temporarily enter a
+'snapshotting' state and return to its previous state when complete.
+
+**Parameters**:
+
+- `name` _string_ - Name for the new snapshot
+- `timeout?` _number = 60_ - Maximum time to wait in seconds. 0 means no timeout.
+    Defaults to 60-second timeout.
+
+
+**Returns**:
+
+- `Promise<void>`
+
+**Throws**:
+
+- If timeout is a negative number
+
+- If the snapshot operation fails or times out
+
+**Example:**
+
+```ts
+const sandbox = await daytona.get('my-sandbox');
+await sandbox.createSnapshot('my-snapshot');
+console.log('Snapshot created successfully');
 ```
 
 ***
@@ -319,6 +331,44 @@ Expires a signed preview url for the sandbox at the specified port.
 **Returns**:
 
 - `Promise<void>`
+
+***
+
+#### fork()
+
+```ts
+fork(params?: ForkSandboxParams, timeout?: number): Promise<Sandbox>
+```
+
+Forks the Sandbox, creating a new Sandbox with an identical filesystem.
+
+The forked Sandbox is a copy-on-write clone of the original. It starts
+with the same disk contents but operates independently from that point on.
+
+**Parameters**:
+
+- `params?` _ForkSandboxParams_ - Fork parameters
+- `timeout?` _number = 60_ - Maximum time to wait in seconds. 0 means no timeout.
+    Defaults to 60-second timeout.
+
+
+**Returns**:
+
+- `Promise<Sandbox>` - The forked Sandbox.
+
+**Throws**:
+
+- If timeout is a negative number
+
+- If the fork operation fails or times out
+
+**Example:**
+
+```ts
+const sandbox = await daytona.get('my-sandbox');
+const forked = await sandbox.fork({ name: 'my-fork' });
+console.log(`Forked sandbox: ${forked.id}`);
+```
 
 ***
 

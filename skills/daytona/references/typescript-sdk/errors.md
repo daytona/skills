@@ -12,6 +12,7 @@
 - DaytonaError
 - DaytonaFileAccessDeniedError
 - DaytonaFileNotFoundError
+- DaytonaFileReadFailedError
 - DaytonaForbiddenError
 - DaytonaGitAuthFailedError
 - DaytonaGitBranchExistsError
@@ -22,6 +23,8 @@
 - DaytonaGitRepoNotFoundError
 - DaytonaGoneError
 - DaytonaInternalServerError
+- DaytonaInvalidArgumentError
+- DaytonaInvalidFilePathError
 - DaytonaLspServerNotInitializedError
 - DaytonaNotFoundError
 - DaytonaProcessExecutionTimeoutError
@@ -358,6 +361,7 @@ The request was malformed or invalid (HTTP 400).
 ### Extended by
 
 - `DaytonaValidationError`
+- `DaytonaInvalidFilePathError`
 - `DaytonaLspServerNotInitializedError`
 
 ### Accessors
@@ -934,6 +938,77 @@ new DaytonaFileNotFoundError(
 ##### Inherited from
 
 `DaytonaNotFoundError`.`constructor`
+## DaytonaFileReadFailedError
+
+The daemon could not read the sandbox file (code `FILE_READ_FAILED`).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaInternalServerError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaInternalServerError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaInternalServerError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaInternalServerError.statusCode`
+
+
+**Extends:**
+
+- `DaytonaInternalServerError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaInternalServerError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaFileReadFailedError()
+
+```ts
+new DaytonaFileReadFailedError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaFileReadFailedError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaFileReadFailedError`
+
+##### Inherited from
+
+`DaytonaInternalServerError`.`constructor`
 ## DaytonaForbiddenError
 
 The authenticated caller lacks permission for the operation (HTTP 403).
@@ -1603,6 +1678,10 @@ A Daytona service failed unexpectedly (HTTP 500).
 
 - `DaytonaError`
 
+### Extended by
+
+- `DaytonaFileReadFailedError`
+
 ### Accessors
 
 #### errorCode
@@ -1654,6 +1733,166 @@ new DaytonaInternalServerError(
 ##### Inherited from
 
 `DaytonaError`.`constructor`
+## DaytonaInvalidArgumentError
+
+The SDK rejected the caller's arguments locally, before any request was
+sent. `statusCode`, `code` and `source` are always `undefined` — no Daytona
+service was contacted, so there is no HTTP status to report.
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaValidationError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaValidationError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaValidationError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaValidationError.statusCode`
+
+
+Distinct from DaytonaBadRequestError (a service returned HTTP 400)
+and DaytonaUnprocessableEntityError (a service returned HTTP 422).
+This one always means: fix the arguments at the call site.
+
+**Example:**
+
+```ts
+try {
+  await sandbox.setAutoStopInterval(-1)
+} catch (err) {
+  if (err instanceof DaytonaInvalidArgumentError) {
+    // never reached the API — the value itself is invalid
+  }
+}
+```
+
+**Extends:**
+
+- `DaytonaValidationError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaValidationError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaInvalidArgumentError()
+
+```ts
+new DaytonaInvalidArgumentError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaInvalidArgumentError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaInvalidArgumentError`
+
+##### Inherited from
+
+`DaytonaValidationError`.`constructor`
+## DaytonaInvalidFilePathError
+
+The supplied file path was rejected by the daemon (code `INVALID_FILE_PATH`).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaBadRequestError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaBadRequestError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaBadRequestError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaBadRequestError.statusCode`
+
+
+**Extends:**
+
+- `DaytonaBadRequestError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaBadRequestError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### new DaytonaInvalidFilePathError()
+
+```ts
+new DaytonaInvalidFilePathError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaInvalidFilePathError
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaInvalidFilePathError`
+
+##### Inherited from
+
+`DaytonaBadRequestError`.`constructor`
 ## DaytonaLspServerNotInitializedError
 
 The LSP server must be initialized first (code `LSP_SERVER_NOT_INITIALIZED`).
@@ -1874,6 +2113,27 @@ new DaytonaProcessExecutionTimeoutError(
 ##### Inherited from
 
 `DaytonaTimeoutError`.`constructor`
+
+### Methods
+
+#### \[hasInstance\]()
+
+```ts
+static hasInstance: boolean
+```
+
+**Parameters**:
+
+- `value` _unknown_
+
+
+**Returns**:
+
+- `boolean`
+
+##### Inherited from
+
+`DaytonaTimeoutError`.[`[hasInstance]`](Errors.md#hasinstance-6)
 ## DaytonaProcessNotFoundError
 
 The sandbox process does not exist (code `PROCESS_NOT_FOUND`).
@@ -2321,6 +2581,13 @@ The operation timed out (HTTP 408, or 504 when a gateway timed out).
     - _Inherited from_: `DaytonaError.statusCode`
 
 
+Also matches DaytonaConnectionTimeoutError via `instanceof`, even
+though that class sits under DaytonaConnectionError in the prototype
+chain. Transport timeouts were raised as `DaytonaTimeoutError` before
+`DaytonaConnectionTimeoutError` existed, so this keeps pre-existing
+`catch (err) { if (err instanceof DaytonaTimeoutError) ... }` blocks working
+— the same compatibility the Python SDK gets from inheriting both classes.
+
 **Extends:**
 
 - `DaytonaError`
@@ -2380,6 +2647,23 @@ new DaytonaTimeoutError(
 ##### Inherited from
 
 `DaytonaError`.`constructor`
+
+### Methods
+
+#### \[hasInstance\]()
+
+```ts
+static hasInstance: boolean
+```
+
+**Parameters**:
+
+- `value` _unknown_
+
+
+**Returns**:
+
+- `boolean`
 ## DaytonaUnprocessableEntityError
 
 The request was well-formed but semantically invalid (HTTP 422).
@@ -2453,7 +2737,9 @@ new DaytonaUnprocessableEntityError(
 `DaytonaError`.`constructor`
 ## ~~DaytonaValidationError~~
 
-### Deprecated
+Legacy umbrella for validation failures. Kept so existing
+`catch (err) { if (err instanceof DaytonaValidationError) ... }` blocks keep
+matching both server-returned HTTP 400s and locally rejected arguments.
 
 **Properties**:
 
@@ -2467,13 +2753,23 @@ new DaytonaUnprocessableEntityError(
     - _Inherited from_: `DaytonaBadRequestError.statusCode`
 
 
-Use DaytonaBadRequestError instead. Re-exported so
-existing `catch (err) { if (err instanceof DaytonaValidationError) ... }`
-blocks keep working.
+### Deprecated
+
+Do not throw or catch this directly in new code. Branch on the
+precise class instead:
+- DaytonaInvalidArgumentError — the SDK rejected your arguments
+  locally, before any request was sent.
+- DaytonaBadRequestError — a Daytona service returned HTTP 400.
+- DaytonaUnprocessableEntityError — a Daytona service returned
+  HTTP 422 (well-formed but semantically invalid).
 
 **Extends:**
 
 - `DaytonaBadRequestError`
+
+### Extended by
+
+- `DaytonaInvalidArgumentError`
 
 ### Accessors
 

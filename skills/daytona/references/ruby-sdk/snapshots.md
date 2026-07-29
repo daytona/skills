@@ -7,7 +7,7 @@
 - Create snapshot from sandbox
 - Snapshots from private registries
 - Snapshots from local images
-- Get a snapshot by name
+- Get snapshot
 - List snapshots
 - Activate snapshots
 - Deactivate snapshots
@@ -327,7 +327,7 @@ Alternatively, use the `--dockerfile` flag under `create` to pass the path to th
 daytona snapshot create my-awesome-snapshot --dockerfile ./Dockerfile
 ```
 
-## Get a snapshot by name
+## Get snapshot
 
 Get a snapshot by name.
 

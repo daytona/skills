@@ -288,6 +288,8 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func NewSandbox\(client \*Client, toolboxClient \*toolbox.APIClient, dto sandboxDTO, language types.CodeLanguage, subscriptionManager \*common.EventSubscriptionManager\) \*Sandbox](https://www.daytona.io/docs/en<#NewSandbox>)
   - [func \(s \*Sandbox\) Archive\(ctx context.Context\) error](https://www.daytona.io/docs/en<#Sandbox.Archive>)
   - [func \(s \*Sandbox\) CreateLspServer\(languageID types.LspLanguageID, pathToProject string\) \*LspServerService](https://www.daytona.io/docs/en<#Sandbox.CreateLspServer>)
+  - [func \(s \*Sandbox\) CreateSnapshot\(ctx context.Context, name string\) error](https://www.daytona.io/docs/en<#Sandbox.CreateSnapshot>)
+  - [func \(s \*Sandbox\) CreateSnapshotWithTimeout\(ctx context.Context, name string, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.CreateSnapshotWithTimeout>)
   - [func \(s \*Sandbox\) Delete\(ctx context.Context\) error](https://www.daytona.io/docs/en<#Sandbox.Delete>)
   - [func \(s \*Sandbox\) DeleteAndWait\(ctx context.Context, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.DeleteAndWait>)
   - [func \(s \*Sandbox\) DeleteWithTimeout\(ctx context.Context, timeout time.Duration\) error](https://www.daytona.io/docs/en<#Sandbox.DeleteWithTimeout>)
@@ -297,6 +299,8 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(s \*Sandbox\) ExperimentalFork\(ctx context.Context, name \*string\) \(\*Sandbox, error\)](https://www.daytona.io/docs/en<#Sandbox.ExperimentalFork>)
   - [func \(s \*Sandbox\) ExperimentalForkWithTimeout\(ctx context.Context, name \*string, timeout time.Duration\) \(\*Sandbox, error\)](https://www.daytona.io/docs/en<#Sandbox.ExperimentalForkWithTimeout>)
   - [func \(s \*Sandbox\) ExpireSignedPreviewLink\(ctx context.Context, port int, token string\) error](https://www.daytona.io/docs/en<#Sandbox.ExpireSignedPreviewLink>)
+  - [func \(s \*Sandbox\) Fork\(ctx context.Context, name \*string\) \(\*Sandbox, error\)](https://www.daytona.io/docs/en<#Sandbox.Fork>)
+  - [func \(s \*Sandbox\) ForkWithTimeout\(ctx context.Context, name \*string, timeout time.Duration\) \(\*Sandbox, error\)](https://www.daytona.io/docs/en<#Sandbox.ForkWithTimeout>)
   - [func \(s \*Sandbox\) GetMetrics\(ctx context.Context, start, end \*time.Time\) \(\[\]SandboxMetrics, error\)](<#Sandbox.GetMetrics>)
   - [func \(s \*Sandbox\) GetMetricsLatest\(ctx context.Context\) \(SandboxMetrics, error\)](https://www.daytona.io/docs/en<#Sandbox.GetMetricsLatest>)
   - [func \(s \*Sandbox\) GetPreviewLink\(ctx context.Context, port int\) \(\*types.PreviewLink, error\)](https://www.daytona.io/docs/en<#Sandbox.GetPreviewLink>)
@@ -4470,6 +4474,41 @@ if err := lsp.Start(ctx); err != nil {
 defer lsp.Stop(ctx)
 ```
 
+<a name="Sandbox.CreateSnapshot"></a>
+### func \(\*Sandbox\) CreateSnapshot
+
+```go
+func (s *Sandbox) CreateSnapshot(ctx context.Context, name string) error
+```
+
+CreateSnapshot creates a snapshot from the current state of the sandbox with a default timeout of 60 seconds.
+
+This captures the sandbox's filesystem into a reusable snapshot that can be used to create new sandboxes. The sandbox will temporarily enter a 'snapshotting' state and return to its previous state when complete.
+
+Example:
+
+```
+err := sandbox.CreateSnapshot(ctx, "my-snapshot")
+if err != nil {
+    return err
+}
+```
+
+<a name="Sandbox.CreateSnapshotWithTimeout"></a>
+### func \(\*Sandbox\) CreateSnapshotWithTimeout
+
+```go
+func (s *Sandbox) CreateSnapshotWithTimeout(ctx context.Context, name string, timeout time.Duration) error
+```
+
+CreateSnapshotWithTimeout creates a snapshot from the current state of the sandbox with a custom timeout. 0 means no timeout.
+
+Example:
+
+```
+err := sandbox.CreateSnapshotWithTimeout(ctx, "my-snapshot", 2*time.Minute)
+```
+
 <a name="Sandbox.Delete"></a>
 ### func \(\*Sandbox\) Delete
 
@@ -4540,18 +4579,9 @@ url, err := sandbox.DownloadURL(ctx, "/home/user/report.pdf", nil)
 func (s *Sandbox) ExperimentalCreateSnapshot(ctx context.Context, name string) error
 ```
 
-ExperimentalCreateSnapshot creates a snapshot from the current state of the sandbox with a default timeout of 60 seconds.
+ExperimentalCreateSnapshot creates a snapshot from the current state of the sandbox.
 
-This captures the sandbox's filesystem into a reusable snapshot that can be used to create new sandboxes. The sandbox will temporarily enter a 'snapshotting' state and return to its previous state when complete.
-
-Example:
-
-```
-err := sandbox.ExperimentalCreateSnapshot(ctx, "my-snapshot")
-if err != nil {
-    return err
-}
-```
+Deprecated: Use CreateSnapshot instead. This method will be removed in a future release.
 
 <a name="Sandbox.ExperimentalCreateSnapshotWithTimeout"></a>
 ### func \(\*Sandbox\) ExperimentalCreateSnapshotWithTimeout
@@ -4560,13 +4590,9 @@ if err != nil {
 func (s *Sandbox) ExperimentalCreateSnapshotWithTimeout(ctx context.Context, name string, timeout time.Duration) error
 ```
 
-ExperimentalCreateSnapshotWithTimeout creates a snapshot from the current state of the sandbox with a custom timeout. 0 means no timeout.
+ExperimentalCreateSnapshotWithTimeout creates a snapshot with a custom timeout.
 
-Example:
-
-```
-err := sandbox.ExperimentalCreateSnapshotWithTimeout(ctx, "my-snapshot", 2*time.Minute)
-```
+Deprecated: Use CreateSnapshotWithTimeout instead. This method will be removed in a future release.
 
 <a name="Sandbox.ExperimentalFork"></a>
 ### func \(\*Sandbox\) ExperimentalFork
@@ -4575,19 +4601,9 @@ err := sandbox.ExperimentalCreateSnapshotWithTimeout(ctx, "my-snapshot", 2*time.
 func (s *Sandbox) ExperimentalFork(ctx context.Context, name *string) (*Sandbox, error)
 ```
 
-ExperimentalFork forks the sandbox with a default timeout of 60 seconds, creating a new sandbox with an identical filesystem.
+ExperimentalFork forks the sandbox with a default timeout of 60 seconds.
 
-The forked sandbox is a copy\-on\-write clone of the original. It starts with the same disk contents but operates independently from that point on. ExperimentalFork waits for the new sandbox to reach the "started" state before returning.
-
-Example:
-
-```
-forked, err := sandbox.ExperimentalFork(ctx, nil)
-if err != nil {
-    return err
-}
-fmt.Printf("Forked sandbox: %s\n", forked.ID)
-```
+Deprecated: Use Fork instead. This method will be removed in a future release.
 
 <a name="Sandbox.ExperimentalForkWithTimeout"></a>
 ### func \(\*Sandbox\) ExperimentalForkWithTimeout
@@ -4596,19 +4612,9 @@ fmt.Printf("Forked sandbox: %s\n", forked.ID)
 func (s *Sandbox) ExperimentalForkWithTimeout(ctx context.Context, name *string, timeout time.Duration) (*Sandbox, error)
 ```
 
-ExperimentalForkWithTimeout forks the sandbox with a custom timeout, creating a new sandbox with an identical filesystem.
+ExperimentalForkWithTimeout forks the sandbox with a custom timeout.
 
-The forked sandbox is a copy\-on\-write clone of the original. It starts with the same disk contents but operates independently from that point on. ExperimentalForkWithTimeout waits for the new sandbox to reach the "started" state before returning. 0 means no timeout.
-
-Example:
-
-```
-forked, err := sandbox.ExperimentalForkWithTimeout(ctx, nil, 2*time.Minute)
-if err != nil {
-    return err
-}
-fmt.Printf("Forked sandbox: %s\n", forked.ID)
-```
+Deprecated: Use ForkWithTimeout instead. This method will be removed in a future release.
 
 <a name="Sandbox.ExpireSignedPreviewLink"></a>
 ### func \(\*Sandbox\) ExpireSignedPreviewLink
@@ -4628,6 +4634,48 @@ err := sandbox.ExpireSignedPreviewLink(ctx, 3000, "preview-token-to-expire")
 if err != nil {
     return err
 }
+```
+
+<a name="Sandbox.Fork"></a>
+### func \(\*Sandbox\) Fork
+
+```go
+func (s *Sandbox) Fork(ctx context.Context, name *string) (*Sandbox, error)
+```
+
+Fork forks the sandbox with a default timeout of 60 seconds, creating a new sandbox with an identical filesystem.
+
+The forked sandbox is a copy\-on\-write clone of the original. It starts with the same disk contents but operates independently from that point on. Fork waits for the new sandbox to reach the "started" state before returning.
+
+Example:
+
+```
+forked, err := sandbox.Fork(ctx, nil)
+if err != nil {
+    return err
+}
+fmt.Printf("Forked sandbox: %s\n", forked.ID)
+```
+
+<a name="Sandbox.ForkWithTimeout"></a>
+### func \(\*Sandbox\) ForkWithTimeout
+
+```go
+func (s *Sandbox) ForkWithTimeout(ctx context.Context, name *string, timeout time.Duration) (*Sandbox, error)
+```
+
+ForkWithTimeout forks the sandbox with a custom timeout, creating a new sandbox with an identical filesystem.
+
+The forked sandbox is a copy\-on\-write clone of the original. It starts with the same disk contents but operates independently from that point on. ForkWithTimeout waits for the new sandbox to reach the "started" state before returning. 0 means no timeout.
+
+Example:
+
+```
+forked, err := sandbox.ForkWithTimeout(ctx, nil, 2*time.Minute)
+if err != nil {
+    return err
+}
+fmt.Printf("Forked sandbox: %s\n", forked.ID)
 ```
 
 <a name="Sandbox.GetMetrics"></a>

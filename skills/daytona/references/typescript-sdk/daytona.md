@@ -8,6 +8,7 @@
 - DaytonaConfig
 - Resources
 - VolumeMount
+- ForkSandboxParams
 - CODE\_TOOLBOX\_LANGUAGE\_LABEL
 - See Also
 
@@ -86,38 +87,33 @@ When JWT token is provided without an organization ID
 
 ### Methods
 
-#### \_experimental\_fork()
+#### ~~\_experimental\_fork()~~
 
 ```ts
 _experimental_fork(
    sandbox: Sandbox,
-   params?: {
-  name: string;
- },
+   params?: ForkSandboxParams,
 timeout?: number): Promise<Sandbox>
 ```
 
-Forks a Sandbox, creating a new Sandbox with an identical filesystem.
-
 **Parameters**:
 
-- `sandbox` _Sandbox_ - The Sandbox to fork
-- `params?` _Fork parameters_
-- `name?` _string_ - Optional name for the forked Sandbox
-- `timeout?` _number = 60_ - Timeout in seconds (0 means no timeout, default is 60)
+- `sandbox` _Sandbox_
+- `params?` _ForkSandboxParams_
+- `timeout?` _number = 60_
 
 
 **Returns**:
 
-- `Promise<Sandbox>` - The forked Sandbox
+- `Promise<Sandbox>`
 
-**Example:**
+##### Deprecated
 
-```ts
-const sandbox = await daytona.get('my-sandbox-id');
-const forked = await daytona._experimental_fork(sandbox, { name: 'my-fork' });
-console.log(`Forked sandbox: ${forked.id}`);
-```
+Use `fork` instead. This method will be removed in a future version.
+
+##### See
+
+Daytona.fork
 
 ***
 
@@ -264,6 +260,38 @@ Deletes a Sandbox.
 ```ts
 const sandbox = await daytona.get('my-sandbox-id');
 await daytona.delete(sandbox);
+```
+
+***
+
+#### fork()
+
+```ts
+fork(
+   sandbox: Sandbox,
+   params?: ForkSandboxParams,
+timeout?: number): Promise<Sandbox>
+```
+
+Forks a Sandbox, creating a new Sandbox with an identical filesystem.
+
+**Parameters**:
+
+- `sandbox` _Sandbox_ - The Sandbox to fork
+- `params?` _ForkSandboxParams_ - Fork parameters
+- `timeout?` _number = 60_ - Timeout in seconds (0 means no timeout, default is 60)
+
+
+**Returns**:
+
+- `Promise<Sandbox>` - The forked Sandbox
+
+**Example:**
+
+```ts
+const sandbox = await daytona.get('my-sandbox-id');
+const forked = await daytona.fork(sandbox, { name: 'my-fork' });
+console.log(`Forked sandbox: ${forked.id}`);
 ```
 
 ***
@@ -539,6 +567,22 @@ Represents a volume mount for a Sandbox.
 **Extends:**
 
 - `SandboxVolume`
+## ForkSandboxParams
+
+```ts
+type ForkSandboxParams = {
+  name: string;
+};
+```
+
+Parameters for forking a Sandbox.
+
+**Type declaration**:
+
+- `name?` _string_ - Optional name for the forked Sandbox. If not provided, a unique name will be generated.
+
+
+
 ## CODE\_TOOLBOX\_LANGUAGE\_LABEL
 
 ```ts

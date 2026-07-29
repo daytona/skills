@@ -1243,10 +1243,10 @@ Treats destroyed as stopped to cover ephemeral sandboxes that are automatically 
 
 - `void`
 
-#### experimental_fork()
+#### fork()
 
 ```ruby
-def experimental_fork(name: nil, timeout: DEFAULT_TIMEOUT)
+def fork(name: nil, timeout: DEFAULT_TIMEOUT)
 
 ```
 
@@ -1263,10 +1263,10 @@ with the same disk contents but operates independently from that point on.
 
 - `Daytona:Sandbox` - The forked Sandbox
 
-#### experimental_create_snapshot()
+#### create_snapshot()
 
 ```ruby
-def experimental_create_snapshot(name:, timeout: DEFAULT_TIMEOUT)
+def create_snapshot(name:, timeout: DEFAULT_TIMEOUT)
 
 ```
 
@@ -1281,6 +1281,24 @@ The Sandbox will temporarily enter a 'snapshotting' state and return to its prev
 **Returns**:
 
 - `void`
+
+#### experimental_fork()
+
+```ruby
+def experimental_fork(name: nil, timeout: DEFAULT_TIMEOUT)
+
+```
+
+Deprecated: Use +fork+ instead. This method will be removed in a future version.
+
+#### experimental_create_snapshot()
+
+```ruby
+def experimental_create_snapshot(name:, timeout: DEFAULT_TIMEOUT)
+
+```
+
+Deprecated: Use +create_snapshot+ instead. This method will be removed in a future version.
 
 #### pause()
 

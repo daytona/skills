@@ -1050,6 +1050,78 @@ It is useful for keeping long-running sessions alive while there is still user a
 sandbox.refresh_activity()
 ```
 
+#### Sandbox.fork
+
+```python
+@intercept_errors(message_prefix="Failed to fork sandbox: ")
+@with_timeout()
+@with_instrumentation()
+def fork(name: str | None = None, timeout: float | None = 60) -> "Sandbox"
+```
+
+Forks the Sandbox, creating a new Sandbox with an identical filesystem.
+
+The forked Sandbox is a copy-on-write clone of the original. It starts
+with the same disk contents but operates independently from that point on.
+
+**Arguments**:
+
+- `name` _str | None_ - Optional name for the forked Sandbox. If not provided, a unique name will be generated.
+- `timeout` _float | None_ - Maximum time to wait in seconds. 0 means no timeout. Default is 60 seconds.
+
+
+**Returns**:
+
+- `Sandbox` - The forked Sandbox.
+
+
+**Raises**:
+
+- `DaytonaError` - If the fork operation fails or times out.
+
+
+**Example**:
+
+```python
+sandbox = daytona.get("my-sandbox")
+forked = sandbox.fork(name="my-fork")
+print(f"Forked sandbox: {forked.id}")
+```
+
+#### Sandbox.create\_snapshot
+
+```python
+@intercept_errors(message_prefix="Failed to create snapshot: ")
+@with_timeout()
+@with_instrumentation()
+def create_snapshot(name: str, timeout: float | None = 60) -> None
+```
+
+Creates a snapshot from the current state of the Sandbox.
+
+This captures the Sandbox's filesystem into a reusable snapshot that can be
+used to create new Sandboxes. The Sandbox will temporarily enter a
+'snapshotting' state and return to its previous state when complete.
+
+**Arguments**:
+
+- `name` _str_ - Name for the new snapshot.
+- `timeout` _float | None_ - Maximum time to wait in seconds. 0 means no timeout. Default is 60 seconds.
+
+
+**Raises**:
+
+- `DaytonaError` - If the snapshot operation fails or times out.
+
+
+**Example**:
+
+```python
+sandbox = daytona.get("my-sandbox")
+sandbox.create_snapshot("my-snapshot")
+print("Snapshot created successfully")
+```
+
 #### Sandbox.pause
 
 ```python

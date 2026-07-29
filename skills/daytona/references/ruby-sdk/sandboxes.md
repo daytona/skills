@@ -349,8 +349,6 @@ sandbox = daytona.create(params)
 
 Create a linked sandbox.
 
-Linked sandboxes are attached to an existing parent sandbox at creation time.
-
 - **Lifecycle**
 
   Linked sandboxes are always ephemeral and cannot be persisted or resumed after stop. The [auto-delete interval](#auto-delete-interval) must be exactly `0` on create; this is enforced, not a default. The [auto-stop interval](#auto-stop-interval) sets the idle period in minutes after which the child sandbox stops. Once stopped, linked children are auto-deleted. Deleting the parent deletes all of its linked children (cascade). One parent may have many linked children (1:N).
@@ -360,7 +358,9 @@ Linked sandboxes are attached to an existing parent sandbox at creation time.
   Linked sandboxes share an internal link network. Connections work in both directions: the parent can reach each child and each child can reach the parent. Every sandbox on the link network is registered under its sandbox name and ID as DNS aliases, so either works as the host. For example: `telnet LINKED_SANDBOX_ID 5555` from the parent reaches port `5555` on the linked child sandbox.
 
 1. Create a parent sandbox
-2. Create one or more child sandboxes that reference the parent's sandbox ID. This records the relationship on the child sandbox as the linked sandbox ID. Omitting the linked sandbox parameter yields an unlinked sandbox.
+2. Create one or more child sandboxes that reference the parent's sandbox ID.
+
+This records the relationship on the child sandbox as the linked sandbox ID. Omitting the linked sandbox parameter yields an unlinked sandbox.
 
 ```ruby
 require 'daytona'
@@ -566,7 +566,7 @@ Daytona tracks the parent-child relationship in a fork tree, so you can trace a 
 
 ```ruby
 # Fork sandbox through the Sandbox instance
-forkedSandbox = sandbox.experimental_fork(name: "my-forked-sandbox")
+forkedSandbox = sandbox.fork(name: "my-forked-sandbox")
 ```
 
 ## Sandbox lifecycle
@@ -666,12 +666,13 @@ A sandbox can transition between states in response to various actions. The foll
 
 ## Automated lifecycle management
 
-Sandboxes can be managed automatically based on user-defined intervals. The intervals act as a TTL (time-to-live) mechanism for the sandbox.
+Sandboxes can be managed automatically based on user-defined deadlines. Inactivity and stopped-time intervals stop, pause, archive, or delete a sandbox when it is idle. Wall-clock TTL destroys a sandbox after a fixed deadline regardless of state.
 
 - **[Auto-stop interval](#auto-stop-interval)**: stop a sandbox after a specified period of inactivity
 - **[Auto-pause interval](#auto-pause-interval)**: pause a VM sandbox after a specified period of inactivity
 - **[Auto-archive interval](#auto-archive-interval)**: archive a sandbox after a specified period of inactivity
 - **[Auto-delete interval](#auto-delete-interval)**: delete a sandbox after a specified period of inactivity
+- **[Wall-clock TTL](#wall-clock-ttl)**: destroy a sandbox after a fixed wall-clock deadline, regardless of state
 - **[Update sandbox last activity](#update-sandbox-last-activity)**: signal activity to reset the inactivity timer
 - **[Running indefinitely](#running-indefinitely)**: run a sandbox indefinitely
 
@@ -689,7 +690,7 @@ The auto-stop interval sets the amount of time after which a running sandbox is 
 ```ruby
 sandbox = daytona.create(
   Daytona::CreateSandboxFromSnapshotParams.new(
-    snapshot: 'my-snapshot-name',
+    snapshot: 'my-snapshot',
     # Disables the auto-stop feature - default is 15 minutes
     auto_stop_interval: 0
   )
@@ -759,7 +760,7 @@ The auto-archive interval sets the amount of time after which a continuously sto
 ```ruby
 sandbox = daytona.create(
   Daytona::CreateSandboxFromSnapshotParams.new(
-    snapshot: 'my-snapshot-name',
+    snapshot: 'my-snapshot',
     # Auto-archive after a sandbox has been stopped for 1 hour
     auto_archive_interval: 60
   )
@@ -781,7 +782,7 @@ The auto-delete interval sets the amount of time after which a continuously stop
 ```ruby
 sandbox = daytona.create(
   Daytona::CreateSandboxFromSnapshotParams.new(
-    snapshot: 'my-snapshot-name',
+    snapshot: 'my-snapshot',
     # Auto-delete after a sandbox has been stopped for 1 hour
     auto_delete_interval: 60
   )
@@ -792,6 +793,33 @@ sandbox.auto_delete_interval = 0
 
 # Disable auto-deletion
 sandbox.auto_delete_interval = -1
+```
+
+### Wall-clock TTL
+
+The wall-clock TTL (time-to-live) sets a hard upper bound on how long a sandbox may exist. Unlike the [auto-delete interval](#auto-delete-interval), which counts time only while the sandbox is stopped, TTL runs as wall-clock time from creation (or from the moment you last set it) and destroys the sandbox in any state: started, stopped, paused, or archived.
+
+Set `ttl_minutes` when creating a sandbox, or update it later. The value is in minutes:
+
+- **`0`**: disables the TTL
+- if not set, the sandbox has no TTL deadline
+
+Calling `set_ttl` after creation resets the deadline from the current moment. Use wall-clock TTL for agent sessions, CI jobs, and any sandbox that must not outlive a fixed deadline.
+
+```ruby
+sandbox = daytona.create(
+  Daytona::CreateSandboxFromSnapshotParams.new(
+    snapshot: 'my-snapshot',
+    # Destroy the sandbox 2 hours after creation, regardless of state
+    ttl_minutes: 120
+  )
+)
+
+# Reset the deadline to 1 hour from now
+sandbox.ttl_minutes = 60
+
+# Disable the TTL
+sandbox.ttl_minutes = 0
 ```
 
 ### Update sandbox last activity
@@ -808,7 +836,7 @@ sandbox.refresh_activity
 
 Run sandboxes indefinitely.
 
-By default, Daytona sandboxes auto-stop after 15 minutes of inactivity. To keep a sandbox running without interruption, set the auto-stop interval to `0` when creating a new sandbox.
+By default, Daytona sandboxes auto-stop after 15 minutes of inactivity. To keep a sandbox running without interruption from inactivity, set the auto-stop interval to `0` when creating a new sandbox. Disabling auto-stop does not disable [wall-clock TTL](#wall-clock-ttl): if `ttl_minutes` is set, the sandbox is still destroyed when that deadline elapses.
 
 1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
 2. Click **Create Sandbox**
