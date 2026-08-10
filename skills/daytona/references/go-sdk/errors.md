@@ -142,6 +142,10 @@ var (
     // Daemon: filesystem.
     ErrFileNotFound     = &DaytonaError{Source: SourceDaemon, Code: "FILE_NOT_FOUND"}
     ErrFileAccessDenied = &DaytonaError{Source: SourceDaemon, Code: "FILE_ACCESS_DENIED"}
+    // ErrInvalidFilePath matches DAYTONA_DAEMON / INVALID_FILE_PATH (HTTP 400).
+    ErrInvalidFilePath = &DaytonaError{Source: SourceDaemon, Code: "INVALID_FILE_PATH"}
+    // ErrFileReadFailed matches DAYTONA_DAEMON / FILE_READ_FAILED (HTTP 500).
+    ErrFileReadFailed = &DaytonaError{Source: SourceDaemon, Code: "FILE_READ_FAILED"}
 
     // Daemon: LSP.
     ErrLspServerNotInitialized = &DaytonaError{Source: SourceDaemon, Code: "LSP_SERVER_NOT_INITIALIZED"}

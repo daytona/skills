@@ -433,7 +433,7 @@ To access the recording dashboard:
 
 1. Navigate to your sandboxes in the Daytona Dashboard
 2. Click the action menu (three dots) for your sandbox
-3. Select **Screen Recordings** from the dropdown menu
+3. Select <Button>Screen Recordings</Button> from the dropdown menu
 
 The recording dashboard provides:
 - List of all recordings with metadata (name, duration, file size, creation time)
@@ -444,6 +444,32 @@ The recording dashboard provides:
 > The recording dashboard runs on a private port and is automatically secured. No additional authentication is required once you access it through the Daytona Dashboard.
 
 ## Display operations
+
+### Configure desktop resolution
+
+By default, the virtual desktop runs at **1024x768**. Choose a different resolution by passing the `VNC_RESOLUTION` environment variable when creating a sandbox. Use the `<width>x<height>` format; widths from 640 to 7680 pixels and heights from 480 to 4320 pixels are supported.
+
+```java
+import io.daytona.sdk.Daytona;
+import io.daytona.sdk.Sandbox;
+import io.daytona.sdk.model.CreateSandboxFromSnapshotParams;
+
+import java.util.Map;
+
+try (Daytona daytona = new Daytona()) {
+    CreateSandboxFromSnapshotParams params = new CreateSandboxFromSnapshotParams();
+    params.setEnvVars(Map.of("VNC_RESOLUTION", "1920x1080"));
+    Sandbox sandbox = daytona.create(params);
+}
+```
+
+You can also bake a resolution into a snapshot image with `ENV VNC_RESOLUTION=1920x1080` in its Dockerfile. A value passed at creation takes precedence over the image's `ENV`, which takes precedence over the `1024x768` default. Invalid values fall back to the default.
+
+The virtual display's framebuffer is allocated when the X server starts, so the resolution can only be set when creating the sandbox. Restarting display processes or stopping and starting the sandbox keeps the original geometry; create a new sandbox to use a different resolution.
+
+Pick the resolution to match what your agent assumes. Agents that emit normalized coordinates scale them by an assumed screen size, so a desktop that differs from that assumption displaces every click. Verify the live geometry with [Get info](#get-info) below.
+> **Note:**
+> `VNC_RESOLUTION` applies to Linux container sandboxes (the default sandbox class). Linux VM and Windows sandboxes currently run at a fixed resolution. Creating a sandbox with custom environment variables also bypasses pre-warmed sandbox pools, so allocation can take slightly longer.
 
 ### Get info
 

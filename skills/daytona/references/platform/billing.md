@@ -8,6 +8,7 @@
 
 
 
+
 Daytona provides an overview of your organization's [wallet](#wallet) and [spending](#spending). Daytona uses a pay-as-you-go billing model where you are charged based on the resources reserved for your sandboxes. For information on resource quotas, rate limits, and tier-based access, see [limits](./limits.md).
 
 ## Sandbox billing
@@ -27,45 +28,71 @@ Disk billing and [disk quota](./limits.md#disk-quota) are separate: a sandbox ca
 
 ## Wallet
 
-[Daytona Wallet ↗](https://app.daytona.io/dashboard/billing/wallet) shows the current balance of the organization's wallet and the amount of credits spent this month.
+[Daytona Wallet ↗](https://app.daytona.io/dashboard/billing/wallet) is the central hub for managing your organization's wallet, including balances, credit consumption, and payment methods.
 
-### Overview
+### Redeem coupon
 
-Overview provides a summary of your organization's wallet, including the current balance and the amount of credits spent this month, with options to add a [payment method](#payment-method) and [redeem coupon](#redeem-coupon). The amounts for current balance and credits spent this month are displayed in USD.
+Redeem coupon to add credits to your wallet.
 
-#### Payment method
+1. Go to [Daytona Wallet ↗](https://app.daytona.io/dashboard/billing/wallet)
+2. Enter the coupon code in the **Redeem coupon** input field
+3. Click the <Button>Redeem</Button> button to redeem the coupon code
+
+### Balances
+
+Balances displays the credit balances available to your organization.
+
+- **Free credit balance**: the amount of free credits; not available for GPU sandboxes
+- **Paid credit balance**: the amount of paid credits
+
+Daytona consumes free credits before paid credits. During an open billing month, credit consumption is recalculated when you add credits. If you add free credits after paid credits have already covered usage, that usage is reassigned to the free credits and the paid balance is released. Available paid balance can therefore increase after you redeem free credits, even though no new payment occurred. After the month closes, free and paid credit consumption is locked and is not rebalanced.
+
+1. Go to [Daytona Wallet ↗](https://app.daytona.io/dashboard/billing/wallet)
+2. Navigate to the **Balances** section
+3. Click <Button>See breakdown and expiration</Button>
+
+### Billing information
+
+Billing information displays the organization's billing information.
+
+- **Billing name**: the name on file for billing
+- **Billing email**: the email address on file for billing
+- **Billing phone number**: the phone number on file for billing
+- **Billing address**: the address on file for billing
+
+1. Go to [Daytona Wallet ↗](https://app.daytona.io/dashboard/billing/wallet)
+2. Navigate to the **Billing information** section
+3. Click <Button>Edit</Button>
+4. Add or update the billing information
+
+### Payment method
 
 Payment method connects your wallet to your preferred payment method, allowing you to add funds to your balance and receive invoices.
 
 1. Go to [Daytona Wallet ↗](https://app.daytona.io/dashboard/billing/wallet)
-2. Click the **Connect** button in the **Payment method** section
-3. Follow the prompts to connect your payment method to your wallet
+2. Navigate to the **Payment method** section
+3. Click <Button>Edit</Button>
+4. Add or update the payment method
+5. Follow the prompts to complete the payment setup
 
-Organizations can set automatic top-up rules for their wallets
+### Automatic top-up
 
-- **Threshold**: when the wallet balance drops to this amount, a top-up is triggered
-- **Target**: the wallet balance is topped up to this amount
-
-Set both **Threshold** and **Target** to `0` to disable automatic top-up.
-
-#### Redeem coupon
-
-Redeem coupon allows you to redeem coupon codes to add credits to your wallet.
+Automatic top-up adds credits to your wallet when the balance drops below a certain threshold.
 
 1. Go to [Daytona Wallet ↗](https://app.daytona.io/dashboard/billing/wallet)
-2. Enter the coupon code in the **Redeem coupon** input field
-3. Click the **Redeem** button to redeem the coupon code
+2. Navigate to the **Automatic top-up** section
+3. Add or update the **when balance is low** and **bring balance to** values
+4. Click <Button>Save</Button>
 
 ### One time top-up
 
-One time top-up allows you to add credits to your balance with a one time payment.
+One time top-up adds credits to your wallet with a one time payment.
 
 1. Go to [Daytona Wallet ↗](https://app.daytona.io/dashboard/billing/wallet)
-2. Select the top-up amount or enter a custom amount
-3. Click the **Top up** button
-4. Follow the prompts to complete the payment
-
-After completing the payment, the amount will be added to your wallet and the **Current balance** will be updated.
+2. Navigate to the **One time top-up** section
+3. Select the top-up amount or enter a custom amount
+4. Click <Button>Top up</Button>
+5. Follow the prompts to complete the payment
 
 ### Invoices
 
@@ -79,11 +106,25 @@ Invoices are automatically generated and sent to your billing emails.
 - **Type**: the type of the invoice
 
 1. Go to [Daytona Wallet ↗](https://app.daytona.io/dashboard/billing/wallet)
-2. Click the three dots button (**:::**) next to the invoice you want to view
-3. Click the **View** button to see the invoice details
-4. Optionally, download the invoice
+2. Navigate to the **Invoices** section
+3. Click the three dots button (**:::**) next to the invoice you want to view
+4. Click <Button>View</Button> to see the invoice details
+5. Optionally, download the invoice
+
+### Charges
+
+Charges displays all payment attempts on your organization, including failed attempts.
+
+- **Date**: the date the charge was attempted
+- **Description**: the description of the charge
+- **Amount**: the amount of the charge
+- **Status**: the status of the charge
+
+---
 
 ## Spending
+
+[Daytona Spending ↗](https://app.daytona.io/dashboard/billing/spending) provides a summary of your organization's resource usage and spending.
 
 ### Resource usage
 
@@ -103,6 +144,18 @@ Resource breakdown displays a breakdown of usage per resource.
 - **RAM**: the total RAM usage of your organization
 - **Disk**: the total disk usage of your organization
 
+### Usage timeline
+
+Usage timeline displays a timeline of usage  per sandbox.
+
+- **Compute**: the total compute usage of your organization
+- **Storage**: the total storage usage of your organization
+- **Memory**: the total memory usage of your organization
+
+1. Go to [Daytona Spending ↗](https://app.daytona.io/dashboard/billing/spending)
+2. Navigate to the **Usage timeline** section
+4. Filter by resources and cost, and by regions
+
 ### Per-sandbox usage
 
 Per-sandbox usage displays usage per sandbox.
@@ -112,10 +165,6 @@ Per-sandbox usage displays usage per sandbox.
 - **CPU (seconds)**: the total CPU usage of the sandbox
 - **RAM (GB-seconds)**: the total RAM usage of the sandbox
 - **Disk (GB-seconds)**: the total disk usage of the sandbox
-
-### Monthly breakdown
-
-Monthly breakdown displays a chart of cost breakdown by month. The chart is interactive and you can filter by resources, change the chart type (bar or area), and select the time range (last 3 months, last 6 months, last 12 months).
 
 ## Cancellation & post-cancellation
 > **Note:**

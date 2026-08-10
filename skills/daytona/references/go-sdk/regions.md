@@ -2,6 +2,8 @@
 
 Every Daytona sandbox runs in a **region**: a geographic or logical grouping of compute infrastructure. When creating a sandbox, you can target a specific region, and Daytona schedules the workload on available capacity within that region.
 
+## Shared regions
+
 Regions managed by Daytona and available to all organizations:
 
 | **Region**    | **Target** |
@@ -29,6 +31,15 @@ func main() {
 	ctx := context.Background()
 	_, _ = client.Create(ctx, nil)
 }
+```
+
+List regions managed by Daytona and available to all organizations:
+
+**API:**
+
+```bash
+curl 'https://app.daytona.io/api/shared-regions' \
+  --header 'Authorization: Bearer YOUR_API_KEY'
 ```
 
 ## Dedicated regions

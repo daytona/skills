@@ -505,6 +505,16 @@ Configuration options for initializing the Daytona client.
     is provided, and must be set either here or in the environment variable `DAYTONA_ORGANIZATION_ID`.
 - `otelEnabled?` _boolean_ - OpenTelemetry tracing enabled.
     If set, all SDK operations will be traced.
+- `requestTimeoutMs?` _number_ - Maximum time in milliseconds the SDK waits for a single HTTP response before
+    failing the request. Applies to the Daytona API client and to the toolbox
+    clients of every Sandbox obtained from this Daytona instance. Defaults to
+    24 hours; `0` disables the deadline.
+
+    This is a client-side deadline only — it does not cancel the operation on
+    the server. Calls that carry their own operation or execution timeout
+    (e.g. `create`, `start`, `stop`, `fork`, `process.executeCommand`,
+    `process.codeRun`) are not capped by this value; their HTTP wait is
+    bounded by that per-call timeout instead.
 - ~~`serverUrl?`~~ _string_ - **_Deprecated_** - Use `apiUrl` instead. This property will be removed in future versions.
 - `target?` _string_ - Target location for Sandboxes
 - ~~`useDeprecatedPolling?`~~ _boolean_ - Observe sandbox state by legacy polling instead of WebSocket event streaming.

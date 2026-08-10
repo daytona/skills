@@ -43,10 +43,64 @@ Daytona provides default snapshots for creating sandboxes. You can also create s
 | **`windows-medium`**    | 2        | 8GiB       | 50GiB       |         | Windows           |
 | **`windows-large`**     | 4        | 16GiB      | 50GiB       |         | Windows           |
 
+Default snapshots include pre-installed Python and Node.js packages.
+
+**Python (pip)**
+
+
+| **Package**            | **Version** |
+| ---------------------- | ----------- |
+| **`anthropic`**        | v0.120.2     |
+| **`beautifulsoup4`**   | v4.14.3     |
+| **`claude-agent-sdk`** | v0.2.130     |
+| **`openai-agents`**    | v0.19.4     |
+| **`daytona`**          | v0.203.0    |
+| **`django`**           | v6.0.1      |
+| **`flask`**            | v3.1.2      |
+| **`huggingface-hub`**  | v0.36.0     |
+| **`instructor`**       | v1.14.4     |
+| **`keras`**            | v3.13.0     |
+| **`langchain`**        | v1.2.7      |
+| **`llama-index`**      | v0.14.13    |
+| **`matplotlib`**       | v3.10.8     |
+| **`numpy`**            | v2.4.1      |
+| **`ollama`**           | v0.6.1      |
+| **`openai`**           | v2.53.0     |
+| **`opencv-python`**    | v4.13.0.90  |
+| **`pandas`**           | v2.3.3      |
+| **`pillow`**           | v12.1.0     |
+| **`pipx`**             | v1.8.0      |
+| **`pydantic-ai`**      | v1.47.0     |
+| **`python-lsp-server`**    | v1.14.0     |
+| **`requests`**         | v2.32.5     |
+| **`scikit-learn`**     | v1.8.0      |
+| **`scipy`**            | v1.17.0     |
+| **`seaborn`**          | v0.13.2     |
+| **`sqlalchemy`**       | v2.0.46     |
+| **`torch`**            | v2.10.0     |
+| **`transformers`**     | v4.57.6     |
+| **`uv`**               | v0.9.26     |
+
+
+**Node.js (npm)**
+
+
+| **Package**                      | **Version** |
+| -------------------------------- | ----------- |
+| **`@anthropic-ai/claude-code`**  | v2.1.220     |
+| **`@openai/codex`**              | v0.146.0    |
+| **`bun`**                        | v1.3.6      |
+| **`openclaw`**                   | v2026.7.1-2   |
+| **`opencode-ai`**                | v1.18.14     |
+| **`ts-node`**                    | v10.9.2     |
+| **`typescript`**                 | v5.9.3      |
+| **`typescript-language-server`** | v5.1.3      |
+
+
 1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
-2. Click **Create Sandbox**
+2. Click <Button>Create Sandbox</Button>
 3. Select a **`snapshot`**
-4. Click **Create**
+4. Click <Button>Create</Button>
 
 ```ruby
 require 'daytona'
@@ -64,11 +118,11 @@ sandbox = daytona.create(
 Create a snapshot.
 
 1. Go to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
-2. Click **Create Snapshot**
+2. Click <Button>Create Snapshot</Button>
 3. Enter the snapshot **`name`** and **`image`** of any publicly accessible image or container registry
     - **Snapshot name**: identifier used to reference the snapshot
     - **Snapshot image**: base image for the snapshot, must include either a tag or a digest (e.g., **`ubuntu:22.04`**); the **`latest`**/**`lts`**/**`stable`** tags are not supported
-4. Click **Create**
+4. Click <Button>Create</Button>
 
 ```ruby
 require 'daytona'
@@ -114,7 +168,7 @@ Windows snapshots are used to create [Windows sandboxes](./sandboxes.md#vm-sandb
 Create a GPU snapshot. GPU snapshots are used to create [GPU sandboxes](./sandboxes.md#gpu-sandboxes).
 
 1. Go to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
-2. Click **Create Snapshot**
+2. Click <Button>Create Snapshot</Button>
 3. Enter the snapshot **`name`** and **`image`**
 4. Select the **`Allocate GPU`** checkbox
 5. Specify the **`GPU type`**(s):
@@ -125,7 +179,7 @@ Create a GPU snapshot. GPU snapshots are used to create [GPU sandboxes](./sandbo
     - **`NVIDIA RTX 4090`**
     - **`NVIDIA RTX 5090`**
 
-6. Click **Create**
+6. Click <Button>Create</Button>
 
 ```ruby
 require 'daytona'
@@ -142,12 +196,51 @@ snapshot = daytona.snapshot.create(
 
 ## Create snapshot from sandbox
 
-Container sandboxes capture filesystem state only (**cold snapshot**). VM sandboxes capture filesystem and memory state (**hot snapshot**) through the `includeMemory` parameter:
+Create a snapshot from a running or stopped sandbox.
+
+**Container:**
+
+Container sandboxes capture filesystem state only (**cold snapshot**):
+
+| **Snapshot type** | **Include memory**    | **Snapshot contents** | **Required sandbox state** |
+| ----------------- | --------------------- | --------------------- | -------------------------- |
+| Cold              | **`false`** (default) | Filesystem only       | Stopped                    |
+
+
+
+```ruby
+sandbox.experimental_create_snapshot(name: 'my-snapshot')
+```
+
+**Linux VM:**
+
+Linux VM sandboxes capture filesystem state only (**cold snapshot**) or filesystem and memory state (**hot snapshot**) through the `includeMemory` parameter:
 
 | **Snapshot type** | **Include memory**    | **Snapshot contents** | **Required sandbox state** |
 | ----------------- | --------------------- | --------------------- | -------------------------- |
 | Cold              | **`false`** (default) | Filesystem only       | Stopped                    |
 | Hot               | **`true`**            | Filesystem and memory | Started                    |
+
+
+
+```ruby
+# Cold snapshot (filesystem only, sandbox stopped)
+sandbox.experimental_create_snapshot(name: 'my-snapshot')
+
+# Hot snapshot (filesystem and memory, sandbox running)
+sandbox.experimental_create_snapshot(name: 'my-vm-snapshot', include_memory: true)
+```
+
+**Windows:**
+
+Windows sandboxes capture filesystem state only (**cold snapshot**) or filesystem and memory state (**hot snapshot**) through the `includeMemory` parameter:
+
+| **Snapshot type** | **Include memory**    | **Snapshot contents** | **Required sandbox state** |
+| ----------------- | --------------------- | --------------------- | -------------------------- |
+| Cold              | **`false`** (default) | Filesystem only       | Stopped                    |
+| Hot               | **`true`**            | Filesystem and memory | Started                    |
+
+
 
 ```ruby
 # Cold snapshot (filesystem only, sandbox stopped)
@@ -165,7 +258,7 @@ sandbox.experimental_create_snapshot(name: 'my-vm-snapshot', include_memory: tru
 Create a snapshot from images from private container registries.
 
 1. Go to [Daytona Registries ↗](https://app.daytona.io/dashboard/registries)
-2. Click **Add Registry** and select your provider:
+2. Click <Button>Add Registry</Button> and select your provider:
 
     - [Docker Hub](#docker-hub)
     - [Google Artifact Registry](#google-artifact-registry)
@@ -174,7 +267,7 @@ Create a snapshot from images from private container registries.
 
 3. Enter the required fields
 4. Go to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
-5. Click **Create Snapshot**
+5. Click <Button>Create Snapshot</Button>
 6. Enter the snapshot **`name`** and the full **`image`** reference, including the registry host and repository (e.g. **`my-registry.com/<repo>/custom-alpine:3.21`**)
 
 #### Docker Hub
@@ -182,7 +275,7 @@ Create a snapshot from images from private container registries.
 Create a snapshot from Docker Hub images.
 
 1. Go to [Daytona Registries ↗](https://app.daytona.io/dashboard/registries)
-2. Click **Add Registry** and select the **Docker Hub** tab
+2. Click <Button>Add Registry</Button> and select the **Docker Hub** tab
 3. Input the following fields:
    - **Username**: your Docker Hub username (the account with access to the image)
    - **Personal Access Token**: a [Docker Hub PAT](https://docs.docker.com/security/access-tokens/); not your account password
@@ -196,7 +289,7 @@ Create a snapshot from Docker Hub images.
 Create a snapshot from images from Google Artifact Registry.
 
 1. Go to [Daytona Registries ↗](https://app.daytona.io/dashboard/registries),
-2. Click **Add Registry** and select the **Google** tab
+2. Click <Button>Add Registry</Button> and select the **Google** tab
 2. Input the following fields:
    - **Registry URL**: the base URL for your region
 
@@ -214,7 +307,7 @@ Create a snapshot from images from Google Artifact Registry.
 Create a snapshot from images from GitHub Container Registry.
 
 1. Go to [Daytona Registries ↗](https://app.daytona.io/dashboard/registries),
-2. Click **Add Registry** and select the **GitHub** tab
+2. Click <Button>Add Registry</Button> and select the **GitHub** tab
 2. Input the following fields:
    - **GitHub Username**: the account with access to the image
    - **Personal Access Token**: a [GitHub PAT](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) with **`read:packages`** scope (and **`write:packages`** / **`delete:packages`** for pushing or deleting)
@@ -279,14 +372,14 @@ Daytona pulls private ECR images via cross-account IAM role assumption. You crea
     ```
 
 2. Go to [Daytona Registries ↗](https://app.daytona.io/dashboard/registries)
-3. Click **Add Registry** and select the **Amazon ECR** tab
+3. Click <Button>Add Registry</Button> and select the **Amazon ECR** tab
 4. Input the following fields:
    - **Registry URL**: **`<account_id>.dkr.ecr.<region>.amazonaws.com`**
    - **Role ARN**: the role you created in step 1
 
    Password is not used for ECR. Daytona resolves credentials server-side by assuming the role you created in step 1, using your organization ID as the **`AssumeRole ExternalId`**.
 5. Go to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
-6. Click **Create Snapshot**
+6. Click <Button>Create Snapshot</Button>
 7. Enter the snapshot **`name`** and the full **`image`** reference
 
     **`<account_id>.dkr.ecr.<region>.amazonaws.com/<repo>/<image>:<tag>`**
@@ -351,7 +444,7 @@ Snapshots automatically become inactive after 2 weeks of not being used.
 
 1. Go to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
 2. Click the three dots at the end of the row for the snapshot you want to activate
-3. Click the **Activate** button
+3. Click the <Button>Activate</Button> button
 
 ```ruby
 daytona.snapshot.activate('my-awesome-snapshot')
@@ -365,7 +458,7 @@ Deactivated snapshots are not available for new sandboxes. Deactivating a snapsh
 
 1. Go to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
 2. Click the three dots at the end of the row for the snapshot you want to deactivate
-3. Click the **Deactivate** button
+3. Click the <Button>Deactivate</Button> button
 
 ## Delete snapshots
 
@@ -375,7 +468,7 @@ Deleted snapshots cannot be recovered. Deleting a snapshot also deletes its [war
 
 1. Go to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
 2. Click the three dots at the end of the row for the snapshot you want to delete
-3. Click the **Delete** button
+3. Click the <Button>Delete</Button> button
 
 ```ruby
 daytona.snapshot.delete(daytona.snapshot.get('my-awesome-snapshot'))
@@ -385,67 +478,51 @@ daytona.snapshot.delete(daytona.snapshot.get('my-awesome-snapshot'))
 
 A snapshot can have several different states. Each state reflects the snapshot's current status.
 
-- **Pending**: the snapshot creation has been requested
-- **Building**: the snapshot is being built
-- **Pulling**: the snapshot image is being pulled from a registry
-- **Active**: the snapshot is ready to use for creating sandboxes
-- **Inactive**: the snapshot is deactivated; must be explicitly [activated](#activate-snapshots) before use
-- **Error**: the snapshot creation failed
-- **Build Failed**: the snapshot build process failed
-- **Removing**: the snapshot is being deleted
-
-Default snapshots include pre-installed Python and Node.js packages.
-
-**Python (pip)**
+**Snapshot states**
 
 
-| **Package**            | **Version** |
-| ---------------------- | ----------- |
-| **`anthropic`**        | v0.76.0     |
-| **`beautifulsoup4`**   | v4.14.3     |
-| **`claude-agent-sdk`** | v0.1.22     |
-| **`openai-agents`**    | v0.15.1     |
-| **`daytona`**          | v0.134.0    |
-| **`django`**           | v6.0.1      |
-| **`flask`**            | v3.1.2      |
-| **`huggingface-hub`**  | v0.36.0     |
-| **`instructor`**       | v1.14.4     |
-| **`keras`**            | v3.13.0     |
-| **`langchain`**        | v1.2.7      |
-| **`llama-index`**      | v0.14.13    |
-| **`matplotlib`**       | v3.10.8     |
-| **`numpy`**            | v2.4.1      |
-| **`ollama`**           | v0.6.1      |
-| **`openai`**           | v2.33.0     |
-| **`opencv-python`**    | v4.13.0.90  |
-| **`pandas`**           | v2.3.3      |
-| **`pillow`**           | v12.1.0     |
-| **`pipx`**             | v1.8.0      |
-| **`pydantic-ai`**      | v1.47.0     |
-| **`python-lsp-server`**    | v1.14.0     |
-| **`requests`**         | v2.32.5     |
-| **`scikit-learn`**     | v1.8.0      |
-| **`scipy`**            | v1.17.0     |
-| **`seaborn`**          | v0.13.2     |
-| **`sqlalchemy`**       | v2.0.46     |
-| **`torch`**            | v2.10.0     |
-| **`transformers`**     | v4.57.6     |
-| **`uv`**               | v0.9.26     |
+| **State**    | **Description**                                                                                         |
+| ------------ | ------------------------------------------------------------------------------------------------------- |
+| Pending      | The snapshot creation has been requested.                                                               |
+| Building     | The snapshot is being built.                                                                            |
+| Pulling      | The snapshot image is being pulled from a registry.                                                     |
+| Snapshotting | The snapshot is being created from a sandbox.                                                           |
+| Active       | The snapshot is ready to use for creating sandboxes.                                                    |
+| Inactive     | The snapshot is deactivated; must be explicitly <u>[**activated**](#activate-snapshots)</u> before use. |
+| Error        | The snapshot creation failed.                                                                           |
+| Build Failed | The snapshot build process failed.                                                                      |
+| Removing     | The snapshot is being deleted.                                                                          |
 
 
-**Node.js (npm)**
+##### State transitions
+
+A snapshot can transition between states in response to various actions. The following table lists the initial state, target state, and trigger for the transition.
+
+**State transitions**
 
 
-| **Package**                      | **Version** |
-| -------------------------------- | ----------- |
-| **`@anthropic-ai/claude-code`**  | v2.1.19     |
-| **`@openai/codex`**              | v0.128.0    |
-| **`bun`**                        | v1.3.6      |
-| **`openclaw`**                   | v2026.2.1   |
-| **`opencode-ai`**                | v1.1.35     |
-| **`ts-node`**                    | v10.9.2     |
-| **`typescript`**                 | v5.9.3      |
-| **`typescript-language-server`** | v5.1.3      |
+| **Initial state** | **Target state** | **Trigger**                                                                                        |
+| ----------------- | ---------------- | -------------------------------------------------------------------------------------------------- |
+| Pending           | Building         | A declarative image build starts.                                                                  |
+| Pending           | Pulling          | The snapshot image pull starts.                                                                    |
+| Pending           | Error            | Snapshot processing fails.                                                                         |
+| Pending           | Removing         | A delete is requested.                                                                             |
+| Building          | Active           | The build finishes and the snapshot is ready.                                                      |
+| Building          | Build Failed     | The image build is rejected.                                                                       |
+| Building          | Error            | The build fails or times out.                                                                      |
+| Building          | Removing         | A delete is requested.                                                                             |
+| Pulling           | Active           | The image pull finishes and the snapshot is ready.                                                 |
+| Pulling           | Error            | The image pull fails or times out.                                                                 |
+| Pulling           | Removing         | A delete is requested.                                                                             |
+| Snapshotting      | Active           | The snapshot from a sandbox finishes and is ready.                                                 |
+| Snapshotting      | Error            | The snapshot from a sandbox fails or times out.                                                    |
+| Snapshotting      | Removing         | A delete is requested.                                                                             |
+| Active            | Inactive         | A deactivate is requested, the organization is suspended, or the deactivation timeout is exceeded. |
+| Active            | Removing         | A delete is requested.                                                                             |
+| Inactive          | Pending          | An activate is requested.                                                                          |
+| Inactive          | Removing         | A delete is requested.                                                                             |
+| Error             | Removing         | A delete is requested.                                                                             |
+| Build Failed      | Removing         | A delete is requested.                                                                             |
 
 
 ## Run Docker in a sandbox
@@ -525,39 +602,38 @@ sandbox.process.exec(command: 'docker compose -p demo down')
 
 Sandboxes can run a Kubernetes cluster inside the sandbox. Kubernetes runs entirely inside the sandbox and is removed when the sandbox is deleted, keeping environments secure and reproducible.
 
-The snippet installs and starts a k3s cluster inside a sandbox and lists all running pods:
+1. Create a sandbox
+2. Install and start a k3s cluster inside the sandbox
 
-```typescript
-import { Daytona } from '@daytona/sdk'
-import { setTimeout } from 'timers/promises'
+```ruby
+require 'daytona'
 
-// Initialize the Daytona client
-const daytona = new Daytona()
+# Initialize the Daytona client
+daytona = Daytona::Daytona.new
 
-// Create the sandbox instance
-const sandbox = await daytona.create()
+# Create the sandbox instance
+sandbox = daytona.create
 
-// Run the k3s installation script
-const response = await sandbox.process.executeCommand(
-  'curl -sfL https://get.k3s.io | sh -'
+# Run the k3s installation script
+response = sandbox.process.exec(command: 'curl -sfL https://get.k3s.io | sh -')
+
+# Run k3s
+session_name = 'k3s-server'
+sandbox.process.create_session(session_name)
+sandbox.process.execute_session_command(
+  session_id: session_name,
+  req: Daytona::SessionExecuteRequest.new(
+    command: 'sudo /usr/local/bin/k3s server',
+    run_async: true
+  )
 )
 
-// Run k3s
-const sessionName = 'k3s-server'
-await sandbox.process.createSession(sessionName)
-const k3s = await sandbox.process.executeSessionCommand(sessionName, {
-  command: 'sudo /usr/local/bin/k3s server',
-  async: true,
-})
+# Give time to k3s to fully start
+sleep 30
 
-// Give time to k3s to fully start
-await setTimeout(30000)
-
-// Get all pods
-const pods = await sandbox.process.executeCommand(
-  'sudo /usr/local/bin/kubectl get pod -A'
-)
-console.log(pods.result)
+# Get all pods
+pods = sandbox.process.exec(command: 'sudo /usr/local/bin/kubectl get pod -A')
+puts pods.result
 ```
 
 ## See Also

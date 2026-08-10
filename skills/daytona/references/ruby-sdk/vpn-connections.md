@@ -48,8 +48,8 @@ Once the connection is established and authentication is complete, the sandbox w
 Using an auth key provides a non-interactive way to connect your Daytona sandbox to Tailscale, making it suitable for automated scripts, CI/CD pipelines, or any scenario where manual browser interaction is not available.
 
 1. Access your [Tailscale admin console ↗](https://login.tailscale.com/admin/machines)
-2. Click **Add device** and select **Linux server**
-3. Apply the configuration and click **Generate install script**
+2. Click <Button>Add device</Button> and select <Button>Linux server</Button>
+3. Apply the configuration and click <Button>Generate install script</Button>
 
 This will generate a script that you can use to install Tailscale and connect to the Tailscale network.
 
@@ -239,7 +239,7 @@ This integration makes your sandbox appear as a device within your Netbird netwo
 Using a Netbird setup key provides a non-interactive way to connect your Daytona sandbox to Netbird, making it suitable for automated scripts, CI/CD pipelines, or any scenario where manual browser interaction is not available.
 
 1. Access your [Netbird dashboard ↗](https://app.netbird.io/)
-2. Click **Setup Keys**
+2. Click <Button>Setup Keys</Button>
 3. Create a new setup key or use an existing one
 
 The following snippets demonstrate connecting to a Netbird network using a setup key.

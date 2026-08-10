@@ -128,7 +128,8 @@ daytona = Daytona::Daytona.new
 cursor = nil
 loop do
   page = daytona.secret.list(cursor:, limit: 100)
-  page.items.each { |secret| puts secret.name }
+  puts "Fetched #{page.items.length} of #{page.total} secrets"
+  page.items.each { |secret| puts "#{secret.name} (#{secret.id})" }
   cursor = page.next_cursor
   break if cursor.nil?
 end

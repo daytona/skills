@@ -24,6 +24,8 @@
 - DaytonaGitMergeConflictError
 - DaytonaFileNotFoundError
 - DaytonaFileAccessDeniedError
+- DaytonaInvalidFilePathError
+- DaytonaFileReadFailedError
 - DaytonaLspServerNotInitializedError
 - DaytonaProcessExecutionTimeoutError
 - DaytonaProcessNotFoundError
@@ -382,6 +384,22 @@ class DaytonaFileAccessDeniedError(DaytonaForbiddenError)
 ```
 
 Insufficient permissions for the filesystem operation.
+
+## DaytonaInvalidFilePathError
+
+```python
+class DaytonaInvalidFilePathError(DaytonaBadRequestError)
+```
+
+The daemon rejected the supplied file path (code ``INVALID_FILE_PATH``).
+
+## DaytonaFileReadFailedError
+
+```python
+class DaytonaFileReadFailedError(DaytonaInternalServerError)
+```
+
+The daemon could not read the sandbox file (code ``FILE_READ_FAILED``).
 
 ## DaytonaLspServerNotInitializedError
 

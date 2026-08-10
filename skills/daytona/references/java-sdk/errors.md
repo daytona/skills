@@ -11,6 +11,7 @@
 - DaytonaConnectionTimeoutException
 - DaytonaFileAccessDeniedException
 - DaytonaFileNotFoundException
+- DaytonaFileReadFailedException
 - DaytonaForbiddenException
 - DaytonaGitAuthFailedException
 - DaytonaGitBranchExistsException
@@ -21,6 +22,7 @@
 - DaytonaGitRepoNotFoundException
 - DaytonaGoneException
 - DaytonaInternalServerException
+- DaytonaInvalidFilePathException
 - DaytonaLspServerNotInitializedException
 - DaytonaNotFoundException
 - DaytonaProcessExecutionTimeoutException
@@ -785,6 +787,56 @@ public DaytonaFileNotFoundException(String message, Throwable cause, String code
 - `code` _String_ -
 - `source` _String_ -
 
+## DaytonaFileReadFailedException
+
+Daemon could not read the requested file (code `FILE_READ_FAILED`, HTTP 500).
+
+Subclass of `DaytonaInternalServerException`.
+
+### Constructors
+
+#### new DaytonaFileReadFailedException()
+```java
+public DaytonaFileReadFailedException(String message)
+```
+
+**Parameters**:
+
+- `message` _String_ -
+
+#### new DaytonaFileReadFailedException()
+```java
+public DaytonaFileReadFailedException(String message, Throwable cause)
+```
+
+**Parameters**:
+
+- `message` _String_ -
+- `cause` _Throwable_ -
+
+#### new DaytonaFileReadFailedException()
+```java
+public DaytonaFileReadFailedException(String message, String code, String source)
+```
+
+**Parameters**:
+
+- `message` _String_ -
+- `code` _String_ -
+- `source` _String_ -
+
+#### new DaytonaFileReadFailedException()
+```java
+public DaytonaFileReadFailedException(String message, Throwable cause, String code, String source)
+```
+
+**Parameters**:
+
+- `message` _String_ -
+- `cause` _Throwable_ -
+- `code` _String_ -
+- `source` _String_ -
+
 ## DaytonaForbiddenException
 
 Raised when the authenticated user lacks permission to perform an operation (HTTP 403).
@@ -1291,6 +1343,56 @@ public DaytonaInternalServerException(String message, String code, String source
 #### new DaytonaInternalServerException()
 ```java
 public DaytonaInternalServerException(String message, Throwable cause, String code, String source)
+```
+
+**Parameters**:
+
+- `message` _String_ -
+- `cause` _Throwable_ -
+- `code` _String_ -
+- `source` _String_ -
+
+## DaytonaInvalidFilePathException
+
+Supplied file path was rejected by the daemon (code `INVALID_FILE_PATH`, HTTP 400).
+
+Subclass of `DaytonaBadRequestException`.
+
+### Constructors
+
+#### new DaytonaInvalidFilePathException()
+```java
+public DaytonaInvalidFilePathException(String message)
+```
+
+**Parameters**:
+
+- `message` _String_ -
+
+#### new DaytonaInvalidFilePathException()
+```java
+public DaytonaInvalidFilePathException(String message, Throwable cause)
+```
+
+**Parameters**:
+
+- `message` _String_ -
+- `cause` _Throwable_ -
+
+#### new DaytonaInvalidFilePathException()
+```java
+public DaytonaInvalidFilePathException(String message, String code, String source)
+```
+
+**Parameters**:
+
+- `message` _String_ -
+- `code` _String_ -
+- `source` _String_ -
+
+#### new DaytonaInvalidFilePathException()
+```java
+public DaytonaInvalidFilePathException(String message, Throwable cause, String code, String source)
 ```
 
 **Parameters**:

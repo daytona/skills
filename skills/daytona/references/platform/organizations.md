@@ -43,10 +43,10 @@ Daytona provides options to create organizations in [Daytona Dashboard ↗](http
 
 1. Go to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/)
 2. Expand the dropdown at the top-left corner of the sidebar to view your organizations
-3. Click the **Create Organization** button
+3. Click the <Button>Create Organization</Button> button
 4. Enter the organization name
 5. Select a [region](../python-sdk/regions.md)
-6. Click **Create**
+6. Click <Button>Create</Button>
 
 **API:**
 
@@ -90,9 +90,9 @@ Leave an organization.
 1. Go to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/)
 2. Expand the dropdown at the top-left corner of the sidebar to view your organizations
 3. Select the organization you want to leave
-4. Click **Settings** in the sidebar
-5. Click **Leave Organization**
-6. Confirm by clicking the **Leave** button
+4. Click <Button>Settings</Button> in the sidebar
+5. Click <Button>Leave Organization</Button>
+6. Confirm by clicking the <Button>Leave</Button> button
 
 **API:**
 
@@ -109,9 +109,9 @@ Delete an organization.
 1. Go to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/)
 2. Expand the dropdown at the top-left corner of the sidebar to view your organizations
 3. Select the organization you want to delete
-4. Click **Settings** in the sidebar
-5. Click **Delete Organization**
-6. Confirm the deletion by typing the organization name and clicking the **Delete** button
+4. Click <Button>Settings</Button> in the sidebar
+5. Click <Button>Delete Organization</Button>
+6. Confirm the deletion by typing the organization name and clicking the <Button>Delete</Button> button
 
 **API:**
 
@@ -141,6 +141,7 @@ The list of available role assignments includes:
 | **`Registries Admin`**        | Grants admin access to registries in the organization               |
 | **`Volumes Admin`**           | Grants admin access to volumes in the organization                  |
 | **`Super Admin`**             | Grants full access to all resources in the organization             |
+| **`SSO Admin`**               | Grants permission to manage the organization's [SSO](https://www.daytona.io/docs/en/sso) identity providers |
 | **`Auditor`**                 | Grants access to audit logs in the organization                     |
 | **`Infrastructure Admin`**    | Grants admin access to infrastructure in the organization           |
 
@@ -223,7 +224,7 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/users' \
 Invite a new user to an organization.
 
 1. Go to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/members)
-2. Click the **Invite Member** button
+2. Click the <Button>Invite Member</Button> button
 3. Enter the email address of the user you want to invite
 4. [Select a role](#roles) for the new user. If you select the **`Member`** role, define their [assignments](#role-assignments)
 
@@ -246,8 +247,8 @@ curl 'https://app.daytona.io/api/organizations/ORGANIZATION_ID/invitations' \
 Remove a user from an organization.
 
 1. Go to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/members)
-2. Click the **Remove** button next to the user you want to remove
-3. Confirm the removal by clicking the **Remove** button
+2. Click the <Button>Remove</Button> button next to the user you want to remove
+3. Confirm the removal by clicking the <Button>Remove</Button> button
 
 **API:**
 
@@ -263,8 +264,8 @@ Update the access of a member in an organization.
 
 1. Go to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/members)
 2. Click the three-dot menu on the member row
-3. Click **Change Role** or **Manage Assignments**
-4. Update the role or assignments and click **Save**
+3. Click <Button>Change Role</Button> or <Button>Manage Assignments</Button>
+4. Update the role or assignments and click <Button>Save</Button>
 
 **API:**
 
@@ -310,7 +311,7 @@ Accept a pending organization invitation.
 
 1. Go to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/)
 2. Click your profile at the bottom-left of the sidebar
-3. Click **Invitations**
+3. Click <Button>Invitations</Button>
 4. Click the checkmark button on the invitation row
 
 **API:**
@@ -329,9 +330,9 @@ Decline a pending organization invitation.
 
 1. Go to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/)
 2. Click your profile at the bottom-left of the sidebar
-3. Click **Invitations**
+3. Click <Button>Invitations</Button>
 4. Click the X button on the invitation row
-5. Confirm by clicking the **Decline** button
+5. Confirm by clicking the <Button>Decline</Button> button
 
 **API:**
 
@@ -359,8 +360,8 @@ Update an invitation for an organization.
 1. Go to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/members)
 2. Scroll to the **Invitations** table
 3. Click the three-dot menu on the invitation row
-4. Click **Edit**
-5. Update the role or assignments and click **Update**
+4. Click <Button>Edit</Button>
+5. Update the role or assignments and click <Button>Update</Button>
 
 **API:**
 
@@ -383,8 +384,8 @@ Cancel an invitation for an organization.
 1. Go to [Daytona Dashboard ↗](https://app.daytona.io/dashboard/members)
 2. Scroll to the **Invitations** table
 3. Click the three-dot menu on the invitation row
-4. Click **Cancel**
-5. Confirm by clicking the **Confirm** button
+4. Click <Button>Cancel</Button>
+5. Confirm by clicking the <Button>Confirm</Button> button
 
 **API:**
 

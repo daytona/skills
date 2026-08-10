@@ -47,7 +47,8 @@ new Process(
    clientConfig: Configuration,
    apiClient: ProcessApi,
    getPreviewToken: () => Promise<string>,
-   language?: string): Process
+   language?: string,
+   requestTimeoutMs?: number): Process
 ```
 
 **Parameters**:
@@ -56,6 +57,7 @@ new Process(
 - `apiClient` _ProcessApi_
 - `getPreviewToken` _\(\) =\> Promise\<string\>_
 - `language?` _string_
+- `requestTimeoutMs?` _number_
 
 
 **Returns**:
@@ -79,7 +81,9 @@ Executes code in the Sandbox using the appropriate language runtime.
 
 - `code` _string_ - Code to execute
 - `params?` _CodeRunParams_ - Parameters for code execution
-- `timeout?` _number_ - Maximum time in seconds to wait for execution to complete
+- `timeout?` _number_ - Maximum time in seconds to wait for execution to complete. The execution is
+    terminated when it elapses. The HTTP request waits for the full timeout, even beyond
+    the client-wide `requestTimeoutMs`; `0` disables the server-side limit.
 
 
 **Returns**:
@@ -325,7 +329,9 @@ Executes a shell command in the Sandbox.
 - `command` _string_ - Shell command to execute
 - `cwd?` _string_ - Working directory for command execution. If not specified, uses the sandbox working directory.
 - `env?` _Record\<string, string\>_ - Environment variables to set for the command
-- `timeout?` _number_ - Maximum time in seconds to wait for the command to complete.
+- `timeout?` _number_ - Maximum time in seconds to wait for the command to complete. The command is
+    terminated when it elapses. The HTTP request waits for the full timeout, even beyond
+    the client-wide `requestTimeoutMs`; `0` disables the server-side limit.
 
 
 **Returns**:

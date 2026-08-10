@@ -1160,7 +1160,7 @@ image := daytona.Base("python:3.11-slim").
     Env("PYTHONUNBUFFERED", "1")
 
 // Use with snapshot creation
-snapshot, logChan, err := client.Snapshots.Create(ctx, &types.CreateSnapshotParams{
+snapshot, logChan, err := client.Snapshot.Create(ctx, &types.CreateSnapshotParams{
     Name:  "my-python-env",
     DockerImage: image,
 })
@@ -5467,12 +5467,14 @@ Parameters:
 Example:
 
 ```
-query := &types.ListSecretsQuery{}
+limit := 50
+query := &types.ListSecretsQuery{Limit: &limit}
 for {
     page, err := client.Secret.List(ctx, query)
     if err != nil {
         return err
     }
+    fmt.Printf("Fetched %d of %d secrets\n", len(page.Items), page.Total)
     for _, secret := range page.Items {
         fmt.Printf("Secret %s -> %s\n", secret.Name, secret.Placeholder)
     }
@@ -5521,13 +5523,13 @@ Returns the updated \[types.Secret\] or an error if the ID is unknown \(404\).
 
 SnapshotService provides snapshot \(image template\) management operations.
 
-SnapshotService enables creating, managing, and deleting snapshots that serve as templates for sandboxes. Snapshots can be built from Docker images or custom [DockerImage](https://www.daytona.io/docs/en<#DockerImage>) definitions with build contexts. Access through \[Client.Snapshots\].
+SnapshotService enables creating, managing, and deleting snapshots that serve as templates for sandboxes. Snapshots can be built from Docker images or custom [DockerImage](https://www.daytona.io/docs/en<#DockerImage>) definitions with build contexts. Access through \[Client.Snapshot\].
 
 Example:
 
 ```
 // Create a snapshot from an existing image
-snapshot, logChan, err := client.Snapshots.Create(ctx, &types.CreateSnapshotParams{
+snapshot, logChan, err := client.Snapshot.Create(ctx, &types.CreateSnapshotParams{
     Name:  "my-python-env",
     Image: "python:3.11-slim",
 })
@@ -5544,7 +5546,7 @@ for log := range logChan {
 image := daytona.Base("python:3.11-slim").
     PipInstall([]string{"numpy", "pandas"}).
     Workdir("/app")
-snapshot, logChan, err := client.Snapshots.Create(ctx, &types.CreateSnapshotParams{
+snapshot, logChan, err := client.Snapshot.Create(ctx, &types.CreateSnapshotParams{
     Name:  "custom-python-env",
     Image: image,
 })
@@ -5565,7 +5567,7 @@ func NewSnapshotService(client *Client) *SnapshotService
 
 NewSnapshotService creates a new SnapshotService.
 
-This is typically called internally by the SDK when creating a [Client](https://www.daytona.io/docs/en<#Client>). Users should access SnapshotService through \[Client.Snapshots\] rather than creating it directly.
+This is typically called internally by the SDK when creating a [Client](https://www.daytona.io/docs/en<#Client>). Users should access SnapshotService through \[Client.Snapshot\] rather than creating it directly.
 
 <a name="SnapshotService.Create"></a>
 ### func \(\*SnapshotService\) Create
@@ -5586,7 +5588,7 @@ Example:
 
 ```
 // Create from Docker Hub image
-snapshot, logChan, err := client.Snapshots.Create(ctx, &types.CreateSnapshotParams{
+snapshot, logChan, err := client.Snapshot.Create(ctx, &types.CreateSnapshotParams{
     Name:  "my-env",
     Image: "python:3.11-slim",
 })
@@ -5601,7 +5603,7 @@ for log := range logChan {
 
 // Create with custom image and resources
 image := daytona.Base("python:3.11").PipInstall([]string{"numpy"})
-snapshot, logChan, err := client.Snapshots.Create(ctx, &types.CreateSnapshotParams{
+snapshot, logChan, err := client.Snapshot.Create(ctx, &types.CreateSnapshotParams{
     Name:  "custom-env",
     Image: image,
     Resources: &types.Resources{CPU: 2, Memory: 4096},
@@ -5628,7 +5630,7 @@ Parameters:
 Example:
 
 ```
-err := client.Snapshots.Delete(ctx, snapshot)
+err := client.Snapshot.Delete(ctx, snapshot)
 if err != nil {
     return err
 }
@@ -5652,7 +5654,7 @@ Parameters:
 Example:
 
 ```
-snapshot, err := client.Snapshots.Get(ctx, "my-python-env")
+snapshot, err := client.Snapshot.Get(ctx, "my-python-env")
 if err != nil {
     return err
 }
@@ -5678,16 +5680,16 @@ Parameters:
 Example:
 
 ```
-// List first page with default limit
-result, err := client.Snapshots.List(ctx, nil, nil)
+pageNumber, pageSize := 2, 10
+page, err := client.Snapshot.List(ctx, &pageNumber, &pageSize)
 if err != nil {
     return err
 }
 
-// List with pagination
-page, limit := 2, 10
-result, err := client.Snapshots.List(ctx, &page, &limit)
-fmt.Printf("Page %d of %d, total: %d\n", result.Page, result.TotalPages, result.Total)
+fmt.Printf("Page %d of %d (%d snapshots total)\n", page.Page, page.TotalPages, page.Total)
+for _, snapshot := range page.Items {
+    fmt.Printf("%s (%s)\n", snapshot.Name, snapshot.ImageName)
+}
 ```
 
 Returns \[types.PaginatedSnapshots\] containing the snapshots and pagination info.
@@ -5727,25 +5729,25 @@ WithUploadProgress returns an option that enables progress tracking for streamin
 
 VolumeService provides persistent storage volume management operations.
 
-VolumeService enables creating, managing, and deleting persistent storage volumes that can be attached to sandboxes. Volumes persist data independently of sandbox lifecycle and can be shared between sandboxes. Access through \[Client.Volumes\].
+VolumeService enables creating, managing, and deleting persistent storage volumes that can be attached to sandboxes. Volumes persist data independently of sandbox lifecycle and can be shared between sandboxes. Access through \[Client.Volume\].
 
 Example:
 
 ```
 // Create a new volume
-volume, err := client.Volumes.Create(ctx, "my-data-volume")
+volume, err := client.Volume.Create(ctx, "my-data-volume")
 if err != nil {
     return err
 }
 
 // Wait for volume to be ready
-volume, err = client.Volumes.WaitForReady(ctx, volume, 60*time.Second)
+volume, err = client.Volume.WaitForReady(ctx, volume, 60*time.Second)
 if err != nil {
     return err
 }
 
 // List all volumes
-volumes, err := client.Volumes.List(ctx)
+volumes, err := client.Volume.List(ctx)
 ```
 
 ```go
@@ -5763,7 +5765,7 @@ func NewVolumeService(client *Client) *VolumeService
 
 NewVolumeService creates a new VolumeService.
 
-This is typically called internally by the SDK when creating a [Client](https://www.daytona.io/docs/en<#Client>). Users should access VolumeService through \[Client.Volumes\] rather than creating it directly.
+This is typically called internally by the SDK when creating a [Client](https://www.daytona.io/docs/en<#Client>). Users should access VolumeService through \[Client.Volume\] rather than creating it directly.
 
 <a name="VolumeService.Create"></a>
 ### func \(\*VolumeService\) Create
@@ -5783,13 +5785,13 @@ Parameters:
 Example:
 
 ```
-volume, err := client.Volumes.Create(ctx, "my-data-volume")
+volume, err := client.Volume.Create(ctx, "my-data-volume")
 if err != nil {
     return err
 }
 
 // Wait for volume to be ready
-volume, err = client.Volumes.WaitForReady(ctx, volume, 60*time.Second)
+volume, err = client.Volume.WaitForReady(ctx, volume, 60*time.Second)
 ```
 
 Returns the created \[types.Volume\] or an error.
@@ -5812,7 +5814,7 @@ Parameters:
 Example:
 
 ```
-err := client.Volumes.Delete(ctx, volume)
+err := client.Volume.Delete(ctx, volume)
 if err != nil {
     return err
 }
@@ -5836,7 +5838,7 @@ Parameters:
 Example:
 
 ```
-volume, err := client.Volumes.Get(ctx, "my-data-volume")
+volume, err := client.Volume.Get(ctx, "my-data-volume")
 if err != nil {
     return err
 }
@@ -5857,7 +5859,7 @@ List returns all volumes in the organization.
 Example:
 
 ```
-volumes, err := client.Volumes.List(ctx)
+volumes, err := client.Volume.List(ctx)
 if err != nil {
     return err
 }
@@ -5887,13 +5889,13 @@ Parameters:
 Example:
 
 ```
-volume, err := client.Volumes.Create(ctx, "my-volume")
+volume, err := client.Volume.Create(ctx, "my-volume")
 if err != nil {
     return err
 }
 
 // Wait up to 2 minutes for the volume to be ready
-volume, err = client.Volumes.WaitForReady(ctx, volume, 2*time.Minute)
+volume, err = client.Volume.WaitForReady(ctx, volume, 2*time.Minute)
 if err != nil {
     return fmt.Errorf("volume failed to become ready: %w", err)
 }

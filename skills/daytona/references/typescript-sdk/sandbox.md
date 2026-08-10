@@ -75,7 +75,8 @@ new Sandbox(
    axiosInstance: AxiosInstance,
    sandboxApi: SandboxApi,
    getAnalyticsApiUrl: () => Promise<string>,
-   subscriptionManager: EventSubscriptionManager): Sandbox
+   subscriptionManager: EventSubscriptionManager,
+   requestTimeoutMs?: number): Sandbox
 ```
 
 Creates a new Sandbox instance.
@@ -91,6 +92,7 @@ Daytona.list rather than constructing directly.
 - `sandboxApi` _SandboxApi_ - API client for Sandbox operations
 - `getAnalyticsApiUrl` _\(\) =\> Promise\<string\>_
 - `subscriptionManager` _EventSubscriptionManager_ - Event subscription manager for real-time updates
+- `requestTimeoutMs?` _number_
 
 
 **Returns**:

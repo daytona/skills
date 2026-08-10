@@ -37,6 +37,15 @@ public ListSecretsResponse list()
 ```
 
 Lists Secrets in the organization one page at a time, using default query parameters.
+```java
+try (Daytona daytona = new Daytona()) {
+ListSecretsResponse page = daytona.secret().list();
+System.out.printf("Fetched %d of %d secrets%n", page.getItems().size(), page.getTotal());
+for (var secret : page.getItems()) {
+System.out.println(secret.getName() + " (" + secret.getId() + ")");
+}
+}
+```
 
 **Returns**:
 
@@ -53,6 +62,24 @@ public ListSecretsResponse list(ListSecretsQuery query)
 
 Lists Secrets in the organization one page at a time. Pass the `nextCursor` from a
 previous response as the query `cursor` to fetch the next page.
+```java
+try (Daytona daytona = new Daytona()) {
+ListSecretsQuery query = new ListSecretsQuery();
+query.setLimit(50);
+
+while (true) {
+ListSecretsResponse page = daytona.secret().list(query);
+System.out.printf("Fetched %d of %d secrets%n", page.getItems().size(), page.getTotal());
+for (var secret : page.getItems()) {
+System.out.println(secret.getName() + " (" + secret.getId() + ")");
+}
+if (page.getNextCursor() == null) {
+break;
+}
+query.setCursor(page.getNextCursor());
+}
+}
+```
 
 **Parameters**:
 

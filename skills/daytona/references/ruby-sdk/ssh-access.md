@@ -9,9 +9,9 @@ Create an SSH access token directly from the [Daytona Dashboard ↗](https://app
 1. Go to [Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
 2. Locate the sandbox you want to create an SSH access token for
 3. Click the sandbox options menu (**⋮**)
-4. Select **Create SSH Access**
+4. Select <Button>Create SSH Access</Button>
 5. Set the expiration time (defaults to 60 minutes)
-6. Click **Create**
+6. Click <Button>Create</Button>
 
 Daytona generates a token and displays it in the modal. Copy the token and use it to connect to your sandbox.
 

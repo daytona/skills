@@ -175,9 +175,9 @@ List paginated list of Snapshots.
 
 ```ts
 const daytona = new Daytona();
-const result = await daytona.snapshot.list(2, 10);
-console.log(`Found ${result.total} snapshots`);
-result.items.forEach(snapshot => console.log(`${snapshot.name} (${snapshot.imageName})`));
+const { items, total, page: currentPage, totalPages } = await daytona.snapshot.list(2, 10);
+console.log(`Page ${currentPage} of ${totalPages} (${total} snapshots total)`);
+items.forEach(snapshot => console.log(`${snapshot.name} (${snapshot.imageName})`));
 ```
 
 ***

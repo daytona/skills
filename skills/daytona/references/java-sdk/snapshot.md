@@ -120,6 +120,16 @@ public PaginatedSnapshots list(Integer page, Integer limit)
 ```
 
 Lists snapshots with pagination.
+```java
+try (Daytona daytona = new Daytona()) {
+PaginatedSnapshots page = daytona.snapshot().list(2, 10);
+System.out.printf("Page %d of %d (%d snapshots total)%n",
+page.getPage(), page.getTotalPages(), page.getTotal());
+for (var snapshot : page.getItems()) {
+System.out.println(snapshot.getName() + " (" + snapshot.getImageName() + ")");
+}
+}
+```
 
 **Parameters**:
 

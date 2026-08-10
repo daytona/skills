@@ -160,10 +160,10 @@ Lists Secrets in the organization with cursor-based pagination.
 const daytona = new Daytona();
 let cursor: string | undefined = undefined;
 do {
-  const page = await daytona.secret.list({ cursor, limit: 50 });
-  console.log(`Fetched ${page.items.length} of ${page.total} secrets`);
-  page.items.forEach(secret => console.log(`${secret.name} (${secret.id})`));
-  cursor = page.nextCursor ?? undefined;
+  const { items, total, nextCursor } = await daytona.secret.list({ cursor, limit: 50 });
+  console.log(`Fetched ${items.length} of ${total} secrets`);
+  items.forEach(secret => console.log(`${secret.name} (${secret.id})`));
+  cursor = nextCursor ?? undefined;
 } while (cursor);
 ```
 

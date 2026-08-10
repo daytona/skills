@@ -2,16 +2,17 @@
 
 - Access from Dashboard
 - Real-time updates
-- Programmatic management
-- Log Structure
-- Actions
-- Targets
+- Log structure
+- Get all audit logs
+- Get audit logs for organization
+- Get audit scenarios
 - Outcomes
 - See Also
 
 
 
-Daytona audit logs provide a detailed record of user and system activity across your organization. Use this feature to track sandbox lifecycle events, user access, system changes, and more.
+
+Audit logs provide a detailed record of user and system activity across your organization. Use this feature to track sandbox lifecycle events, user access, system changes, and more.
 
 - **Security audits**: monitor for unauthorized access or sandbox misuse
 - **Debugging**: understand sandbox lifecycle issues (e.g. failed starts)
@@ -25,39 +26,20 @@ Access the audit logs page directly from [Daytona Dashboard ↗](https://app.day
 
 - **Time**: the timestamp of the action
 - **User**: the user who performed the action
-- [Actions](#actions): the action performed
-- [Targets](#targets): the resource affected by the action
+- **Action**: the action performed
+- **Target**: the resource affected by the action
 - [Outcomes](#outcomes): the result of the action
 
 To filter audit logs by time, use the date range picker in the top-left corner of the page.
 
 ## Real-time updates
 
-Daytona provides real-time updates of audit logs. Enable the **Auto Refresh** toggle in the top-right corner of the [Daytona Audit Logs ↗](https://app.daytona.io/dashboard/audit-logs) page to automatically refresh logs as new events occur.
+Refresh the audit log list automatically as new events occur.
 
-## Programmatic management
+1. Go to [Daytona Audit Logs ↗](https://app.daytona.io/dashboard/audit-logs)
+2. Enable the **Auto Refresh** toggle in the top-right corner of the page
 
-Daytona provides API endpoints for programmatic access to audit logs.
-
-### Get all audit logs
-
-To get all audit logs, use the following API endpoint:
-
-```bash
-curl https://app.daytona.io/api/audit \
-  --header 'Authorization: Bearer YOUR_API_KEY'
-```
-
-### Get audit logs for organization
-
-To get audit logs for a specific organization, use the following API endpoint:
-
-```bash
-curl https://app.daytona.io/api/audit/organizations/{organizationId} \
-  --header 'Authorization: Bearer YOUR_API_KEY'
-```
-
-## Log Structure
+## Log structure
 
 Each audit log entry contains the following fields:
 
@@ -78,36 +60,159 @@ Each audit log entry contains the following fields:
 | **`metadata`**       | object | Additional context about the action                  |
 | **`createdAt`**      | string | ISO 8601 timestamp of when the action occurred       |
 
-## Actions
+## Get all audit logs
 
-Below is the complete list of actions logged by Daytona:
+Get all audit logs.
 
-```text
-create, read, update, delete, login,
-set_default, update_access, update_quota, create_region_quota, update_region_quota, delete_region_quota,
-suspend, unsuspend, accept, decline,
-link_account, unlink_account, leave_organization,
-regenerate_key_pair, update_scheduling,
-start, stop, replace_labels, create_backup,
-update_public_status, set_auto_stop_interval,
-set_auto_archive_interval, set_auto_delete_interval, archive,
-snapshot, fork,
-get_port_preview_url, set_general_status, activate, deactivate,
-update_network_settings,
-send_webhook_message, initialize_webhooks,
-update_sandbox_default_limited_network_egress,
-create_ssh_access, revoke_ssh_access,
-regenerate_proxy_api_key,regenerate_ssh_gateway_api_key,regenerate_snapshot_manager_credentials
+**API:**
+
+```bash
+curl 'https://app.daytona.io/api/audit' \
+  --header 'Authorization: Bearer YOUR_API_KEY'
 ```
 
-## Targets
+## Get audit logs for organization
 
-Each action targets a specific resource type. Possible targets include:
+Get audit logs for a specific organization.
 
-```text
-api_key, organization, organization_invitation,
-organization_role, organization_user, docker_registry,
-runner, sandbox, snapshot, user, volume
+**API:**
+
+```bash
+curl 'https://app.daytona.io/api/audit/organizations/{organizationId}' \
+  --header 'Authorization: Bearer YOUR_API_KEY'
+```
+
+## Get audit scenarios
+
+Get supported audit actions grouped by target type. This endpoint is public and does not require authentication.
+
+Each audit log entry records an `action` and, when applicable, a `targetType`. Daytona exposes the supported pairs as scenarios: actions grouped by the resource type they apply to.
+
+**API:**
+
+```bash
+curl 'https://app.daytona.io/api/audit/scenarios'
+```
+
+The response is in the following format:
+
+```json
+{
+  "targets": [
+    {
+      "targetType": "api_key",
+      "actions": ["create", "delete"]
+    },
+    {
+      "targetType": "docker_registry",
+      "actions": ["create", "delete", "set_default", "update"]
+    },
+    {
+      "targetType": "identity_provider",
+      "actions": ["create", "delete", "update"]
+    },
+    {
+      "targetType": "organization",
+      "actions": [
+        "create",
+        "create_region_quota",
+        "delete",
+        "delete_otel_config",
+        "delete_region_quota",
+        "initialize_webhooks",
+        "send_webhook_message",
+        "suspend",
+        "unsuspend",
+        "update",
+        "update_otel_config",
+        "update_preview_warning",
+        "update_quota",
+        "update_region_quota",
+        "update_sandbox_default_limited_network_egress",
+        "update_sso_enabled"
+      ]
+    },
+    {
+      "targetType": "organization_invitation",
+      "actions": ["accept", "create", "decline", "delete", "update"]
+    },
+    {
+      "targetType": "organization_role",
+      "actions": ["create", "delete", "update"]
+    },
+    {
+      "targetType": "organization_user",
+      "actions": ["create", "delete", "update_access"]
+    },
+    {
+      "targetType": "region",
+      "actions": [
+        "create",
+        "delete",
+        "regenerate_proxy_api_key",
+        "regenerate_snapshot_manager_credentials",
+        "regenerate_ssh_gateway_api_key",
+        "update"
+      ]
+    },
+    {
+      "targetType": "runner",
+      "actions": ["create", "delete", "update_draining", "update_scheduling"]
+    },
+    {
+      "targetType": "sandbox",
+      "actions": [
+        "archive",
+        "create",
+        "create_ssh_access",
+        "delete",
+        "fork",
+        "pause",
+        "recover",
+        "replace_labels",
+        "resize",
+        "revoke_ssh_access",
+        "rotate_signing_key",
+        "set_auto_archive_interval",
+        "set_auto_delete_interval",
+        "set_auto_pause_interval",
+        "set_auto_stop_interval",
+        "set_ttl",
+        "snapshot",
+        "start",
+        "stop",
+        "update",
+        "update_network_settings",
+        "update_public_status",
+        "update_secrets"
+      ]
+    },
+    {
+      "targetType": "secret",
+      "actions": ["create", "delete", "update"]
+    },
+    {
+      "targetType": "snapshot",
+      "actions": ["activate", "create", "deactivate", "delete", "set_general_status"]
+    },
+    {
+      "targetType": "user",
+      "actions": ["create", "link_account", "regenerate_key_pair", "unlink_account"]
+    },
+    {
+      "targetType": "volume",
+      "actions": ["create", "delete"]
+    },
+    {
+      "targetType": "warm_pool",
+      "actions": ["create", "delete", "update"]
+    },
+    {
+      "targetType": "other",
+      "actions": ["leave_organization", "link_account", "unlink_account"]
+    }
+  ]
+}
 ```
 
 ## Outcomes

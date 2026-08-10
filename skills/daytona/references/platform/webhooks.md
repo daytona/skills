@@ -10,6 +10,7 @@
 
 
 
+
 Webhooks are HTTP callbacks that Daytona sends to your specified endpoints when specific events occur.
 Think of them as "reverse API calls" - instead of your application asking Daytona for updates, Daytona
 proactively notifies your application when something important happens.
@@ -29,7 +30,7 @@ Webhooks enable powerful automation and integration scenarios:
 Daytona provides a webhook management interface to access and manage webhook endpoints.
 
 1. Navigate to [Daytona Dashboard ↗](https://app.daytona.io/dashboard)
-2. Click **Webhooks** in the sidebar
+2. Click <Button>Webhooks</Button> in the sidebar
 
 The webhooks management interface contains two tabs: [Endpoints](#endpoints) and [Messages](#messages).
 
@@ -67,35 +68,35 @@ Expanding a delivery attempt displays additional delivery attempt details: **sta
 Daytona provides a webhook management interface to create webhook endpoints.
 
 1. Navigate to [Daytona Dashboard ↗](https://app.daytona.io/dashboard)
-2. Click **Webhooks** in the sidebar
-3. Click **Add Endpoint**
+2. Click <Button>Webhooks</Button> in the sidebar
+3. Click <Button>Add Endpoint</Button>
 4. Configure your endpoint:
 
 - **Endpoint name**: a name for the endpoint
 - **Endpoint URL**: HTTPS endpoint where you want to receive events
 - [Events](#webhook-events): select which events to subscribe to
 
-5. Click **Create**
+5. Click <Button>Create</Button>
 
 ## Edit webhook endpoints
 
 Daytona provides a webhook management interface to edit webhook endpoints.
 
 1. Navigate to [Daytona Dashboard ↗](https://app.daytona.io/dashboard)
-2. Click **Webhooks** in the sidebar
+2. Click <Button>Webhooks</Button> in the sidebar
 3. Select a webhook endpoint from the [Endpoints](#endpoints) tab
-4. Click the three dots menu (**⋮**) and select **Edit**
+4. Click the three dots menu (**⋮**) and select <Button>Edit</Button>
 5. Update the endpoint details
-6. Click **Save**
+6. Click <Button>Save</Button>
 
 ## Delete webhook endpoints
 
 Daytona provides a webhook management interface to delete webhook endpoints.
 
 1. Navigate to [Daytona Dashboard ↗](https://app.daytona.io/dashboard)
-2. Click **Webhooks** in the sidebar
+2. Click <Button>Webhooks</Button> in the sidebar
 3. Select a webhook endpoint from the [Endpoints](#endpoints) tab
-4. Click the three dots menu (**⋮**) and select **Delete**
+4. Click the three dots menu (**⋮**) and select <Button>Delete</Button>
 5. Confirm the deletion
 
 ## Webhook events

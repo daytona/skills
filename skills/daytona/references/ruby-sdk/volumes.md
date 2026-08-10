@@ -38,7 +38,7 @@ This is the default pattern we recommend because it:
 - continues to provide strong isolation at the mount boundary
 
 1. Go to [Daytona Volumes ↗](https://app.daytona.io/dashboard/volumes)
-2. Click the **Create Volume** button
+2. Click the <Button>Create Volume</Button> button
 3. Enter the volume name
 
 ```ruby

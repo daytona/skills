@@ -21,15 +21,17 @@ Access the VNC desktop environment directly from the [Daytona Dashboard ↗](htt
 1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
 2. Locate the sandbox you want to access via VNC
 3. Click the options menu (**⋮**) next to the sandbox
-4. Select **VNC** from the dropdown menu
+4. Select <Button>VNC</Button> from the dropdown menu
 
 This opens a VNC viewer in your browser with a **Connect** button.
 
-5. Click **Connect** to establish the VNC session
+5. Click <Button>Connect</Button> to establish the VNC session
 
 Once connected, a full desktop environment loads in your browser, providing mouse and keyboard control over the sandbox's graphical interface.
 > **Note:**
 > VNC sessions remain active as long as the sandbox is running. If the sandbox auto-stops due to inactivity, you need to start the sandbox again before reconnecting via VNC.
+
+Configure the VNC desktop's resolution when creating the sandbox with the [`VNC_RESOLUTION` environment variable](./computer-use-guide.md#configure-desktop-resolution). The resolution cannot be changed on a running sandbox.
 
 ## Programmatic VNC management
 
