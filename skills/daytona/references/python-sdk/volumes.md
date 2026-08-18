@@ -37,8 +37,9 @@ This is the default pattern we recommend because it:
 - continues to provide strong isolation at the mount boundary
 
 1. Go to [Daytona Volumes ↗](https://app.daytona.io/dashboard/volumes)
-2. Click the <Button>Create Volume</Button> button
+2. Click <Button>Create Volume</Button>
 3. Enter the volume name
+4. Click <Button>Create</Button>
 
 ```python
 from daytona import Daytona
@@ -154,6 +155,10 @@ daytona.volume.list()
 Delete a volume. Deletion is asynchronous: the volume moves through `pending_delete` and `deleting` before it is removed. Deleted volumes cannot be recovered.
 
 A volume can be deleted only when it is in the `ready` or `error` state and is not mounted by any active sandbox. Attempting to delete a volume that is still in use returns a `409` error.
+
+1. Go to [Daytona Volumes ↗](https://app.daytona.io/dashboard/volumes)
+2. Click <Button>Delete</Button> next to the volume you want to delete
+3. Confirm the deletion
 
 ```python
 daytona.volume.delete(volume)

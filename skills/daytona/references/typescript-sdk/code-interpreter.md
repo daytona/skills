@@ -21,13 +21,13 @@ For other languages, use the `codeRun` method from the `Process` interface, or e
 
 ### Constructors
 
-#### new CodeInterpreter()
+#### Constructor
 
 ```ts
 new CodeInterpreter(
    clientConfig: Configuration,
    apiClient: InterpreterApi,
-   getPreviewToken: () => Promise<string>): CodeInterpreter
+   getPreviewToken: () => Promise<string>): CodeInterpreter;
 ```
 
 **Parameters**:
@@ -46,7 +46,7 @@ new CodeInterpreter(
 #### createContext()
 
 ```ts
-createContext(cwd?: string): Promise<InterpreterContext>
+createContext(cwd?: string): Promise<InterpreterContext>;
 ```
 
 Create a new isolated interpreter context.
@@ -68,12 +68,10 @@ await sandbox.codeInterpreter.runCode('x = 10', { context: ctx })
 await sandbox.codeInterpreter.deleteContext(ctx.id!)
 ```
 
-***
-
 #### deleteContext()
 
 ```ts
-deleteContext(context: InterpreterContext): Promise<void>
+deleteContext(context: InterpreterContext): Promise<void>;
 ```
 
 Delete an interpreter context and shut down its worker process.
@@ -95,12 +93,10 @@ const ctx = await sandbox.codeInterpreter.createContext()
 await sandbox.codeInterpreter.deleteContext(ctx)
 ```
 
-***
-
 #### listContexts()
 
 ```ts
-listContexts(): Promise<InterpreterContext[]>
+listContexts(): Promise<InterpreterContext[]>;
 ```
 
 List all user-created interpreter contexts (default context is excluded).
@@ -118,12 +114,10 @@ for (const ctx of contexts) {
 }
 ```
 
-***
-
 #### runCode()
 
 ```ts
-runCode(code: string, options: RunCodeOptions): Promise<ExecutionResult>
+runCode(code: string, options?: RunCodeOptions): Promise<ExecutionResult>;
 ```
 
 Run Python code in the sandbox.
@@ -131,7 +125,7 @@ Run Python code in the sandbox.
 **Parameters**:
 
 - `code` _string_ - Code to run.
-- `options` _RunCodeOptions = {}_ - Execution options (context, envs, callbacks, timeout).
+- `options?` _RunCodeOptions = {}_ - Execution options (context, envs, callbacks, timeout).
 
 
 **Returns**:
@@ -199,7 +193,7 @@ Options for executing code in the interpreter.
 
 - `context?` _InterpreterContext_ - Interpreter context to run code in.
 - `envs?` _Record\<string, string\>_ - Environment variables for this execution.
-- `onError()?` _\(error: ExecutionError\) =\> any_ - Callback for execution errors (e.g., runtime exceptions).
+- `onError?` _\(error: ExecutionError\) =\> any_ - Callback for execution errors (e.g., runtime exceptions).
 
     **Parameters**:
 
@@ -209,7 +203,7 @@ Options for executing code in the interpreter.
     **Returns**:
 
     - `any`
-- `onStderr()?` _\(message: OutputMessage\) =\> any_ - Callback for stderr messages.
+- `onStderr?` _\(message: OutputMessage\) =\> any_ - Callback for stderr messages.
 
     **Parameters**:
 
@@ -219,7 +213,7 @@ Options for executing code in the interpreter.
     **Returns**:
 
     - `any`
-- `onStdout()?` _\(message: OutputMessage\) =\> any_ - Callback for stdout messages.
+- `onStdout?` _\(message: OutputMessage\) =\> any_ - Callback for stdout messages.
 
     **Parameters**:
 

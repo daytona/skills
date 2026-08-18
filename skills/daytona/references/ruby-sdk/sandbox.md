@@ -136,6 +136,18 @@ def domain_allow_list()
 - `String, nil` - Comma-separated list of allowed domains for the sandbox.
 Not returned by list results; call #refresh on each item to populate.
 
+#### outbound_proxy_url()
+
+```ruby
+def outbound_proxy_url()
+
+```
+
+**Returns**:
+
+- `String, nil` - Outbound proxy URL to route the sandbox HTTP(S) traffic through.
+Not returned by list results; call #refresh on each item to populate.
+
 #### target()
 
 ```ruby
@@ -168,6 +180,29 @@ def gpu()
 **Returns**:
 
 - `Float` - The GPU quota for the sandbox
+
+#### spot()
+
+```ruby
+def spot()
+
+```
+
+**Returns**:
+
+- `Boolean` - Whether this is a spot GPU sandbox. Spot sandboxes may be instantly terminated
+to free capacity for on-demand GPU sandboxes.
+
+#### spot_evicted_at()
+
+```ruby
+def spot_evicted_at()
+
+```
+
+**Returns**:
+
+- `String, nil` - When the sandbox was evicted by spot preemption
 
 #### memory()
 

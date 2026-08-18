@@ -830,6 +830,28 @@ public int getGpu()
 
 - `int` - allocated GPU units.
 
+#### isSpot()
+```java
+public boolean isSpot()
+```
+
+Returns whether this is a spot GPU Sandbox.
+
+Spot Sandboxes may be instantly terminated to free capacity for on-demand GPU Sandboxes.
+
+**Returns**:
+
+- `boolean` - `true` when the Sandbox is preemptible.
+
+#### getSpotEvictedAt()
+```java
+public String getSpotEvictedAt()
+```
+
+**Returns**:
+
+- `String` - when the Sandbox was evicted by spot preemption, or `null` when it was not.
+
 #### getMemory()
 ```java
 public int getMemory()
@@ -1016,6 +1038,21 @@ Not returned by `Daytona#list`; call `#refreshData()` on each item to populate.
 **Returns**:
 
 - `String` - allowed domains, or `null`
+
+#### getOutboundProxyUrl()
+```java
+public String getOutboundProxyUrl()
+```
+
+Returns the outbound proxy URL to route the sandbox HTTP(S) traffic through, if any.
+
+Not returned by `Daytona#list`; call `#refreshData()` on each item to populate.
+Applied via the HTTP(S)_PROXY environment variables; combine with domainAllowList for
+network-layer enforcement.
+
+**Returns**:
+
+- `String` - outbound proxy URL, or `null`
 
 #### getVolumes()
 ```java

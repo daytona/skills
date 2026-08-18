@@ -12,6 +12,7 @@
 - type CodeRunParams
 - type CreateSecretParams
 - type CreateSnapshotParams
+- type CreateWarmPoolParams
 - type DaytonaConfig
 - type ExecuteResponse
 - type ExecutionArtifacts
@@ -51,6 +52,7 @@
 - type UpdateSecretParams
 - type Volume
 - type VolumeMount
+- type WarmPool
 
 ```go
 import "github.com/daytona/clients/sdk-go/pkg/types"
@@ -64,6 +66,7 @@ import "github.com/daytona/clients/sdk-go/pkg/types"
 - [type CodeRunParams](https://www.daytona.io/docs/en<#CodeRunParams>)
 - [type CreateSecretParams](https://www.daytona.io/docs/en<#CreateSecretParams>)
 - [type CreateSnapshotParams](https://www.daytona.io/docs/en<#CreateSnapshotParams>)
+- [type CreateWarmPoolParams](https://www.daytona.io/docs/en<#CreateWarmPoolParams>)
 - [type DaytonaConfig](https://www.daytona.io/docs/en<#DaytonaConfig>)
 - [type ExecuteResponse](https://www.daytona.io/docs/en<#ExecuteResponse>)
 - [type ExecutionArtifacts](https://www.daytona.io/docs/en<#ExecutionArtifacts>)
@@ -103,6 +106,7 @@ import "github.com/daytona/clients/sdk-go/pkg/types"
 - [type UpdateSecretParams](https://www.daytona.io/docs/en<#UpdateSecretParams>)
 - [type Volume](https://www.daytona.io/docs/en<#Volume>)
 - [type VolumeMount](https://www.daytona.io/docs/en<#VolumeMount>)
+- [type WarmPool](https://www.daytona.io/docs/en<#WarmPool>)
 
 
 ## Constants
@@ -185,6 +189,23 @@ type CreateSnapshotParams struct {
     Entrypoint     []string
     SkipValidation *bool
     SandboxClass   *SandboxClass
+}
+```
+
+<a name="CreateWarmPoolParams"></a>
+## type CreateWarmPoolParams
+
+CreateWarmPoolParams contains parameters for creating a warm pool.
+
+```go
+type CreateWarmPoolParams struct {
+    // Snapshot is the snapshot (ID or name) to keep warm sandboxes for.
+    Snapshot string
+    // Pool is the number of warm sandboxes to keep ready.
+    Pool int
+    // Target is the target region for the warm pool. Defaults to the
+    // organization default region when nil.
+    Target *string
 }
 ```
 
@@ -612,7 +633,19 @@ type SandboxBaseParams struct {
     NetworkBlockAll  bool
     NetworkAllowList *string
     DomainAllowList  *string
-    Ephemeral        bool
+    // OutboundProxyUrl is the outbound proxy URL the sandbox HTTP(S) traffic is
+    // routed through. Applied via the HTTP(S)_PROXY environment variables;
+    // combine with DomainAllowList for network-layer enforcement.
+    OutboundProxyUrl *string
+    // OtelEndpointOverride is the OTel collector endpoint override for the sandbox.
+    // When set, sandbox OTel data is sent to this endpoint instead of the default
+    // collector and will not be available in the Daytona analytics API or dashboard.
+    OtelEndpointOverride *string
+    Ephemeral            bool
+    // Spot marks the sandbox as a spot GPU sandbox. A spot sandbox may be instantly
+    // terminated without notice to free GPU capacity for an on-demand (non-spot) GPU
+    // sandbox. Rejected when the sandbox requests no GPUs.
+    Spot bool
     // LinkedSandbox is the ID or name of an existing sandbox to link the new sandbox to.
     // The new sandbox will be scheduled on the same runner as the linked sandbox so a local
     // network can be established between them.
@@ -741,6 +774,9 @@ type Snapshot struct {
     CreatedAt      time.Time  `json:"createdAt"`
     UpdatedAt      time.Time  `json:"updatedAt"`
     LastUsedAt     *time.Time `json:"lastUsedAt,omitempty"`
+    // ID of the sandbox the snapshot was created from; nil for snapshots not
+    // created from a sandbox (e.g. registry-pulled or declaratively built)
+    SourceSandboxID *string `json:"sourceSandboxId,omitempty"`
 }
 ```
 
@@ -801,5 +837,36 @@ type VolumeMount struct {
     VolumeID  string // ID or name of the volume to mount
     MountPath string
     Subpath   *string // Optional subpath within the volume; nil = mount entire volume
+}
+```
+
+<a name="WarmPool"></a>
+## type WarmPool
+
+WarmPool represents a warm pool of ready\-to\-use sandboxes for a snapshot.
+
+CurrentSize versus Pool is the pool's status: CurrentSize is the number of ready warm sandboxes, Pool is the desired number. ErrorReason is set when the pool cannot be filled.
+
+```go
+type WarmPool struct {
+    ID             string `json:"id"`
+    OrganizationID string `json:"organizationId"`
+    // Snapshot is the snapshot the pool keeps warm sandboxes for.
+    Snapshot string `json:"snapshot"`
+    // Target is the target region of the pool.
+    Target string `json:"target"`
+    // Pool is the desired number of warm sandboxes.
+    Pool int `json:"pool"`
+    // CurrentSize is the current number of ready warm sandboxes in the pool.
+    CurrentSize int               `json:"currentSize"`
+    CPU         int               `json:"cpu"`
+    Mem         int               `json:"mem"`
+    Disk        int               `json:"disk"`
+    OsUser      string            `json:"osUser"`
+    Env         map[string]string `json:"env"`
+    // ErrorReason is set when the pool cannot be filled.
+    ErrorReason *string   `json:"errorReason,omitempty"`
+    CreatedAt   time.Time `json:"createdAt"`
+    UpdatedAt   time.Time `json:"updatedAt"`
 }
 ```

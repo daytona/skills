@@ -22,8 +22,8 @@ Webhooks enable powerful automation and integration scenarios:
 - **Monitoring & analytics**: track usage patterns and resource utilization across organizations
 - **Integration**: connect Daytona with existing tools like Slack, Discord, or custom applications
 - **Audit & compliance**: maintain detailed logs of all important changes
-> **Note:**
-> Webhooks are available to organization admins and members with appropriate permissions. If you don't see **Webhooks** in [Daytona Dashboard ↗](https://app.daytona.io/dashboard), contact [support@daytona.io](mailto:support@daytona.io) to enable webhooks for your organization.
+
+Webhooks are available to all members of an organization. If you don't see **Webhooks** in [Daytona Dashboard ↗](https://app.daytona.io/dashboard), contact [support@daytona.io](mailto:support@daytona.io) to enable webhooks for your organization.
 
 ## Accessing webhooks
 

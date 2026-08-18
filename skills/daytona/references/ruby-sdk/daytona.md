@@ -77,6 +77,17 @@ def secret()
 
 - `Daytona:SecretService`
 
+#### warm_pool()
+
+```ruby
+def warm_pool()
+
+```
+
+**Returns**:
+
+- `Daytona:WarmPoolService`
+
 #### object_storage_api()
 
 ```ruby

@@ -38,6 +38,9 @@ Represents a Daytona Sandbox.
 - `target` _str_ - Target location of the runner where the Sandbox runs.
 - `cpu` _int_ - Number of CPUs allocated to the Sandbox.
 - `gpu` _int_ - Number of GPUs allocated to the Sandbox.
+- `spot` _bool_ - Whether this is a spot GPU Sandbox. Spot Sandboxes may be instantly terminated
+  to free capacity for on-demand GPU Sandboxes.
+- `spot_evicted_at` _str | None_ - When the Sandbox was evicted by spot preemption.
 - `memory` _int_ - Amount of memory allocated to the Sandbox in GiB.
 - `disk` _int_ - Amount of disk space allocated to the Sandbox in GiB.
 - `state` _SandboxState | None_ - Current state of the Sandbox (e.g., "started", "stopped").
@@ -67,6 +70,10 @@ Represents a Daytona Sandbox.
   the Sandbox (not returned by list results; call `refresh_data()` on each item to populate).
 - `domain_allow_list` _str | None_ - Comma-separated list of allowed domains for
   the Sandbox (not returned by list results; call `refresh_data()` on each item to populate).
+- `outbound_proxy_url` _str | None_ - Outbound proxy URL to route the Sandbox HTTP(S) traffic through.
+  Applied via the HTTP(S)_PROXY environment variables (convenience routing, not a security boundary on
+  its own); combine with domain_allow_list for unbypassable network-layer enforcement. (not returned by
+  list results; call `refresh_data()` on each item to populate).
 - `toolbox_proxy_url` _str_ - The toolbox proxy URL for the Sandbox.
 
 ##### env: `dict[str, str] | None`

@@ -6,14 +6,16 @@ ObjectStorage class for interacting with object storage services.
 
 ### Param
 
+**config**
+
 The configuration for the object storage service.
 
 ### Constructors
 
-#### new ObjectStorage()
+#### Constructor
 
 ```ts
-new ObjectStorage(config: ObjectStorageConfig): ObjectStorage
+new ObjectStorage(config: ObjectStorageConfig): ObjectStorage;
 ```
 
 **Parameters**:
@@ -33,7 +35,7 @@ new ObjectStorage(config: ObjectStorageConfig): ObjectStorage
 upload(
    path: string,
    organizationId: string,
-archiveBasePath: string): Promise<string>
+archiveBasePath: string): Promise<string>;
 ```
 
 Upload a file or directory to object storage.

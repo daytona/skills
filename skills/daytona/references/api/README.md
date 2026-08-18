@@ -39,6 +39,7 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `DELETE` | `/api-keys/{name}` | [Delete API key](./api-keys.md#daytona/tag/api-keys/DELETE/api-keys/{name}) | [api-keys](./api-keys.md) |
 | `DELETE` | `/api-keys/{userId}/{name}` | [Delete API key for user](./api-keys.md#daytona/tag/api-keys/DELETE/api-keys/{userId}/{name}) | [api-keys](./api-keys.md) |
 | `GET` | `/audit/organizations/{organizationId}` | [Get audit logs for organization](./audit.md#daytona/tag/audit/GET/audit/organizations/{organizationId}) | [audit](./audit.md) |
+| `GET` | `/audit/scenarios` | [Get supported audit log scenarios](./audit.md#daytona/tag/audit/GET/audit/scenarios) | [audit](./audit.md) |
 | `GET` | `/config` | [Get config](./config.md#daytona/tag/config/GET/config) | [config](./config.md) |
 | `GET` | `/docker-registry` | [List registries](./docker-registry.md#daytona/tag/docker-registry/GET/docker-registry) | [docker-registry](./docker-registry.md) |
 | `POST` | `/docker-registry` | [Create registry](./docker-registry.md#daytona/tag/docker-registry/POST/docker-registry) | [docker-registry](./docker-registry.md) |
@@ -73,6 +74,7 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `DELETE` | `/organizations/{organizationId}/otel-config` | [Delete organization OpenTelemetry configuration](./organizations.md#daytona/tag/organizations/DELETE/organizations/{organizationId}/otel-config) | [organizations](./organizations.md) |
 | `POST` | `/organizations/{organizationId}/sandbox-default-limited-network-egress` | [Update sandbox default limited network egress](./organizations.md#daytona/tag/organizations/POST/organizations/{organizationId}/sandbox-default-limited-network-egress) | [organizations](./organizations.md) |
 | `POST` | `/organizations/{organizationId}/preview-warning` | [Update organization preview warning](./organizations.md#daytona/tag/organizations/POST/organizations/{organizationId}/preview-warning) | [organizations](./organizations.md) |
+| `POST` | `/organizations/{organizationId}/sso-enabled` | [Update organization SSO entitlement](./organizations.md#daytona/tag/organizations/POST/organizations/{organizationId}/sso-enabled) | [organizations](./organizations.md) |
 | `PUT` | `/organizations/{organizationId}/experimental-config` | [Update experimental configuration](./organizations.md#daytona/tag/organizations/PUT/organizations/{organizationId}/experimental-config) | [organizations](./organizations.md) |
 | `GET` | `/organizations/{organizationId}/roles` | [List organization roles](./organizations.md#daytona/tag/organizations/GET/organizations/{organizationId}/roles) | [organizations](./organizations.md) |
 | `POST` | `/organizations/{organizationId}/roles` | [Create organization role](./organizations.md#daytona/tag/organizations/POST/organizations/{organizationId}/roles) | [organizations](./organizations.md) |
@@ -93,6 +95,12 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `POST` | `/regions/{id}/regenerate-proxy-api-key` | [Regenerate proxy API key for a region](./organizations.md#daytona/tag/organizations/POST/regions/{id}/regenerate-proxy-api-key) | [organizations](./organizations.md) |
 | `POST` | `/regions/{id}/regenerate-ssh-gateway-api-key` | [Regenerate SSH gateway API key for a region](./organizations.md#daytona/tag/organizations/POST/regions/{id}/regenerate-ssh-gateway-api-key) | [organizations](./organizations.md) |
 | `POST` | `/regions/{id}/regenerate-snapshot-manager-credentials` | [Regenerate snapshot manager credentials for a region](./organizations.md#daytona/tag/organizations/POST/regions/{id}/regenerate-snapshot-manager-credentials) | [organizations](./organizations.md) |
+| `GET` | `/organizations/{organizationId}/identity-providers` | [List organization identity providers](./organizations.md#daytona/tag/organizations/GET/organizations/{organizationId}/identity-providers) | [organizations](./organizations.md) |
+| `POST` | `/organizations/{organizationId}/identity-providers` | [Create organization identity provider](./organizations.md#daytona/tag/organizations/POST/organizations/{organizationId}/identity-providers) | [organizations](./organizations.md) |
+| `GET` | `/organizations/{organizationId}/identity-providers/{id}` | [Get organization identity provider](./organizations.md#daytona/tag/organizations/GET/organizations/{organizationId}/identity-providers/{id}) | [organizations](./organizations.md) |
+| `PATCH` | `/organizations/{organizationId}/identity-providers/{id}` | [Update organization identity provider](./organizations.md#daytona/tag/organizations/PATCH/organizations/{organizationId}/identity-providers/{id}) | [organizations](./organizations.md) |
+| `DELETE` | `/organizations/{organizationId}/identity-providers/{id}` | [Delete organization identity provider](./organizations.md#daytona/tag/organizations/DELETE/organizations/{organizationId}/identity-providers/{id}) | [organizations](./organizations.md) |
+| `POST` | `/organizations/{organizationId}/identity-providers/test-connection` | [Test OIDC identity provider connection](./organizations.md#daytona/tag/organizations/POST/organizations/{organizationId}/identity-providers/test-connection) | [organizations](./organizations.md) |
 | `GET` | `/preview/{sandboxId}/public` | [Check if sandbox is public](./preview.md#daytona/tag/preview/GET/preview/{sandboxId}/public) | [preview](./preview.md) |
 | `GET` | `/preview/{sandboxId}/preview-warning` | [Check if the preview warning page is enabled for the sandbox](./preview.md#daytona/tag/preview/GET/preview/{sandboxId}/preview-warning) | [preview](./preview.md) |
 | `GET` | `/preview/{sandboxId}/validate/{authToken}` | [Check if sandbox auth token is valid](./preview.md#daytona/tag/preview/GET/preview/{sandboxId}/validate/{authToken}) | [preview](./preview.md) |
@@ -103,6 +111,7 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `GET` | `/runners` | [List all runners](./runners.md#daytona/tag/runners/GET/runners) | [runners](./runners.md) |
 | `POST` | `/runners` | [Create runner](./runners.md#daytona/tag/runners/POST/runners) | [runners](./runners.md) |
 | `GET` | `/runners/me` | [Get info for authenticated runner](./runners.md#daytona/tag/runners/GET/runners/me) | [runners](./runners.md) |
+| `GET` | `/runners/me/snapshots` | [Get snapshot refs for authenticated runner](./runners.md#daytona/tag/runners/GET/runners/me/snapshots) | [runners](./runners.md) |
 | `GET` | `/runners/by-sandbox/{sandboxId}` | [Get runner by sandbox ID](./runners.md#daytona/tag/runners/GET/runners/by-sandbox/{sandboxId}) | [runners](./runners.md) |
 | `GET` | `/runners/by-snapshot-ref` | [Get runners by snapshot ref](./runners.md#daytona/tag/runners/GET/runners/by-snapshot-ref) | [runners](./runners.md) |
 | `GET` | `/runners/{id}` | [Get runner by ID](./runners.md#daytona/tag/runners/GET/runners/{id}) | [runners](./runners.md) |
@@ -177,6 +186,9 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 | `POST` | `/users/linked-accounts` | [Link account](./users.md#daytona/tag/users/POST/users/linked-accounts) | [users](./users.md) |
 | `DELETE` | `/users/linked-accounts/{provider}/{providerUserId}` | [Unlink account](./users.md#daytona/tag/users/DELETE/users/linked-accounts/{provider}/{providerUserId}) | [users](./users.md) |
 | `POST` | `/users/mfa/sms/enroll` | [Enroll in SMS MFA](./users.md#daytona/tag/users/POST/users/mfa/sms/enroll) | [users](./users.md) |
+| `GET` | `/users/me/pending-sso-links` | [List pending SSO account links for the authenticated user](./users.md#daytona/tag/users/GET/users/me/pending-sso-links) | [users](./users.md) |
+| `POST` | `/users/me/pending-sso-links/{id}/confirm` | [Confirm (link) a pending SSO account link](./users.md#daytona/tag/users/POST/users/me/pending-sso-links/{id}/confirm) | [users](./users.md) |
+| `DELETE` | `/users/me/pending-sso-links/{id}` | [Dismiss a pending SSO account link](./users.md#daytona/tag/users/DELETE/users/me/pending-sso-links/{id}) | [users](./users.md) |
 | `GET` | `/volumes` | [List all volumes](./volumes.md#daytona/tag/volumes/GET/volumes) | [volumes](./volumes.md) |
 | `POST` | `/volumes` | [Create a new volume](./volumes.md#daytona/tag/volumes/POST/volumes) | [volumes](./volumes.md) |
 | `GET` | `/volumes/{volumeId}` | [Get volume details](./volumes.md#daytona/tag/volumes/GET/volumes/{volumeId}) | [volumes](./volumes.md) |
@@ -195,19 +207,19 @@ See [Authentication](../../SKILL.md#authentication) for how to obtain an API key
 
 - [Health](./Health.md) (2 endpoints) {#daytona/tag/Health}
 - [api-keys](./api-keys.md) (6 endpoints) {#daytona/tag/api-keys}
-- [audit](./audit.md) (1 endpoints) {#daytona/tag/audit}
+- [audit](./audit.md) (2 endpoints) {#daytona/tag/audit}
 - [config](./config.md) (1 endpoints) {#daytona/tag/config}
 - [docker-registry](./docker-registry.md) (6 endpoints) {#daytona/tag/docker-registry}
 - [jobs](./jobs.md) (4 endpoints) {#daytona/tag/jobs}
 - [object-storage](./object-storage.md) (1 endpoints) {#daytona/tag/object-storage}
-- [organizations](./organizations.md) (42 endpoints) {#daytona/tag/organizations}
+- [organizations](./organizations.md) (49 endpoints) {#daytona/tag/organizations}
 - [preview](./preview.md) (6 endpoints) {#daytona/tag/preview}
 - [regions](./regions.md) (1 endpoints) {#daytona/tag/regions}
-- [runners](./runners.md) (11 endpoints) {#daytona/tag/runners}
+- [runners](./runners.md) (12 endpoints) {#daytona/tag/runners}
 - [sandbox](./sandbox.md) (47 endpoints) {#daytona/tag/sandbox}
 - [secret](./secret.md) (6 endpoints) {#daytona/tag/secret}
 - [snapshots](./snapshots.md) (8 endpoints) {#daytona/tag/snapshots}
-- [users](./users.md) (5 endpoints) {#daytona/tag/users}
+- [users](./users.md) (8 endpoints) {#daytona/tag/users}
 - [volumes](./volumes.md) (5 endpoints) {#daytona/tag/volumes}
 - [warm-pools](./warm-pools.md) (4 endpoints) {#daytona/tag/warm-pools}
 - [webhooks](./webhooks.md) (4 endpoints) {#daytona/tag/webhooks}

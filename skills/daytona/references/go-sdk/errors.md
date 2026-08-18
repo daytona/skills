@@ -138,6 +138,12 @@ var (
     ErrGitPushRejected   = &DaytonaError{Source: SourceDaemon, Code: "GIT_PUSH_REJECTED"}
     ErrGitDirtyWorktree  = &DaytonaError{Source: SourceDaemon, Code: "GIT_DIRTY_WORKTREE"}
     ErrGitMergeConflict  = &DaytonaError{Source: SourceDaemon, Code: "GIT_MERGE_CONFLICT"}
+    // ErrGitTransportFailed matches network-level git failures: DNS, TLS,
+    // connection, timeout.
+    ErrGitTransportFailed = &DaytonaError{Source: SourceDaemon, Code: "GIT_TRANSPORT_FAILED"}
+    // ErrGitRemoteRejected matches server-side rejections: pre-receive/update
+    // hooks, branch protection, size/quota limits.
+    ErrGitRemoteRejected = &DaytonaError{Source: SourceDaemon, Code: "GIT_REMOTE_REJECTED"}
 
     // Daemon: filesystem.
     ErrFileNotFound     = &DaytonaError{Source: SourceDaemon, Code: "FILE_NOT_FOUND"}

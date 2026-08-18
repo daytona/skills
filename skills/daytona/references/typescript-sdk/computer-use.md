@@ -22,10 +22,10 @@ Accessibility operations for computer use functionality.
 
 ### Constructors
 
-#### new Accessibility()
+#### Constructor
 
 ```ts
-new Accessibility(apiClient: ComputerUseApi): Accessibility
+new Accessibility(apiClient: ComputerUseApi): Accessibility;
 ```
 
 **Parameters**:
@@ -42,7 +42,7 @@ new Accessibility(apiClient: ComputerUseApi): Accessibility
 #### findNodes()
 
 ```ts
-findNodes(options?: FindAccessibilityNodesRequest): Promise<AccessibilityNodesResponse>
+findNodes(options?: FindAccessibilityNodesRequest): Promise<AccessibilityNodesResponse>;
 ```
 
 Finds AT-SPI accessibility nodes matching the provided filters.
@@ -68,12 +68,10 @@ const buttons = await sandbox.computerUse.accessibility.findNodes({
 console.log(buttons.matches?.length);
 ```
 
-***
-
 #### focusNode()
 
 ```ts
-focusNode(id: string): Promise<void>
+focusNode(id: string): Promise<void>;
 ```
 
 Focuses an AT-SPI accessibility node.
@@ -96,12 +94,10 @@ if (node?.id) {
 }
 ```
 
-***
-
 #### getTree()
 
 ```ts
-getTree(options?: AccessibilityTreeOptions): Promise<AccessibilityTreeResponse>
+getTree(options?: AccessibilityTreeOptions): Promise<AccessibilityTreeResponse>;
 ```
 
 Fetches the AT-SPI accessibility tree.
@@ -122,12 +118,10 @@ const tree = await sandbox.computerUse.accessibility.getTree({ scope: 'all', max
 console.log(tree.root?.name);
 ```
 
-***
-
 #### invokeNode()
 
 ```ts
-invokeNode(id: string, action?: string): Promise<void>
+invokeNode(id: string, action?: string): Promise<void>;
 ```
 
 Invokes an AT-SPI accessibility node action.
@@ -152,12 +146,10 @@ if (button?.id) {
 }
 ```
 
-***
-
 #### setNodeValue()
 
 ```ts
-setNodeValue(id: string, value: string): Promise<void>
+setNodeValue(id: string, value: string): Promise<void>;
 ```
 
 Sets an AT-SPI accessibility node value.
@@ -205,10 +197,10 @@ for automating desktop interactions within a sandbox.
 
 ### Constructors
 
-#### new ComputerUse()
+#### Constructor
 
 ```ts
-new ComputerUse(apiClient: ComputerUseApi): ComputerUse
+new ComputerUse(apiClient: ComputerUseApi): ComputerUse;
 ```
 
 **Parameters**:
@@ -225,7 +217,7 @@ new ComputerUse(apiClient: ComputerUseApi): ComputerUse
 #### getProcessErrors()
 
 ```ts
-getProcessErrors(processName: string): Promise<ProcessErrorsResponse>
+getProcessErrors(processName: string): Promise<ProcessErrorsResponse>;
 ```
 
 Gets error logs for a specific VNC process
@@ -246,12 +238,10 @@ const errorsResp = await sandbox.computerUse.getProcessErrors('x11vnc');
 console.log('X11VNC errors:', errorsResp.errors);
 ```
 
-***
-
 #### getProcessLogs()
 
 ```ts
-getProcessLogs(processName: string): Promise<ProcessLogsResponse>
+getProcessLogs(processName: string): Promise<ProcessLogsResponse>;
 ```
 
 Gets logs for a specific VNC process
@@ -272,12 +262,10 @@ const logsResp = await sandbox.computerUse.getProcessLogs('novnc');
 console.log('NoVNC logs:', logsResp.logs);
 ```
 
-***
-
 #### getProcessStatus()
 
 ```ts
-getProcessStatus(processName: string): Promise<ProcessStatusResponse>
+getProcessStatus(processName: string): Promise<ProcessStatusResponse>;
 ```
 
 Gets the status of a specific VNC process
@@ -298,12 +286,10 @@ const xvfbStatus = await sandbox.computerUse.getProcessStatus('xvfb');
 const noVncStatus = await sandbox.computerUse.getProcessStatus('novnc');
 ```
 
-***
-
 #### getStatus()
 
 ```ts
-getStatus(): Promise<ComputerUseStatusResponse>
+getStatus(): Promise<ComputerUseStatusResponse>;
 ```
 
 Gets the status of all computer use processes
@@ -319,12 +305,10 @@ const status = await sandbox.computerUse.getStatus();
 console.log('Computer use status:', status.status);
 ```
 
-***
-
 #### restartProcess()
 
 ```ts
-restartProcess(processName: string): Promise<ProcessRestartResponse>
+restartProcess(processName: string): Promise<ProcessRestartResponse>;
 ```
 
 Restarts a specific VNC process
@@ -345,12 +329,10 @@ const result = await sandbox.computerUse.restartProcess('xfce4');
 console.log('XFCE4 process restarted:', result.message);
 ```
 
-***
-
 #### start()
 
 ```ts
-start(): Promise<ComputerUseStartResponse>
+start(): Promise<ComputerUseStartResponse>;
 ```
 
 Starts all computer use processes (Xvfb, xfce4, x11vnc, novnc)
@@ -366,12 +348,10 @@ const result = await sandbox.computerUse.start();
 console.log('Computer use processes started:', result.message);
 ```
 
-***
-
 #### stop()
 
 ```ts
-stop(): Promise<ComputerUseStopResponse>
+stop(): Promise<ComputerUseStopResponse>;
 ```
 
 Stops all computer use processes
@@ -392,10 +372,10 @@ Display operations for computer use functionality
 
 ### Constructors
 
-#### new Display()
+#### Constructor
 
 ```ts
-new Display(apiClient: ComputerUseApi): Display
+new Display(apiClient: ComputerUseApi): Display;
 ```
 
 **Parameters**:
@@ -412,7 +392,7 @@ new Display(apiClient: ComputerUseApi): Display
 #### getInfo()
 
 ```ts
-getInfo(): Promise<DisplayInfoResponse>
+getInfo(): Promise<DisplayInfoResponse>;
 ```
 
 Gets information about the displays
@@ -432,12 +412,10 @@ info.displays.forEach((display, index) => {
 });
 ```
 
-***
-
 #### getWindows()
 
 ```ts
-getWindows(): Promise<WindowsResponse>
+getWindows(): Promise<WindowsResponse>;
 ```
 
 Gets the list of open windows
@@ -465,10 +443,10 @@ Keyboard operations for computer use functionality
 
 ### Constructors
 
-#### new Keyboard()
+#### Constructor
 
 ```ts
-new Keyboard(apiClient: ComputerUseApi): Keyboard
+new Keyboard(apiClient: ComputerUseApi): Keyboard;
 ```
 
 **Parameters**:
@@ -485,7 +463,7 @@ new Keyboard(apiClient: ComputerUseApi): Keyboard
 #### hotkey()
 
 ```ts
-hotkey(keys: string): Promise<void>
+hotkey(keys: string): Promise<void>;
 ```
 
 Presses a hotkey combination
@@ -531,12 +509,10 @@ try {
 }
 ```
 
-***
-
 #### press()
 
 ```ts
-press(key: string, modifiers?: string[]): Promise<void>
+press(key: string, modifiers?: string[]): Promise<void>;
 ```
 
 Presses a key with optional modifiers
@@ -583,12 +559,10 @@ try {
 }
 ```
 
-***
-
 #### type()
 
 ```ts
-type(text: string, delay?: number): Promise<void>
+type(text: string, delay?: number): Promise<void>;
 ```
 
 Types the specified text
@@ -635,10 +609,10 @@ Mouse operations for computer use functionality
 
 ### Constructors
 
-#### new Mouse()
+#### Constructor
 
 ```ts
-new Mouse(apiClient: ComputerUseApi): Mouse
+new Mouse(apiClient: ComputerUseApi): Mouse;
 ```
 
 **Parameters**:
@@ -659,7 +633,7 @@ click(
    x: number,
    y: number,
    button?: string,
-double?: boolean): Promise<MouseClickResponse>
+double?: boolean): Promise<MouseClickResponse>;
 ```
 
 Clicks the mouse at the specified coordinates
@@ -689,8 +663,6 @@ const doubleClick = await sandbox.computerUse.mouse.click(100, 200, 'left', true
 const rightClick = await sandbox.computerUse.mouse.click(100, 200, 'right');
 ```
 
-***
-
 #### drag()
 
 ```ts
@@ -699,7 +671,7 @@ drag(
    startY: number,
    endX: number,
    endY: number,
-button?: string): Promise<MouseDragResponse>
+button?: string): Promise<MouseDragResponse>;
 ```
 
 Drags the mouse from start coordinates to end coordinates
@@ -724,12 +696,10 @@ const result = await sandbox.computerUse.mouse.drag(50, 50, 150, 150);
 console.log(`Drag ended at: ${result.x}, ${result.y}`);
 ```
 
-***
-
 #### getPosition()
 
 ```ts
-getPosition(): Promise<MousePositionResponse>
+getPosition(): Promise<MousePositionResponse>;
 ```
 
 Gets the current mouse cursor position
@@ -745,12 +715,10 @@ const position = await sandbox.computerUse.mouse.getPosition();
 console.log(`Mouse is at: ${position.x}, ${position.y}`);
 ```
 
-***
-
 #### move()
 
 ```ts
-move(x: number, y: number): Promise<MousePositionResponse>
+move(x: number, y: number): Promise<MousePositionResponse>;
 ```
 
 Moves the mouse cursor to the specified coordinates
@@ -772,8 +740,6 @@ const result = await sandbox.computerUse.mouse.move(100, 200);
 console.log(`Mouse moved to: ${result.x}, ${result.y}`);
 ```
 
-***
-
 #### scroll()
 
 ```ts
@@ -781,7 +747,7 @@ scroll(
    x: number,
    y: number,
    direction: "up" | "down",
-amount?: number): Promise<boolean>
+amount?: number): Promise<boolean>;
 ```
 
 Scrolls the mouse wheel at the specified coordinates
@@ -790,7 +756,7 @@ Scrolls the mouse wheel at the specified coordinates
 
 - `x` _number_ - The x coordinate to scroll at
 - `y` _number_ - The y coordinate to scroll at
-- `direction` _The direction to scroll_ - `"up"` | `"down"`
+- `direction` _"up" \| "down"_ - The direction to scroll
 - `amount?` _number = 1_ - The amount to scroll
 
 
@@ -817,10 +783,10 @@ Recording operations for computer use functionality.
 
 ### Constructors
 
-#### new RecordingService()
+#### Constructor
 
 ```ts
-new RecordingService(apiClient: ComputerUseApi): RecordingService
+new RecordingService(apiClient: ComputerUseApi): RecordingService;
 ```
 
 **Parameters**:
@@ -837,7 +803,7 @@ new RecordingService(apiClient: ComputerUseApi): RecordingService
 #### delete()
 
 ```ts
-delete(id: string): Promise<void>
+delete(id: string): Promise<void>;
 ```
 
 Deletes a recording by ID
@@ -858,12 +824,10 @@ await sandbox.computerUse.recording.delete(recordingId);
 console.log('Recording deleted');
 ```
 
-***
-
 #### download()
 
 ```ts
-download(id: string, localPath: string): Promise<void>
+download(id: string, localPath: string): Promise<void>;
 ```
 
 Downloads a recording file and saves it to a local path
@@ -888,12 +852,10 @@ await sandbox.computerUse.recording.download(recordingId, 'local_recording.mp4')
 console.log('Recording downloaded');
 ```
 
-***
-
 #### get()
 
 ```ts
-get(id: string): Promise<Recording>
+get(id: string): Promise<Recording>;
 ```
 
 Gets details of a specific recording by ID
@@ -916,12 +878,10 @@ console.log(`Status: ${recording.status}`);
 console.log(`Duration: ${recording.durationSeconds} seconds`);
 ```
 
-***
-
 #### list()
 
 ```ts
-list(): Promise<ListRecordingsResponse>
+list(): Promise<ListRecordingsResponse>;
 ```
 
 Lists all recordings (active and completed)
@@ -940,12 +900,10 @@ recordings.recordings.forEach(rec => {
 });
 ```
 
-***
-
 #### start()
 
 ```ts
-start(label?: string): Promise<Recording>
+start(label?: string): Promise<Recording>;
 ```
 
 Starts a new screen recording session
@@ -968,12 +926,10 @@ console.log(`Recording started: ${recording.id}`);
 console.log(`File: ${recording.filePath}`);
 ```
 
-***
-
 #### stop()
 
 ```ts
-stop(id: string): Promise<Recording>
+stop(id: string): Promise<Recording>;
 ```
 
 Stops an active screen recording session
@@ -1004,10 +960,10 @@ Screenshot operations for computer use functionality
 
 ### Constructors
 
-#### new Screenshot()
+#### Constructor
 
 ```ts
-new Screenshot(apiClient: ComputerUseApi): Screenshot
+new Screenshot(apiClient: ComputerUseApi): Screenshot;
 ```
 
 **Parameters**:
@@ -1024,7 +980,7 @@ new Screenshot(apiClient: ComputerUseApi): Screenshot
 #### takeCompressed()
 
 ```ts
-takeCompressed(options?: ScreenshotOptions): Promise<ScreenshotResponse>
+takeCompressed(options?: ScreenshotOptions): Promise<ScreenshotResponse>;
 ```
 
 Takes a compressed screenshot of the entire screen
@@ -1058,12 +1014,10 @@ const scaled = await sandbox.computerUse.screenshot.takeCompressed({
 });
 ```
 
-***
-
 #### takeCompressedRegion()
 
 ```ts
-takeCompressedRegion(region: ScreenshotRegion, options?: ScreenshotOptions): Promise<ScreenshotResponse>
+takeCompressedRegion(region: ScreenshotRegion, options?: ScreenshotOptions): Promise<ScreenshotResponse>;
 ```
 
 Takes a compressed screenshot of a specific region
@@ -1090,12 +1044,10 @@ const screenshot = await sandbox.computerUse.screenshot.takeCompressedRegion(reg
 console.log(`Compressed size: ${screenshot.size_bytes} bytes`);
 ```
 
-***
-
 #### takeFullScreen()
 
 ```ts
-takeFullScreen(showCursor?: boolean): Promise<ScreenshotResponse>
+takeFullScreen(showCursor?: boolean): Promise<ScreenshotResponse>;
 ```
 
 Takes a screenshot of the entire screen
@@ -1119,12 +1071,10 @@ console.log(`Screenshot size: ${screenshot.width}x${screenshot.height}`);
 const withCursor = await sandbox.computerUse.screenshot.takeFullScreen(true);
 ```
 
-***
-
 #### takeRegion()
 
 ```ts
-takeRegion(region: ScreenshotRegion, showCursor?: boolean): Promise<ScreenshotResponse>
+takeRegion(region: ScreenshotRegion, showCursor?: boolean): Promise<ScreenshotResponse>;
 ```
 
 Takes a screenshot of a specific region

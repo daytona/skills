@@ -26,6 +26,7 @@ Can be initialized either with explicit configuration or using environment varia
 - `secret` _SecretService_ - Service for managing Daytona Secrets
 - `snapshot` _SnapshotService_ - Service for managing Daytona Snapshots
 - `volume` _VolumeService_ - Service for managing Daytona Volumes
+- `warmPool` _WarmPoolService_ - Service for managing Daytona Warm Pools
 
 
 
@@ -62,10 +63,10 @@ await using daytona = new Daytona({
 
 ### Constructors
 
-#### new Daytona()
+#### Constructor
 
 ```ts
-new Daytona(config?: DaytonaConfig): Daytona
+new Daytona(config?: DaytonaConfig): Daytona;
 ```
 
 Creates a new Daytona client instance.
@@ -93,7 +94,7 @@ When JWT token is provided without an organization ID
 _experimental_fork(
    sandbox: Sandbox,
    params?: ForkSandboxParams,
-timeout?: number): Promise<Sandbox>
+timeout?: number): Promise<Sandbox>;
 ```
 
 **Parameters**:
@@ -115,12 +116,10 @@ Use `fork` instead. This method will be removed in a future version.
 
 Daytona.fork
 
-***
-
 #### \[asyncDispose\]()
 
 ```ts
-asyncDispose: Promise<void>
+asyncDispose: Promise<void>;
 ```
 
 **Returns**:
@@ -133,16 +132,14 @@ asyncDispose: Promise<void>
 AsyncDisposable.[asyncDispose]
 ```
 
-***
-
 #### create()
 
 ##### Call Signature
 
 ```ts
 create(params?: CreateSandboxFromSnapshotParams, options?: {
-  timeout: number;
-}): Promise<Sandbox>
+  timeout?: number;
+}): Promise<Sandbox>;
 ```
 
 Creates Sandboxes from specified or default snapshot. You can specify various parameters,
@@ -184,9 +181,9 @@ const sandbox = await daytona.create(params, { timeout: 100 });
 
 ```ts
 create(params?: CreateSandboxFromImageParams, options?: {
-  onSnapshotCreateLogs: (chunk: string) => void;
-  timeout: number;
-}): Promise<Sandbox>
+  onSnapshotCreateLogs?: (chunk: string) => void;
+  timeout?: number;
+}): Promise<Sandbox>;
 ```
 
 Creates Sandboxes from specified image available on some registry or declarative Daytona Image. You can specify various parameters,
@@ -231,15 +228,13 @@ const params: CreateSandboxFromImageParams = {
 const sandbox = await daytona.create(params, { timeout: 100, onSnapshotCreateLogs: console.log });
 ```
 
-***
-
 #### delete()
 
 ```ts
 delete(
    sandbox: Sandbox,
-   timeout: number,
-wait: boolean): Promise<void>
+   timeout?: number,
+wait?: boolean): Promise<void>;
 ```
 
 Deletes a Sandbox.
@@ -247,8 +242,8 @@ Deletes a Sandbox.
 **Parameters**:
 
 - `sandbox` _Sandbox_ - The Sandbox to delete
-- `timeout` _number = 60_ - Timeout in seconds (0 means no timeout, default is 60)
-- `wait` _boolean = false_ - If true, wait until the Sandbox is destroyed (default is false)
+- `timeout?` _number = 60_ - Timeout in seconds (0 means no timeout, default is 60)
+- `wait?` _boolean = false_ - If true, wait until the Sandbox is destroyed (default is false)
 
 
 **Returns**:
@@ -262,15 +257,13 @@ const sandbox = await daytona.get('my-sandbox-id');
 await daytona.delete(sandbox);
 ```
 
-***
-
 #### fork()
 
 ```ts
 fork(
    sandbox: Sandbox,
    params?: ForkSandboxParams,
-timeout?: number): Promise<Sandbox>
+timeout?: number): Promise<Sandbox>;
 ```
 
 Forks a Sandbox, creating a new Sandbox with an identical filesystem.
@@ -294,12 +287,10 @@ const forked = await daytona.fork(sandbox, { name: 'my-fork' });
 console.log(`Forked sandbox: ${forked.id}`);
 ```
 
-***
-
 #### get()
 
 ```ts
-get(sandboxIdOrName: string): Promise<Sandbox>
+get(sandboxIdOrName: string): Promise<Sandbox>;
 ```
 
 Gets a Sandbox by its ID or name.
@@ -320,12 +311,10 @@ const sandbox = await daytona.get('my-sandbox-id-or-name');
 console.log(`Sandbox state: ${sandbox.state}`);
 ```
 
-***
-
 #### list()
 
 ```ts
-list(query?: ListSandboxesQuery): AsyncIterableIterator<Sandbox>
+list(query?: ListSandboxesQuery): AsyncIterableIterator<Sandbox>;
 ```
 
 Iterates over Sandboxes matching the given query.
@@ -347,12 +336,10 @@ for await (const sandbox of daytona.list({ labels: { env: 'dev' } })) {
 }
 ```
 
-***
-
 #### start()
 
 ```ts
-start(sandbox: Sandbox, timeout?: number): Promise<void>
+start(sandbox: Sandbox, timeout?: number): Promise<void>;
 ```
 
 Starts a Sandbox and waits for it to be ready.
@@ -375,12 +362,10 @@ const sandbox = await daytona.get('my-sandbox-id');
 await daytona.start(sandbox, 60);
 ```
 
-***
-
 #### stop()
 
 ```ts
-stop(sandbox: Sandbox): Promise<void>
+stop(sandbox: Sandbox): Promise<void>;
 ```
 
 Stops a Sandbox.
@@ -431,8 +416,11 @@ Base parameters for creating a new Sandbox.
 - `name?` _string_
 - `networkAllowList?` _string_ - Comma-separated list of allowed CIDR network addresses for the Sandbox
 - `networkBlockAll?` _boolean_ - Whether to block all network access for the Sandbox
+- `otelEndpointOverride?` _string_ - OTel collector endpoint override for the Sandbox. When set, sandbox OTel data is sent to this endpoint instead of the default collector and will not be available in the Daytona analytics API or dashboard.
+- `outboundProxyUrl?` _string_ - Outbound proxy URL to route the Sandbox HTTP(S) traffic through. Applied via the HTTP(S)_PROXY environment variables (convenience routing, not a security boundary on its own); combine with domainAllowList for unbypassable network-layer enforcement.
 - `public?` _boolean_ - Is the Sandbox port preview public
 - `secrets?` _Record\<string, string\>_ - Optional map of environment variable name to the name of an existing organization Secret to mount into the Sandbox. The env var is set to the Secret's opaque placeholder; the real value is substituted transparently on outbound requests to the Secret's allowed hosts. Every referenced Secret name must already exist in the organization.
+- `spot?` _boolean_ - GPU-only. When true, the Sandbox may be instantly terminated without notice to free GPU capacity for an on-demand (non-spot) GPU Sandbox. Rejected when the Sandbox requests no GPUs.
 - `ttlMinutes?` _number_ - Maximum time to live in minutes, counted as wall-clock time since creation regardless of sandbox state (0 means disabled). When it elapses the Sandbox is destroyed, even if it is stopped, paused, or archived.
 - `user?` _string_ - Optional os user to use for the Sandbox
 - `volumes?` _VolumeMount\[\]_ - Optional array of volumes to mount to the Sandbox
@@ -457,10 +445,13 @@ Parameters for creating a new Sandbox.
 - `name?` _string_
 - `networkAllowList?` _string_
 - `networkBlockAll?` _boolean_
+- `otelEndpointOverride?` _string_
+- `outboundProxyUrl?` _string_
 - `public?` _boolean_
 - `resources?` _Resources_ - Resource allocation for the Sandbox. If not provided, sandbox will
     have default resources.
 - `secrets?` _Record\<string, string\>_
+- `spot?` _boolean_
 - `ttlMinutes?` _number_
 - `user?` _string_
 - `volumes?` _VolumeMount\[\]_
@@ -483,9 +474,12 @@ Parameters for creating a new Sandbox from a snapshot.
 - `name?` _string_
 - `networkAllowList?` _string_
 - `networkBlockAll?` _boolean_
+- `otelEndpointOverride?` _string_
+- `outboundProxyUrl?` _string_
 - `public?` _boolean_
 - `secrets?` _Record\<string, string\>_
 - `snapshot?` _string_ - Name of the snapshot to use for the Sandbox.
+- `spot?` _boolean_
 - `ttlMinutes?` _number_
 - `user?` _string_
 - `volumes?` _VolumeMount\[\]_
@@ -581,18 +575,17 @@ Represents a volume mount for a Sandbox.
 
 ```ts
 type ForkSandboxParams = {
-  name: string;
+  name?: string;
 };
 ```
 
-Parameters for forking a Sandbox.
-
-**Type declaration**:
+**Properties**:
 
 - `name?` _string_ - Optional name for the forked Sandbox. If not provided, a unique name will be generated.
 
 
 
+Parameters for forking a Sandbox.
 ## CODE\_TOOLBOX\_LANGUAGE\_LABEL
 
 ```ts

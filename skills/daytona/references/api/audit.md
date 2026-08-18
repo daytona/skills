@@ -32,3 +32,17 @@
 | 200 | Paginated list of organization audit logs | PaginatedAuditLogs |
 
 ---
+
+## GET `/audit/scenarios` {#daytona/tag/audit/GET/audit/scenarios}
+
+**Get supported audit log scenarios**
+
+Returns the supported audit log actions grouped by target type. The list is derived at runtime from the audited routes and system events, so it always reflects what can actually appear in the audit log.
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Supported audit log scenarios grouped by target type | AuditScenarios |
+
+---

@@ -23,6 +23,7 @@
 - type GitService
 - type KeyboardService
 - type ListSandboxesQuery
+- type ListSnapshotsQuery
 - type LspServerService
 - type MouseService
 - type OutputChannels
@@ -42,6 +43,7 @@
 - type UploadProgress
 - type UploadStreamOption
 - type VolumeService
+- type WarmPoolService
 - See Also
 
 ```go
@@ -222,6 +224,7 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(k \*KeyboardService\) Press\(ctx context.Context, key string, modifiers \[\]string\) error](<#KeyboardService.Press>)
   - [func \(k \*KeyboardService\) Type\(ctx context.Context, text string, delay \*int\) error](https://www.daytona.io/docs/en<#KeyboardService.Type>)
 - [type ListSandboxesQuery](https://www.daytona.io/docs/en<#ListSandboxesQuery>)
+- [type ListSnapshotsQuery](https://www.daytona.io/docs/en<#ListSnapshotsQuery>)
 - [type LspServerService](https://www.daytona.io/docs/en<#LspServerService>)
   - [func NewLspServerService\(toolboxClient \*toolbox.APIClient, languageID types.LspLanguageID, projectPath string, otel \*otelState\) \*LspServerService](https://www.daytona.io/docs/en<#NewLspServerService>)
   - [func \(l \*LspServerService\) Completions\(ctx context.Context, path string, position types.Position\) \(any, error\)](https://www.daytona.io/docs/en<#LspServerService.Completions>)
@@ -348,10 +351,13 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(s \*SecretService\) Update\(ctx context.Context, secretID string, params \*types.UpdateSecretParams\) \(\*types.Secret, error\)](https://www.daytona.io/docs/en<#SecretService.Update>)
 - [type SnapshotService](https://www.daytona.io/docs/en<#SnapshotService>)
   - [func NewSnapshotService\(client \*Client\) \*SnapshotService](https://www.daytona.io/docs/en<#NewSnapshotService>)
+  - [func \(s \*SnapshotService\) Activate\(ctx context.Context, nameOrID string\) \(\*types.Snapshot, error\)](https://www.daytona.io/docs/en<#SnapshotService.Activate>)
   - [func \(s \*SnapshotService\) Create\(ctx context.Context, params \*types.CreateSnapshotParams\) \(\*types.Snapshot, \<\-chan string, error\)](https://www.daytona.io/docs/en<#SnapshotService.Create>)
   - [func \(s \*SnapshotService\) Delete\(ctx context.Context, snapshot \*types.Snapshot\) error](https://www.daytona.io/docs/en<#SnapshotService.Delete>)
+  - [func \(s \*SnapshotService\) DeleteByNameOrID\(ctx context.Context, nameOrID string\) error](https://www.daytona.io/docs/en<#SnapshotService.DeleteByNameOrID>)
   - [func \(s \*SnapshotService\) Get\(ctx context.Context, nameOrID string\) \(\*types.Snapshot, error\)](https://www.daytona.io/docs/en<#SnapshotService.Get>)
   - [func \(s \*SnapshotService\) List\(ctx context.Context, page \*int, limit \*int\) \(\*types.PaginatedSnapshots, error\)](https://www.daytona.io/docs/en<#SnapshotService.List>)
+  - [func \(s \*SnapshotService\) ListWithQuery\(ctx context.Context, query \*ListSnapshotsQuery\) \(\*types.PaginatedSnapshots, error\)](https://www.daytona.io/docs/en<#SnapshotService.ListWithQuery>)
 - [type UploadProgress](https://www.daytona.io/docs/en<#UploadProgress>)
 - [type UploadStreamOption](https://www.daytona.io/docs/en<#UploadStreamOption>)
   - [func WithUploadProgress\(fn func\(UploadProgress\)\) UploadStreamOption](https://www.daytona.io/docs/en<#WithUploadProgress>)
@@ -362,6 +368,12 @@ result, err := sandbox.Process.ExecuteCommand(ctx, "ls -la")
   - [func \(v \*VolumeService\) Get\(ctx context.Context, name string\) \(\*types.Volume, error\)](https://www.daytona.io/docs/en<#VolumeService.Get>)
   - [func \(v \*VolumeService\) List\(ctx context.Context\) \(\[\]\*types.Volume, error\)](<#VolumeService.List>)
   - [func \(v \*VolumeService\) WaitForReady\(ctx context.Context, volume \*types.Volume, timeout time.Duration\) \(\*types.Volume, error\)](https://www.daytona.io/docs/en<#VolumeService.WaitForReady>)
+- [type WarmPoolService](https://www.daytona.io/docs/en<#WarmPoolService>)
+  - [func NewWarmPoolService\(client \*Client\) \*WarmPoolService](https://www.daytona.io/docs/en<#NewWarmPoolService>)
+  - [func \(w \*WarmPoolService\) Create\(ctx context.Context, params \*types.CreateWarmPoolParams\) \(\*types.WarmPool, error\)](https://www.daytona.io/docs/en<#WarmPoolService.Create>)
+  - [func \(w \*WarmPoolService\) Delete\(ctx context.Context, warmPoolID string\) error](https://www.daytona.io/docs/en<#WarmPoolService.Delete>)
+  - [func \(w \*WarmPoolService\) List\(ctx context.Context\) \(\[\]\*types.WarmPool, error\)](<#WarmPoolService.List>)
+  - [func \(w \*WarmPoolService\) Update\(ctx context.Context, warmPoolID string, pool int\) \(\*types.WarmPool, error\)](https://www.daytona.io/docs/en<#WarmPoolService.Update>)
 
 
 ## Constants
@@ -562,6 +574,9 @@ type Client struct {
 
     // Secret provides methods for managing organization secrets.
     Secret *SecretService
+
+    // WarmPool provides methods for managing warm pools of ready sandboxes.
+    WarmPool *WarmPoolService
     // contains filtered or unexported fields
 }
 ```
@@ -2752,6 +2767,22 @@ type ListSandboxesQuery struct {
 }
 ```
 
+<a name="ListSnapshotsQuery"></a>
+## type ListSnapshotsQuery
+
+ListSnapshotsQuery contains pagination and filter parameters for listing snapshots.
+
+```go
+type ListSnapshotsQuery struct {
+    // Page number (1-indexed), nil for first page
+    Page *int
+    // Maximum snapshots per page, nil for default
+    Limit *int
+    // Filter by the ID of the sandbox the snapshot was created from
+    SourceSandboxID *string
+}
+```
+
 <a name="LspServerService"></a>
 ## type LspServerService
 
@@ -4351,6 +4382,8 @@ type Sandbox struct {
     Target         string                 // Target region/environment where the sandbox runs
     Cpu            float32                // Number of CPUs allocated to the sandbox
     Gpu            float32                // Number of GPUs allocated to the sandbox
+    Spot           bool                   // Whether this is a spot GPU sandbox, which may be instantly terminated to free capacity for on-demand GPU sandboxes
+    SpotEvictedAt  *string                // When the sandbox was evicted by spot preemption
     Memory         float32                // Amount of memory allocated to the sandbox in GiB
     Disk           float32                // Amount of disk space allocated to the sandbox in GiB
     State          apiclient.SandboxState // Current sandbox state
@@ -4409,6 +4442,12 @@ type Sandbox struct {
     // DomainAllowList is a comma-separated list of allowed domains.
     // Not populated by [Client.List]; call [Sandbox.RefreshData] on each item to populate.
     DomainAllowList *string
+
+    // OutboundProxyUrl is the outbound proxy URL the sandbox HTTP(S) traffic is
+    // routed through. Applied via the HTTP(S)_PROXY environment variables;
+    // combine with DomainAllowList for network-layer enforcement.
+    // Not populated by [Client.List]; call [Sandbox.RefreshData] on each item to populate.
+    OutboundProxyUrl *string
 
     FileSystem      *FileSystemService      // File system operations
     Git             *GitService             // Git operations
@@ -4844,7 +4883,7 @@ func (s *Sandbox) RefreshData(ctx context.Context) error
 
 RefreshData refreshes the sandbox data from the API.
 
-This updates all sandbox fields from the server, including those not populated by [Client.List](https://www.daytona.io/docs/en<#Client.List>) \(Env, NetworkBlockAll, NetworkAllowList, DomainAllowList, Volumes, BuildInfo, BackupCreatedAt\).
+This updates all sandbox fields from the server, including those not populated by [Client.List](https://www.daytona.io/docs/en<#Client.List>) \(Env, NetworkBlockAll, NetworkAllowList, DomainAllowList, OutboundProxyUrl, Volumes, BuildInfo, BackupCreatedAt\).
 
 Example:
 
@@ -5569,6 +5608,39 @@ NewSnapshotService creates a new SnapshotService.
 
 This is typically called internally by the SDK when creating a [Client](https://www.daytona.io/docs/en<#Client>). Users should access SnapshotService through \[Client.Snapshot\] rather than creating it directly.
 
+<a name="SnapshotService.Activate"></a>
+### func \(\*SnapshotService\) Activate
+
+```go
+func (s *SnapshotService) Activate(ctx context.Context, nameOrID string) (*types.Snapshot, error)
+```
+
+Activate transitions a snapshot into the ACTIVE state so new sandboxes can be created from it.
+
+The reference may be either the snapshot's ID \(a UUID\) or its name. Because snapshot names may themselves be UUID\-shaped, the SDK cannot decide upfront which one was intended; it uses an optimistic\-then\-fallback strategy that mirrors the TypeScript and Python SDKs.
+
+Call\-count behavior:
+
+- Plain UUID that IS the ID: 1 request \(POST /snapshots/\{id\}/activate only\).
+- Non\-UUID name: 2 requests \(GET then POST\).
+- UUID\-shaped string that turns out to be a NAME: 3 requests \(POST returns 404 → GET resolves the name → POST by resolved ID\).
+
+Parameters:
+
+- nameOrID: The snapshot's ID or name
+
+Example:
+
+```
+snapshot, err := client.Snapshot.Activate(ctx, "my-python-env")
+if err != nil {
+    return err
+}
+fmt.Printf("Snapshot %s: %s\n", snapshot.Name, snapshot.State)
+```
+
+Returns the activated \[types.Snapshot\] or an error if the snapshot cannot be found or activation fails.
+
 <a name="SnapshotService.Create"></a>
 ### func \(\*SnapshotService\) Create
 
@@ -5638,6 +5710,40 @@ if err != nil {
 
 Returns an error if deletion fails.
 
+<a name="SnapshotService.DeleteByNameOrID"></a>
+### func \(\*SnapshotService\) DeleteByNameOrID
+
+```go
+func (s *SnapshotService) DeleteByNameOrID(ctx context.Context, nameOrID string) error
+```
+
+DeleteByNameOrID permanently removes a snapshot referenced by name or ID.
+
+The reference may be either the snapshot's ID \(a UUID\) or its name. Because snapshot names may themselves be UUID\-shaped, the SDK cannot decide upfront which one was intended; it uses an optimistic\-then\-fallback strategy that mirrors the TypeScript and Python SDKs.
+
+Call\-count behavior:
+
+- Plain UUID that IS the ID: 1 request \(DELETE only\).
+- Non\-UUID name: 2 requests \(GET then DELETE\).
+- UUID\-shaped string that turns out to be a NAME: 3 requests \(DELETE returns 404 → GET resolves the name → DELETE by resolved ID\).
+
+Sandboxes created from this snapshot will continue to work, but no new sandboxes can be created from it after deletion.
+
+Parameters:
+
+- nameOrID: The snapshot's ID or name
+
+Example:
+
+```
+err := client.Snapshot.DeleteByNameOrID(ctx, "my-python-env")
+if err != nil {
+    return err
+}
+```
+
+Returns an error if the snapshot cannot be found or deletion fails.
+
 <a name="SnapshotService.Get"></a>
 ### func \(\*SnapshotService\) Get
 
@@ -5689,6 +5795,27 @@ if err != nil {
 fmt.Printf("Page %d of %d (%d snapshots total)\n", page.Page, page.TotalPages, page.Total)
 for _, snapshot := range page.Items {
     fmt.Printf("%s (%s)\n", snapshot.Name, snapshot.ImageName)
+}
+```
+
+Returns \[types.PaginatedSnapshots\] containing the snapshots and pagination info.
+
+<a name="SnapshotService.ListWithQuery"></a>
+### func \(\*SnapshotService\) ListWithQuery
+
+```go
+func (s *SnapshotService) ListWithQuery(ctx context.Context, query *ListSnapshotsQuery) (*types.PaginatedSnapshots, error)
+```
+
+ListWithQuery returns snapshots matching the given query.
+
+Example:
+
+```
+sandboxID := "b8f6e2d0-1234-5678-9abc-def012345678"
+page, err := client.Snapshot.ListWithQuery(ctx, &daytona.ListSnapshotsQuery{SourceSandboxID: &sandboxID})
+if err != nil {
+    return err
 }
 ```
 
@@ -5902,6 +6029,147 @@ if err != nil {
 ```
 
 Returns the updated \[types.Volume\] when ready, or an error if the timeout expires or the volume enters an error state.
+
+<a name="WarmPoolService"></a>
+## type WarmPoolService
+
+WarmPoolService provides warm pool management operations.
+
+WarmPoolService enables listing, creating, updating, and deleting warm pools of ready\-to\-use sandboxes for a snapshot. A pool's CurrentSize versus Pool is its status: CurrentSize is the number of ready warm sandboxes, Pool is the desired number, and ErrorReason is set when the pool cannot be filled. Access through \[Client.WarmPool\].
+
+Example:
+
+```
+// Create a new warm pool
+pool, err := client.WarmPool.Create(ctx, &types.CreateWarmPoolParams{
+    Snapshot: "my-snapshot",
+    Pool:     5,
+})
+if err != nil {
+    return err
+}
+
+// List all warm pools
+pools, err := client.WarmPool.List(ctx)
+```
+
+```go
+type WarmPoolService struct {
+    // contains filtered or unexported fields
+}
+```
+
+<a name="NewWarmPoolService"></a>
+### func NewWarmPoolService
+
+```go
+func NewWarmPoolService(client *Client) *WarmPoolService
+```
+
+NewWarmPoolService creates a new WarmPoolService.
+
+This is typically called internally by the SDK when creating a [Client](https://www.daytona.io/docs/en<#Client>). Users should access WarmPoolService through \[Client.WarmPool\] rather than creating it directly.
+
+<a name="WarmPoolService.Create"></a>
+### func \(\*WarmPoolService\) Create
+
+```go
+func (w *WarmPoolService) Create(ctx context.Context, params *types.CreateWarmPoolParams) (*types.WarmPool, error)
+```
+
+Create creates a new warm pool.
+
+A pool for the same snapshot and region may exist only once; a duplicate returns a conflict error.
+
+Parameters:
+
+- params: Warm pool creation parameters including snapshot, desired pool size, and optional target region
+
+Example:
+
+```
+pool, err := client.WarmPool.Create(ctx, &types.CreateWarmPoolParams{
+    Snapshot: "my-snapshot",
+    Pool:     5,
+})
+if err != nil {
+    return err
+}
+```
+
+Returns the created \[types.WarmPool\] or an error.
+
+<a name="WarmPoolService.Delete"></a>
+### func \(\*WarmPoolService\) Delete
+
+```go
+func (w *WarmPoolService) Delete(ctx context.Context, warmPoolID string) error
+```
+
+Delete permanently removes a warm pool.
+
+Parameters:
+
+- warmPoolID: The warm pool ID
+
+Example:
+
+```
+err := client.WarmPool.Delete(ctx, warmPoolID)
+if err != nil {
+    return err
+}
+```
+
+Returns an error if the ID is unknown \(404\) or deletion fails.
+
+<a name="WarmPoolService.List"></a>
+### func \(\*WarmPoolService\) List
+
+```go
+func (w *WarmPoolService) List(ctx context.Context) ([]*types.WarmPool, error)
+```
+
+List returns all warm pools in the organization.
+
+Example:
+
+```
+pools, err := client.WarmPool.List(ctx)
+if err != nil {
+    return err
+}
+for _, pool := range pools {
+    fmt.Printf("%s: %d/%d ready\n", pool.Snapshot, pool.CurrentSize, pool.Pool)
+}
+```
+
+Returns a slice of \[types.WarmPool\] or an error if the request fails.
+
+<a name="WarmPoolService.Update"></a>
+### func \(\*WarmPoolService\) Update
+
+```go
+func (w *WarmPoolService) Update(ctx context.Context, warmPoolID string, pool int) (*types.WarmPool, error)
+```
+
+Update sets the desired size of a warm pool.
+
+Parameters:
+
+- warmPoolID: The warm pool ID
+- pool: New desired number of warm sandboxes \(0 drains the pool\)
+
+Example:
+
+```
+pool, err := client.WarmPool.Update(ctx, warmPoolID, 10)
+if err != nil {
+    return err
+}
+```
+
+Returns the updated \[types.WarmPool\] or an error if the ID is unknown \(404\).
 
 ## See Also
 - [Python SDK - daytona](../python-sdk/sync/daytona.md)

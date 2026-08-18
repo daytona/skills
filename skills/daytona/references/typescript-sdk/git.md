@@ -13,10 +13,10 @@ Provides Git operations within a Sandbox.
 
 ### Constructors
 
-#### new Git()
+#### Constructor
 
 ```ts
-new Git(apiClient: GitApi): Git
+new Git(apiClient: GitApi): Git;
 ```
 
 **Parameters**:
@@ -33,7 +33,7 @@ new Git(apiClient: GitApi): Git
 #### add()
 
 ```ts
-add(path: string, files: string[]): Promise<void>
+add(path: string, files: string[]): Promise<void>;
 ```
 
 Stages the specified files for the next commit, similar to
@@ -61,12 +61,10 @@ await git.add('workspace/repo', ['file.txt']);
 await git.add('workspace/repo', ['.']);
 ```
 
-***
-
 #### branches()
 
 ```ts
-branches(path: string): Promise<ListBranchResponse>
+branches(path: string): Promise<ListBranchResponse>;
 ```
 
 List branches in the repository.
@@ -87,12 +85,10 @@ const response = await git.branches('workspace/repo');
 console.log(`Branches: ${response.branches}`);
 ```
 
-***
-
 #### checkoutBranch()
 
 ```ts
-checkoutBranch(path: string, branch: string): Promise<void>
+checkoutBranch(path: string, branch: string): Promise<void>;
 ```
 
 Checkout branche in the repository.
@@ -113,8 +109,6 @@ Checkout branche in the repository.
 await git.checkoutBranch('workspace/repo', 'new-feature');
 ```
 
-***
-
 #### clone()
 
 ```ts
@@ -126,7 +120,7 @@ clone(
    username?: string,
    password?: string,
    insecureSkipTls?: boolean,
-depth?: number): Promise<void>
+depth?: number): Promise<void>;
 ```
 
 Clones a Git repository into the specified path. It supports
@@ -179,8 +173,6 @@ await git.clone(
 );
 ```
 
-***
-
 #### commit()
 
 ```ts
@@ -189,7 +181,7 @@ commit(
    message: string,
    author: string,
    email: string,
-allowEmpty?: boolean): Promise<GitCommitResponse>
+allowEmpty?: boolean): Promise<GitCommitResponse>;
 ```
 
 Commits staged changes.
@@ -221,8 +213,6 @@ await git.commit(
 );
 ```
 
-***
-
 #### configureUser()
 
 ```ts
@@ -230,7 +220,7 @@ configureUser(
    name: string,
    email: string,
    scope?: string,
-path?: string): Promise<void>
+path?: string): Promise<void>;
 ```
 
 Configures the Git user name and email at the given scope.
@@ -253,12 +243,10 @@ Configures the Git user name and email at the given scope.
 await git.configureUser('John Doe', 'john@example.com');
 ```
 
-***
-
 #### createBranch()
 
 ```ts
-createBranch(path: string, name: string): Promise<void>
+createBranch(path: string, name: string): Promise<void>;
 ```
 
 Create branch in the repository.
@@ -279,8 +267,6 @@ Create branch in the repository.
 await git.createBranch('workspace/repo', 'new-feature');
 ```
 
-***
-
 #### dangerouslyAuthenticate()
 
 ```ts
@@ -288,7 +274,7 @@ dangerouslyAuthenticate(
    username: string,
    password: string,
    host?: string,
-protocol?: string): Promise<void>
+protocol?: string): Promise<void>;
 ```
 
 Persists Git credentials globally so that subsequent operations against the
@@ -316,12 +302,10 @@ This stores the password in plaintext on disk via the Git credential store.
 await git.dangerouslyAuthenticate('user', 'github_token');
 ```
 
-***
-
 #### deleteBranch()
 
 ```ts
-deleteBranch(path: string, name: string): Promise<void>
+deleteBranch(path: string, name: string): Promise<void>;
 ```
 
 Delete branche in the repository.
@@ -342,15 +326,13 @@ Delete branche in the repository.
 await git.deleteBranch('workspace/repo', 'new-feature');
 ```
 
-***
-
 #### getConfig()
 
 ```ts
 getConfig(
    key: string,
    scope?: string,
-path?: string): Promise<string>
+path?: string): Promise<string>;
 ```
 
 Gets a Git config value at the given scope, or undefined when unset.
@@ -372,15 +354,13 @@ Gets a Git config value at the given scope, or undefined when unset.
 const name = await git.getConfig('user.name');
 ```
 
-***
-
 #### init()
 
 ```ts
 init(
    path: string,
    bare?: boolean,
-initialBranch?: string): Promise<void>
+initialBranch?: string): Promise<void>;
 ```
 
 Initializes a new Git repository at the specified path.
@@ -402,8 +382,6 @@ Initializes a new Git repository at the specified path.
 await git.init('workspace/repo', false, 'main');
 ```
 
-***
-
 #### pull()
 
 ```ts
@@ -412,7 +390,7 @@ pull(
    username?: string,
    password?: string,
    branch?: string,
-remote?: string): Promise<void>
+remote?: string): Promise<void>;
 ```
 
 Pulls changes from the remote repository.
@@ -451,8 +429,6 @@ await git.pull(
 await git.pull('workspace/repo', undefined, undefined, 'main', 'upstream');
 ```
 
-***
-
 #### push()
 
 ```ts
@@ -462,7 +438,7 @@ push(
    password?: string,
    branch?: string,
    remote?: string,
-setUpstream?: boolean): Promise<void>
+setUpstream?: boolean): Promise<void>;
 ```
 
 Push local changes to the remote repository.
@@ -502,8 +478,6 @@ await git.push(
 await git.push('workspace/repo', undefined, undefined, 'feature', undefined, true);
 ```
 
-***
-
 #### remoteAdd()
 
 ```ts
@@ -512,7 +486,7 @@ remoteAdd(
    name: string,
    url: string,
    fetch?: boolean,
-overwrite?: boolean): Promise<void>
+overwrite?: boolean): Promise<void>;
 ```
 
 Adds (or overwrites) a remote in the repository.
@@ -536,12 +510,10 @@ Adds (or overwrites) a remote in the repository.
 await git.remoteAdd('workspace/repo', 'origin', 'https://github.com/user/repo.git');
 ```
 
-***
-
 #### remoteGet()
 
 ```ts
-remoteGet(path: string, name: string): Promise<string>
+remoteGet(path: string, name: string): Promise<string>;
 ```
 
 Gets the URL of a remote, or undefined when it does not exist.
@@ -562,12 +534,10 @@ Gets the URL of a remote, or undefined when it does not exist.
 const url = await git.remoteGet('workspace/repo', 'origin');
 ```
 
-***
-
 #### remotes()
 
 ```ts
-remotes(path: string): Promise<ListRemotesResponse>
+remotes(path: string): Promise<ListRemotesResponse>;
 ```
 
 Lists the remotes configured in the repository.
@@ -588,8 +558,6 @@ const response = await git.remotes('workspace/repo');
 response.remotes.forEach((r) => console.log(`${r.name}: ${r.url}`));
 ```
 
-***
-
 #### reset()
 
 ```ts
@@ -597,7 +565,7 @@ reset(
    path: string,
    mode?: string,
    target?: string,
-files?: string[]): Promise<void>
+files?: string[]): Promise<void>;
 ```
 
 Resets the current HEAD to the specified state.
@@ -626,8 +594,6 @@ await git.reset('workspace/repo');
 await git.reset('workspace/repo', 'hard', 'HEAD~1');
 ```
 
-***
-
 #### restore()
 
 ```ts
@@ -636,7 +602,7 @@ restore(
    files: string[],
    staged?: boolean,
    worktree?: boolean,
-source?: string): Promise<void>
+source?: string): Promise<void>;
 ```
 
 Restores working tree files or unstages changes.
@@ -666,8 +632,6 @@ await git.restore('workspace/repo', ['file.txt']);
 await git.restore('workspace/repo', ['file.txt'], true);
 ```
 
-***
-
 #### setConfig()
 
 ```ts
@@ -675,7 +639,7 @@ setConfig(
    key: string,
    value: string,
    scope?: string,
-path?: string): Promise<void>
+path?: string): Promise<void>;
 ```
 
 Sets a Git config value at the given scope.
@@ -698,12 +662,10 @@ Sets a Git config value at the given scope.
 await git.setConfig('user.name', 'John Doe');
 ```
 
-***
-
 #### status()
 
 ```ts
-status(path: string): Promise<GitStatus>
+status(path: string): Promise<GitStatus>;
 ```
 
 Gets the current status of the Git repository.

@@ -144,6 +144,27 @@ System.out.println(snapshot.getName() + " (" + snapshot.getImageName() + ")");
 
 - `io.daytona.sdk.exception.DaytonaException` - if the API request fails
 
+#### list()
+```java
+public PaginatedSnapshots list(Integer page, Integer limit, String sourceSandboxId)
+```
+
+Lists snapshots with pagination, optionally filtered by source sandbox.
+
+**Parameters**:
+
+- `page` _Integer_ - page number starting from 1; defaults to 1 when `null`
+- `limit` _Integer_ - maximum number of items per page; defaults to 10 when `null`
+- `sourceSandboxId` _String_ - filter by the ID of the sandbox the snapshot was created from; ignored when `null`
+
+**Returns**:
+
+- `PaginatedSnapshots` - paginated snapshot result
+
+**Throws**:
+
+- `io.daytona.sdk.exception.DaytonaException` - if the API request fails
+
 #### get()
 ```java
 public Snapshot get(String nameOrId)
@@ -165,18 +186,85 @@ Retrieves a snapshot by name or ID.
 
 #### delete()
 ```java
-public void delete(String id)
+public void delete(String nameOrId)
 ```
 
-Deletes a snapshot by ID.
+Deletes a snapshot by ID or name.
+
+Snapshot names may themselves be UUID-formatted, so a UUID-shaped input is first
+tried directly against the ID-only delete endpoint (1 call) and only resolved through
+the ID-or-name `GET /snapshots` lookup on a 404. Non-UUID input is resolved first (2 calls);
+a UUID-formatted name costs 3 calls in the worst case.
 
 **Parameters**:
 
-- `id` _String_ - snapshot identifier
+- `nameOrId` _String_ - snapshot identifier or name
 
 **Throws**:
 
 - `io.daytona.sdk.exception.DaytonaException` - if deletion fails
+
+#### delete()
+```java
+public void delete(Snapshot snapshot)
+```
+
+Deletes a snapshot using its already-known identifier.
+
+Issues a single delete call — no resolution is performed.
+
+**Parameters**:
+
+- `snapshot` _Snapshot_ - snapshot to delete; its `Snapshot#getId() id` is used verbatim
+
+**Throws**:
+
+- `io.daytona.sdk.exception.DaytonaException` - if deletion fails
+
+#### activate()
+```java
+public Snapshot activate(String nameOrId)
+```
+
+Activates a snapshot by ID or name.
+
+Snapshot names may themselves be UUID-formatted, so a UUID-shaped input is first
+tried directly against the ID-only activate endpoint (1 call) and only resolved through
+the ID-or-name `GET /snapshots` lookup on a 404. Non-UUID input is resolved first (2 calls);
+a UUID-formatted name costs 3 calls in the worst case.
+
+**Parameters**:
+
+- `nameOrId` _String_ - snapshot identifier or name
+
+**Returns**:
+
+- `Snapshot` - the activated `Snapshot`
+
+**Throws**:
+
+- `io.daytona.sdk.exception.DaytonaException` - if activation fails or no snapshot is found
+
+#### activate()
+```java
+public Snapshot activate(Snapshot snapshot)
+```
+
+Activates a snapshot using its already-known identifier.
+
+Issues a single activate call — no resolution is performed.
+
+**Parameters**:
+
+- `snapshot` _Snapshot_ - snapshot to activate; its `Snapshot#getId() id` is used verbatim
+
+**Returns**:
+
+- `Snapshot` - the activated `Snapshot`
+
+**Throws**:
+
+- `io.daytona.sdk.exception.DaytonaException` - if activation fails
 
 ## See Also
 - [Python SDK - snapshot](../python-sdk/sync/snapshot.md)

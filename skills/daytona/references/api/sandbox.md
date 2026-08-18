@@ -123,17 +123,20 @@ Schema: **CreateSandbox**
 | `networkBlockAll` | boolean | No | Whether to block all network access for the sandbox |
 | `networkAllowList` | string | No | Comma-separated list of allowed CIDR network addresses for the sandbox |
 | `domainAllowList` | string | No | Comma-separated list of allowed domains for the sandbox |
+| `outboundProxyUrl` | string | No | Outbound proxy URL to route the sandbox HTTP(S) traffic through (http or https; credentials may be included in the URL). On its own this is convenience routing, not a security boundary: it is applied by injecting the standard HTTP(S)_PROXY environment variables at creation, so a process that clears those variables egresses directly. Combine with domainAllowList to have web-port (80/443) egress transparently redirected through the proxy chain at the network layer, which cannot be bypassed from inside the sandbox. |
+| `otelEndpointOverride` | string | No | OTel collector endpoint override for this sandbox. When set, sandbox OTel data is sent to this endpoint instead of the default collector (the Daytona-hosted collector or the region-configured endpoint) and will not be available in the Daytona analytics API or dashboard. |
 | `target` | string | No | The target (region) where the sandbox will be created |
 | `cpu` | integer | No | CPU cores allocated to the sandbox |
 | `gpu` | integer | No | GPU units allocated to the sandbox |
 | `gpuType` | array of [GpuType](#schema-gputype) | No | Preferred GPU type for the sandbox. Accepts a single value or an ordered preference list — the scheduler tries each in order and pins the sandbox to the first that has capacity. |
+| `spot` | boolean | No | GPU-only. When true, the sandbox may be instantly terminated without notice to free GPU capacity for an on-demand (non-spot) GPU sandbox. Ignored / rejected when the sandbox requests no GPUs. |
 | `memory` | integer | No | Memory allocated to the sandbox in GB |
 | `disk` | integer | No | Disk space allocated to the sandbox in GB |
 | `autoStopInterval` | integer | No | Auto-stop interval in minutes (0 means disabled) |
 | `autoPauseInterval` | integer | No | Auto-pause interval in minutes (0 means disabled). Only supported for sandbox classes that support pausing. Not allowed for ephemeral sandboxes. At most one of autoStopInterval and autoPauseInterval may be non-zero. For non-ephemeral sandbox classes that support pausing, defaults to 60 minutes (with auto-stop disabled) when neither interval is provided. |
 | `autoArchiveInterval` | integer | No | Auto-archive interval in minutes (0 means the maximum interval will be used) |
 | `autoDeleteInterval` | integer | No | Auto-delete interval in minutes (negative value means disabled, 0 means delete immediately upon stopping) |
-| `ttlMinutes` | integer | No | Maximum time to live in minutes, counted as wall-clock time since creation regardless of sandbox state (0 means disabled). When it elapses the sandbox is destroyed, even if it is stopped, paused, or archived. |
+| `ttlMinutes` | integer | No | Maximum time to live in minutes, counted as wall-clock time since creation regardless of sandbox state (0 means disabled). When it elapses the sandbox is destroyed, even if it is stopped, paused, or archived. Subject to the maximum sandbox lifespan configured for the organization region and sandbox class, in which case it also defaults to that maximum and cannot be disabled. |
 | `volumes` | array of [SandboxVolume](#schema-sandboxvolume) | No | Array of volumes to attach to the sandbox |
 | `buildInfo` | object | No | Build information for the sandbox |
 | `linkedSandbox` | string | No | ID or name of an existing sandbox to link the new sandbox to. The new sandbox will be scheduled on the same runner as the linked sandbox so a local network can be established between them. Linked sandboxes must be ephemeral (autoDeleteInterval=0) and cannot themselves be linked to another sandbox. GPU sandboxes cannot participate in links in either direction: a GPU sandbox cannot specify linkedSandbox, and cannot be the link target of another sandbox. |
@@ -207,6 +210,8 @@ Schema: **CreateSandbox**
 ## GET `/sandbox/{sandboxIdOrName}` {#daytona/tag/sandbox/GET/sandbox/{sandboxIdOrName}}
 
 **Get sandbox details**
+
+Sandboxes destroyed by spot preemption remain retrievable for 24 hours so `spotEvictedAt` can be read.
 
 ### Parameters
 

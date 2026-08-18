@@ -1,6 +1,5 @@
 ## Contents
 
-- Current usage
 - Resources
 - Sandbox limits
 - Disk quota
@@ -13,11 +12,7 @@
 
 
 
-[Daytona Limits ↗](https://app.daytona.io/dashboard/limits) provide an overview of your organization's [current usage](#current-usage), [resources](#resources), [sandbox limits](#sandbox-limits), and [rate limits](#rate-limits). Daytona uses a [tier-based](#tiers) system where organizations are placed into tiers based on verification status, with each tier providing access to a specific compute pool and rate limits. For information on spending and wallet management, see [billing](./billing.md).
-
-## Current usage
-
-Current usage provides a summary of your organization's resource usage, tier and region.
+[Daytona Limits ↗](https://app.daytona.io/dashboard/limits) provide an overview of your organization's [resources](#resources), [sandbox limits](#sandbox-limits), and [rate limits](#rate-limits). Daytona uses a [tier-based](#tiers) system where organizations are placed into tiers based on verification status, with each tier providing access to a specific compute pool and rate limits. For information on spending and wallet management, see [billing](./billing.md).
 
 ## Resources
 
@@ -51,13 +46,13 @@ Disk quota and [sandbox billing](./billing.md#sandbox-billing) are separate: a s
 
 Rate limits control how many API requests you can make within a specific time window. These limits are applied based on your tier, authentication status, and the type of operation you're performing. Rate limits for general authenticated requests are tracked per organization.
 
-| **Tier**   | **General Requests (per min)** | **Sandbox Creation (per min)** | **Sandbox Lifecycle (per min)** |
-| ---------- | ------------------------------ | ------------------------------ | ------------------------------- |
-| Tier 1     | 10,000                         | 300                            | 10,000                          |
-| Tier 2     | 20,000                         | 400                            | 20,000                          |
-| Tier 3     | 40,000                         | 500                            | 40,000                          |
-| Tier 4     | 50,000                         | 600                            | 50,000                          |
-| Enterprise | Custom                         | Custom                         | Custom                          |
+| **Tier**   | **General Requests <br />(per min)** | **Sandbox Creation <br />(per min)** | **Sandbox Lifecycle <br />(per min)** |
+| ---------- | ------------------------------------ | ------------------------------------ | ------------------------------------- |
+| Tier 1     | 10,000                               | 300                                  | 10,000                                |
+| Tier 2     | 20,000                               | 400                                  | 20,000                                |
+| Tier 3     | 40,000                               | 500                                  | 40,000                                |
+| Tier 4     | 50,000                               | 600                                  | 50,000                                |
+| Enterprise | Custom                               | Custom                               | Custom                                |
 
 ### Rate limit headers
 
@@ -148,7 +143,7 @@ Limits are applied to your organization's default region. To unlock higher limit
 | Tier 4   | 500 / 1000GiB / 5000GiB              | $2000 top-up every 30 days                              |
 | Custom   | Custom                               | Contact [support@daytona.io](mailto:support@daytona.io) |
 > **Note: Tier-based network restrictions**
-> [Network limits](../python-sdk/network-limits.md) are automatically applied to sandboxes based on your organization's billing tier. This provides secure and controlled internet access for development environments.
+> [Network limits](../python-sdk/network-limits.md) are automatically applied based on your organization's billing tier.
 
 ## Limits
 
@@ -164,34 +159,7 @@ Limits provide an overview of tiers and their corresponding resource and rate li
 
 ## Best practices
 
-To work effectively within rate limits, always handle `429` errors gracefully with proper retry logic. When you receive a rate limit error, implement exponential backoff—wait progressively longer between retries (1s, 2s, 4s, 8s, etc.) to avoid overwhelming the API.
-
-The following snippet demonstrates how to create a sandbox with retry logic using the TypeScript SDK:
-
-```typescript
-async function createSandboxWithRetry() {
-  let retries = 0
-  const maxRetries = 5
-
-  while (retries < maxRetries) {
-    try {
-      return await daytona.create({ snapshot: 'my-snapshot' })
-    } catch (error) {
-      if (error instanceof DaytonaRateLimitError && retries < maxRetries - 1) {
-        // Use Retry-After header if available, otherwise exponential backoff
-        const retryAfter = error.headers?.get('retry-after-sandbox-create')
-        const delay = retryAfter
-          ? parseInt(retryAfter) * 1000
-          : Math.pow(2, retries) * 1000
-        await new Promise(resolve => setTimeout(resolve, delay))
-        retries++
-      } else {
-        throw error
-      }
-    }
-  }
-}
-```
+To work effectively within rate limits, always handle `429` errors gracefully with proper retry logic. When you receive a rate limit error, implement exponential backoff and wait progressively longer between retries (1s, 2s, 4s, 8s, etc.) to avoid overwhelming the API.
 
 **Monitor [rate limit headers](#rate-limit-headers)** (e.g., `X-RateLimit-Remaining-{throttler}`, `X-RateLimit-Reset-{throttler}`) to track your consumption and implement proactive throttling before hitting limits. These headers are available on all error objects via the `headers` property.
 

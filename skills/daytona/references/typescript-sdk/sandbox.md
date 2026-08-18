@@ -50,10 +50,15 @@ Represents a Daytona Sandbox.
 - `networkBlockAll?` _boolean_ - Whether to block all network access for the Sandbox
     (not returned by list results; call `refreshData()` on each item to populate)
 - `organizationId` _string_ - Organization ID of the Sandbox
+- `outboundProxyUrl?` _string_ - Outbound proxy URL to route the Sandbox HTTP(S) traffic through. Applied via the HTTP(S)_PROXY environment variables (convenience routing, not a security boundary on its own); combine with domainAllowList for unbypassable network-layer enforcement.
+    (not returned by list results; call `refreshData()` on each item to populate)
 - `process` _Process_ - Process execution interface
 - `public` _boolean_ - Whether the Sandbox is publicly accessible
 - `recoverable?` _boolean_ - Whether the Sandbox error is recoverable.
 - `snapshot?` _string_ - Daytona snapshot used to create the Sandbox
+- `spot?` _boolean_ - Whether this is a spot GPU Sandbox. Spot Sandboxes may be instantly terminated to free
+    capacity for on-demand GPU Sandboxes
+- `spotEvictedAt?` _string_ - When the Sandbox was evicted by spot preemption
 - `state?` _SandboxState_ - Current state of the Sandbox (e.g., "started", "stopped")
 - `target` _string_ - Target location of the runner where the Sandbox runs
 - `toolboxProxyUrl` _string_
@@ -66,7 +71,7 @@ Represents a Daytona Sandbox.
 
 ### Constructors
 
-#### new Sandbox()
+#### Constructor
 
 ```ts
 new Sandbox(
@@ -76,7 +81,7 @@ new Sandbox(
    sandboxApi: SandboxApi,
    getAnalyticsApiUrl: () => Promise<string>,
    subscriptionManager: EventSubscriptionManager,
-   requestTimeoutMs?: number): Sandbox
+   requestTimeoutMs?: number): Sandbox;
 ```
 
 Creates a new Sandbox instance.
@@ -86,7 +91,7 @@ Daytona.list rather than constructing directly.
 
 **Parameters**:
 
-- `sandboxDto` _The API Sandbox instance_ - `SandboxListItem` | `Sandbox`
+- `sandboxDto` _SandboxListItem \| Sandbox_ - The API Sandbox instance
 - `clientConfig` _Configuration_
 - `axiosInstance` _AxiosInstance_
 - `sandboxApi` _SandboxApi_ - API client for Sandbox operations
@@ -104,7 +109,7 @@ Daytona.list rather than constructing directly.
 #### ~~\_experimental\_createSnapshot()~~
 
 ```ts
-_experimental_createSnapshot(name: string, timeout?: number): Promise<void>
+_experimental_createSnapshot(name: string, timeout?: number): Promise<void>;
 ```
 
 **Parameters**:
@@ -126,12 +131,10 @@ Use `createSnapshot` instead. This method will be removed in a future version.
 
 Sandbox.createSnapshot
 
-***
-
 #### ~~\_experimental\_fork()~~
 
 ```ts
-_experimental_fork(params?: ForkSandboxParams, timeout?: number): Promise<Sandbox>
+_experimental_fork(params?: ForkSandboxParams, timeout?: number): Promise<Sandbox>;
 ```
 
 **Parameters**:
@@ -152,12 +155,10 @@ Use `fork` instead. This method will be removed in a future version.
 
 Sandbox.fork
 
-***
-
 #### archive()
 
 ```ts
-archive(): Promise<void>
+archive(): Promise<void>;
 ```
 
 Archives the sandbox, making it inactive and preserving its state. When sandboxes are archived, the entire filesystem
@@ -169,12 +170,10 @@ Sandbox must be stopped before archiving.
 
 - `Promise<void>`
 
-***
-
 #### createLspServer()
 
 ```ts
-createLspServer(languageId: string, pathToProject: string): Promise<LspServer>
+createLspServer(languageId: string, pathToProject: string): Promise<LspServer>;
 ```
 
 Creates a new Language Server Protocol (LSP) server instance.
@@ -198,12 +197,10 @@ diagnostics, and more.
 const lsp = await sandbox.createLspServer('typescript', 'workspace/project');
 ```
 
-***
-
 #### createSnapshot()
 
 ```ts
-createSnapshot(name: string, timeout?: number): Promise<void>
+createSnapshot(name: string, timeout?: number): Promise<void>;
 ```
 
 Creates a snapshot from the current state of the Sandbox.
@@ -237,12 +234,10 @@ await sandbox.createSnapshot('my-snapshot');
 console.log('Snapshot created successfully');
 ```
 
-***
-
 #### createSshAccess()
 
 ```ts
-createSshAccess(expiresInMinutes?: number): Promise<SshAccessDto>
+createSshAccess(expiresInMinutes?: number): Promise<SshAccessDto>;
 ```
 
 Creates an SSH access token for the sandbox.
@@ -256,12 +251,10 @@ Creates an SSH access token for the sandbox.
 
 - `Promise<SshAccessDto>` - The SSH access token.
 
-***
-
 #### delete()
 
 ```ts
-delete(timeout?: number, wait?: boolean): Promise<void>
+delete(timeout?: number, wait?: boolean): Promise<void>;
 ```
 
 Deletes the Sandbox.
@@ -282,12 +275,10 @@ the 'destroyed' state.
 
 - `Promise<void>`
 
-***
-
 #### downloadUrl()
 
 ```ts
-downloadUrl(path: string, ttlSeconds?: number): Promise<string>
+downloadUrl(path: string, ttlSeconds?: number): Promise<string>;
 ```
 
 Creates a pre-signed URL for downloading a file from the Sandbox.
@@ -314,12 +305,10 @@ const url = await sandbox.downloadUrl('/home/user/report.pdf')
 // curl "$url" -o report.pdf
 ```
 
-***
-
 #### expireSignedPreviewUrl()
 
 ```ts
-expireSignedPreviewUrl(port: number, token: string): Promise<void>
+expireSignedPreviewUrl(port: number, token: string): Promise<void>;
 ```
 
 Expires a signed preview url for the sandbox at the specified port.
@@ -334,12 +323,10 @@ Expires a signed preview url for the sandbox at the specified port.
 
 - `Promise<void>`
 
-***
-
 #### fork()
 
 ```ts
-fork(params?: ForkSandboxParams, timeout?: number): Promise<Sandbox>
+fork(params?: ForkSandboxParams, timeout?: number): Promise<Sandbox>;
 ```
 
 Forks the Sandbox, creating a new Sandbox with an identical filesystem.
@@ -372,12 +359,10 @@ const forked = await sandbox.fork({ name: 'my-fork' });
 console.log(`Forked sandbox: ${forked.id}`);
 ```
 
-***
-
 #### getMetrics()
 
 ```ts
-getMetrics(start?: Date, end?: Date): Promise<SandboxMetrics[]>
+getMetrics(start?: Date, end?: Date): Promise<SandboxMetrics[]>;
 ```
 
 Gets historical time-series resource usage metrics for the Sandbox.
@@ -401,12 +386,10 @@ for (const s of samples) {
 }
 ```
 
-***
-
 #### getMetricsLatest()
 
 ```ts
-getMetricsLatest(): Promise<SandboxMetrics>
+getMetricsLatest(): Promise<SandboxMetrics>;
 ```
 
 Gets the most recent resource usage sample directly from the sandbox daemon.
@@ -425,12 +408,10 @@ const m = await sandbox.getMetricsLatest()
 console.log(`CPU: ${m.cpuUsedPct}%, mem: ${m.memUsed}/${m.memTotal}`)
 ```
 
-***
-
 #### getPreviewLink()
 
 ```ts
-getPreviewLink(port: number): Promise<PortPreviewUrl>
+getPreviewLink(port: number): Promise<PortPreviewUrl>;
 ```
 
 Retrieves the preview link for the sandbox at the specified port. If the port is closed,
@@ -455,12 +436,10 @@ console.log(`Preview URL: ${previewLink.url}`);
 console.log(`Token: ${previewLink.token}`);
 ```
 
-***
-
 #### getSignedPreviewUrl()
 
 ```ts
-getSignedPreviewUrl(port: number, expiresInSeconds?: number): Promise<SignedPortPreviewUrl>
+getSignedPreviewUrl(port: number, expiresInSeconds?: number): Promise<SignedPortPreviewUrl>;
 ```
 
 Retrieves a signed preview url for the sandbox at the specified port.
@@ -475,12 +454,10 @@ Retrieves a signed preview url for the sandbox at the specified port.
 
 - `Promise<SignedPortPreviewUrl>` - The response object for the signed preview url.
 
-***
-
 #### getUserHomeDir()
 
 ```ts
-getUserHomeDir(): Promise<string>
+getUserHomeDir(): Promise<string>;
 ```
 
 Gets the user's home directory path for the logged in user inside the Sandbox.
@@ -496,12 +473,10 @@ const userHomeDir = await sandbox.getUserHomeDir();
 console.log(`Sandbox user home: ${userHomeDir}`);
 ```
 
-***
-
 #### ~~getUserRootDir()~~
 
 ```ts
-getUserRootDir(): Promise<string>
+getUserRootDir(): Promise<string>;
 ```
 
 **Returns**:
@@ -512,12 +487,10 @@ getUserRootDir(): Promise<string>
 
 Use `getUserHomeDir` instead. This method will be removed in a future version.
 
-***
-
 #### getWorkDir()
 
 ```ts
-getWorkDir(): Promise<string>
+getWorkDir(): Promise<string>;
 ```
 
 Gets the working directory path inside the Sandbox.
@@ -534,12 +507,10 @@ const workDir = await sandbox.getWorkDir();
 console.log(`Sandbox working directory: ${workDir}`);
 ```
 
-***
-
 #### pause()
 
 ```ts
-pause(timeout?: number): Promise<void>
+pause(timeout?: number): Promise<void>;
 ```
 
 Pauses the Sandbox, freezing all running processes.
@@ -572,12 +543,10 @@ await sandbox.pause();
 console.log('Sandbox paused successfully');
 ```
 
-***
-
 #### recover()
 
 ```ts
-recover(timeout?: number): Promise<void>
+recover(timeout?: number): Promise<void>;
 ```
 
 Recover the Sandbox from a recoverable error and wait for it to be ready.
@@ -604,12 +573,10 @@ await sandbox.recover();
 console.log('Sandbox recovered successfully');
 ```
 
-***
-
 #### refreshActivity()
 
 ```ts
-refreshActivity(): Promise<void>
+refreshActivity(): Promise<void>;
 ```
 
 Refreshes the sandbox activity to reset the timer for automated lifecycle management actions.
@@ -628,12 +595,10 @@ It is useful for keeping long-running sessions alive while there is still user a
 await sandbox.refreshActivity();
 ```
 
-***
-
 #### refreshData()
 
 ```ts
-refreshData(): Promise<void>
+refreshData(): Promise<void>;
 ```
 
 Refreshes the Sandbox data from the API.
@@ -651,12 +616,10 @@ console.log(`State: ${sandbox.state}`);
 console.log(`Resources: ${sandbox.cpu} CPU, ${sandbox.memory} GiB RAM`);
 ```
 
-***
-
 #### resize()
 
 ```ts
-resize(resources: Pick<Resources, "cpu" | "memory" | "disk">, timeout?: number): Promise<void>
+resize(resources: Pick<Resources, "cpu" | "memory" | "disk">, timeout?: number): Promise<void>;
 ```
 
 Resizes the Sandbox resources.
@@ -691,12 +654,10 @@ await sandbox.stop()
 await sandbox.resize({ cpu: 2, memory: 4, disk: 30 })
 ```
 
-***
-
 #### revokeSshAccess()
 
 ```ts
-revokeSshAccess(token: string): Promise<void>
+revokeSshAccess(token: string): Promise<void>;
 ```
 
 Revokes an SSH access token for the sandbox.
@@ -710,12 +671,10 @@ Revokes an SSH access token for the sandbox.
 
 - `Promise<void>`
 
-***
-
 #### rotateSigningKey()
 
 ```ts
-rotateSigningKey(): Promise<void>
+rotateSigningKey(): Promise<void>;
 ```
 
 Rotates the sandbox signing key, invalidating all previously signed URLs.
@@ -724,12 +683,10 @@ Rotates the sandbox signing key, invalidating all previously signed URLs.
 
 - `Promise<void>`
 
-***
-
 #### setAutoArchiveInterval()
 
 ```ts
-setAutoArchiveInterval(interval: number): Promise<void>
+setAutoArchiveInterval(interval: number): Promise<void>;
 ```
 
 Set the auto-archive interval for the Sandbox.
@@ -759,12 +716,10 @@ await sandbox.setAutoArchiveInterval(60);
 await sandbox.setAutoArchiveInterval(0);
 ```
 
-***
-
 #### setAutoDeleteInterval()
 
 ```ts
-setAutoDeleteInterval(interval: number): Promise<void>
+setAutoDeleteInterval(interval: number): Promise<void>;
 ```
 
 Set the auto-delete interval for the Sandbox.
@@ -793,12 +748,10 @@ await sandbox.setAutoDeleteInterval(0);
 await sandbox.setAutoDeleteInterval(-1);
 ```
 
-***
-
 #### setAutoPauseInterval()
 
 ```ts
-setAutoPauseInterval(interval: number): Promise<void>
+setAutoPauseInterval(interval: number): Promise<void>;
 ```
 
 Set the auto-pause interval for the Sandbox.
@@ -835,12 +788,10 @@ await sandbox.setAutoPauseInterval(60);
 await sandbox.setAutoPauseInterval(0);
 ```
 
-***
-
 #### setAutostopInterval()
 
 ```ts
-setAutostopInterval(interval: number): Promise<void>
+setAutostopInterval(interval: number): Promise<void>;
 ```
 
 Set the auto-stop interval for the Sandbox.
@@ -872,12 +823,10 @@ await sandbox.setAutostopInterval(60);
 await sandbox.setAutostopInterval(0);
 ```
 
-***
-
 #### setLabels()
 
 ```ts
-setLabels(labels: Record<string, string>): Promise<Record<string, string>>
+setLabels(labels: Record<string, string>): Promise<Record<string, string>>;
 ```
 
 Sets labels for the Sandbox.
@@ -904,12 +853,10 @@ await sandbox.setLabels({
 });
 ```
 
-***
-
 #### setTtl()
 
 ```ts
-setTtl(ttlMinutes: number): Promise<void>
+setTtl(ttlMinutes: number): Promise<void>;
 ```
 
 Set the TTL (maximum time to live) for the Sandbox.
@@ -941,12 +888,10 @@ await sandbox.setTtl(60);
 await sandbox.setTtl(0);
 ```
 
-***
-
 #### start()
 
 ```ts
-start(timeout?: number): Promise<void>
+start(timeout?: number): Promise<void>;
 ```
 
 Start the Sandbox.
@@ -975,12 +920,10 @@ await sandbox.start(40);  // Wait up to 40 seconds
 console.log('Sandbox started successfully');
 ```
 
-***
-
 #### stop()
 
 ```ts
-stop(timeout?: number, force?: boolean): Promise<void>
+stop(timeout?: number, force?: boolean): Promise<void>;
 ```
 
 Stops the Sandbox.
@@ -1006,14 +949,12 @@ await sandbox.stop();
 console.log('Sandbox stopped successfully');
 ```
 
-***
-
 #### updateEnv()
 
 ```ts
 updateEnv(env: Record<string, string>, options?: {
-  unset: string[];
-}): Promise<void>
+  unset?: string[];
+}): Promise<void>;
 ```
 
 Updates the Sandbox daemon's process environment.
@@ -1040,12 +981,10 @@ processes keep their environment.
 await sandbox.updateEnv({ NODE_ENV: 'production' }, { unset: ['DEBUG'] });
 ```
 
-***
-
 #### updateNetworkSettings()
 
 ```ts
-updateNetworkSettings(settings: UpdateSandboxNetworkSettings): Promise<void>
+updateNetworkSettings(settings: UpdateSandboxNetworkSettings): Promise<void>;
 ```
 
 Updates outbound network policy for this sandbox on the runner (for example block all traffic,
@@ -1076,12 +1015,10 @@ await sandbox.updateNetworkSettings({ networkBlockAll: false });
 await sandbox.updateNetworkSettings({ domainAllowList: 'example.com,*.daytona.io' });
 ```
 
-***
-
 #### updateSecrets()
 
 ```ts
-updateSecrets(secrets: Record<string, string>): Promise<void>
+updateSecrets(secrets: Record<string, string>): Promise<void>;
 ```
 
 Replaces the set of vault secrets mounted in the Sandbox.
@@ -1114,12 +1051,10 @@ await sandbox.updateSecrets({ API_KEY: 'my-api-key', DB_PASSWORD: 'prod-db-passw
 await sandbox.updateSecrets({});
 ```
 
-***
-
 #### uploadUrl()
 
 ```ts
-uploadUrl(path: string, ttlSeconds?: number): Promise<string>
+uploadUrl(path: string, ttlSeconds?: number): Promise<string>;
 ```
 
 Creates a pre-signed URL for uploading a file to the Sandbox.
@@ -1146,12 +1081,10 @@ const url = await sandbox.uploadUrl('/home/user/data.bin')
 // curl -X POST -F "file=@local.bin" "$url"
 ```
 
-***
-
 #### validateSshAccess()
 
 ```ts
-validateSshAccess(token: string): Promise<SshAccessValidationDto>
+validateSshAccess(token: string): Promise<SshAccessValidationDto>;
 ```
 
 Validates an SSH access token for the sandbox.
@@ -1165,12 +1098,10 @@ Validates an SSH access token for the sandbox.
 
 - `Promise<SshAccessValidationDto>` - The SSH access validation result.
 
-***
-
 #### waitForResizeComplete()
 
 ```ts
-waitForResizeComplete(timeout?: number): Promise<void>
+waitForResizeComplete(timeout?: number): Promise<void>;
 ```
 
 Waits for the Sandbox resize operation to complete.
@@ -1190,12 +1121,10 @@ This method polls the Sandbox status until the state is no longer 'resizing'.
 
 - If the sandbox ends up in an error state or resize times out.
 
-***
-
 #### waitUntilStarted()
 
 ```ts
-waitUntilStarted(timeout?: number): Promise<void>
+waitUntilStarted(timeout?: number): Promise<void>;
 ```
 
 Waits for the Sandbox to reach the 'started' state.
@@ -1217,12 +1146,10 @@ or encounters an error.
 
 - `DaytonaError` - If the sandbox ends up in an error state or fails to start within the timeout period.
 
-***
-
 #### waitUntilStopped()
 
 ```ts
-waitUntilStopped(timeout?: number): Promise<void>
+waitUntilStopped(timeout?: number): Promise<void>;
 ```
 
 Wait for Sandbox to reach 'stopped' state.

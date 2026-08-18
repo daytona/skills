@@ -88,8 +88,8 @@ Sandboxes have **1 vCPU**, **1GB RAM**, and **3GiB disk** by default. Organizati
 
 1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
 2. Click <Button>Create Sandbox</Button>
-3. Enter a base **`image`**
-4. Set **`resources`** (**`cpu`**, **`memory`**, **`disk`**) to the values within your organization's limits
+3. Enter a base <Button>Image</Button> (e.g. **`ubuntu:22.04`**) as the source for the sandbox
+4. Set <Button>Resources</Button> (**`cpu`**, **`memory`**, **`disk`**) to the values within your organization's limits
 5. Click <Button>Create</Button>
 
 ```typescript
@@ -134,6 +134,19 @@ response = await sandbox.process.codeRun('console.log("Hello from JavaScript")')
 console.log(response.result)
 ```
 
+### Environment variables
+
+Create a sandbox with environment variables. Use [secrets](https://www.daytona.io/docs/en/secrets) for API keys, tokens, and passwords.
+
+```typescript
+import { Daytona } from '@daytona/sdk'
+
+const daytona = new Daytona()
+const sandbox = await daytona.create({
+  envVars: { DEBUG: 'true', LOG_LEVEL: 'info' },
+})
+```
+
 ### Regions
 
 Create a sandbox in a specific [region](./regions.md).
@@ -142,6 +155,11 @@ Create a sandbox in a specific [region](./regions.md).
 | ------------- | ---------- |
 | United States | **`us`**   |
 | Europe        | **`eu`**   |
+
+1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+2. Click <Button>Create Sandbox</Button>
+3. Set <Button>Region</Button> to the target region you want to create the sandbox in
+4. Click <Button>Create</Button>
 
 ```typescript
 import { Daytona } from '@daytona/sdk'
@@ -157,7 +175,7 @@ Daytona provides **VM sandboxes** for workloads that require a full virtual mach
 VM sandboxes are distinct from container sandboxes and support VM-only capabilities:
 
 - [Fork sandboxes](#fork-sandboxes)
-- [Pause/resume sandboxes](#pause--resume-sandboxes)
+- [Pause and resume sandboxes](#pause--resume-sandboxes)
 - [Create snapshot from sandbox](#create-snapshot-from-sandbox)
 > **Note: Limitations**
 > VM sandboxes can currently only be created from existing VM snapshots. Dynamic builds through the declarative builder are supported for container sandboxes only.
@@ -242,6 +260,8 @@ Daytona provides **GPU sandboxes** for workloads that require NVIDIA GPU acceler
 - **NVIDIA RTX 4090**
 - **NVIDIA RTX 5090**
 
+GPU sandboxes are on-demand. See [spot GPU sandboxes](#spot-gpu-sandboxes) for preemptible GPU capacity.
+
 > Due to possible events of temporary GPU scarcity, the target/region requested for GPU sandboxes is ignored by default. If you need access to a specific geographical location, contact us at support@daytona.io.
 
 **Create from snapshot:**
@@ -297,13 +317,71 @@ const sandbox = await daytona.create({
 });
 ```
 
+### Spot GPU sandboxes
+
+Spot GPU sandboxes are preemptible and run on GPU capacity that is not being used by reserved (on-demand) sandboxes. A spot GPU sandbox can be terminated at any time without notice when an on-demand GPU sandbox needs the capacity. Daytona does not send a preemption warning or a dedicated preemption webhook. Design workloads to tolerate immediate interruption.
+
+When a spot GPU sandbox is destroyed, normal [sandbox lifecycle state](#sandbox-lifecycle) updates still apply. Daytona records when the preemption occurred with a `spotEvictedAt` timestamp to identify sandboxes destroyed by spot GPU preemption. Sandboxes destroyed by spot GPU preemption remain retrievable for 24 hours.
+
+Spot GPU sandboxes do not count against the organization's GPU quota. Available GPU capacity is the only limit. If no spot GPU is available, create fails immediately.
+
+**Create from snapshot:**
+
+Create a spot GPU sandbox from a default `daytona-gpu` snapshot.
+
+```typescript
+import { Daytona } from "@daytona/sdk";
+
+const daytona = new Daytona()
+const sandbox = await daytona.create({
+  snapshot: "daytona-gpu",
+  autoDeleteInterval: 0,
+  spot: true,
+});
+```
+
+**Create with custom resources:**
+
+Create a spot GPU sandbox with custom GPU resources: units and types.
+
+1. Create a sandbox from an **`image`**
+2. Set the **`auto-delete interval`** to **`0`** (ephemeral)
+3. Set **`spot`** to **`true`**
+4. Set the **`GPU`** to the number of GPU units
+5. Specify the **`GPU type`**(s):
+
+    The GPU type field accepts a single value or an ordered list of preferred types.
+
+    Daytona uses the first available type in the order you provide. This lets you fall back from a preferred GPU to an alternative when the first choice is not available.
+
+    - **`H100`**
+    - **`H200`**
+    - **`RTX-PRO-6000`**
+    - **`RTX-4090`**
+    - **`RTX-5090`**
+
+```typescript
+import { Daytona, GpuType, Image } from "@daytona/sdk";
+
+const daytona = new Daytona()
+const sandbox = await daytona.create({
+  image: Image.debianSlim("3.12"),
+  autoDeleteInterval: 0,
+  spot: true,
+  resources: {
+    gpu: 1,
+    gpuType: [GpuType.H100, GpuType.RTX_PRO_6000],
+  },
+});
+```
+
 ## Ephemeral sandboxes
 
 Create an ephemeral sandbox. Ephemeral sandboxes are automatically deleted when stopped.
 
 1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
 2. Click <Button>Create Sandbox</Button>
-3. Set **Ephemeral** to **`True`** or set the [auto-delete interval](#auto-delete-interval) to **`0`**
+3. Set <Button>Ephemeral</Button> or set the [auto-delete interval](#auto-delete-interval) to **`0`**
 4. Click <Button>Create</Button>
 
 ```typescript
@@ -551,7 +629,7 @@ Delete a sandbox.
 By default `delete` is fire-and-forget: it returns as soon as the API accepts the deletion request, without waiting for the sandbox to be destroyed. Pass the `wait` flag to block until the sandbox reaches the destroyed state.
 
 1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
-2. Click the <Button>Delete</Button> button next to the sandbox you want to delete.
+2. Click <Button>Delete</Button> next to the sandbox you want to delete.
 
 ```typescript
 await sandbox.delete()

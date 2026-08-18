@@ -45,7 +45,7 @@ await ptyHandle.disconnect();
 ##### Get Signature
 
 ```ts
-get error(): string
+get error(): string;
 ```
 
 Error message if the PTY failed
@@ -54,14 +54,12 @@ Error message if the PTY failed
 
 - `string`
 
-***
-
 #### exitCode
 
 ##### Get Signature
 
 ```ts
-get exitCode(): number
+get exitCode(): number;
 ```
 
 Exit code of the PTY process (if terminated)
@@ -72,7 +70,7 @@ Exit code of the PTY process (if terminated)
 
 ### Constructors
 
-#### new PtyHandle()
+#### Constructor
 
 ```ts
 new PtyHandle(
@@ -80,7 +78,7 @@ new PtyHandle(
    handleResize: (cols: number, rows: number) => Promise<PtySessionInfo>,
    handleKill: () => Promise<void>,
    onPty: (data: Uint8Array) => void | Promise<void>,
-   sessionId: string): PtyHandle
+   sessionId: string): PtyHandle;
 ```
 
 **Parameters**:
@@ -101,7 +99,7 @@ new PtyHandle(
 #### disconnect()
 
 ```ts
-disconnect(): Promise<void>
+disconnect(): Promise<void>;
 ```
 
 Disconnect from the PTY session and clean up resources.
@@ -124,12 +122,10 @@ try {
 }
 ```
 
-***
-
 #### isConnected()
 
 ```ts
-isConnected(): boolean
+isConnected(): boolean;
 ```
 
 Check if connected to the PTY session
@@ -138,12 +134,10 @@ Check if connected to the PTY session
 
 - `boolean`
 
-***
-
 #### kill()
 
 ```ts
-kill(): Promise<void>
+kill(): Promise<void>;
 ```
 
 Kill the PTY process and terminate the session.
@@ -170,12 +164,10 @@ const result = await ptyHandle.wait();
 console.log(`Process terminated with exit code: ${result.exitCode}`);
 ```
 
-***
-
 #### resize()
 
 ```ts
-resize(cols: number, rows: number): Promise<PtySessionInfo>
+resize(cols: number, rows: number): Promise<PtySessionInfo>;
 ```
 
 Resize the PTY terminal dimensions.
@@ -200,12 +192,10 @@ about the new dimensions via SIGWINCH signal.
 await ptyHandle.resize(120, 30);
 ```
 
-***
-
 #### sendInput()
 
 ```ts
-sendInput(data: string | Uint8Array<ArrayBufferLike>): Promise<void>
+sendInput(data: string | Uint8Array<ArrayBufferLike>): Promise<void>;
 ```
 
 Send input data to the PTY session.
@@ -215,7 +205,7 @@ processed as if it was typed in the terminal.
 
 **Parameters**:
 
-- `data` _Input data to send \(commands, keystrokes, etc.\)_ - `string` | `Uint8Array`\<`ArrayBufferLike`\>
+- `data` _string \| Uint8Array\<ArrayBufferLike\>_ - Input data to send (commands, keystrokes, etc.)
 
 
 **Returns**:
@@ -236,12 +226,10 @@ await ptyHandle.sendInput('ls -la\n');
 await ptyHandle.sendInput(new Uint8Array([3])); // Ctrl+C
 ```
 
-***
-
 #### wait()
 
 ```ts
-wait(): Promise<PtyResult>
+wait(): Promise<PtyResult>;
 ```
 
 Wait for the PTY process to exit and return the result.
@@ -269,12 +257,10 @@ if (result.exitCode === 0) {
 }
 ```
 
-***
-
 #### waitForConnection()
 
 ```ts
-waitForConnection(): Promise<void>
+waitForConnection(): Promise<void>;
 ```
 
 Wait for the WebSocket connection to be established.

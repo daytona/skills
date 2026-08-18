@@ -25,10 +25,10 @@ Parameters for code execution.
 
 ### Constructors
 
-#### new CodeRunParams()
+#### Constructor
 
 ```ts
-new CodeRunParams(): CodeRunParams
+new CodeRunParams(): CodeRunParams;
 ```
 
 **Returns**:
@@ -40,7 +40,7 @@ Handles process and code execution within a Sandbox.
 
 ### Constructors
 
-#### new Process()
+#### Constructor
 
 ```ts
 new Process(
@@ -48,7 +48,7 @@ new Process(
    apiClient: ProcessApi,
    getPreviewToken: () => Promise<string>,
    language?: string,
-   requestTimeoutMs?: number): Process
+   requestTimeoutMs?: number): Process;
 ```
 
 **Parameters**:
@@ -72,7 +72,7 @@ new Process(
 codeRun(
    code: string,
    params?: CodeRunParams,
-timeout?: number): Promise<ExecuteResponse>
+timeout?: number): Promise<ExecuteResponse>;
 ```
 
 Executes code in the Sandbox using the appropriate language runtime.
@@ -144,12 +144,10 @@ if (response.artifacts?.charts) {
 }
 ```
 
-***
-
 #### connectPty()
 
 ```ts
-connectPty(sessionId: string, options?: PtyConnectOptions): Promise<PtyHandle>
+connectPty(sessionId: string, options?: PtyConnectOptions): Promise<PtyHandle>;
 ```
 
 Connect to an existing PTY session in the sandbox.
@@ -195,12 +193,10 @@ console.log(`Session exited with code: ${result.exitCode}`);
 await handle.disconnect();
 ```
 
-***
-
 #### createPty()
 
 ```ts
-createPty(options?: PtyCreateOptions & PtyConnectOptions): Promise<PtyHandle>
+createPty(options?: PtyCreateOptions & PtyConnectOptions): Promise<PtyHandle>;
 ```
 
 Create a new PTY (pseudo-terminal) session in the sandbox.
@@ -250,12 +246,10 @@ console.log(`PTY session completed with exit code: ${result.exitCode}`);
 await ptyHandle.disconnect();
 ```
 
-***
-
 #### createSession()
 
 ```ts
-createSession(sessionId: string): Promise<void>
+createSession(sessionId: string): Promise<void>;
 ```
 
 Creates a new long-running background session in the Sandbox.
@@ -284,12 +278,10 @@ const session = await process.getSession(sessionId);
 await process.deleteSession(sessionId);
 ```
 
-***
-
 #### deleteSession()
 
 ```ts
-deleteSession(sessionId: string): Promise<void>
+deleteSession(sessionId: string): Promise<void>;
 ```
 
 Delete a session from the Sandbox.
@@ -310,8 +302,6 @@ Delete a session from the Sandbox.
 await process.deleteSession('my-session');
 ```
 
-***
-
 #### executeCommand()
 
 ```ts
@@ -319,7 +309,7 @@ executeCommand(
    command: string,
    cwd?: string,
    env?: Record<string, string>,
-timeout?: number): Promise<ExecuteResponse>
+timeout?: number): Promise<ExecuteResponse>;
 ```
 
 Executes a shell command in the Sandbox.
@@ -359,15 +349,13 @@ const result = await process.executeCommand('ls', 'workspace/src');
 const result = await process.executeCommand('sleep 10', undefined, 5);
 ```
 
-***
-
 #### executeSessionCommand()
 
 ```ts
 executeSessionCommand(
    sessionId: string,
    req: SessionExecuteRequest,
-timeout?: number): Promise<SessionExecuteResponse>
+timeout?: number): Promise<SessionExecuteResponse>;
 ```
 
 Executes a command in an existing session.
@@ -410,14 +398,12 @@ console.log('[STDOUT]:', result.stdout);
 console.log('[STDERR]:', result.stderr);
 ```
 
-***
-
 #### getEntrypointLogs()
 
 ##### Call Signature
 
 ```ts
-getEntrypointLogs(): Promise<SessionCommandLogsResponse>
+getEntrypointLogs(): Promise<SessionCommandLogsResponse>;
 ```
 
 Get the logs for the sandbox entrypoint session.
@@ -437,7 +423,7 @@ console.log('[STDERR]:', logs.stderr);
 ##### Call Signature
 
 ```ts
-getEntrypointLogs(onStdout: (chunk: string) => void, onStderr: (chunk: string) => void): Promise<void>
+getEntrypointLogs(onStdout: (chunk: string) => void, onStderr: (chunk: string) => void): Promise<void>;
 ```
 
 Asynchronously retrieve and process the logs for the entrypoint session as they become available.
@@ -461,12 +447,10 @@ const logs = await process.getEntrypointLogs((chunk) => {
 });
 ```
 
-***
-
 #### getEntrypointSession()
 
 ```ts
-getEntrypointSession(): Promise<Session>
+getEntrypointSession(): Promise<Session>;
 ```
 
 Get the sandbox entrypoint session
@@ -486,12 +470,10 @@ session.commands.forEach(cmd => {
 });
 ```
 
-***
-
 #### getPtySessionInfo()
 
 ```ts
-getPtySessionInfo(sessionId: string): Promise<PtySessionInfo>
+getPtySessionInfo(sessionId: string): Promise<PtySessionInfo>;
 ```
 
 Get detailed information about a specific PTY session.
@@ -528,12 +510,10 @@ if (session.processId) {
 }
 ```
 
-***
-
 #### getSession()
 
 ```ts
-getSession(sessionId: string): Promise<Session>
+getSession(sessionId: string): Promise<Session>;
 ```
 
 Get a session in the sandbox.
@@ -558,12 +538,10 @@ session.commands.forEach(cmd => {
 });
 ```
 
-***
-
 #### getSessionCommand()
 
 ```ts
-getSessionCommand(sessionId: string, commandId: string): Promise<Command>
+getSessionCommand(sessionId: string, commandId: string): Promise<Command>;
 ```
 
 Gets information about a specific command executed in a session.
@@ -590,14 +568,12 @@ if (cmd.exitCode === 0) {
 }
 ```
 
-***
-
 #### getSessionCommandLogs()
 
 ##### Call Signature
 
 ```ts
-getSessionCommandLogs(sessionId: string, commandId: string): Promise<SessionCommandLogsResponse>
+getSessionCommandLogs(sessionId: string, commandId: string): Promise<SessionCommandLogsResponse>;
 ```
 
 Get the logs for a command executed in a session.
@@ -626,7 +602,7 @@ getSessionCommandLogs(
    sessionId: string,
    commandId: string,
    onStdout: (chunk: string) => void,
-onStderr: (chunk: string) => void): Promise<void>
+onStderr: (chunk: string) => void): Promise<void>;
 ```
 
 Asynchronously retrieve and process the logs for a command executed in a session as they become available.
@@ -652,12 +628,10 @@ const logs = await process.getSessionCommandLogs('my-session', 'cmd-123', (chunk
 });
 ```
 
-***
-
 #### killPtySession()
 
 ```ts
-killPtySession(sessionId: string): Promise<void>
+killPtySession(sessionId: string): Promise<void>;
 ```
 
 Kill a PTY session and terminate its associated process.
@@ -697,12 +671,10 @@ try {
 }
 ```
 
-***
-
 #### listPtySessions()
 
 ```ts
-listPtySessions(): Promise<PtySessionInfo[]>
+listPtySessions(): Promise<PtySessionInfo[]>;
 ```
 
 List all PTY sessions in the sandbox.
@@ -729,12 +701,10 @@ for (const session of sessions) {
 }
 ```
 
-***
-
 #### listSessions()
 
 ```ts
-listSessions(): Promise<Session[]>
+listSessions(): Promise<Session[]>;
 ```
 
 Lists all active sessions in the Sandbox.
@@ -755,15 +725,13 @@ sessions.forEach(session => {
 });
 ```
 
-***
-
 #### resizePtySession()
 
 ```ts
 resizePtySession(
    sessionId: string,
    cols: number,
-rows: number): Promise<PtySessionInfo>
+rows: number): Promise<PtySessionInfo>;
 ```
 
 Resize a PTY session's terminal dimensions.
@@ -803,15 +771,13 @@ console.log(`Terminal resized to ${updatedInfo.cols}x${updatedInfo.rows}`);
 await ptyHandle.resize(150, 40); // cols, rows
 ```
 
-***
-
 #### sendSessionCommandInput()
 
 ```ts
 sendSessionCommandInput(
    sessionId: string,
    commandId: string,
-data: string): Promise<void>
+data: string): Promise<void>;
 ```
 
 Sends input data to a command executed in a session.

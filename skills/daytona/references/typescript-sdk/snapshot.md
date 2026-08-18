@@ -1,6 +1,7 @@
 ## Contents
 
 - SnapshotService
+- ListSnapshotsQuery
 - PaginatedSnapshots
 - CreateSnapshotParams
 - Snapshot
@@ -15,14 +16,14 @@ Service for managing Daytona Snapshots. Can be used to list, get, create and del
 
 ### Constructors
 
-#### new SnapshotService()
+#### Constructor
 
 ```ts
 new SnapshotService(
    clientConfig: Configuration,
    snapshotsApi: SnapshotsApi,
    objectStorageApi: ObjectStorageApi,
-   defaultRegionId?: string): SnapshotService
+   defaultRegionId?: string): SnapshotService;
 ```
 
 **Parameters**:
@@ -42,29 +43,27 @@ new SnapshotService(
 #### activate()
 
 ```ts
-activate(snapshot: Snapshot): Promise<Snapshot>
+activate(snapshot: string | Snapshot): Promise<Snapshot>;
 ```
 
 Activates a snapshot.
 
 **Parameters**:
 
-- `snapshot` _Snapshot_ - Snapshot to activate
+- `snapshot` _string \| Snapshot_ - Snapshot to activate, or its ID or name
 
 
 **Returns**:
 
 - `Promise<Snapshot>` - The activated Snapshot instance
 
-***
-
 #### create()
 
 ```ts
-create(params: CreateSnapshotParams, options: {
-  onLogs: (chunk: string) => void;
-  timeout: number;
-}): Promise<Snapshot>
+create(params: CreateSnapshotParams, options?: {
+  onLogs?: (chunk: string) => void;
+  timeout?: number;
+}): Promise<Snapshot>;
 ```
 
 Creates and registers a new snapshot from the given Image definition.
@@ -72,7 +71,7 @@ Creates and registers a new snapshot from the given Image definition.
 **Parameters**:
 
 - `params` _CreateSnapshotParams_ - Parameters for snapshot creation.
-- `options` _Options for the create operation._
+- `options?` _Options for the create operation._
 - `onLogs?` _\(chunk: string\) =\> void_ - This callback function handles snapshot creation logs.
 - `timeout?` _number_ - Default is no timeout. Timeout in seconds (0 means no timeout).
 
@@ -88,19 +87,17 @@ const image = Image.debianSlim('3.12').pipInstall('numpy');
 await daytona.snapshot.create({ name: 'my-snapshot', image: image }, { onLogs: console.log });
 ```
 
-***
-
 #### delete()
 
 ```ts
-delete(snapshot: Snapshot): Promise<void>
+delete(snapshot: string | Snapshot): Promise<void>;
 ```
 
 Deletes a Snapshot.
 
 **Parameters**:
 
-- `snapshot` _Snapshot_ - Snapshot to delete
+- `snapshot` _string \| Snapshot_ - Snapshot to delete, or its ID or name
 
 
 **Returns**:
@@ -115,24 +112,21 @@ If the Snapshot does not exist or cannot be deleted
 
 ```ts
 const daytona = new Daytona();
-const snapshot = await daytona.snapshot.get("snapshot-name");
-await daytona.snapshot.delete(snapshot);
+await daytona.snapshot.delete("snapshot-name");
 console.log("Snapshot deleted successfully");
 ```
-
-***
 
 #### get()
 
 ```ts
-get(name: string): Promise<Snapshot>
+get(idOrName: string): Promise<Snapshot>;
 ```
 
-Gets a Snapshot by its name.
+Gets a Snapshot by its ID or name.
 
 **Parameters**:
 
-- `name` _string_ - Name of the Snapshot to retrieve
+- `idOrName` _string_ - ID or name of the Snapshot to retrieve
 
 
 **Returns**:
@@ -151,21 +145,19 @@ const snapshot = await daytona.snapshot.get("snapshot-name");
 console.log(`Snapshot ${snapshot.name} is in state ${snapshot.state}`);
 ```
 
-***
-
 #### list()
 
+##### Call Signature
+
 ```ts
-list(page?: number, limit?: number): Promise<PaginatedSnapshots>
+list(query?: ListSnapshotsQuery): Promise<PaginatedSnapshots>;
 ```
 
 List paginated list of Snapshots.
 
 **Parameters**:
 
-- `page?` _number_ - Page number for pagination (starting from 1)
-- `limit?` _number_ - Maximum number of items per page
-
+- `query?` _ListSnapshotsQuery_ - Pagination and filter options
 
 **Returns**:
 
@@ -175,14 +167,42 @@ List paginated list of Snapshots.
 
 ```ts
 const daytona = new Daytona();
-const { items, total, page: currentPage, totalPages } = await daytona.snapshot.list(2, 10);
+const { items, total, page: currentPage, totalPages } = await daytona.snapshot.list({ page: 2, limit: 10 });
 console.log(`Page ${currentPage} of ${totalPages} (${total} snapshots total)`);
 items.forEach(snapshot => console.log(`${snapshot.name} (${snapshot.imageName})`));
 ```
 
+##### Call Signature
+
+```ts
+list(page?: number, limit?: number): Promise<PaginatedSnapshots>;
+```
+
+List paginated list of Snapshots.
+
+**Parameters**:
+
+- `page?` _number_ - Page number for pagination (starting from 1)
+- `limit?` _number_ - Maximum number of items per page
+
+**Returns**:
+
+- `Promise<PaginatedSnapshots>` - Paginated list of Snapshots
+
+###### Deprecated
+
+Use `list(query)` with a ListSnapshotsQuery object instead.
+
 ***
 
 
+## ListSnapshotsQuery
+
+**Properties**:
+
+- `limit?` _number_ - Maximum number of items per page
+- `page?` _number_ - Page number for pagination (starting from 1)
+- `sourceSandboxId?` _string_ - Filter by the ID of the sandbox the snapshot was created from
 ## PaginatedSnapshots
 
 Represents a paginated list of Daytona Snapshots.
@@ -206,27 +226,28 @@ Represents a paginated list of Daytona Snapshots.
 
 ```ts
 type CreateSnapshotParams = {
-  entrypoint: string[];
+  entrypoint?: string[];
   image: string | Image;
   name: string;
-  regionId: string;
-  resources: Resources;
-  sandboxClass: SandboxClass;
+  regionId?: string;
+  resources?: Resources;
+  sandboxClass?: SandboxClass;
 };
 ```
 
+**Properties**:
+
+- `entrypoint?` _string\[\]_ - Entrypoint of the snapshot.
+- `image` _string \| Image_ - Image of the snapshot. If a string is provided, it should be available on some registry.
+    If an Image instance is provided, it will be used to create a new image in Daytona.
+- `name` _string_ - Name of the snapshot.
+- `regionId?` _string_ - ID of the region where the snapshot will be available. Defaults to organization default region if not specified.
+- `resources?` _Resources_ - Resources of the snapshot.
+- `sandboxClass?` _SandboxClass_ - Target sandbox class. Determines which runners can host sandboxes created from this snapshot.
+
+
+
 Parameters for creating a new snapshot.
-
-**Type declaration**:
-
-- `entrypoint?` _string\[\]_
-- `image` _string \| Image_
-- `name` _string_
-- `regionId?` _string_
-- `resources?` _Resources_
-- `sandboxClass?` _SandboxClass_
-
-
 ## Snapshot
 
 ```ts
@@ -237,9 +258,13 @@ type Snapshot = SnapshotDto & {
 
 Represents a Daytona Snapshot which is a pre-configured sandbox.
 
-**Type declaration**:
+### Type Declaration
 
-- `\_\_brand` _"Snapshot"_
+#### \_\_brand
+
+```ts
+__brand: "Snapshot";
+```
 
 ## See Also
 - [Python SDK - snapshot](../python-sdk/sync/snapshot.md)

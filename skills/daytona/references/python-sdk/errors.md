@@ -22,6 +22,8 @@
 - DaytonaGitPushRejectedError
 - DaytonaGitDirtyWorktreeError
 - DaytonaGitMergeConflictError
+- DaytonaGitTransportFailedError
+- DaytonaGitRemoteRejectedError
 - DaytonaFileNotFoundError
 - DaytonaFileAccessDeniedError
 - DaytonaInvalidFilePathError
@@ -368,6 +370,22 @@ class DaytonaGitMergeConflictError(DaytonaConflictError)
 ```
 
 Git merge has conflicts that need manual resolution.
+
+## DaytonaGitTransportFailedError
+
+```python
+class DaytonaGitTransportFailedError(DaytonaBadGatewayError)
+```
+
+The git remote was unreachable (DNS, TLS, connection or timeout failure).
+
+## DaytonaGitRemoteRejectedError
+
+```python
+class DaytonaGitRemoteRejectedError(DaytonaUnprocessableEntityError)
+```
+
+The git remote rejected the operation (hooks, branch protection or quota).
 
 ## DaytonaFileNotFoundError
 

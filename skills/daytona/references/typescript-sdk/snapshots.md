@@ -439,7 +439,7 @@ Snapshots automatically become inactive after 2 weeks of not being used.
 
 1. Go to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
 2. Click the three dots at the end of the row for the snapshot you want to activate
-3. Click the <Button>Activate</Button> button
+3. Click <Button>Activate</Button>
 
 ```typescript
 await daytona.snapshot.activate("my-awesome-snapshot")
@@ -453,7 +453,7 @@ Deactivated snapshots are not available for new sandboxes. Deactivating a snapsh
 
 1. Go to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
 2. Click the three dots at the end of the row for the snapshot you want to deactivate
-3. Click the <Button>Deactivate</Button> button
+3. Click <Button>Deactivate</Button>
 
 ## Delete snapshots
 
@@ -463,7 +463,7 @@ Deleted snapshots cannot be recovered. Deleting a snapshot also deletes its [war
 
 1. Go to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
 2. Click the three dots at the end of the row for the snapshot you want to delete
-3. Click the <Button>Delete</Button> button
+3. Click <Button>Delete</Button>
 
 ```typescript
 await daytona.snapshot.delete(await daytona.snapshot.get("my-awesome-snapshot"))

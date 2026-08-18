@@ -25,6 +25,7 @@
 - DELETE `/organizations/{organizationId}/otel-config`/otel-config}
 - POST `/organizations/{organizationId}/sandbox-default-limited-network-egress`/sandbox-default-limited-network-egress}
 - POST `/organizations/{organizationId}/preview-warning`/preview-warning}
+- POST `/organizations/{organizationId}/sso-enabled`/sso-enabled}
 - PUT `/organizations/{organizationId}/experimental-config`/experimental-config}
 - GET `/organizations/{organizationId}/roles`/roles}
 - POST `/organizations/{organizationId}/roles`/roles}
@@ -45,6 +46,12 @@
 - POST `/regions/{id}/regenerate-proxy-api-key`/regenerate-proxy-api-key}
 - POST `/regions/{id}/regenerate-ssh-gateway-api-key`/regenerate-ssh-gateway-api-key}
 - POST `/regions/{id}/regenerate-snapshot-manager-credentials`/regenerate-snapshot-manager-credentials}
+- GET `/organizations/{organizationId}/identity-providers`/identity-providers}
+- POST `/organizations/{organizationId}/identity-providers`/identity-providers}
+- GET `/organizations/{organizationId}/identity-providers/{id}`/identity-providers/{id}}
+- PATCH `/organizations/{organizationId}/identity-providers/{id}`/identity-providers/{id}}
+- DELETE `/organizations/{organizationId}/identity-providers/{id}`/identity-providers/{id}}
+- POST `/organizations/{organizationId}/identity-providers/test-connection`/identity-providers/test-connection}
 
 ## GET `/organizations/invitations` {#daytona/tag/organizations/GET/organizations/invitations}
 
@@ -308,6 +315,7 @@ Schema: **UpdateOrganizationRegionQuota**
 | `maxCpuPerGpu` | number | No | CPU maximum per requested GPU unit for GPU sandboxes. |
 | `maxMemoryPerGpu` | number | No | Memory maximum per requested GPU unit for GPU sandboxes. |
 | `maxDiskPerGpu` | number | No | Disk maximum per requested GPU unit for GPU sandboxes. |
+| `maxSandboxLifespan` | number | No | Maximum sandbox lifespan in minutes, measured from sandbox creation to its auto-destroy deadline. If null or 0, lifespan is unrestricted. When set, sandboxes created without a TTL default to this lifespan and TTL cannot be disabled. |
 
 ### Responses
 
@@ -512,6 +520,32 @@ Schema: **OrganizationPreviewWarning**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 204 | Preview warning updated successfully |  |
+
+---
+
+## POST `/organizations/{organizationId}/sso-enabled` {#daytona/tag/organizations/POST/organizations/{organizationId}/sso-enabled}
+
+**Update organization SSO entitlement**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `organizationId` | path | string | Yes | Organization ID |
+
+### Request Body
+
+Schema: **OrganizationSsoEnabled**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `ssoEnabled` | boolean | Yes | Whether this organization may configure SSO identity providers |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 204 | SSO entitlement updated successfully |  |
 
 ---
 
@@ -830,6 +864,7 @@ Schema: **CreateRegion**
 | `proxyUrl` | string | No | Proxy URL for the region |
 | `sshGatewayUrl` | string | No | SSH Gateway URL for the region |
 | `snapshotManagerUrl` | string | No | Snapshot Manager URL for the region |
+| `otelEndpoint` | string | No | OTel collector endpoint for sandboxes created in this region. When set, sandbox OTel data is sent to this endpoint instead of the Daytona-hosted collector and will not be available in the Daytona analytics API or dashboard. |
 
 ### Responses
 
@@ -878,6 +913,7 @@ Schema: **UpdateRegion**
 | `proxyUrl` | string | No | Proxy URL for the region |
 | `sshGatewayUrl` | string | No | SSH Gateway URL for the region |
 | `snapshotManagerUrl` | string | No | Snapshot Manager URL for the region |
+| `otelEndpoint` | string | No | OTel collector endpoint for sandboxes created in this region. When set, sandbox OTel data is sent to this endpoint instead of the Daytona-hosted collector and will not be available in the Daytona analytics API or dashboard. |
 
 ### Responses
 
@@ -960,5 +996,152 @@ Schema: **UpdateRegion**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | The snapshot manager credentials have been successfully regenerated. | SnapshotManagerCredentials |
+
+---
+
+## GET `/organizations/{organizationId}/identity-providers` {#daytona/tag/organizations/GET/organizations/{organizationId}/identity-providers}
+
+**List organization identity providers**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `organizationId` | path | string | Yes | Organization ID |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | List of identity providers | array of IdentityProvider |
+
+---
+
+## POST `/organizations/{organizationId}/identity-providers` {#daytona/tag/organizations/POST/organizations/{organizationId}/identity-providers}
+
+**Create organization identity provider**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `organizationId` | path | string | Yes | Organization ID |
+
+### Request Body
+
+Schema: **CreateIdentityProvider**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | Yes | Display name for the identity provider |
+| `oidcConfig` | object | Yes | OIDC configuration |
+| `emailDomains` | array of string | Yes | Email domains used for IdP discovery on the login form and to validate the user identity returned by the IdP. Required and must be non-empty unless `allowAnyDomain` is true. |
+| `allowAnyDomain` | boolean | No | When true, the IdP accepts any email domain returned by the external provider. Disables the post-callback domain check and allows `emailDomains` to be empty. Only enable for trusted IdPs that strictly control which users can authenticate. |
+| `trustEmailVerified` | boolean | No | When true, skip the `email_verified` claim check on SSO logins through this identity provider. Only intended for providers that never emit the claim (e.g. Microsoft Entra ID). Risky: only enable if the IdP strictly controls its users' email addresses. |
+| `defaultAssignedRoleIds` | array of string | No | Organization role IDs assigned to users who join the organization via SSO through this identity provider. Roles must be global or belong to this organization. Empty (default) grants the lowest access: membership with no resource permissions. |
+| `enabled` | boolean | No | Whether the identity provider is enabled |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 201 | Identity provider created successfully | IdentityProvider |
+
+---
+
+## GET `/organizations/{organizationId}/identity-providers/{id}` {#daytona/tag/organizations/GET/organizations/{organizationId}/identity-providers/{id}}
+
+**Get organization identity provider**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `organizationId` | path | string | Yes | Organization ID |
+| `id` | path | string | Yes | Identity provider ID |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Identity provider details | IdentityProvider |
+
+---
+
+## PATCH `/organizations/{organizationId}/identity-providers/{id}` {#daytona/tag/organizations/PATCH/organizations/{organizationId}/identity-providers/{id}}
+
+**Update organization identity provider**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `organizationId` | path | string | Yes | Organization ID |
+| `id` | path | string | Yes | Identity provider ID |
+
+### Request Body
+
+Schema: **UpdateIdentityProvider**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | No | Display name for the identity provider |
+| `oidcConfig` | object | No | OIDC configuration |
+| `emailDomains` | array of string | No | Email domains used for IdP discovery on the login form and to validate the user identity returned by the IdP. If provided and `allowAnyDomain` is not being set to true, must contain at least one domain. To clear domains in the same request, set `allowAnyDomain: true` and `emailDomains: []`. |
+| `allowAnyDomain` | boolean | No | When true, the IdP accepts any email domain returned by the external provider. Disables the post-callback domain check and allows `emailDomains` to be empty. Only enable for trusted IdPs that strictly control which users can authenticate. |
+| `trustEmailVerified` | boolean | No | When true, skip the `email_verified` claim check on SSO logins through this identity provider. Only intended for providers that never emit the claim (e.g. Microsoft Entra ID). Risky: only enable if the IdP strictly controls its users' email addresses. |
+| `defaultAssignedRoleIds` | array of string | No | Organization role IDs assigned to users who join the organization via SSO through this identity provider. Roles must be global or belong to this organization. Empty grants the lowest access: membership with no resource permissions. |
+| `enabled` | boolean | No | Whether the identity provider is enabled |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Identity provider updated successfully | IdentityProvider |
+
+---
+
+## DELETE `/organizations/{organizationId}/identity-providers/{id}` {#daytona/tag/organizations/DELETE/organizations/{organizationId}/identity-providers/{id}}
+
+**Delete organization identity provider**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `organizationId` | path | string | Yes | Organization ID |
+| `id` | path | string | Yes | Identity provider ID |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 204 | Identity provider deleted successfully |  |
+
+---
+
+## POST `/organizations/{organizationId}/identity-providers/test-connection` {#daytona/tag/organizations/POST/organizations/{organizationId}/identity-providers/test-connection}
+
+**Test OIDC identity provider connection**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `organizationId` | path | string | Yes | Organization ID |
+
+### Request Body
+
+Schema: **TestIdentityProviderConnection**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `issuerUrl` | string | Yes | OIDC Issuer URL to test |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Connection test result | TestIdentityProviderConnectionResponse |
 
 ---

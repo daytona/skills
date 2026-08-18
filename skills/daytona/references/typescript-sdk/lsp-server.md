@@ -15,13 +15,13 @@ IDE-like features such as code completion, symbol search, and more.
 
 ### Constructors
 
-#### new LspServer()
+#### Constructor
 
 ```ts
 new LspServer(
    languageId: LspLanguageId,
    pathToProject: string,
-   apiClient: LspApi): LspServer
+   apiClient: LspApi): LspServer;
 ```
 
 **Parameters**:
@@ -40,7 +40,7 @@ new LspServer(
 #### completions()
 
 ```ts
-completions(path: string, position: Position): Promise<CompletionList>
+completions(path: string, position: Position): Promise<CompletionList>;
 ```
 
 Gets completion suggestions at a position in a file.
@@ -78,12 +78,10 @@ completions.items.forEach(item => {
 });
 ```
 
-***
-
 #### didClose()
 
 ```ts
-didClose(path: string): Promise<void>
+didClose(path: string): Promise<void>;
 ```
 
 Notifies the language server that a file has been closed, should be called when a file is closed
@@ -106,12 +104,10 @@ in the editor to allow the language server to clean up any resources associated 
 await lsp.didClose('workspace/project/src/index.ts');
 ```
 
-***
-
 #### didOpen()
 
 ```ts
-didOpen(path: string): Promise<void>
+didOpen(path: string): Promise<void>;
 ```
 
 Notifies the language server that a file has been opened, enabling
@@ -135,12 +131,10 @@ await lsp.didOpen('workspace/project/src/index.ts');
 // Now can get completions, symbols, etc. for this file
 ```
 
-***
-
 #### documentSymbols()
 
 ```ts
-documentSymbols(path: string): Promise<LspSymbol[]>
+documentSymbols(path: string): Promise<LspSymbol[]>;
 ```
 
 Get symbol information (functions, classes, variables, etc.) from a document.
@@ -168,12 +162,10 @@ symbols.forEach(symbol => {
 });
 ```
 
-***
-
 #### sandboxSymbols()
 
 ```ts
-sandboxSymbols(query: string): Promise<LspSymbol[]>
+sandboxSymbols(query: string): Promise<LspSymbol[]>;
 ```
 
 Searches for symbols matching the query string across the entire Sandbox.
@@ -200,12 +192,10 @@ symbols.forEach(symbol => {
 });
 ```
 
-***
-
 #### start()
 
 ```ts
-start(): Promise<void>
+start(): Promise<void>;
 ```
 
 Starts the language server, must be called before using any other LSP functionality.
@@ -223,12 +213,10 @@ await lsp.start();  // Initialize the server
 // Now ready for LSP operations
 ```
 
-***
-
 #### stop()
 
 ```ts
-stop(): Promise<void>
+stop(): Promise<void>;
 ```
 
 Stops the language server, should be called when the LSP server is no longer needed to
@@ -245,12 +233,10 @@ free up system resources.
 await lsp.stop();  // Clean up resources
 ```
 
-***
-
 #### ~~workspaceSymbols()~~
 
 ```ts
-workspaceSymbols(query: string): Promise<LspSymbol[]>
+workspaceSymbols(query: string): Promise<LspSymbol[]>;
 ```
 
 Searches for symbols matching the query string across the entire Sandbox.

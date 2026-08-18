@@ -289,6 +289,17 @@ Returns Secret management service.
 
 - `SecretService` - secret service instance
 
+#### warmPool()
+```java
+public WarmPoolService warmPool()
+```
+
+Returns Warm Pool management service.
+
+**Returns**:
+
+- `WarmPoolService` - warm pool service instance
+
 #### close()
 ```java
 public void close()

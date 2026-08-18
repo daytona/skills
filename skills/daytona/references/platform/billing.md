@@ -36,7 +36,7 @@ Redeem coupon to add credits to your wallet.
 
 1. Go to [Daytona Wallet ↗](https://app.daytona.io/dashboard/billing/wallet)
 2. Enter the coupon code in the **Redeem coupon** input field
-3. Click the <Button>Redeem</Button> button to redeem the coupon code
+3. Click <Button>Redeem</Button> to redeem the coupon code
 
 ### Balances
 

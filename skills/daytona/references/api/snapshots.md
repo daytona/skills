@@ -24,6 +24,7 @@
 | `page` | query | number | No | Page number of the results |
 | `limit` | query | number | No | Number of results per page |
 | `name` | query | string | No | Filter by partial name match |
+| `sourceSandboxId` | query | string | No | Filter by the ID of the sandbox the snapshot was created from |
 | `sort` | query | string | No | Field to sort by |
 | `order` | query | string | No | Direction to sort by |
 

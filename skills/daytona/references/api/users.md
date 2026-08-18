@@ -1,5 +1,17 @@
 # Users API
 
+
+## Contents
+
+- GET `/users/me`
+- GET `/users/account-providers`
+- POST `/users/linked-accounts`
+- DELETE `/users/linked-accounts/{provider}/{providerUserId}`/{providerUserId}}
+- POST `/users/mfa/sms/enroll`
+- GET `/users/me/pending-sso-links`
+- POST `/users/me/pending-sso-links/{id}/confirm`/confirm}
+- DELETE `/users/me/pending-sso-links/{id}`}
+
 ## GET `/users/me` {#daytona/tag/users/GET/users/me}
 
 **Get authenticated user**
@@ -73,5 +85,53 @@ Schema: **CreateLinkedAccount**
 | Status | Description | Schema |
 |--------|-------------|--------|
 | 200 | SMS MFA enrollment URL | string |
+
+---
+
+## GET `/users/me/pending-sso-links` {#daytona/tag/users/GET/users/me/pending-sso-links}
+
+**List pending SSO account links for the authenticated user**
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Pending SSO account links | array of PendingSsoLink |
+
+---
+
+## POST `/users/me/pending-sso-links/{id}/confirm` {#daytona/tag/users/POST/users/me/pending-sso-links/{id}/confirm}
+
+**Confirm (link) a pending SSO account link**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `id` | path | string | Yes |  |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 204 | SSO identity linked |  |
+
+---
+
+## DELETE `/users/me/pending-sso-links/{id}` {#daytona/tag/users/DELETE/users/me/pending-sso-links/{id}}
+
+**Dismiss a pending SSO account link**
+
+### Parameters
+
+| Name | In | Type | Required | Description |
+|------|-----|------|----------|-------------|
+| `id` | path | string | Yes |  |
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 204 | Pending SSO link dismissed |  |
 
 ---

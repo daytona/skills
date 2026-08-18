@@ -28,7 +28,7 @@ def initialize(snapshots_api:, object_storage_api:, default_region_id: nil, otel
 #### list()
 
 ```ruby
-def list(page: nil, limit: nil)
+def list(page: nil, limit: nil, source_sandbox_id: nil)
 
 ```
 
@@ -38,6 +38,7 @@ List all Snapshots.
 
 - `page` _Integer, Nil_ -
 - `limit` _Integer, Nil_ -
+- `source_sandbox_id` _String, Nil_ - Filter by the ID of the sandbox the snapshot was created from
 
 **Returns**:
 
@@ -68,7 +69,10 @@ Delete a Snapshot.
 
 **Parameters**:
 
-- `snapshot` _Daytona:Snapshot_ - Snapshot to delete
+- `snapshot` _Daytona:Snapshot, String_ - Snapshot to delete, or its ID or name.
+Call cost: 1 API call for a Snapshot object or UUID string; 2 for a name
+(resolve, then delete); up to 3 in the worst case for a UUID-formatted name
+(the optimistic delete 404s, then resolve + delete).
 
 **Returns**:
 
@@ -91,11 +95,11 @@ def get(name)
 
 ```
 
-Get a Snapshot by name.
+Get a Snapshot by ID or name.
 
 **Parameters**:
 
-- `name` _String_ - Name of the Snapshot to get
+- `name` _String_ - ID or name of the Snapshot to get
 
 **Returns**:
 
@@ -146,11 +150,13 @@ def activate(snapshot)
 
 ```
 
-Activate a snapshot
+Activate a snapshot.
 
 **Parameters**:
 
-- `snapshot` _Daytona:Snapshot_ - The snapshot instance
+- `snapshot` _Daytona:Snapshot, String_ - The Snapshot instance, or its ID or name.
+Call cost matches `delete`: 1 for an object or UUID string, 2 for a name,
+up to 3 for a UUID-formatted name (optimistic 404 then resolve + activate).
 
 **Returns**:
 

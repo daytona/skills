@@ -6,6 +6,7 @@
 - GET `/runners`
 - POST `/runners`
 - GET `/runners/me`
+- GET `/runners/me/snapshots`
 - GET `/runners/by-sandbox/{sandboxId}`}
 - GET `/runners/by-snapshot-ref`
 - GET `/runners/{id}`}
@@ -74,6 +75,18 @@ Schema: **CreateRunner**
 
 ---
 
+## GET `/runners/me/snapshots` {#daytona/tag/runners/GET/runners/me/snapshots}
+
+**Get snapshot refs for authenticated runner**
+
+### Responses
+
+| Status | Description | Schema |
+|--------|-------------|--------|
+| 200 | Snapshot refs the runner is expected to have | array |
+
+---
+
 ## GET `/runners/by-sandbox/{sandboxId}` {#daytona/tag/runners/GET/runners/by-sandbox/{sandboxId}}
 
 **Get runner by sandbox ID**
@@ -138,6 +151,7 @@ Schema: **CreateRunner**
 | Name | In | Type | Required | Description |
 |------|-----|------|----------|-------------|
 | `id` | path | string | Yes | Runner ID |
+| `force` | query | boolean | No | Delete the runner without waiting for sandboxes already marked for destruction. Requires the runner to have stopped reporting as ready. |
 | `X-Daytona-Organization-ID` | header | string | No | Use with JWT to specify the organization ID |
 
 ### Responses

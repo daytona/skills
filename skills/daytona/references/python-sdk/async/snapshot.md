@@ -50,7 +50,8 @@ Service for managing Daytona Snapshots. Can be used to list, get, create and del
 @intercept_errors(message_prefix="Failed to list snapshots: ")
 @with_instrumentation()
 async def list(page: int | None = None,
-               limit: int | None = None) -> PaginatedSnapshots
+               limit: int | None = None,
+               source_sandbox_id: str | None = None) -> PaginatedSnapshots
 ```
 
 Returns paginated list of Snapshots.
@@ -59,6 +60,7 @@ Returns paginated list of Snapshots.
 
 - `page` _int | None_ - Page number for pagination (starting from 1).
 - `limit` _int | None_ - Maximum number of items per page.
+- `source_sandbox_id` _str | None_ - Filter by the ID of the sandbox the snapshot was created from.
 
 
 **Returns**:
@@ -81,22 +83,21 @@ async with AsyncDaytona() as daytona:
 ```python
 @intercept_errors(message_prefix="Failed to delete snapshot: ")
 @with_instrumentation()
-async def delete(snapshot: Snapshot) -> None
+async def delete(snapshot: Snapshot | str) -> None
 ```
 
 Delete a Snapshot.
 
 **Arguments**:
 
-- `snapshot` _Snapshot_ - Snapshot to delete.
+- `snapshot` _Snapshot | str_ - Snapshot to delete, or its ID or name.
 
 
 **Example**:
 
 ```python
 async with AsyncDaytona() as daytona:
-    snapshot = await daytona.snapshot.get("test-snapshot")
-    await daytona.snapshot.delete(snapshot)
+    await daytona.snapshot.delete("test-snapshot")
     print("Snapshot deleted")
 ```
 
@@ -108,11 +109,11 @@ async with AsyncDaytona() as daytona:
 async def get(name: str) -> Snapshot
 ```
 
-Get a Snapshot by name.
+Get a Snapshot by ID or name.
 
 **Arguments**:
 
-- `name` _str_ - Name of the Snapshot to get.
+- `name` _str_ - ID or name of the Snapshot to get.
 
 
 **Returns**:
@@ -162,14 +163,14 @@ daytona.snapshot.create(
 
 ```python
 @with_instrumentation()
-async def activate(snapshot: Snapshot) -> Snapshot
+async def activate(snapshot: Snapshot | str) -> Snapshot
 ```
 
 Activate a snapshot.
 
 **Arguments**:
 
-- `snapshot` _Snapshot_ - The Snapshot instance.
+- `snapshot` _Snapshot | str_ - The Snapshot instance, or its ID or name.
 
 **Returns**:
 

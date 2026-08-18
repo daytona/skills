@@ -22,10 +22,10 @@ real value is substituted at the network egress layer for the Secret's allowed h
 
 ### Constructors
 
-#### new SecretService()
+#### Constructor
 
 ```ts
-new SecretService(secretApi: SecretApi): SecretService
+new SecretService(secretApi: SecretApi): SecretService;
 ```
 
 **Parameters**:
@@ -42,7 +42,7 @@ new SecretService(secretApi: SecretApi): SecretService
 #### create()
 
 ```ts
-create(params: CreateSecretParams): Promise<Secret>
+create(params: CreateSecretParams): Promise<Secret>;
 ```
 
 Creates a new Secret.
@@ -72,12 +72,10 @@ const secret = await daytona.secret.create({
 console.log(`Created secret ${secret.name} with placeholder ${secret.placeholder}`);
 ```
 
-***
-
 #### delete()
 
 ```ts
-delete(secretId: string): Promise<void>
+delete(secretId: string): Promise<void>;
 ```
 
 Deletes a Secret.
@@ -103,12 +101,10 @@ await daytona.secret.delete("secret-id");
 console.log("Secret deleted successfully");
 ```
 
-***
-
 #### get()
 
 ```ts
-get(secretId: string): Promise<Secret>
+get(secretId: string): Promise<Secret>;
 ```
 
 Gets a Secret by its ID.
@@ -134,12 +130,10 @@ const secret = await daytona.secret.get("secret-id");
 console.log(`Secret ${secret.name} can be used on ${secret.hosts.join(', ')}`);
 ```
 
-***
-
 #### list()
 
 ```ts
-list(query?: ListSecretsQuery): Promise<ListSecretsResponse>
+list(query?: ListSecretsQuery): Promise<ListSecretsResponse>;
 ```
 
 Lists Secrets in the organization with cursor-based pagination.
@@ -167,12 +161,10 @@ do {
 } while (cursor);
 ```
 
-***
-
 #### update()
 
 ```ts
-update(secretId: string, params: UpdateSecretParams): Promise<Secret>
+update(secretId: string, params: UpdateSecretParams): Promise<Secret>;
 ```
 
 Updates an existing Secret. Omitted fields are left unchanged.
@@ -270,9 +262,13 @@ referenced from a Sandbox, the injected environment variable holds the opaque
 Secret.placeholder token, not the real value. The real value is substituted
 transparently on outbound requests to the Secret's allowed Secret.hosts.
 
-**Type declaration**:
+### Type Declaration
 
-- `\_\_brand` _"Secret"_
+#### \_\_brand
+
+```ts
+__brand: "Secret";
+```
 
 ## See Also
 - [Python SDK - secret](../python-sdk/sync/secret.md)

@@ -20,7 +20,9 @@
 - DaytonaGitDirtyWorktreeError
 - DaytonaGitMergeConflictError
 - DaytonaGitPushRejectedError
+- DaytonaGitRemoteRejectedError
 - DaytonaGitRepoNotFoundError
+- DaytonaGitTransportFailedError
 - DaytonaGoneError
 - DaytonaInternalServerError
 - DaytonaInvalidArgumentError
@@ -77,7 +79,7 @@ _Inherited from_: `DaytonaServiceUnavailableError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -92,7 +94,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaA11yUnavailableError()
+#### Constructor
 
 ```ts
 new DaytonaA11yUnavailableError(
@@ -100,7 +102,7 @@ new DaytonaA11yUnavailableError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaA11yUnavailableError
+   source?: string): DaytonaA11yUnavailableError;
 ```
 
 **Parameters**:
@@ -152,7 +154,7 @@ _Inherited from_: `DaytonaError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -167,7 +169,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaAuthenticationError()
+#### Constructor
 
 ```ts
 new DaytonaAuthenticationError(
@@ -175,7 +177,7 @@ new DaytonaAuthenticationError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaAuthenticationError
+   source?: string): DaytonaAuthenticationError;
 ```
 
 **Parameters**:
@@ -225,7 +227,7 @@ _Inherited from_: `DaytonaForbiddenError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -240,7 +242,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaAuthorizationError()
+#### Constructor
 
 ```ts
 new DaytonaAuthorizationError(
@@ -248,7 +250,7 @@ new DaytonaAuthorizationError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaAuthorizationError
+   source?: string): DaytonaAuthorizationError;
 ```
 
 **Parameters**:
@@ -287,6 +289,10 @@ An upstream gateway returned an invalid response (HTTP 502).
 
 - `DaytonaError`
 
+### Extended by
+
+- `DaytonaGitTransportFailedError`
+
 ### Accessors
 
 #### errorCode
@@ -296,7 +302,7 @@ _Inherited from_: `DaytonaError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -311,7 +317,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaBadGatewayError()
+#### Constructor
 
 ```ts
 new DaytonaBadGatewayError(
@@ -319,7 +325,7 @@ new DaytonaBadGatewayError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaBadGatewayError
+   source?: string): DaytonaBadGatewayError;
 ```
 
 **Parameters**:
@@ -373,7 +379,7 @@ _Inherited from_: `DaytonaError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -388,7 +394,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaBadRequestError()
+#### Constructor
 
 ```ts
 new DaytonaBadRequestError(
@@ -396,7 +402,7 @@ new DaytonaBadRequestError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaBadRequestError
+   source?: string): DaytonaBadRequestError;
 ```
 
 **Parameters**:
@@ -444,7 +450,7 @@ _Inherited from_: `DaytonaGoneError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -459,7 +465,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaCommandAlreadyCompletedError()
+#### Constructor
 
 ```ts
 new DaytonaCommandAlreadyCompletedError(
@@ -467,7 +473,7 @@ new DaytonaCommandAlreadyCompletedError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaCommandAlreadyCompletedError
+   source?: string): DaytonaCommandAlreadyCompletedError;
 ```
 
 **Parameters**:
@@ -523,7 +529,7 @@ _Inherited from_: `DaytonaError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -538,7 +544,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaConflictError()
+#### Constructor
 
 ```ts
 new DaytonaConflictError(
@@ -546,7 +552,7 @@ new DaytonaConflictError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaConflictError
+   source?: string): DaytonaConflictError;
 ```
 
 **Parameters**:
@@ -598,7 +604,7 @@ _Inherited from_: `DaytonaError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -613,7 +619,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaConnectionError()
+#### Constructor
 
 ```ts
 new DaytonaConnectionError(
@@ -621,7 +627,7 @@ new DaytonaConnectionError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaConnectionError
+   source?: string): DaytonaConnectionError;
 ```
 
 **Parameters**:
@@ -669,7 +675,7 @@ _Inherited from_: `DaytonaConnectionError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -684,7 +690,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaConnectionTimeoutError()
+#### Constructor
 
 ```ts
 new DaytonaConnectionTimeoutError(
@@ -692,7 +698,7 @@ new DaytonaConnectionTimeoutError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaConnectionTimeoutError
+   source?: string): DaytonaConnectionTimeoutError;
 ```
 
 **Parameters**:
@@ -752,7 +758,7 @@ unless the caller (or the translation layer) sets it.
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -767,7 +773,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaError()
+#### Constructor
 
 ```ts
 new DaytonaError(
@@ -775,7 +781,7 @@ new DaytonaError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaError
+   source?: string): DaytonaError;
 ```
 
 **Parameters**:
@@ -825,7 +831,7 @@ _Inherited from_: `DaytonaForbiddenError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -840,7 +846,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaFileAccessDeniedError()
+#### Constructor
 
 ```ts
 new DaytonaFileAccessDeniedError(
@@ -848,7 +854,7 @@ new DaytonaFileAccessDeniedError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaFileAccessDeniedError
+   source?: string): DaytonaFileAccessDeniedError;
 ```
 
 **Parameters**:
@@ -896,7 +902,7 @@ _Inherited from_: `DaytonaNotFoundError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -911,7 +917,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaFileNotFoundError()
+#### Constructor
 
 ```ts
 new DaytonaFileNotFoundError(
@@ -919,7 +925,7 @@ new DaytonaFileNotFoundError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaFileNotFoundError
+   source?: string): DaytonaFileNotFoundError;
 ```
 
 **Parameters**:
@@ -967,7 +973,7 @@ _Inherited from_: `DaytonaInternalServerError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -982,7 +988,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaFileReadFailedError()
+#### Constructor
 
 ```ts
 new DaytonaFileReadFailedError(
@@ -990,7 +996,7 @@ new DaytonaFileReadFailedError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaFileReadFailedError
+   source?: string): DaytonaFileReadFailedError;
 ```
 
 **Parameters**:
@@ -1043,7 +1049,7 @@ _Inherited from_: `DaytonaError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -1058,7 +1064,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaForbiddenError()
+#### Constructor
 
 ```ts
 new DaytonaForbiddenError(
@@ -1066,7 +1072,7 @@ new DaytonaForbiddenError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaForbiddenError
+   source?: string): DaytonaForbiddenError;
 ```
 
 **Parameters**:
@@ -1114,7 +1120,7 @@ _Inherited from_: `DaytonaAuthenticationError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -1129,7 +1135,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaGitAuthFailedError()
+#### Constructor
 
 ```ts
 new DaytonaGitAuthFailedError(
@@ -1137,7 +1143,7 @@ new DaytonaGitAuthFailedError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaGitAuthFailedError
+   source?: string): DaytonaGitAuthFailedError;
 ```
 
 **Parameters**:
@@ -1185,7 +1191,7 @@ _Inherited from_: `DaytonaConflictError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -1200,7 +1206,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaGitBranchExistsError()
+#### Constructor
 
 ```ts
 new DaytonaGitBranchExistsError(
@@ -1208,7 +1214,7 @@ new DaytonaGitBranchExistsError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaGitBranchExistsError
+   source?: string): DaytonaGitBranchExistsError;
 ```
 
 **Parameters**:
@@ -1256,7 +1262,7 @@ _Inherited from_: `DaytonaNotFoundError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -1271,7 +1277,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaGitBranchNotFoundError()
+#### Constructor
 
 ```ts
 new DaytonaGitBranchNotFoundError(
@@ -1279,7 +1285,7 @@ new DaytonaGitBranchNotFoundError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaGitBranchNotFoundError
+   source?: string): DaytonaGitBranchNotFoundError;
 ```
 
 **Parameters**:
@@ -1327,7 +1333,7 @@ _Inherited from_: `DaytonaConflictError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -1342,7 +1348,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaGitDirtyWorktreeError()
+#### Constructor
 
 ```ts
 new DaytonaGitDirtyWorktreeError(
@@ -1350,7 +1356,7 @@ new DaytonaGitDirtyWorktreeError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaGitDirtyWorktreeError
+   source?: string): DaytonaGitDirtyWorktreeError;
 ```
 
 **Parameters**:
@@ -1398,7 +1404,7 @@ _Inherited from_: `DaytonaConflictError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -1413,7 +1419,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaGitMergeConflictError()
+#### Constructor
 
 ```ts
 new DaytonaGitMergeConflictError(
@@ -1421,7 +1427,7 @@ new DaytonaGitMergeConflictError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaGitMergeConflictError
+   source?: string): DaytonaGitMergeConflictError;
 ```
 
 **Parameters**:
@@ -1469,7 +1475,7 @@ _Inherited from_: `DaytonaConflictError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -1484,7 +1490,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaGitPushRejectedError()
+#### Constructor
 
 ```ts
 new DaytonaGitPushRejectedError(
@@ -1492,7 +1498,7 @@ new DaytonaGitPushRejectedError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaGitPushRejectedError
+   source?: string): DaytonaGitPushRejectedError;
 ```
 
 **Parameters**:
@@ -1511,6 +1517,77 @@ new DaytonaGitPushRejectedError(
 ##### Inherited from
 
 `DaytonaConflictError`.`constructor`
+## DaytonaGitRemoteRejectedError
+
+The git remote rejected the operation — hooks, branch protection or quota (code `GIT_REMOTE_REJECTED`).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaUnprocessableEntityError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaUnprocessableEntityError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaUnprocessableEntityError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaUnprocessableEntityError.statusCode`
+
+
+**Extends:**
+
+- `DaytonaUnprocessableEntityError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaUnprocessableEntityError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string;
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### Constructor
+
+```ts
+new DaytonaGitRemoteRejectedError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaGitRemoteRejectedError;
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaGitRemoteRejectedError`
+
+##### Inherited from
+
+`DaytonaUnprocessableEntityError`.`constructor`
 ## DaytonaGitRepoNotFoundError
 
 The git remote repository was not found (code `GIT_REPO_NOT_FOUND`).
@@ -1540,7 +1617,7 @@ _Inherited from_: `DaytonaNotFoundError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -1555,7 +1632,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaGitRepoNotFoundError()
+#### Constructor
 
 ```ts
 new DaytonaGitRepoNotFoundError(
@@ -1563,7 +1640,7 @@ new DaytonaGitRepoNotFoundError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaGitRepoNotFoundError
+   source?: string): DaytonaGitRepoNotFoundError;
 ```
 
 **Parameters**:
@@ -1582,6 +1659,77 @@ new DaytonaGitRepoNotFoundError(
 ##### Inherited from
 
 `DaytonaNotFoundError`.`constructor`
+## DaytonaGitTransportFailedError
+
+The git remote was unreachable — DNS, TLS, connection or timeout failure (code `GIT_TRANSPORT_FAILED`).
+
+**Properties**:
+
+- `code?` _string_
+    - _Inherited from_: `DaytonaBadGatewayError.code`
+- `headers?` _AxiosHeaders_
+    - _Inherited from_: `DaytonaBadGatewayError.headers`
+- `source?` _string_
+    - _Inherited from_: `DaytonaBadGatewayError.source`
+- `statusCode?` _number_
+    - _Inherited from_: `DaytonaBadGatewayError.statusCode`
+
+
+**Extends:**
+
+- `DaytonaBadGatewayError`
+
+### Accessors
+
+#### errorCode
+
+_Inherited from_: `DaytonaBadGatewayError.errorCode`
+
+##### Get Signature
+
+```ts
+get errorCode(): string;
+```
+
+###### Deprecated
+
+Use DaytonaError.code instead. Kept so existing
+`err.errorCode` reads keep returning the machine-readable code.
+
+**Returns**:
+
+- `string` - the machine-readable error code, or `undefined` when the
+    response did not carry one (same as DaytonaError.code)
+
+### Constructors
+
+#### Constructor
+
+```ts
+new DaytonaGitTransportFailedError(
+   message: string,
+   statusCode?: number,
+   headers?: AxiosHeaders,
+   code?: string,
+   source?: string): DaytonaGitTransportFailedError;
+```
+
+**Parameters**:
+
+- `message` _string_
+- `statusCode?` _number_
+- `headers?` _AxiosHeaders_
+- `code?` _string_
+- `source?` _string_
+
+
+**Returns**:
+
+- `DaytonaGitTransportFailedError`
+
+##### Inherited from
+
+`DaytonaBadGatewayError`.`constructor`
 ## DaytonaGoneError
 
 The resource existed but is permanently gone (HTTP 410).
@@ -1616,7 +1764,7 @@ _Inherited from_: `DaytonaError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -1631,7 +1779,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaGoneError()
+#### Constructor
 
 ```ts
 new DaytonaGoneError(
@@ -1639,7 +1787,7 @@ new DaytonaGoneError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaGoneError
+   source?: string): DaytonaGoneError;
 ```
 
 **Parameters**:
@@ -1691,7 +1839,7 @@ _Inherited from_: `DaytonaError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -1706,7 +1854,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaInternalServerError()
+#### Constructor
 
 ```ts
 new DaytonaInternalServerError(
@@ -1714,7 +1862,7 @@ new DaytonaInternalServerError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaInternalServerError
+   source?: string): DaytonaInternalServerError;
 ```
 
 **Parameters**:
@@ -1780,7 +1928,7 @@ _Inherited from_: `DaytonaValidationError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -1795,7 +1943,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaInvalidArgumentError()
+#### Constructor
 
 ```ts
 new DaytonaInvalidArgumentError(
@@ -1803,7 +1951,7 @@ new DaytonaInvalidArgumentError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaInvalidArgumentError
+   source?: string): DaytonaInvalidArgumentError;
 ```
 
 **Parameters**:
@@ -1851,7 +1999,7 @@ _Inherited from_: `DaytonaBadRequestError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -1866,7 +2014,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaInvalidFilePathError()
+#### Constructor
 
 ```ts
 new DaytonaInvalidFilePathError(
@@ -1874,7 +2022,7 @@ new DaytonaInvalidFilePathError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaInvalidFilePathError
+   source?: string): DaytonaInvalidFilePathError;
 ```
 
 **Parameters**:
@@ -1922,7 +2070,7 @@ _Inherited from_: `DaytonaBadRequestError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -1937,7 +2085,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaLspServerNotInitializedError()
+#### Constructor
 
 ```ts
 new DaytonaLspServerNotInitializedError(
@@ -1945,7 +2093,7 @@ new DaytonaLspServerNotInitializedError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaLspServerNotInitializedError
+   source?: string): DaytonaLspServerNotInitializedError;
 ```
 
 **Parameters**:
@@ -2000,7 +2148,7 @@ _Inherited from_: `DaytonaError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -2015,7 +2163,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaNotFoundError()
+#### Constructor
 
 ```ts
 new DaytonaNotFoundError(
@@ -2023,7 +2171,7 @@ new DaytonaNotFoundError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaNotFoundError
+   source?: string): DaytonaNotFoundError;
 ```
 
 **Parameters**:
@@ -2071,7 +2219,7 @@ _Inherited from_: `DaytonaTimeoutError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -2086,7 +2234,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaProcessExecutionTimeoutError()
+#### Constructor
 
 ```ts
 new DaytonaProcessExecutionTimeoutError(
@@ -2094,7 +2242,7 @@ new DaytonaProcessExecutionTimeoutError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaProcessExecutionTimeoutError
+   source?: string): DaytonaProcessExecutionTimeoutError;
 ```
 
 **Parameters**:
@@ -2119,7 +2267,7 @@ new DaytonaProcessExecutionTimeoutError(
 #### \[hasInstance\]()
 
 ```ts
-static hasInstance: boolean
+static hasInstance: boolean;
 ```
 
 **Parameters**:
@@ -2133,7 +2281,7 @@ static hasInstance: boolean
 
 ##### Inherited from
 
-`DaytonaTimeoutError`.[`[hasInstance]`](Errors.md#hasinstance-6)
+`DaytonaTimeoutError`.[`[hasInstance]`](#hasinstance-1)
 ## DaytonaProcessNotFoundError
 
 The sandbox process does not exist (code `PROCESS_NOT_FOUND`).
@@ -2163,7 +2311,7 @@ _Inherited from_: `DaytonaNotFoundError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -2178,7 +2326,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaProcessNotFoundError()
+#### Constructor
 
 ```ts
 new DaytonaProcessNotFoundError(
@@ -2186,7 +2334,7 @@ new DaytonaProcessNotFoundError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaProcessNotFoundError
+   source?: string): DaytonaProcessNotFoundError;
 ```
 
 **Parameters**:
@@ -2234,7 +2382,7 @@ _Inherited from_: `DaytonaError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -2249,7 +2397,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaRateLimitError()
+#### Constructor
 
 ```ts
 new DaytonaRateLimitError(
@@ -2257,7 +2405,7 @@ new DaytonaRateLimitError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaRateLimitError
+   source?: string): DaytonaRateLimitError;
 ```
 
 **Parameters**:
@@ -2305,7 +2453,7 @@ _Inherited from_: `DaytonaServiceUnavailableError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -2320,7 +2468,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaRecordingFfmpegNotFoundError()
+#### Constructor
 
 ```ts
 new DaytonaRecordingFfmpegNotFoundError(
@@ -2328,7 +2476,7 @@ new DaytonaRecordingFfmpegNotFoundError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaRecordingFfmpegNotFoundError
+   source?: string): DaytonaRecordingFfmpegNotFoundError;
 ```
 
 **Parameters**:
@@ -2376,7 +2524,7 @@ _Inherited from_: `DaytonaConflictError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -2391,7 +2539,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaRecordingStillActiveError()
+#### Constructor
 
 ```ts
 new DaytonaRecordingStillActiveError(
@@ -2399,7 +2547,7 @@ new DaytonaRecordingStillActiveError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaRecordingStillActiveError
+   source?: string): DaytonaRecordingStillActiveError;
 ```
 
 **Parameters**:
@@ -2452,7 +2600,7 @@ _Inherited from_: `DaytonaError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -2467,7 +2615,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaServiceUnavailableError()
+#### Constructor
 
 ```ts
 new DaytonaServiceUnavailableError(
@@ -2475,7 +2623,7 @@ new DaytonaServiceUnavailableError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaServiceUnavailableError
+   source?: string): DaytonaServiceUnavailableError;
 ```
 
 **Parameters**:
@@ -2523,7 +2671,7 @@ _Inherited from_: `DaytonaGoneError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -2538,7 +2686,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaSessionEndedError()
+#### Constructor
 
 ```ts
 new DaytonaSessionEndedError(
@@ -2546,7 +2694,7 @@ new DaytonaSessionEndedError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaSessionEndedError
+   source?: string): DaytonaSessionEndedError;
 ```
 
 **Parameters**:
@@ -2605,7 +2753,7 @@ _Inherited from_: `DaytonaError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -2620,7 +2768,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaTimeoutError()
+#### Constructor
 
 ```ts
 new DaytonaTimeoutError(
@@ -2628,7 +2776,7 @@ new DaytonaTimeoutError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaTimeoutError
+   source?: string): DaytonaTimeoutError;
 ```
 
 **Parameters**:
@@ -2653,7 +2801,7 @@ new DaytonaTimeoutError(
 #### \[hasInstance\]()
 
 ```ts
-static hasInstance: boolean
+static hasInstance: boolean;
 ```
 
 **Parameters**:
@@ -2684,6 +2832,10 @@ The request was well-formed but semantically invalid (HTTP 422).
 
 - `DaytonaError`
 
+### Extended by
+
+- `DaytonaGitRemoteRejectedError`
+
 ### Accessors
 
 #### errorCode
@@ -2693,7 +2845,7 @@ _Inherited from_: `DaytonaError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -2708,7 +2860,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaUnprocessableEntityError()
+#### Constructor
 
 ```ts
 new DaytonaUnprocessableEntityError(
@@ -2716,7 +2868,7 @@ new DaytonaUnprocessableEntityError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaUnprocessableEntityError
+   source?: string): DaytonaUnprocessableEntityError;
 ```
 
 **Parameters**:
@@ -2780,7 +2932,7 @@ _Inherited from_: `DaytonaBadRequestError.errorCode`
 ##### Get Signature
 
 ```ts
-get errorCode(): string
+get errorCode(): string;
 ```
 
 ###### Deprecated
@@ -2795,7 +2947,7 @@ Use DaytonaError.code instead. Kept so existing
 
 ### Constructors
 
-#### new DaytonaValidationError()
+#### Constructor
 
 ```ts
 new DaytonaValidationError(
@@ -2803,7 +2955,7 @@ new DaytonaValidationError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaValidationError
+   source?: string): DaytonaValidationError;
 ```
 
 **Parameters**:
@@ -2825,7 +2977,7 @@ new DaytonaValidationError(
 ## createAxiosDaytonaError()
 
 ```ts
-function createAxiosDaytonaError(error: AxiosError): DaytonaError
+function createAxiosDaytonaError(error: AxiosError): DaytonaError;
 ```
 
 Creates the appropriate Daytona error subclass from an Axios error. Maps
@@ -2853,7 +3005,7 @@ function createDaytonaError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaError
+   source?: string): DaytonaError;
 ```
 
 Creates the appropriate Daytona error subclass from structured error metadata.
@@ -2879,7 +3031,7 @@ Resolution order: (source, code) override -> HTTP status code -> DaytonaError.
 ## errorClassFromStatusCode()
 
 ```ts
-function errorClassFromStatusCode(statusCode?: number): typeof DaytonaError
+function errorClassFromStatusCode(statusCode?: number): typeof DaytonaError;
 ```
 
 Maps an HTTP status code to the corresponding Daytona error class.

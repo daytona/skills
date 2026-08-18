@@ -21,7 +21,7 @@ such as `Image.base()`, `Image.debianSlim()` or `Image.fromDockerfile()`.
 ##### Get Signature
 
 ```ts
-get contextList(): Context[]
+get contextList(): Context[];
 ```
 
 ###### Returns
@@ -30,14 +30,12 @@ get contextList(): Context[]
 
 The list of context files to be added to the image.
 
-***
-
 #### dockerfile
 
 ##### Get Signature
 
 ```ts
-get dockerfile(): string
+get dockerfile(): string;
 ```
 
 **Returns**:
@@ -49,7 +47,7 @@ get dockerfile(): string
 #### base()
 
 ```ts
-static base(image: string): Image
+static base(image: string): Image;
 ```
 
 Creates an Image from an existing base image.
@@ -69,19 +67,17 @@ Creates an Image from an existing base image.
 const image = Image.base('python:3.12-slim-bookworm')
 ```
 
-***
-
 #### debianSlim()
 
 ```ts
-static debianSlim(pythonVersion?: "3.9" | "3.10" | "3.11" | "3.12" | "3.13"): Image
+static debianSlim(pythonVersion?: "3.9" | "3.10" | "3.11" | "3.12" | "3.13"): Image;
 ```
 
 Creates a Debian slim image based on the official Python Docker image.
 
 **Parameters**:
 
-- `pythonVersion?` _The Python version to use._ - `"3.9"` | `"3.10"` | `"3.11"` | `"3.12"` | `"3.13"`
+- `pythonVersion?` _"3.9" \| "3.10" \| "3.11" \| "3.12" \| "3.13"_ - The Python version to use.
 
 
 **Returns**:
@@ -94,12 +90,10 @@ Creates a Debian slim image based on the official Python Docker image.
 const image = Image.debianSlim('3.12')
 ```
 
-***
-
 #### fromDockerfile()
 
 ```ts
-static fromDockerfile(path: string): Image
+static fromDockerfile(path: string): Image;
 ```
 
 Creates an Image from an existing Dockerfile.
@@ -119,12 +113,10 @@ Creates an Image from an existing Dockerfile.
 const image = Image.fromDockerfile('Dockerfile')
 ```
 
-***
-
 #### addLocalDir()
 
 ```ts
-addLocalDir(localPath: string, remotePath: string): Image
+addLocalDir(localPath: string, remotePath: string): Image;
 ```
 
 Adds a local directory to the image.
@@ -147,12 +139,10 @@ const image = Image
  .addLocalDir('src', '/home/daytona/src')
 ```
 
-***
-
 #### addLocalFile()
 
 ```ts
-addLocalFile(localPath: string, remotePath: string): Image
+addLocalFile(localPath: string, remotePath: string): Image;
 ```
 
 Adds a local file to the image.
@@ -175,12 +165,10 @@ const image = Image
  .addLocalFile('requirements.txt', '/home/daytona/requirements.txt')
 ```
 
-***
-
 #### cmd()
 
 ```ts
-cmd(cmd: string[]): Image
+cmd(cmd: string[]): Image;
 ```
 
 Sets the default command for the image.
@@ -202,12 +190,10 @@ const image = Image
  .cmd(['/bin/bash'])
 ```
 
-***
-
 #### dockerfileCommands()
 
 ```ts
-dockerfileCommands(dockerfileCommands: string[], contextDir?: string): Image
+dockerfileCommands(dockerfileCommands: string[], contextDir?: string): Image;
 ```
 
 Extends an image with arbitrary Dockerfile-like commands.
@@ -230,12 +216,10 @@ const image = Image
  .dockerfileCommands(['RUN echo "Hello, world!"'])
 ```
 
-***
-
 #### entrypoint()
 
 ```ts
-entrypoint(entrypointCommands: string[]): Image
+entrypoint(entrypointCommands: string[]): Image;
 ```
 
 Sets the entrypoint for the image.
@@ -257,12 +241,10 @@ const image = Image
  .entrypoint(['/bin/bash'])
 ```
 
-***
-
 #### env()
 
 ```ts
-env(envVars: Record<string, string>): Image
+env(envVars: Record<string, string>): Image;
 ```
 
 Sets environment variables in the image.
@@ -284,19 +266,17 @@ const image = Image
  .env({ FOO: 'bar' })
 ```
 
-***
-
 #### pipInstall()
 
 ```ts
-pipInstall(packages: string | string[], options?: PipInstallOptions): Image
+pipInstall(packages: string | string[], options?: PipInstallOptions): Image;
 ```
 
 Adds commands to install packages using pip.
 
 **Parameters**:
 
-- `packages` _The packages to install._ - `string` | `string`[]
+- `packages` _string \| string\[\]_ - The packages to install.
 - `options?` _PipInstallOptions_ - The options for the pip install command.
 
 
@@ -310,12 +290,10 @@ Adds commands to install packages using pip.
 const image = Image.debianSlim('3.12').pipInstall('numpy', { findLinks: ['https://pypi.org/simple'] })
 ```
 
-***
-
 #### pipInstallFromPyproject()
 
 ```ts
-pipInstallFromPyproject(pyprojectToml: string, options?: PyprojectOptions): Image
+pipInstallFromPyproject(pyprojectToml: string, options?: PyprojectOptions): Image;
 ```
 
 Installs dependencies from a pyproject.toml file.
@@ -337,12 +315,10 @@ const image = Image.debianSlim('3.12')
 image.pipInstallFromPyproject('pyproject.toml', { optionalDependencies: ['dev'] })
 ```
 
-***
-
 #### pipInstallFromRequirements()
 
 ```ts
-pipInstallFromRequirements(requirementsTxt: string, options?: PipInstallOptions): Image
+pipInstallFromRequirements(requirementsTxt: string, options?: PipInstallOptions): Image;
 ```
 
 Installs dependencies from a requirements.txt file.
@@ -364,12 +340,10 @@ const image = Image.debianSlim('3.12')
 image.pipInstallFromRequirements('requirements.txt', { findLinks: ['https://pypi.org/simple'] })
 ```
 
-***
-
 #### runCommands()
 
 ```ts
-runCommands(...commands: (string | string[])[]): Image
+runCommands(...commands: (string | string[])[]): Image;
 ```
 
 Runs commands in the image.
@@ -394,12 +368,10 @@ const image = Image
  )
 ```
 
-***
-
 #### workdir()
 
 ```ts
-workdir(dirPath: string): Image
+workdir(dirPath: string): Image;
 ```
 
 Sets the working directory in the image.

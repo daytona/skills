@@ -19,10 +19,10 @@ the entire volume is mounted.
 
 ### Constructors
 
-#### new VolumeService()
+#### Constructor
 
 ```ts
-new VolumeService(volumesApi: VolumesApi): VolumeService
+new VolumeService(volumesApi: VolumesApi): VolumeService;
 ```
 
 **Parameters**:
@@ -39,7 +39,7 @@ new VolumeService(volumesApi: VolumesApi): VolumeService
 #### create()
 
 ```ts
-create(name: string): Promise<Volume>
+create(name: string): Promise<Volume>;
 ```
 
 Creates a new Volume with the specified name.
@@ -65,12 +65,10 @@ const volume = await daytona.volume.create("my-data-volume");
 console.log(`Created volume ${volume.name} with ID ${volume.id}`);
 ```
 
-***
-
 #### delete()
 
 ```ts
-delete(volume: Volume): Promise<void>
+delete(volume: Volume): Promise<void>;
 ```
 
 Deletes a Volume.
@@ -97,12 +95,10 @@ await daytona.volume.delete(volume);
 console.log("Volume deleted successfully");
 ```
 
-***
-
 #### get()
 
 ```ts
-get(name: string, create: boolean): Promise<Volume>
+get(name: string, create?: boolean): Promise<Volume>;
 ```
 
 Gets a Volume by its name.
@@ -110,7 +106,7 @@ Gets a Volume by its name.
 **Parameters**:
 
 - `name` _string_ - Name of the Volume to retrieve
-- `create` _boolean = false_ - Whether to create the Volume if it does not exist
+- `create?` _boolean = false_ - Whether to create the Volume if it does not exist
 
 
 **Returns**:
@@ -129,12 +125,10 @@ const volume = await daytona.volume.get("volume-name", true);
 console.log(`Volume ${volume.name} is in state ${volume.state}`);
 ```
 
-***
-
 #### list()
 
 ```ts
-list(): Promise<Volume[]>
+list(): Promise<Volume[]>;
 ```
 
 Lists all available Volumes.
@@ -165,9 +159,13 @@ type Volume = VolumeDto & {
 
 Represents a Daytona Volume which is a shared storage volume for Sandboxes.
 
-**Type declaration**:
+### Type Declaration
 
-- `\_\_brand` _"Volume"_
+#### \_\_brand
+
+```ts
+__brand: "Volume";
+```
 
 ## See Also
 - [Python SDK - volume](../python-sdk/sync/volume.md)

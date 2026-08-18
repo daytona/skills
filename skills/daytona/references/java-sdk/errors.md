@@ -19,7 +19,9 @@
 - DaytonaGitDirtyWorktreeException
 - DaytonaGitMergeConflictException
 - DaytonaGitPushRejectedException
+- DaytonaGitRemoteRejectedException
 - DaytonaGitRepoNotFoundException
+- DaytonaGitTransportFailedException
 - DaytonaGoneException
 - DaytonaInternalServerException
 - DaytonaInvalidFilePathException
@@ -1198,6 +1200,56 @@ public DaytonaGitPushRejectedException(String message, Throwable cause, String c
 - `code` _String_ -
 - `source` _String_ -
 
+## DaytonaGitRemoteRejectedException
+
+The git remote rejected the operation (hooks, branch protection or quota).
+
+Subclass of `DaytonaUnprocessableEntityException`.
+
+### Constructors
+
+#### new DaytonaGitRemoteRejectedException()
+```java
+public DaytonaGitRemoteRejectedException(String message)
+```
+
+**Parameters**:
+
+- `message` _String_ -
+
+#### new DaytonaGitRemoteRejectedException()
+```java
+public DaytonaGitRemoteRejectedException(String message, Throwable cause)
+```
+
+**Parameters**:
+
+- `message` _String_ -
+- `cause` _Throwable_ -
+
+#### new DaytonaGitRemoteRejectedException()
+```java
+public DaytonaGitRemoteRejectedException(String message, String code, String source)
+```
+
+**Parameters**:
+
+- `message` _String_ -
+- `code` _String_ -
+- `source` _String_ -
+
+#### new DaytonaGitRemoteRejectedException()
+```java
+public DaytonaGitRemoteRejectedException(String message, Throwable cause, String code, String source)
+```
+
+**Parameters**:
+
+- `message` _String_ -
+- `cause` _Throwable_ -
+- `code` _String_ -
+- `source` _String_ -
+
 ## DaytonaGitRepoNotFoundException
 
 The requested git repository does not exist.
@@ -1239,6 +1291,56 @@ public DaytonaGitRepoNotFoundException(String message, String code, String sourc
 #### new DaytonaGitRepoNotFoundException()
 ```java
 public DaytonaGitRepoNotFoundException(String message, Throwable cause, String code, String source)
+```
+
+**Parameters**:
+
+- `message` _String_ -
+- `cause` _Throwable_ -
+- `code` _String_ -
+- `source` _String_ -
+
+## DaytonaGitTransportFailedException
+
+The git remote was unreachable (DNS, TLS, connection or timeout failure).
+
+Subclass of `DaytonaBadGatewayException`.
+
+### Constructors
+
+#### new DaytonaGitTransportFailedException()
+```java
+public DaytonaGitTransportFailedException(String message)
+```
+
+**Parameters**:
+
+- `message` _String_ -
+
+#### new DaytonaGitTransportFailedException()
+```java
+public DaytonaGitTransportFailedException(String message, Throwable cause)
+```
+
+**Parameters**:
+
+- `message` _String_ -
+- `cause` _Throwable_ -
+
+#### new DaytonaGitTransportFailedException()
+```java
+public DaytonaGitTransportFailedException(String message, String code, String source)
+```
+
+**Parameters**:
+
+- `message` _String_ -
+- `code` _String_ -
+- `source` _String_ -
+
+#### new DaytonaGitTransportFailedException()
+```java
+public DaytonaGitTransportFailedException(String message, Throwable cause, String code, String source)
 ```
 
 **Parameters**:

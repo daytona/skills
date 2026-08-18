@@ -3,6 +3,7 @@
 - Tier-based network restrictions
 - Create sandboxes with network restrictions
 - Update network settings while a sandbox is running
+- Outbound proxy
 - Network allow list format
 - Domain allow list format
 - Test network access
@@ -14,13 +15,14 @@
 
 Network limits control outbound internet access from sandboxes. Each sandbox runs behind a firewall that restricts which external IP addresses and domains it can reach, preventing untrusted code from exfiltrating data or contacting arbitrary hosts.
 
-Default network policies are applied automatically based on your organization's tier. You can also configure access per sandbox using three parameters:
+Default network policies are applied automatically based on your organization's tier. You can also configure access per sandbox using these parameters:
 
 - **`networkAllowList`** for IPv4 CIDR ranges
 - **`domainAllowList`** for domains and wildcard domains
 - **`networkBlockAll`** to block all outbound traffic
+- **`outboundProxyUrl`** to route sandbox HTTP(S) traffic through an upstream proxy
 
-Set these parameters when [creating a sandbox](#create-sandboxes-with-network-restrictions) or [update them while the sandbox is running](#update-network-settings-while-a-sandbox-is-running).
+Set firewall parameters when [creating a sandbox](#create-sandboxes-with-network-restrictions) or [update them while the sandbox is running](#update-network-settings-while-a-sandbox-is-running). Set [**`outboundProxyUrl`**](#outbound-proxy) only at create time.
 
 ## Tier-based network restrictions
 
@@ -33,9 +35,9 @@ Network limits are automatically applied to sandboxes based on your organization
 
 ## Create sandboxes with network restrictions
 
-Create a sandbox with network restrictions to control outbound internet access.
+Create a sandbox with network restrictions.
 
-The options are mutually exclusive. Set at most one non-empty value. Sending a conflicting combination returns a `400` error. Empty-string allow lists count as unset and never conflict.
+Set `networkAllowList`, `domainAllowList`, or `networkBlockAll` when creating a sandbox to control which external hosts the sandbox can reach. The options are mutually exclusive. Set at most one non-empty value. Sending a conflicting combination returns a `400` error. Empty-string allow lists count as unset and never conflict.
 
 ```python
 from daytona import CreateSandboxFromSnapshotParams, Daytona
@@ -93,6 +95,38 @@ sandbox.update_network_settings(network_allow_list='')
 
 # Clear a stored domain allow list
 sandbox.update_network_settings(domain_allow_list='')
+```
+
+## Outbound proxy
+
+Create a sandbox with an outbound proxy.
+
+An outbound proxy sends a sandbox's HTTP(S) egress through a proxy you control. You can set the `outboundProxyUrl` parameter when creating a sandbox to specify the upstream proxy URL Daytona should chain to. Daytona routes matching traffic through its egress proxy to that upstream instead of dialing destinations directly.
+
+1. Daytona stores the proxy URL on the sandbox (encrypted at rest) and sets **`HTTP_PROXY`** (and **`HTTPS_PROXY`**) inside the sandbox.
+2. HTTP(S) clients that respect those variables send traffic through Daytona's egress proxy, which chains to your upstream.
+3. Clients that do not respect **`HTTP_PROXY`** are blocked at egress.
+
+The URL may use `http` or `https` and may include credentials in the userinfo, for example `http://user:pass@proxy.example.com:3128`. Implement [domain allow listing](#domain-allow-list-format) on your own proxy to control which destinations the sandbox can reach.
+
+| **Constraint** | **Value**                                                                    |
+| -------------- | ---------------------------------------------------------------------------- |
+| Schemes        | **`http`**, **`https`**                                                      |
+| Max length     | **`2048`** characters                                                        |
+| Host           | Must not be **`localhost`** or a private, loopback, or link-local IP literal |
+
+```python
+from daytona import CreateSandboxFromSnapshotParams, Daytona
+
+daytona = Daytona()
+
+sandbox = daytona.create(CreateSandboxFromSnapshotParams(
+    outbound_proxy_url='http://user:pass@proxy.example.com:3128',
+))
+
+# Returned on single-sandbox reads
+sandbox = daytona.get(sandbox.id)
+print(sandbox.outbound_proxy_url)
 ```
 
 ## Network allow list format

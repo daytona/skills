@@ -27,6 +27,7 @@ It can be initialized either with explicit configuration or using environment va
 - `volume` _VolumeService_ - Service for managing volumes.
 - `snapshot` _SnapshotService_ - Service for managing snapshots.
 - `secret` _SecretService_ - Service for managing secrets.
+- `warm_pool` _WarmPoolService_ - Service for managing warm pools.
 
 
 **Example**:
@@ -466,8 +467,17 @@ Base parameters for creating a new Sandbox.
 - `network_block_all` _bool | None_ - Whether to block all network access for the Sandbox.
 - `network_allow_list` _str | None_ - Comma-separated list of allowed CIDR network addresses for the Sandbox.
 - `domain_allow_list` _str | None_ - Comma-separated list of allowed domains for the Sandbox.
+- `outbound_proxy_url` _str | None_ - Outbound proxy URL to route the Sandbox HTTP(S) traffic through. Applied
+  via the HTTP(S)_PROXY environment variables (convenience routing, not a security boundary on its own);
+  combine with domain_allow_list for unbypassable network-layer enforcement.
+- `otel_endpoint_override` _str | None_ - OTel collector endpoint override for the Sandbox. When set,
+  sandbox OTel data is sent to this endpoint instead of the default collector and will not be
+  available in the Daytona analytics API or dashboard.
 - `ephemeral` _bool | None_ - Whether the Sandbox should be ephemeral.
   If True, auto_delete_interval will be set to 0.
+- `spot` _bool | None_ - GPU-only. When True, the Sandbox may be instantly terminated without notice
+  to free GPU capacity for an on-demand (non-spot) GPU Sandbox. Rejected when the Sandbox
+  requests no GPUs.
 - `linked_sandbox` _str | None_ - ID or name of an existing Sandbox to link the new Sandbox to. The new
   Sandbox will be scheduled on the same runner as the linked Sandbox so a local network can be
   established between them. Linked Sandboxes must be

@@ -23,10 +23,10 @@ Provides file system operations within a Sandbox.
 
 ### Constructors
 
-#### new FileSystem()
+#### Constructor
 
 ```ts
-new FileSystem(clientConfig: Configuration, apiClient: FileSystemApi): FileSystem
+new FileSystem(clientConfig: Configuration, apiClient: FileSystemApi): FileSystem;
 ```
 
 **Parameters**:
@@ -44,7 +44,7 @@ new FileSystem(clientConfig: Configuration, apiClient: FileSystemApi): FileSyste
 #### createFolder()
 
 ```ts
-createFolder(path: string, mode: string): Promise<void>
+createFolder(path: string, mode: string): Promise<void>;
 ```
 
 Create a new directory in the Sandbox with specified permissions.
@@ -66,12 +66,10 @@ Create a new directory in the Sandbox with specified permissions.
 await fs.createFolder('app/data', '755');
 ```
 
-***
-
 #### deleteFile()
 
 ```ts
-deleteFile(path: string, recursive?: boolean): Promise<void>
+deleteFile(path: string, recursive?: boolean): Promise<void>;
 ```
 
 Deletes a file or directory from the Sandbox.
@@ -93,14 +91,12 @@ Deletes a file or directory from the Sandbox.
 await fs.deleteFile('app/temp.log');
 ```
 
-***
-
 #### downloadFile()
 
 ##### Call Signature
 
 ```ts
-downloadFile(remotePath: string, timeout?: number): Promise<Buffer<ArrayBufferLike>>
+downloadFile(remotePath: string, timeout?: number): Promise<Buffer<ArrayBufferLike>>;
 ```
 
 Downloads a file from the Sandbox. This method loads the entire file into memory, so it is not recommended
@@ -130,7 +126,7 @@ console.log('File content:', fileBuffer.toString());
 downloadFile(
    remotePath: string,
    localPath: string,
-timeout?: number): Promise<void>
+timeout?: number): Promise<void>;
 ```
 
 Downloads a file from the Sandbox and saves it to a local file. This method uses streaming to download the file,
@@ -154,12 +150,10 @@ so it is recommended for downloading larger files.
 await fs.downloadFile('tmp/data.json', 'local_file.json');
 ```
 
-***
-
 #### downloadFiles()
 
 ```ts
-downloadFiles(files: FileDownloadRequest[], timeoutSec?: number): Promise<FileDownloadResponse[]>
+downloadFiles(files: FileDownloadRequest[], timeoutSec?: number): Promise<FileDownloadResponse[]>;
 ```
 
 Downloads multiple files from the Sandbox. If the files already exist locally, they will be overwritten.
@@ -198,14 +192,12 @@ results.forEach(result => {
 });
 ```
 
-***
-
 #### downloadFileStream()
 
 ##### Call Signature
 
 ```ts
-downloadFileStream(remotePath: string, timeout?: number): Promise<Readable>
+downloadFileStream(remotePath: string, timeout?: number): Promise<Readable>;
 ```
 
 Downloads a single file from the Sandbox as a readable stream without buffering
@@ -246,7 +238,7 @@ stream.pipe(createWriteStream('local-file.bin'));
 ##### Call Signature
 
 ```ts
-downloadFileStream(remotePath: string, options?: DownloadStreamOptions): Promise<Readable>
+downloadFileStream(remotePath: string, options?: DownloadStreamOptions): Promise<Readable>;
 ```
 
 Downloads a single file from the Sandbox as a readable stream without buffering
@@ -284,12 +276,10 @@ const stream = await sandbox.fs.downloadFileStream('outputs/large-file.bin', {
 stream.pipe(createWriteStream('local-file.bin'));
 ```
 
-***
-
 #### findFiles()
 
 ```ts
-findFiles(path: string, pattern: string): Promise<Match[]>
+findFiles(path: string, pattern: string): Promise<Match[]>;
 ```
 
 Searches for text patterns within files in the Sandbox.
@@ -314,12 +304,10 @@ matches.forEach(match => {
 });
 ```
 
-***
-
 #### getFileDetails()
 
 ```ts
-getFileDetails(path: string): Promise<FileInfo>
+getFileDetails(path: string): Promise<FileInfo>;
 ```
 
 Retrieves detailed information about a file or directory.
@@ -341,14 +329,12 @@ const info = await fs.getFileDetails('app/config.json');
 console.log(`Size: ${info.size}, Modified: ${info.modTime}`);
 ```
 
-***
-
 #### listFiles()
 
 ```ts
 listFiles(path: string, options?: {
-  depth: number;
-}): Promise<FileInfo[]>
+  depth?: number;
+}): Promise<FileInfo[]>;
 ```
 
 Lists contents of a directory in the Sandbox.
@@ -380,12 +366,10 @@ const tree = await fs.listFiles('app/src', { depth: 2 });
 tree.forEach(file => console.log(file.path));
 ```
 
-***
-
 #### moveFiles()
 
 ```ts
-moveFiles(source: string, destination: string): Promise<void>
+moveFiles(source: string, destination: string): Promise<void>;
 ```
 
 Moves or renames a file or directory.
@@ -407,15 +391,13 @@ Moves or renames a file or directory.
 await fs.moveFiles('app/temp/data.json', 'app/data/data.json');
 ```
 
-***
-
 #### replaceInFiles()
 
 ```ts
 replaceInFiles(
    files: string[],
    pattern: string,
-newValue: string): Promise<ReplaceResult[]>
+newValue: string): Promise<ReplaceResult[]>;
 ```
 
 Replaces text content in multiple files.
@@ -442,12 +424,10 @@ const results = await fs.replaceInFiles(
 );
 ```
 
-***
-
 #### searchFiles()
 
 ```ts
-searchFiles(path: string, pattern: string): Promise<SearchFilesResponse>
+searchFiles(path: string, pattern: string): Promise<SearchFilesResponse>;
 ```
 
 Searches for files and directories by name pattern in the Sandbox.
@@ -470,12 +450,10 @@ const result = await fs.searchFiles('app', '*.ts');
 result.files.forEach(file => console.log(file));
 ```
 
-***
-
 #### setFilePermissions()
 
 ```ts
-setFilePermissions(path: string, permissions: FilePermissionsParams): Promise<void>
+setFilePermissions(path: string, permissions: FilePermissionsParams): Promise<void>;
 ```
 
 Sets permissions and ownership for a file or directory.
@@ -501,8 +479,6 @@ await fs.setFilePermissions('app/script.sh', {
 });
 ```
 
-***
-
 #### uploadFile()
 
 ##### Call Signature
@@ -511,7 +487,7 @@ await fs.setFilePermissions('app/script.sh', {
 uploadFile(
    file: Buffer,
    remotePath: string,
-timeout?: number): Promise<void>
+timeout?: number): Promise<void>;
 ```
 
 Uploads a file to the Sandbox. This method loads the entire file into memory, so it is not recommended
@@ -541,7 +517,7 @@ await fs.uploadFile(Buffer.from('{"setting": "value"}'), 'tmp/config.json');
 uploadFile(
    localPath: string,
    remotePath: string,
-timeout?: number): Promise<void>
+timeout?: number): Promise<void>;
 ```
 
 Uploads a file from the local file system to the Sandbox. This method uses streaming to upload the file,
@@ -565,12 +541,10 @@ so it is recommended for uploading larger files.
 await fs.uploadFile('local_file.txt', 'tmp/file.txt');
 ```
 
-***
-
 #### uploadFiles()
 
 ```ts
-uploadFiles(files: FileUpload[], timeout?: number): Promise<void>
+uploadFiles(files: FileUpload[], timeout?: number): Promise<void>;
 ```
 
 Uploads multiple files to the Sandbox. If files already exist at the destination paths,
@@ -608,15 +582,13 @@ const files = [
 await fs.uploadFiles(files);
 ```
 
-***
-
 #### uploadFileStream()
 
 ```ts
 uploadFileStream(
    source: UploadSource,
    remotePath: string,
-options?: UploadStreamOptions): Promise<void>
+options?: UploadStreamOptions): Promise<void>;
 ```
 
 Uploads a single file to the Sandbox using true streaming, with optional progress
@@ -666,7 +638,7 @@ Represents metadata for a file download operation.
 - `destination?` _string_ - Destination path in the local filesystem where the file content will be streamed to.
 - `error?` _string_ - Error message if the download failed, undefined if successful.
 - `errorDetails?` _FileDownloadErrorDetails_ - Structured error metadata for a failed download item.
-- `result?` _string \| Buffer\<ArrayBufferLike\> \| Uint8Array\<ArrayBufferLike\>_ - The download result - file path (if destination provided in the request)
+- `result?` _string \| Uint8Array\<ArrayBufferLike\> \| Buffer\<ArrayBufferLike\>_ - The download result - file path (if destination provided in the request)
     or bytes content (if no destination in the request), undefined if failed or no data received.
 ## DownloadStreamOptions
 
@@ -674,7 +646,7 @@ Options for streaming file downloads.
 
 **Properties**:
 
-- `onProgress()?` _\(progress: DownloadProgress\) =\> void_ - Callback invoked with cumulative progress information.
+- `onProgress?` _\(progress: DownloadProgress\) =\> void_ - Callback invoked with cumulative progress information.
 
     **Parameters**:
 
@@ -754,7 +726,7 @@ Options for streaming file uploads.
 
 **Properties**:
 
-- `onProgress()?` _\(progress: UploadProgress\) =\> void_ - Callback invoked with cumulative progress information.
+- `onProgress?` _\(progress: UploadProgress\) =\> void_ - Callback invoked with cumulative progress information.
 
     **Parameters**:
 
@@ -768,34 +740,32 @@ Options for streaming file uploads.
 - `timeout?` _number_ - Timeout in seconds. 0 means no timeout. Default is 30 minutes.
 ## DownloadProgress
 
-```ts
-type DownloadProgress = {
-  bytesReceived: number;
-  totalBytes: number;
-};
-```
-
-**Type declaration**:
+**Properties**:
 
 - `bytesReceived` _number_ - Cumulative bytes received so far.
 - `totalBytes?` _number_ - Total bytes expected, if known. Undefined if unavailable.
 
 
 
+```ts
+type DownloadProgress = {
+  bytesReceived: number;
+  totalBytes?: number;
+};
+```
 ## UploadProgress
+
+**Properties**:
+
+- `bytesSent` _number_ - Cumulative bytes sent so far.
+
+
 
 ```ts
 type UploadProgress = {
   bytesSent: number;
 };
 ```
-
-**Type declaration**:
-
-- `bytesSent` _number_ - Cumulative bytes sent so far.
-
-
-
 ## UploadSource
 
 ```ts
