@@ -148,6 +148,18 @@ def outbound_proxy_url()
 - `String, nil` - Outbound proxy URL to route the sandbox HTTP(S) traffic through.
 Not returned by list results; call #refresh on each item to populate.
 
+#### otel_endpoint_override()
+
+```ruby
+def otel_endpoint_override()
+
+```
+
+**Returns**:
+
+- `String, nil` - OpenTelemetry endpoint override for the sandbox.
+Not returned by list results; call #refresh on each item to populate.
+
 #### target()
 
 ```ruby
@@ -203,6 +215,17 @@ def spot_evicted_at()
 **Returns**:
 
 - `String, nil` - When the sandbox was evicted by spot preemption
+
+#### gpu_type()
+
+```ruby
+def gpu_type()
+
+```
+
+**Returns**:
+
+- `String, nil` - The GPU type assigned to the sandbox
 
 #### memory()
 
@@ -396,6 +419,28 @@ def last_activity_at()
 **Returns**:
 
 - `String` - The last activity timestamp of the sandbox
+
+#### sandbox_class()
+
+```ruby
+def sandbox_class()
+
+```
+
+**Returns**:
+
+- `String, nil` - The class of the sandbox (e.g. "linux-vm", "container")
+
+#### warm_pool_id()
+
+```ruby
+def warm_pool_id()
+
+```
+
+**Returns**:
+
+- `String, nil` - ID of the warm pool this sandbox waits in; set only while it is an unclaimed member
 
 #### daemon_version()
 

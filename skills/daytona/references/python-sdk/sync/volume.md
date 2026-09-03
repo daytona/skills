@@ -37,6 +37,7 @@ Service for managing Daytona Volumes. Can be used to list, get, create and delet
 #### VolumeService.list
 
 ```python
+@intercept_errors(message_prefix="Failed to list volumes: ")
 def list() -> list[Volume]
 ```
 
@@ -87,6 +88,7 @@ print(f"{volume.name} ({volume.id})")
 #### VolumeService.create
 
 ```python
+@intercept_errors(message_prefix="Failed to create volume: ")
 @with_instrumentation()
 def create(name: str) -> Volume
 ```
@@ -114,6 +116,7 @@ print(f"{volume.name} ({volume.id}); state: {volume.state}")
 #### VolumeService.delete
 
 ```python
+@intercept_errors(message_prefix="Failed to delete volume: ")
 @with_instrumentation()
 def delete(volume: Volume) -> None
 ```

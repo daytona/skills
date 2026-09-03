@@ -987,6 +987,51 @@ public String getToolboxProxyUrl()
 
 - `String` - toolbox proxy URL.
 
+#### getSandboxClass()
+```java
+public SandboxClass getSandboxClass()
+```
+
+**Returns**:
+
+- `SandboxClass` - sandbox class (e.g. linux-vm, container), or `null` when not set.
+
+#### getWarmPoolId()
+```java
+public String getWarmPoolId()
+```
+
+**Returns**:
+
+- `String` - warm-pool ID the Sandbox belongs to, or `null` when not in a warm pool.
+
+#### getGpuType()
+```java
+public GpuType getGpuType()
+```
+
+**Returns**:
+
+- `GpuType` - GPU type (e.g. H100), or `null` when the Sandbox has no GPU.
+
+#### getDesiredState()
+```java
+public SandboxDesiredState getDesiredState()
+```
+
+**Returns**:
+
+- `SandboxDesiredState` - desired lifecycle state requested by the user, or `null` when not set.
+
+#### getDaemonVersion()
+```java
+public String getDaemonVersion()
+```
+
+**Returns**:
+
+- `String` - version of the Daytona daemon running in the Sandbox, or `null` when unknown.
+
 #### getEnv()
 ```java
 public Map<String, String> getEnv()
@@ -1092,6 +1137,19 @@ Not returned by `Daytona#list`; call `#refreshData()` on each item to populate.
 **Returns**:
 
 - `String` - backup timestamp, or `null`
+
+#### getOtelEndpointOverride()
+```java
+public String getOtelEndpointOverride()
+```
+
+Returns the OpenTelemetry collector endpoint override for this Sandbox.
+
+Not returned by `Daytona#list`; call `#refreshData()` on each item to populate.
+
+**Returns**:
+
+- `String` - OTel endpoint URL, or `null`
 
 #### getProcess()
 ```java

@@ -4,6 +4,7 @@
 - Getting Started
 - Configuration
 - Real-time state updates
+- Reference
 
 
 
@@ -119,3 +120,24 @@ Daytona daytona = new Daytona(config);
 ```
 
 See the [`DaytonaConfig` reference](./config.md) for details.
+
+## Reference
+
+The Java SDK reference documents the following modules:
+
+- [CodeInterpreter](./code-interpreter.md)
+- [ComputerUse](./computer-use.md)
+- [Daytona](./daytona.md)
+- [DaytonaConfig](./config.md)
+- [Errors](./errors.md)
+- [FileSystem](./file-system.md)
+- [Git](./git.md)
+- [Image](./image.md)
+- [LspServer](./lsp-server.md)
+- [Process](./process.md)
+- [Pty](./pty.md)
+- [PtyHandle](./pty-handle.md)
+- [Sandbox](./sandbox.md)
+- [SecretService](./secret-service.md)
+- [SnapshotService](./snapshot.md)
+- [VolumeService](./volume-service.md)

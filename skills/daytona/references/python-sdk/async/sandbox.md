@@ -41,9 +41,11 @@ Represents a Daytona Sandbox.
 - `spot` _bool_ - Whether this is a spot GPU Sandbox. Spot Sandboxes may be instantly terminated
   to free capacity for on-demand GPU Sandboxes.
 - `spot_evicted_at` _str | None_ - When the Sandbox was evicted by spot preemption.
+- `gpu_type` _GpuType | None_ - The GPU type assigned to the Sandbox.
 - `memory` _int_ - Amount of memory allocated to the Sandbox in GiB.
 - `disk` _int_ - Amount of disk space allocated to the Sandbox in GiB.
 - `state` _SandboxState | None_ - Current state of the Sandbox (e.g., "started", "stopped").
+- `desired_state` _SandboxDesiredState | None_ - The desired state of the Sandbox.
 - `error_reason` _str | None_ - Error message if Sandbox is in error state.
 - `recoverable` _bool | None_ - Whether the Sandbox error is recoverable.
 - `backup_state` _str | None_ - Current state of Sandbox backup.
@@ -74,6 +76,14 @@ Represents a Daytona Sandbox.
   Applied via the HTTP(S)_PROXY environment variables (convenience routing, not a security boundary on
   its own); combine with domain_allow_list for unbypassable network-layer enforcement. (not returned by
   list results; call `refresh_data()` on each item to populate).
+- `sandbox_class` _str | None_ - The class of the Sandbox.
+- `warm_pool_id` _str | None_ - ID of the warm pool this Sandbox waits in; set only while it is
+  an unclaimed member.
+- `daemon_version` _str | None_ - The version of the daemon running in the Sandbox.
+- `otel_endpoint_override` _str | None_ - OTel collector endpoint override for this Sandbox.
+  When set, Sandbox OTel data is sent to this endpoint instead of the default collector
+  and is not available in the Daytona analytics API or dashboard (not returned by list
+  results; call `refresh_data()` on each item to populate).
 - `toolbox_proxy_url` _str_ - The toolbox proxy URL for the Sandbox.
 
 ##### env: `dict[str, str] | None`

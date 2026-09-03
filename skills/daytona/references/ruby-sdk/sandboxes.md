@@ -1,22 +1,7 @@
 ## Contents
 
 - Create sandboxes
-- VM sandboxes
-- GPU sandboxes
-- Ephemeral sandboxes
-- Linked sandboxes
-- Start sandboxes
-- Get sandbox
-- List sandboxes
-- Stop sandboxes
-- Archive sandboxes
-- Pause / resume sandboxes
-- Recover sandboxes
-- Resize sandboxes
-- Label sandboxes
-- Delete sandboxes
-- Create snapshot from sandbox
-- Fork sandboxes
+- Sandbox operations
 - Sandbox lifecycle
 - Automated lifecycle management
 - See Also
@@ -62,7 +47,7 @@ Create a sandbox from a [default snapshot](./snapshots.md#default-snapshots).
 
 1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
 2. Click <Button>Create Sandbox</Button>
-3. Select a **`snapshot`**
+3. Select a <Button>Snapshot</Button>
 4. Click <Button>Create</Button>
 
 ```ruby
@@ -72,6 +57,26 @@ daytona = Daytona::Daytona.new
 sandbox = daytona.create(
   Daytona::CreateSandboxFromSnapshotParams.new(
     snapshot: 'daytona-small'
+  )
+)
+```
+
+### Images
+
+Create a sandbox from an image. The image must be publicly accessible and include either a tag or a digest (e.g. **`ubuntu:22.04`**); the **`latest`**/**`lts`**/**`stable`** tags are not supported.
+
+1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+2. Click <Button>Create Sandbox</Button>
+3. Enter an <Button>Image</Button> (e.g. **`ubuntu:22.04`**) as the source for the sandbox
+4. Click <Button>Create</Button>
+
+```ruby
+require 'daytona'
+
+daytona = Daytona::Daytona.new
+sandbox = daytona.create(
+  Daytona::CreateSandboxFromImageParams.new(
+    image: Daytona::Image.base('ubuntu:22.04')
   )
 )
 ```
@@ -90,7 +95,7 @@ Sandboxes have **1 vCPU**, **1GB RAM**, and **3GiB disk** by default. Organizati
 
 1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
 2. Click <Button>Create Sandbox</Button>
-3. Enter a base <Button>Image</Button> (e.g. **`ubuntu:22.04`**) as the source for the sandbox
+3. Enter an <Button>Image</Button> (e.g. **`ubuntu:22.04`**) as the source for the sandbox
 4. Set <Button>Resources</Button> (**`cpu`**, **`memory`**, **`disk`**) to the values within your organization's limits
 5. Click <Button>Create</Button>
 
@@ -115,11 +120,7 @@ sandbox = daytona.create(
 
 Create a sandbox with a specific language runtime.
 
-Daytona sandboxes support **Python**, **TypeScript**, and **JavaScript** programming language runtimes for direct code execution inside the sandbox. The `language` parameter controls which programming language runtime is used for the sandbox. If omitted, it defaults to `python`.
-
-- **`python`**
-- **`typescript`**
-- **`javascript`**
+Daytona sandboxes support **Python**, **TypeScript**, and **JavaScript** programming language runtimes for direct code execution inside the sandbox. The language parameter controls which programming language runtime is used for the sandbox. If omitted, it defaults to Python.
 
 ```ruby
 require 'daytona'
@@ -152,6 +153,11 @@ puts response.result
 
 Create a sandbox with environment variables. Use [secrets](https://www.daytona.io/docs/en/secrets) for API keys, tokens, and passwords.
 
+1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+2. Click <Button>Create Sandbox</Button>
+3. Click <Button>Add Variable</Button> and enter key-value pairs for each environment variable
+4. Click <Button>Create</Button>
+
 ```ruby
 require 'daytona'
 
@@ -182,32 +188,58 @@ daytona = Daytona::Daytona.new(Daytona::Config.new(target: 'us'))
 sandbox = daytona.create
 ```
 
-## VM sandboxes
+### VM sandboxes
 
-Daytona provides **VM sandboxes** for workloads that require a full virtual machine with a dedicated **Linux VM** or **Windows** operating system.
-
-VM sandboxes are distinct from container sandboxes and support VM-only capabilities:
+Daytona provides **VM sandboxes** for workloads that require a full virtual machine with a dedicated **Linux VM** or **Windows** operating system. VM sandboxes are distinct from container sandboxes and support VM-only capabilities:
 
 - [Fork sandboxes](#fork-sandboxes)
 - [Pause and resume sandboxes](#pause--resume-sandboxes)
-- [Create snapshot from sandbox](#create-snapshot-from-sandbox)
+- [Create snapshot from sandbox](./snapshots.md#create-snapshot-from-sandbox)
 > **Note: Limitations**
 > VM sandboxes can currently only be created from existing VM snapshots. Dynamic builds through the declarative builder are supported for container sandboxes only.
 
 **Linux VM:**
 
-**Create from snapshot:**
+**Custom:**
+
+Create a Linux VM sandbox.
+
+1. Go to [Daytona Snapshots ↗](https://app.daytona.io/dashboard/snapshots)
+2. Click <Button>Create Snapshot</Button>
+3. Enter <Button>Snapshot Name</Button> (e.g. **`my-vm-snapshot`**)
+4. Enter an <Button>Image</Button> (e.g. **`ubuntu:22.04`**)
+5. Select <Button>Sandbox Class</Button>: **`LINUX VM`**
+6. Click <Button>Create</Button>
+7. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+8. Click <Button>Create Sandbox</Button>
+9. Select a VM <Button>Snapshot</Button> (e.g. **`my-vm-snapshot`**)
+10. Click <Button>Create</Button>
+
+```ruby
+require 'daytona'
+
+daytona = Daytona::Daytona.new
+
+# 1. Create a VM snapshot (Linux VM class)
+daytona.snapshot.create(
+  Daytona::CreateSnapshotParams.new(
+    name: 'my-vm-snapshot',
+    image: 'ubuntu:22.04',
+    sandbox_class: DaytonaApiClient::SandboxClass::LINUX_VM
+  )
+)
+
+# 2. Create a VM sandbox from the snapshot
+sandbox = daytona.create(Daytona::CreateSandboxFromSnapshotParams.new(snapshot: 'my-vm-snapshot'))
+```
+
+**Default:**
 
 Create a Linux VM sandbox from a default snapshot.
 
 1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
 2. Click <Button>Create Sandbox</Button>
-3. Select a Linux VM snapshot:
-
-    - **`daytona-vm-small`**
-    - **`daytona-vm-medium`**
-    - **`daytona-vm-large`**
-
+3. Select a VM <Button>Snapshot</Button>: **`daytona-vm-small`**, **`daytona-vm-medium`**, **`daytona-vm-large`**
 4. Click <Button>Create</Button>
 
 ```ruby
@@ -221,44 +253,13 @@ sandbox = daytona.create(
 )
 ```
 
-**Create from custom snapshot:**
-
-Create a Linux VM sandbox from a custom snapshot.
-
-1. Create a snapshot from a base **`image`**
-2. Set sandbox class to **`LINUX_VM`**
-3. Create a Linux VM sandbox from the snapshot
-
-```ruby
-require 'daytona'
-
-daytona = Daytona::Daytona.new
-
-# 1. Create a VM snapshot (linux-vm class)
-daytona.snapshot.create(
-  Daytona::CreateSnapshotParams.new(
-    name: 'my-vm-snapshot',
-    image: 'ubuntu:22.04',
-    sandbox_class: DaytonaApiClient::SandboxClass::LINUX_VM
-  )
-)
-
-# 2. Create a VM sandbox from the snapshot
-sandbox = daytona.create(Daytona::CreateSandboxFromSnapshotParams.new(snapshot: 'my-vm-snapshot'))
-```
-
 **Windows:**
 
 Create a Windows sandbox.
 
 1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
 2. Click <Button>Create Sandbox</Button>
-3. Select a Windows snapshot:
-
-    - **`windows-small`**
-    - **`windows-medium`**
-    - **`windows-large`**
-
+3. Select a Windows <Button>Snapshot</Button>: **`windows-small`**, **`windows-medium`**, **`windows-large`**
 4. Click <Button>Create</Button>
 
 ```ruby
@@ -272,9 +273,9 @@ sandbox = daytona.create(
 )
 ```
 
-## GPU sandboxes
+### GPU sandboxes
 
-Daytona provides **GPU sandboxes** for workloads that require NVIDIA GPU acceleration, such as model inference, fine-tuning, and CUDA-accelerated compute. GPU sandboxes are ephemeral and support up to **16 vCPUs**, **192GB RAM**, and **512GB disk**. Supported GPU types:
+Daytona provides **GPU sandboxes** for workloads that require NVIDIA GPU acceleration, such as model inference, fine-tuning, and CUDA-accelerated compute. GPU sandboxes are ephemeral and support up to **8 GPUs**. Resource limits scale with the number of GPU units: each GPU adds up to **16 vCPUs**, **192GB RAM**, and **512GB disk**. Supported GPU types:
 
 - **NVIDIA H100**
 - **NVIDIA H200**
@@ -286,15 +287,44 @@ GPU sandboxes are on-demand. See [spot GPU sandboxes](#spot-gpu-sandboxes) for p
 
 > Due to possible events of temporary GPU scarcity, the target/region requested for GPU sandboxes is ignored by default. If you need access to a specific geographical location, contact us at support@daytona.io.
 
-**Create from snapshot:**
+**Custom:**
+
+Create a GPU sandbox with custom GPU resources: units and types.
+
+1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+2. Click <Button>Create Sandbox</Button>
+3. Enter an <Button>Image</Button> (e.g. **`pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime`**)
+5. Set <Button>GPU</Button> to the number of GPU units (e.g. **`1`**)
+6. Select <Button>GPU Type</Button>: **`H100`**, **`H200`**, **`RTX-PRO-6000`**, **`RTX-4090`**, **`RTX-5090`**
+
+    The GPU type field accepts a single value or an ordered list of preferred types.
+
+    Daytona uses the first available type in the order you provide. This lets you fall back from a preferred GPU to an alternative when the first choice is not available.
+
+```ruby
+require 'daytona'
+
+daytona = Daytona::Daytona.new
+sandbox = daytona.create(
+  Daytona::CreateSandboxFromImageParams.new(
+    image: 'pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime',
+    auto_delete_interval: 0,
+    resources: Daytona::Resources.new(
+      gpu: 1,
+      gpu_type: [Daytona::GpuType::H100, Daytona::GpuType::RTX_PRO_6000]
+    )
+  )
+)
+```
+
+**Default:**
 
 Create a GPU sandbox from a default snapshot.
 
 1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
 2. Click <Button>Create Sandbox</Button>
-3. Select a **`daytona-gpu`** snapshot
-4. Select **`ephemeral`** or set **`auto-delete interval`** to **`0`**
-5. Click <Button>Create</Button>
+3. Select a GPU <Button>Snapshot</Button>: **`daytona-gpu`**
+4. Click <Button>Create</Button>
 
 ```ruby
 require 'daytona'
@@ -308,24 +338,19 @@ sandbox = daytona.create(
 )
 ```
 
-**Create with custom resources:**
+### Spot GPU sandboxes
 
-Create a GPU sandbox with custom GPU resources: units and types.
+Spot GPU sandboxes are preemptible and run on GPU capacity that is not being used by reserved (on-demand) sandboxes. They support the same GPU types, unit counts, and resource limits as on-demand GPU sandboxes.
 
-1. Create a sandbox from an **`image`**
-2. Set the **`auto-delete interval`** to **`0`** (ephemeral)
-3. Set the **`GPU`** to the number of GPU units
-4. Specify the **`GPU type`**(s):
+A spot GPU sandbox can be terminated at any time without notice when an on-demand GPU sandbox needs the capacity. Daytona does not send a preemption warning or a dedicated preemption webhook. Design workloads to tolerate immediate interruption.
 
-    The GPU type field accepts a single value or an ordered list of preferred types.
+When a spot GPU sandbox is destroyed, normal [sandbox lifecycle state](#sandbox-lifecycle) updates still apply. Daytona records when the preemption occurred with a `spotEvictedAt` timestamp. Sandboxes destroyed by spot GPU preemption remain retrievable for 24 hours.
 
-    Daytona uses the first available type in the order you provide. This lets you fall back from a preferred GPU to an alternative when the first choice is not available.
+Spot GPU sandboxes do not count against the organization's GPU quota. Available GPU capacity is the only limit. If no spot GPU is available, create fails immediately.
 
-    - **`H100`**
-    - **`H200`**
-    - **`RTX-PRO-6000`**
-    - **`RTX-4090`**
-    - **`RTX-5090`**
+**Custom:**
+
+Create a spot GPU sandbox with custom GPU resources: units and types.
 
 ```ruby
 require 'daytona'
@@ -333,27 +358,17 @@ require 'daytona'
 daytona = Daytona::Daytona.new
 sandbox = daytona.create(
   Daytona::CreateSandboxFromImageParams.new(
-    image: Daytona::Image.debian_slim('3.12'),
+    image: 'pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime',
     auto_delete_interval: 0,
-    resources: Daytona::Resources.new(
-      gpu: 1,
-      gpu_type: [Daytona::GpuType::H100, Daytona::GpuType::RTX_PRO_6000]
-    )
+    spot: true,
+    resources: Daytona::Resources.new(gpu: 1, gpu_type: Daytona::GpuType::H100)
   )
 )
 ```
 
-### Spot GPU sandboxes
+**Default:**
 
-Spot GPU sandboxes are preemptible and run on GPU capacity that is not being used by reserved (on-demand) sandboxes. A spot GPU sandbox can be terminated at any time without notice when an on-demand GPU sandbox needs the capacity. Daytona does not send a preemption warning or a dedicated preemption webhook. Design workloads to tolerate immediate interruption.
-
-When a spot GPU sandbox is destroyed, normal [sandbox lifecycle state](#sandbox-lifecycle) updates still apply. Daytona records when the preemption occurred with a `spotEvictedAt` timestamp to identify sandboxes destroyed by spot GPU preemption. Sandboxes destroyed by spot GPU preemption remain retrievable for 24 hours.
-
-Spot GPU sandboxes do not count against the organization's GPU quota. Available GPU capacity is the only limit. If no spot GPU is available, create fails immediately.
-
-**Create from snapshot:**
-
-Create a spot GPU sandbox from a default `daytona-gpu` snapshot.
+Create a spot GPU sandbox from a default snapshot.
 
 ```ruby
 require 'daytona'
@@ -368,44 +383,7 @@ sandbox = daytona.create(
 )
 ```
 
-**Create with custom resources:**
-
-Create a spot GPU sandbox with custom GPU resources: units and types.
-
-1. Create a sandbox from an **`image`**
-2. Set the **`auto-delete interval`** to **`0`** (ephemeral)
-3. Set **`spot`** to **`true`**
-4. Set the **`GPU`** to the number of GPU units
-5. Specify the **`GPU type`**(s):
-
-    The GPU type field accepts a single value or an ordered list of preferred types.
-
-    Daytona uses the first available type in the order you provide. This lets you fall back from a preferred GPU to an alternative when the first choice is not available.
-
-    - **`H100`**
-    - **`H200`**
-    - **`RTX-PRO-6000`**
-    - **`RTX-4090`**
-    - **`RTX-5090`**
-
-```ruby
-require 'daytona'
-
-daytona = Daytona::Daytona.new
-sandbox = daytona.create(
-  Daytona::CreateSandboxFromImageParams.new(
-    image: Daytona::Image.debian_slim('3.12'),
-    auto_delete_interval: 0,
-    spot: true,
-    resources: Daytona::Resources.new(
-      gpu: 1,
-      gpu_type: [Daytona::GpuType::H100, Daytona::GpuType::RTX_PRO_6000]
-    )
-  )
-)
-```
-
-## Ephemeral sandboxes
+### Ephemeral sandboxes
 
 Create an ephemeral sandbox. Ephemeral sandboxes are automatically deleted when stopped.
 
@@ -425,7 +403,7 @@ params = Daytona::CreateSandboxFromSnapshotParams.new(
 sandbox = daytona.create(params)
 ```
 
-## Linked sandboxes
+### Linked sandboxes
 
 Create a linked sandbox. Linked sandboxes attach ephemeral child sandboxes to a parent. Daytona schedules each child on the same runner as the parent and joins them into a shared link network so the group can communicate over local connections.
 
@@ -461,26 +439,11 @@ child = daytona.create(
 response = child.process.exec(command: "curl http://#{parent.id}:3000/")
 ```
 
-## Start sandboxes
+## Sandbox operations
 
-Start a sandbox.
+Sandbox operations manage sandboxes after creation. They cover discovery, inspection, and updates to sandbox metadata and resources. Once a sandbox exists, you can find it among others in your organization, inspect its configuration, and update attributes such as metadata and allocated resources. A sandbox transitions between states such as started, stopped, paused, and archived as part of the [sandbox lifecycle](#sandbox-lifecycle).
 
-1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
-2. Click the start icon (**▶**) next to the sandbox you want to start
-
-```ruby
-sandbox.start
-```
-
-## Get sandbox
-
-Get a sandbox by ID or name.
-
-```ruby
-sandbox = daytona.get('my-sandbox-id-or-name')
-```
-
-## List sandboxes
+### List sandboxes
 
 List sandboxes.
 
@@ -488,128 +451,33 @@ List sandboxes.
 daytona.list.each { |sandbox| puts sandbox.id }
 ```
 
-## Stop sandboxes
+### Get sandbox
 
-Stop a sandbox. The sandbox moves to the **stopped** state when shutdown completes. While a stop is in progress, the sandbox is in the **stopping** state and does not accept new requests.
+Get a sandbox by ID or name.
 
-**Container:**
+```ruby
+sandbox = daytona.get('my-sandbox-id-or-name')
+```
 
-Stopping terminates the running container. The filesystem is preserved, but memory state is not. Container sandboxes do not support pause; stop is the way to shut down a container sandbox when it is not in use.
+### Label sandboxes
+
+Set sandbox labels.
 
 1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
-2. Click the stop icon (**⏹**) next to the sandbox you want to stop
+2. Click <Button>Create Sandbox</Button>
+3. Click <Button>Add Labels</Button>
+4. Enter the labels in key-value pairs
 
 ```ruby
-sandbox.stop
+sandbox.labels = {
+  team: 'platform',
+  env: 'staging'
+}
 ```
 
-**Linux VM:**
+### Resize sandboxes
 
-Stopping shuts down the virtual machine while preserving the filesystem. Memory state is cleared. To preserve running process state without consuming CPU, use <u>[**pause / resume**](#pause--resume-sandboxes)</u>.
-
-1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
-2. Click the stop icon (**⏹**) next to the sandbox you want to stop
-
-```ruby
-sandbox.stop
-```
-
-**Windows:**
-
-Stopping shuts down the virtual machine while preserving the filesystem. Memory state is cleared. To preserve running process state without consuming CPU, use <u>[**pause / resume**](#pause--resume-sandboxes)</u>.
-
-1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
-2. Click the stop icon (**⏹**) next to the sandbox you want to stop
-
-```ruby
-sandbox.stop
-```
-> **Note: Force stop**
-> If you need a faster shutdown, use force stop (`force=true` / `--force`) to terminate the sandbox immediately. Force stop is ungraceful and should be used when quick termination is more important than process cleanup. Avoid force stop for normal shutdowns where the process should flush buffers, write final state, or run cleanup.
-
-## Archive sandboxes
-
-Archive a sandbox.
-
-**Container:**
-
-Archive moves a stopped sandbox's filesystem to object storage and frees disk quota.
-
-1. Ensure the sandbox is **stopped**
-2. **Archive** the sandbox
-3. Wait for the sandbox to reach the **archived** state
-4. **Start** the sandbox again when you need to use it
-
-```ruby
-sandbox.archive
-```
-
-**Linux VM:**
-
-Archive is not supported for Linux VM sandboxes. Stopping a Linux VM sandbox already offloads filesystem state and releases disk quota, so a separate archive step is not needed.
-
-**Windows:**
-
-Archive is not supported for Windows sandboxes. Stopping a Windows sandbox already offloads filesystem state and releases disk quota, so a separate archive step is not needed.
-
-<a id="pause-sandboxes"></a>
-## Pause / resume sandboxes
-
-Pause and resume a sandbox.
-
-**Container:**
-
-Pause is not supported for container sandboxes. The filesystem can be preserved on stop, but memory state is not. Use <u>[**stop**](#stop-sandboxes)</u> to shut down a container sandbox when it is not in use.
-
-**Linux VM:**
-
-The filesystem and memory state are preserved, and CPU is no longer consumed.
-
-1. Ensure the Linux VM sandbox is **started**
-2. **Pause** the Linux VM sandbox
-3. Wait for the Linux VM sandbox to reach the **paused** state
-4. **Resume** (start) the Linux VM sandbox again when you need to resume it
-
-```ruby
-sandbox.pause
-```
-
-**Windows:**
-
-The filesystem and memory state are preserved, and CPU is no longer consumed.
-
-1. Ensure the Windows sandbox is **started**
-2. **Pause** the Windows sandbox
-3. Wait for the Windows sandbox to reach the **paused** state
-4. **Resume** (start) the Windows sandbox again when you need to resume it
-
-```ruby
-sandbox.pause
-```
-
-## Recover sandboxes
-
-Recover a sandbox.
-
-1. Ensure the sandbox is in **error** state
-2. Check that the sandbox is **recoverable**
-3. Resolve any underlying issue that requires user intervention
-4. **Recover** the sandbox and wait for it to be ready
-
-```ruby
-# Check if the sandbox is in an error state before recovering
-if sandbox.state == 'error'
-  sandbox.recover
-end
-```
-
-```ruby
-sandbox.recover
-```
-
-## Resize sandboxes
-
-Resizing updates the sandbox resource allocation (`cpu`, `memory`, and `disk`) for that sandbox. CPU and memory control compute capacity for running workloads, while disk controls persistent filesystem capacity.
+Resizing updates the sandbox resource allocation (CPU, memory, and disk) for that sandbox. CPU and memory control compute capacity for running workloads, while disk controls the persistent filesystem capacity.
 
 On a running sandbox, you can increase CPU and memory without interruption. To decrease CPU or memory, or to increase disk capacity, stop the sandbox first. Disk size can only be increased and cannot be decreased.
 
@@ -636,148 +504,20 @@ cat /sys/fs/cgroup/memory.max   # bytes
 df -h /                         # disk
 ```
 
-## Label sandboxes
-
-Set sandbox labels.
-
-1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
-2. Click <Button>Create Sandbox</Button>
-3. Click <Button>Add Labels</Button>
-4. Enter the labels in key-value pairs
-
-```ruby
-sandbox.labels = {
-  team: 'platform',
-  env: 'staging'
-}
-```
-
-## Delete sandboxes
-
-Delete a sandbox.
-
-By default `delete` is fire-and-forget: it returns as soon as the API accepts the deletion request, without waiting for the sandbox to be destroyed. Pass the `wait` flag to block until the sandbox reaches the destroyed state.
-
-1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
-2. Click <Button>Delete</Button> next to the sandbox you want to delete.
-
-```ruby
-sandbox.delete
-
-# Block until the sandbox is destroyed
-sandbox.delete(60, wait: true)
-```
-
-## Create snapshot from sandbox
-
-Create a snapshot from a running or stopped sandbox.
-
-**Container:**
-
-Container sandboxes capture filesystem state only (**cold snapshot**):
-
-| **Snapshot type** | **Include memory**    | **Snapshot contents** | **Required sandbox state** |
-| ----------------- | --------------------- | --------------------- | -------------------------- |
-| Cold              | **`false`** (default) | Filesystem only       | Stopped                    |
-
-
-
-```ruby
-sandbox.experimental_create_snapshot(name: 'my-snapshot')
-```
-
-**Linux VM:**
-
-Linux VM sandboxes capture filesystem state only (**cold snapshot**) or filesystem and memory state (**hot snapshot**) through the `includeMemory` parameter:
-
-| **Snapshot type** | **Include memory**    | **Snapshot contents** | **Required sandbox state** |
-| ----------------- | --------------------- | --------------------- | -------------------------- |
-| Cold              | **`false`** (default) | Filesystem only       | Stopped                    |
-| Hot               | **`true`**            | Filesystem and memory | Started                    |
-
-
-
-```ruby
-# Cold snapshot (filesystem only, sandbox stopped)
-sandbox.experimental_create_snapshot(name: 'my-snapshot')
-
-# Hot snapshot (filesystem and memory, sandbox running)
-sandbox.experimental_create_snapshot(name: 'my-vm-snapshot', include_memory: true)
-```
-
-**Windows:**
-
-Windows sandboxes capture filesystem state only (**cold snapshot**) or filesystem and memory state (**hot snapshot**) through the `includeMemory` parameter:
-
-| **Snapshot type** | **Include memory**    | **Snapshot contents** | **Required sandbox state** |
-| ----------------- | --------------------- | --------------------- | -------------------------- |
-| Cold              | **`false`** (default) | Filesystem only       | Stopped                    |
-| Hot               | **`true`**            | Filesystem and memory | Started                    |
-
-
-
-```ruby
-# Cold snapshot (filesystem only, sandbox stopped)
-sandbox.experimental_create_snapshot(name: 'my-snapshot')
-
-# Hot snapshot (filesystem and memory, sandbox running)
-sandbox.experimental_create_snapshot(name: 'my-vm-snapshot', include_memory: true)
-```
-
-## Fork sandboxes
-
-Fork a sandbox.
-
-**Container:**
-
-Forking is not supported for container sandboxes. Use <u>[**create snapshot from sandbox**](#create-snapshot-from-sandbox)</u> to capture filesystem state, then create a new sandbox from that snapshot.
-
-**Linux VM:**
-
-Forking creates a duplicate of a Linux VM sandbox's filesystem and memory state in a new sandbox. The forked sandbox is fully independent: it can be started, stopped, and deleted without affecting the original.
-
-Daytona tracks the parent-child relationship in a fork tree, so you can trace a fork's lineage back to the sandbox it was created from. You can fork a fork to build branches. The parent sandbox cannot be deleted while it has active fork children.
-
-1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
-2. Click the three-dot menu (**⋮**) next to the started Linux VM sandbox you want to fork
-3. Select <Button>Fork</Button>
-
-```ruby
-# Fork sandbox through the Sandbox instance
-forkedSandbox = sandbox.fork(name: "my-forked-sandbox")
-```
-
-**Windows:**
-
-Forking creates a duplicate of a Windows sandbox's filesystem and memory state in a new sandbox. The forked sandbox is fully independent: it can be started, stopped, and deleted without affecting the original.
-
-Daytona tracks the parent-child relationship in a fork tree, so you can trace a fork's lineage back to the sandbox it was created from. You can fork a fork to build branches. The parent sandbox cannot be deleted while it has active fork children.
-
-1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
-2. Click the three-dot menu (**⋮**) next to the started Windows sandbox you want to fork
-3. Select <Button>Fork</Button>
-
-```ruby
-# Fork sandbox through the Sandbox instance
-forkedSandbox = sandbox.fork(name: "my-forked-sandbox")
-```
-
 ## Sandbox lifecycle
 
 Every sandbox moves through a lifecycle. A sandbox can have several different states. Each state reflects the status of your sandbox. A sandbox transitions between states in response to user actions, or through [automated lifecycle management](#automated-lifecycle-management) based on inactivity intervals. Available lifecycle features depend on the sandbox class.
 
+
 | **Lifecycle feature**                             | **Container** | **Linux VM** | **Windows** | **GPU** |
 | ------------------------------------------------- | ------------- | ------------ | ----------- | ------- |
 | Start sandboxes                                   | ✓             | ✓            | ✓           | ✓       |
-| Stop sandboxes                                    | ✓             | ✓            | ✓           | ✓       |
 | Pause / resume sandboxes                          | ✗             | ✓            | ✓           | ✗       |
+| Stop sandboxes                                    | ✓             | ✓            | ✓           | ✓       |
 | Archive sandboxes                                 | ✓             | ✗            | ✗           | ✗       |
 | Fork sandboxes                                    | ✗             | ✓            | ✓           | ✗       |
 | Snapshot from sandbox <br />(filesystem only)     | ✓             | ✓            | ✓           | ✓       |
 | Snapshot from sandbox <br />(filesystem + memory) | ✗             | ✓            | ✓           | ✗       |
-
-The diagram demonstrates the states and possible transitions between them.
-
 
 **Sandbox states**
 
@@ -807,8 +547,6 @@ The diagram demonstrates the states and possible transitions between them.
 | Error             | The sandbox is in an error state and needs to be recovered.                                 |
 | Unknown           | The default sandbox state before it is created.                                             |
 
-
-##### State transitions
 
 A sandbox can transition between states in response to various actions. The following table lists the initial state, target state, and trigger for the transition.
 
@@ -857,6 +595,190 @@ A sandbox can transition between states in response to various actions. The foll
 | Error             | Archiving         | An errored sandbox with a completed backup is archived to preserve its state.     |
 
 
+### Start sandboxes
+
+Start a sandbox.
+
+1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+2. Click the start icon <Button>▶</Button> next to the sandbox you want to start
+
+```ruby
+sandbox.start
+```
+
+<a id="pause-sandboxes"></a>
+### Pause / resume sandboxes
+
+Pause and resume a sandbox.
+
+**Container:**
+
+Pause is not supported for container sandboxes. The filesystem can be preserved on stop, but memory state is not. Use <u>[**stop**](#stop-sandboxes)</u> to shut down a container sandbox when it is not in use.
+
+**Linux VM:**
+
+The filesystem and memory state are preserved, and CPU is no longer consumed.
+
+1. Ensure the Linux VM sandbox is **started**
+2. **Pause** the Linux VM sandbox
+3. Wait for the Linux VM sandbox to reach the **paused** state
+4. **Resume** (start) the Linux VM sandbox again when you need to resume it
+
+```ruby
+sandbox.pause
+```
+
+**Windows:**
+
+The filesystem and memory state are preserved, and CPU is no longer consumed.
+
+1. Ensure the Windows sandbox is **started**
+2. **Pause** the Windows sandbox
+3. Wait for the Windows sandbox to reach the **paused** state
+4. **Resume** (start) the Windows sandbox again when you need to resume it
+
+```ruby
+sandbox.pause
+```
+
+### Stop sandboxes
+
+Stop a sandbox. The sandbox moves to the **stopped** state when shutdown completes. While a stop is in progress, the sandbox is in the **stopping** state and does not accept new requests.
+
+**Container:**
+
+Stopping terminates the running container. The filesystem is preserved, but memory state is not. Container sandboxes do not support pause; stop is the way to shut down a container sandbox when it is not in use.
+
+1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+2. Click the stop icon (**⏹**) next to the sandbox you want to stop
+
+```ruby
+sandbox.stop
+```
+
+**Linux VM:**
+
+Stopping shuts down the virtual machine while preserving the filesystem. Memory state is cleared. To preserve running process state without consuming CPU, use <u>[**pause / resume**](#pause--resume-sandboxes)</u>.
+
+1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+2. Click the stop icon (**⏹**) next to the sandbox you want to stop
+
+```ruby
+sandbox.stop
+```
+
+**Windows:**
+
+Stopping shuts down the virtual machine while preserving the filesystem. Memory state is cleared. To preserve running process state without consuming CPU, use <u>[**pause / resume**](#pause--resume-sandboxes)</u>.
+
+1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+2. Click the stop icon (**⏹**) next to the sandbox you want to stop
+
+```ruby
+sandbox.stop
+```
+> **Note: Force stop**
+> If you need a faster shutdown, use force stop (`force=true` / `--force`) to terminate the sandbox immediately. Force stop is ungraceful and should be used when quick termination is more important than process cleanup. Avoid force stop for normal shutdowns where the process should flush buffers, write final state, or run cleanup.
+
+### Archive sandboxes
+
+Archive a sandbox.
+
+**Container:**
+
+Archive moves a stopped sandbox's filesystem to object storage and frees disk quota.
+
+1. Ensure the sandbox is **stopped**
+2. **Archive** the sandbox
+3. Wait for the sandbox to reach the **archived** state
+4. **Start** the sandbox again when you need to use it
+
+```ruby
+sandbox.archive
+```
+
+**Linux VM:**
+
+Archive is not supported for Linux VM sandboxes. Stopping a Linux VM sandbox already offloads filesystem state and releases disk quota, so a separate archive step is not needed.
+
+**Windows:**
+
+Archive is not supported for Windows sandboxes. Stopping a Windows sandbox already offloads filesystem state and releases disk quota, so a separate archive step is not needed.
+
+### Delete sandboxes
+
+Delete a sandbox.
+> **Note:**
+> By default delete is fire-and-forget: it returns as soon as the API accepts the deletion request, without waiting for the sandbox to be destroyed. Pass the `wait` flag to block until the sandbox reaches the destroyed state.
+
+1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+2. Click <Button>Delete</Button> next to the sandbox you want to delete.
+
+```ruby
+sandbox.delete
+
+# Block until the sandbox is destroyed
+sandbox.delete(60, wait: true)
+```
+
+### Recover sandboxes
+
+Recover a sandbox.
+
+1. Ensure the sandbox is in **error** state
+2. Check that the sandbox is **recoverable**
+3. Resolve any underlying issue that requires user intervention
+4. **Recover** the sandbox and wait for it to be ready
+
+```ruby
+# Check if the sandbox is in an error state before recovering
+if sandbox.state == 'error'
+  sandbox.recover
+end
+```
+
+```ruby
+sandbox.recover
+```
+
+### Fork sandboxes
+
+Fork a sandbox.
+
+**Container:**
+
+Forking is not supported for container sandboxes. Use <u>[**create snapshot from sandbox**](./snapshots.md#create-snapshot-from-sandbox)</u> to capture filesystem state, then create a new sandbox from that snapshot.
+
+**Linux VM:**
+
+Forking creates a duplicate of a Linux VM sandbox's filesystem and memory state in a new sandbox. The forked sandbox is fully independent: it can be started, stopped, and deleted without affecting the original.
+
+Daytona tracks the parent-child relationship in a fork tree, so you can trace a fork's lineage back to the sandbox it was created from. You can fork a fork to build branches. The parent sandbox cannot be deleted while it has active fork children.
+
+1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+2. Click the three-dot menu (**⋮**) next to the started Linux VM sandbox you want to fork
+3. Select <Button>Fork</Button>
+
+```ruby
+# Fork sandbox through the Sandbox instance
+forkedSandbox = sandbox.fork(name: "my-forked-sandbox")
+```
+
+**Windows:**
+
+Forking creates a duplicate of a Windows sandbox's filesystem and memory state in a new sandbox. The forked sandbox is fully independent: it can be started, stopped, and deleted without affecting the original.
+
+Daytona tracks the parent-child relationship in a fork tree, so you can trace a fork's lineage back to the sandbox it was created from. You can fork a fork to build branches. The parent sandbox cannot be deleted while it has active fork children.
+
+1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+2. Click the three-dot menu (**⋮**) next to the started Windows sandbox you want to fork
+3. Select <Button>Fork</Button>
+
+```ruby
+# Fork sandbox through the Sandbox instance
+forkedSandbox = sandbox.fork(name: "my-forked-sandbox")
+```
+
 ## Automated lifecycle management
 
 Sandboxes can be managed automatically based on user-defined deadlines. Inactivity and stopped-time intervals stop, pause, archive, or delete a sandbox when it is idle. Wall-clock TTL destroys a sandbox after a fixed deadline regardless of state.
@@ -869,7 +791,8 @@ Sandboxes can be managed automatically based on user-defined deadlines. Inactivi
 - **[Update sandbox last activity](#update-sandbox-last-activity)**: signal activity to reset the inactivity timer
 - **[Running indefinitely](#running-indefinitely)**: run a sandbox indefinitely
 
-### Auto-stop interval
+<div id="auto-stop-interval"></div>
+### Auto-stop sandboxes
 
 The auto-stop interval sets the amount of time after which a running sandbox is automatically stopped. The auto-stop triggers even if there are internal processes running in the sandbox.
 
@@ -912,7 +835,8 @@ The following do not reset the timer:
 
 If you run a long-running task like LLM inference that takes more than 15 minutes to complete without any external interaction, the sandbox may auto-stop mid-process because the process itself doesn't count as "activity", therefore the timer is not reset.
 
-### Auto-pause interval
+<div id="auto-pause-interval"></div>
+### Auto-pause sandboxes
 
 The auto-pause interval sets the amount of time after which an idle VM sandbox is automatically [paused](#pause--resume-sandboxes). Auto-pause applies only to [VM sandboxes](#vm-sandboxes) and is mutually exclusive with the [auto-stop interval](#auto-stop-interval): at most one of the two intervals may be non-zero. Ephemeral sandboxes cannot have auto-pause enabled.
 
@@ -983,7 +907,8 @@ sandbox.auto_pause_interval = 0
 
 Auto-pause is not supported for GPU sandboxes. GPU sandboxes are ephemeral and cannot have auto-pause enabled.
 
-### Auto-archive interval
+<div id="auto-archive-interval"></div>
+### Auto-archive sandboxes
 
 The auto-archive interval sets the amount of time after which a continuously stopped sandbox is automatically archived. Auto-archive applies only to container sandboxes. VM sandboxes are excluded.
 
@@ -1004,7 +929,8 @@ sandbox = daytona.create(
 )
 ```
 
-### Auto-delete interval
+<div id="auto-delete-interval"></div>
+### Auto-delete sandboxes
 
 The auto-delete interval sets the amount of time after which a continuously stopped sandbox is automatically deleted.
 

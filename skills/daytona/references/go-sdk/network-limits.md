@@ -29,16 +29,16 @@ Set firewall parameters when [creating a sandbox](#create-sandboxes-with-network
 
 Network limits are automatically applied to sandboxes based on your organization's billing tier. This provides secure and controlled internet access for development environments:
 
-- **Tier 1 & Tier 2**: Network access is restricted and cannot be overridden at the sandbox level. Organization-level network restrictions take precedence over sandbox-level settings. Even with [`networkAllowList`](#create-sandboxes-with-network-restrictions) or [`domainAllowList`](#create-sandboxes-with-network-restrictions) specified when creating a sandbox, the organization's network restrictions still apply
-- **Tier 3 & Tier 4**: Full internet access is available by default, with the ability to configure custom network settings
-
-[Essential services](#essential-services) are available on all tiers and include services essential for development.
+- **Tier 1 & Tier 2**: Network access is restricted and cannot be overridden at the sandbox level. Organization-level network restrictions take precedence over sandbox-level settings. Even with [`networkAllowList`](#create-sandboxes-with-network-restrictions) or [`domainAllowList`](#create-sandboxes-with-network-restrictions) specified when creating a sandbox, the organization's network restrictions still apply. [Essential services](#essential-services) remain reachable.
+- **Tier 3 & Tier 4**: Full internet access is available by default, including [essential services](#essential-services). You can set custom network settings per sandbox. A sandbox-level `networkAllowList`, `domainAllowList`, or `networkBlockAll` replaces the default policy for that sandbox. Enforcement is strict: only destinations you list are allowed (or none, when blocking all). Essential services do not bypass a sandbox allow list or block-all setting.
 
 ## Create sandboxes with network restrictions
 
 Create a sandbox with network restrictions.
 
 Set `networkAllowList`, `domainAllowList`, or `networkBlockAll` when creating a sandbox to control which external hosts the sandbox can reach. The options are mutually exclusive. Set at most one non-empty value. Sending a conflicting combination returns a `400` error. Empty-string allow lists count as unset and never conflict.
+
+On Tier 3 and Tier 4, setting an allow list or `networkBlockAll` at create time applies that policy for the sandbox. Destinations not on the allow list are blocked, including [essential services](#essential-services) such as GitHub, npm, and PyPI, unless you add those domains or CIDRs yourself.
 
 ```go
 package main
@@ -99,6 +99,8 @@ Update network settings for running sandboxes.
 This operation requires the `WRITE_SANDBOXES` permission. Organizations on [Tier 3 and Tier 4](#tier-based-network-restrictions) can change outbound firewall policy on a running sandbox. The API applies the new rules and persists them on the sandbox. The sandbox keeps running; stop or start are not required.
 
 Organizations on Tier 1 or Tier 2 cannot override network policy at the sandbox level, and the API returns an error in that case.
+
+When an allow list or `networkBlockAll` is applied, enforcement is strict for that sandbox: [essential services](#essential-services) are not auto-allowed.
 
 - Sending `networkAllowList` as an empty string clears a stored CIDR allow list
 - Sending `domainAllowList` as an empty string clears a stored domain allow list
@@ -199,7 +201,7 @@ func main() {
 
 ## Network allow list format
 
-The network allow list is a comma-separated list of IPv4 CIDR blocks.
+The network allow list is a comma-separated list of IPv4 CIDR blocks. When a CIDR allow list is set, outbound traffic is limited to the listed ranges. Other destinations are blocked, including [essential services](#essential-services) whose resolved addresses are not covered by the list.
 
 - **IPv4 only**: hostnames, domains, and IPv6 are not supported
 - **CIDR required**: every entry must include a `/` prefix length integer in the range `0` to `32` (inclusive), for example: `/32`
@@ -215,13 +217,14 @@ Examples:
 
 ## Domain allow list format
 
-The domain allow list is a comma-separated list of DNS domains. When a domain allow list is set, outbound traffic is limited to the listed domains and other external domains are blocked.
+The domain allow list is a comma-separated list of DNS domains. When a domain allow list is set, outbound traffic is limited to the listed domains. Other external domains are blocked, including [essential services](#essential-services) that are not on the list.
 
 - **Domains only**: use hostnames such as `example.com` or `api.openai.com`. Do not include protocols, paths, ports, or query strings
 - **Wildcards supported**: prefix a domain with `*.` to allow the base domain and its subdomains, for example `*.daytona.io`
 - **Max 20 entries**: the list cannot contain more than 20 comma-separated items
 - **Whitespace is ignored**: entries are trimmed, so spaces around commas are ok
 - **Clear on update**: send `domainAllowList` as an empty string when updating network settings to clear a stored domain allow list
+- **No essential-services bypass**: GitHub, npm, PyPI, model providers, and other [essential services](#essential-services) are not auto-allowed. Add each domain you need.
 
 Examples:
 
@@ -240,7 +243,8 @@ curl -I https://208.80.154.232
 # Test HTTP connectivity to allowed domains
 curl -I https://example.com
 
-# Test package manager access (allowed on all tiers)
+# Package managers reach registries only when those hosts are allowed
+# (default tier policy includes essential services; a sandbox allow list does not)
 apt update  # For Ubuntu/Debian
 npm ping    # For Node.js
 pip install --dry-run requests  # For Python
@@ -259,7 +263,9 @@ Network limits provide several security advantages:
 
 ## Essential services
 
-Essential services are available on all tiers and include services essential for development.
+Essential services are package registries, git hosts, model providers, and related hosts that remain reachable under the default tier-based network policy on all tiers.
+
+They do not apply when a sandbox has a custom `networkAllowList`, `domainAllowList`, or `networkBlockAll` on Tier 3 or Tier 4. In those modes, only the destinations you configure are allowed (or none). To keep an essential service reachable under an allow list, include its domains or CIDRs in that list.
 
 ### NPM registry and package managers
 

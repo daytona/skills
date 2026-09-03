@@ -13,6 +13,8 @@ The declarative builder system supports two primary workflows:
 
 - [**Declarative images**](#build-declarative-images): build images on demand when creating sandboxes
 - [**Pre-built snapshots**](#create-pre-built-snapshots): create and register ready-to-use [snapshots](./snapshots.md)
+> **Note:**
+> Declarative image and Dockerfile builds are supported for container and GPU sandboxes only. [VM snapshots](./snapshots.md#vm-snapshots) (Linux VM and Windows) cannot be built from a Dockerfile. For a custom Linux VM image, push the image to a public or [private registry](./snapshots.md#snapshots-from-private-registries) and create the snapshot from the image reference, or [create a snapshot from a sandbox](./snapshots.md#create-snapshot-from-sandbox).
 
 ## Build declarative images
 
@@ -89,33 +91,6 @@ daytona.snapshot.create(
 
 # Create a new sandbox from the pre-built snapshot
 sandbox = daytona.create(CreateSandboxFromSnapshotParams(snapshot="my-snapshot"))
-```
-
-**Linux VM:**
-
-1. Create a Linux VM snapshot from a declarative image
-2. Create a sandbox from that snapshot
-
-```python
-# Define the declarative image for the VM snapshot
-image = (
-  Image.debian_slim("3.12")
-  .pip_install(["numpy", "pandas"])
-  .workdir("/home/daytona")
-)
-
-# Create and register the VM snapshot, streaming the build logs
-daytona.snapshot.create(
-  CreateSnapshotParams(
-    name="my-vm-snapshot",
-    image=image,
-    sandbox_class=SandboxClass.LINUX_VM,
-  ),
-  on_logs=print,
-)
-
-# Create a new VM sandbox from the pre-built snapshot
-sandbox = daytona.create(CreateSandboxFromSnapshotParams(snapshot="my-vm-snapshot"))
 ```
 
 **GPU:**

@@ -37,6 +37,7 @@ Service for managing Daytona Volumes. Can be used to list, get, create and delet
 #### AsyncVolumeService.list
 
 ```python
+@intercept_errors(message_prefix="Failed to list volumes: ")
 async def list() -> list[Volume]
 ```
 
@@ -87,6 +88,7 @@ async with AsyncDaytona() as daytona:
 #### AsyncVolumeService.create
 
 ```python
+@intercept_errors(message_prefix="Failed to create volume: ")
 @with_instrumentation()
 async def create(name: str) -> Volume
 ```
@@ -114,6 +116,7 @@ async with AsyncDaytona() as daytona:
 #### AsyncVolumeService.delete
 
 ```python
+@intercept_errors(message_prefix="Failed to delete volume: ")
 @with_instrumentation()
 async def delete(volume: Volume) -> None
 ```

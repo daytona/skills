@@ -14,6 +14,8 @@ The declarative builder system supports two primary workflows:
 
 - [**Declarative images**](#build-declarative-images): build images on demand when creating sandboxes
 - [**Pre-built snapshots**](#create-pre-built-snapshots): create and register ready-to-use [snapshots](./snapshots.md)
+> **Note:**
+> Declarative image and Dockerfile builds are supported for container and GPU sandboxes only. [VM snapshots](./snapshots.md#vm-snapshots) (Linux VM and Windows) cannot be built from a Dockerfile. For a custom Linux VM image, push the image to a public or [private registry](./snapshots.md#snapshots-from-private-registries) and create the snapshot from the image reference, or [create a snapshot from a sandbox](./snapshots.md#create-snapshot-from-sandbox).
 
 ## Build declarative images
 
@@ -111,41 +113,6 @@ for log := range logChan {
 }
 
 // Create a new sandbox from the pre-built snapshot
-sandbox, err := client.Create(ctx, types.SnapshotParams{
-  Snapshot: snapshot.Name,
-})
-if err != nil {
-  // handle error
-}
-```
-
-**Linux VM:**
-
-1. Create a Linux VM snapshot from a declarative image
-2. Create a sandbox from that snapshot
-
-```go
-// Define the declarative image for the VM snapshot
-version := "3.12"
-image := daytona.DebianSlim(&version).
-  PipInstall([]string{"numpy", "pandas"}).
-  Workdir("/home/daytona")
-
-// Create and register the VM snapshot, streaming the build logs
-sandboxClass := types.SandboxClassLinuxVM
-snapshot, logChan, err := client.Snapshot.Create(ctx, &types.CreateSnapshotParams{
-  Name:         "my-vm-snapshot",
-  Image:        image,
-  SandboxClass: &sandboxClass,
-})
-if err != nil {
-  // handle error
-}
-for log := range logChan {
-  fmt.Print(log)
-}
-
-// Create a new VM sandbox from the pre-built snapshot
 sandbox, err := client.Create(ctx, types.SnapshotParams{
   Snapshot: snapshot.Name,
 })

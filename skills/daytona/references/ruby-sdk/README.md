@@ -5,6 +5,7 @@
 - Configuration
 - Real-time state updates
 - Environment Variables
+- Reference
 
 
 
@@ -118,3 +119,24 @@ The SDK supports the following environment variables:
 | `DAYTONA_TARGET` | Target location for Sandboxes |
 | `DAYTONA_JWT_TOKEN` | JWT token for authentication (alternative to API key) |
 | `DAYTONA_ORGANIZATION_ID` | Organization ID (required when using JWT token) |
+
+## Reference
+
+The Ruby SDK reference documents the following modules:
+
+- [Chart](./charts.md)
+- [ComputerUse](./computer-use.md)
+- [Config](./config.md)
+- [Daytona](./daytona.md)
+- [FileSystem](./file-system.md)
+- [Git](./git.md)
+- [Image](./image.md)
+- [LspServer](./lsp-server.md)
+- [ObjectStorage](./object-storage.md)
+- [Process](./process.md)
+- [Sandbox](./sandbox.md)
+- [Secret](./secret.md)
+- [SecretService](./secret-service.md)
+- [SnapshotService](./snapshot.md)
+- [Volume](./volume.md)
+- [VolumeService](./volume-service.md)

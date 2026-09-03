@@ -43,6 +43,30 @@ Daytona provides default snapshots for creating sandboxes. You can also create s
 | **`windows-medium`**    | 2        | 8GiB       | 50GiB       |         | Windows           |
 | **`windows-large`**     | 4        | 16GiB      | 50GiB       |         | Windows           |
 
+1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
+2. Click <Button>Create Sandbox</Button>
+3. Select a **`snapshot`**
+4. Click <Button>Create</Button>
+
+```go
+package main
+
+import (
+	"context"
+	"github.com/daytona/clients/sdk-go/pkg/daytona"
+	"github.com/daytona/clients/sdk-go/pkg/types"
+)
+
+func main() {
+	client, _ := daytona.NewClient()
+	ctx := context.Background()
+	params := types.SnapshotParams{
+		Snapshot: "daytona-small",
+	}
+	_, _ = client.Create(ctx, params)
+}
+```
+
 Default snapshots include pre-installed Python and Node.js packages.
 
 **Python (pip)**
@@ -97,30 +121,6 @@ Default snapshots include pre-installed Python and Node.js packages.
 | **`typescript-language-server`** | v5.1.3      |
 
 
-1. Go to [Daytona Sandboxes ↗](https://app.daytona.io/dashboard/sandboxes)
-2. Click <Button>Create Sandbox</Button>
-3. Select a **`snapshot`**
-4. Click <Button>Create</Button>
-
-```go
-package main
-
-import (
-	"context"
-	"github.com/daytona/clients/sdk-go/pkg/daytona"
-	"github.com/daytona/clients/sdk-go/pkg/types"
-)
-
-func main() {
-	client, _ := daytona.NewClient()
-	ctx := context.Background()
-	params := types.SnapshotParams{
-		Snapshot: "daytona-small",
-	}
-	_, _ = client.Create(ctx, params)
-}
-```
-
 ## Create snapshots
 
 Create a snapshot.
@@ -164,8 +164,10 @@ VM snapshots are used to create [VM sandboxes](./sandboxes.md#vm-sandboxes). VM 
 **Linux VM:**
 
 Create a Linux VM snapshot.
+> **Note:**
+> Linux VM snapshots must be created from an existing image reference. Dockerfile and [declarative image](./declarative-builder.md) builds are not supported for the Linux VM sandbox class and fail during the build step. To use a custom image, push it to a public or [private registry](#snapshots-from-private-registries) and create the snapshot from that image, or [create a snapshot from a sandbox](#create-snapshot-from-sandbox).
 
-1. Create a snapshot from a base **`image`**
+1. Create a snapshot from an **`image`**
 2. Set the snapshot's sandbox class to **`LINUX_VM`**
 
 ```go
@@ -256,8 +258,6 @@ Container sandboxes capture filesystem state only (**cold snapshot**):
 | ----------------- | --------------------- | --------------------- | -------------------------- |
 | Cold              | **`false`** (default) | Filesystem only       | Stopped                    |
 
-
-
 ```go
 err := sandbox.ExperimentalCreateSnapshot(ctx, "my-snapshot")
 if err != nil {
@@ -273,8 +273,6 @@ Linux VM sandboxes capture filesystem state only (**cold snapshot**) or filesyst
 | ----------------- | --------------------- | --------------------- | -------------------------- |
 | Cold              | **`false`** (default) | Filesystem only       | Stopped                    |
 | Hot               | **`true`**            | Filesystem and memory | Started                    |
-
-
 
 ```go
 // Cold snapshot (filesystem only, sandbox stopped)
@@ -298,8 +296,6 @@ Windows sandboxes capture filesystem state only (**cold snapshot**) or filesyste
 | ----------------- | --------------------- | --------------------- | -------------------------- |
 | Cold              | **`false`** (default) | Filesystem only       | Stopped                    |
 | Hot               | **`true`**            | Filesystem and memory | Started                    |
-
-
 
 ```go
 // Cold snapshot (filesystem only, sandbox stopped)
@@ -484,6 +480,8 @@ Alternatively, use the `--dockerfile` flag under `create` to pass the path to th
 ```bash
 daytona snapshot create my-awesome-snapshot --dockerfile ./Dockerfile
 ```
+> **Note:**
+> Dockerfile builds are not supported for [VM snapshots](#vm-snapshots). For Linux VM snapshots, push the built image to a registry and create the snapshot from the image reference.
 
 ## Get snapshot
 

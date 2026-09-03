@@ -20,9 +20,12 @@
 - daytona organization create
 - daytona organization delete
 - daytona organization list
+- daytona organization members
 - daytona organization use
+- daytona pause
 - daytona preview-url
 - daytona snapshot
+- daytona snapshot activate
 - daytona snapshot create
 - daytona snapshot delete
 - daytona snapshot list
@@ -72,13 +75,13 @@ Alternatively, install directly without Homebrew:
 For Apple Silicon (`arm64`):
 
   ```bash
-  sudo curl -fL https://github.com/daytona/clients/releases/latest/download/daytona-darwin-arm64 -o /usr/local/bin/daytona && sudo chmod +x /usr/local/bin/daytona
+  sudo curl -fL https://github.com/daytonaio/daytona/releases/latest/download/daytona-darwin-arm64 -o /usr/local/bin/daytona && sudo chmod +x /usr/local/bin/daytona
   ```
 
 For Intel (`amd64`):
 
   ```bash
-  sudo curl -fL https://github.com/daytona/clients/releases/latest/download/daytona-darwin-amd64 -o /usr/local/bin/daytona && sudo chmod +x /usr/local/bin/daytona
+  sudo curl -fL https://github.com/daytonaio/daytona/releases/latest/download/daytona-darwin-amd64 -o /usr/local/bin/daytona && sudo chmod +x /usr/local/bin/daytona
   ```
 
 **Linux:**
@@ -88,13 +91,13 @@ Choose the command for your Linux architecture. Both commands download the lates
 For `amd64` (`x86_64`):
 
   ```bash
-  sudo curl -fL https://github.com/daytona/clients/releases/latest/download/daytona-linux-amd64 -o /usr/local/bin/daytona && sudo chmod +x /usr/local/bin/daytona
+  sudo curl -fL https://github.com/daytonaio/daytona/releases/latest/download/daytona-linux-amd64 -o /usr/local/bin/daytona && sudo chmod +x /usr/local/bin/daytona
   ```
 
 For `arm64` (`aarch64`):
 
   ```bash
-  sudo curl -fL https://github.com/daytona/clients/releases/latest/download/daytona-linux-arm64 -o /usr/local/bin/daytona && sudo chmod +x /usr/local/bin/daytona
+  sudo curl -fL https://github.com/daytonaio/daytona/releases/latest/download/daytona-linux-arm64 -o /usr/local/bin/daytona && sudo chmod +x /usr/local/bin/daytona
   ```
 
 **Windows:**
@@ -160,7 +163,8 @@ __Flags__
 | :--- | :---- | :---------- |
 | `--auto-archive` |  | Auto-archive interval in minutes (0 means the maximum interval will be used) |
 | `--auto-delete` |  | Auto-delete interval in minutes (negative value means disabled, 0 means delete immediately upon stopping) |
-| `--auto-stop` |  | Auto-stop interval in minutes (0 means disabled) |
+| `--auto-pause` |  | Auto-pause interval in minutes (0 means disabled). Only supported for sandbox classes that support pausing. Not allowed for ephemeral sandboxes. Mutually exclusive with --auto-stop |
+| `--auto-stop` |  | Auto-stop interval in minutes (0 means disabled). Server default: 15, except for sandbox classes that support pausing where auto-pause defaults to 60 instead |
 | `--context` | `-c` | Files or directories to include in the build context (can be specified multiple times) |
 | `--cpu` |  | CPU cores allocated to the sandbox |
 | `--disk` |  | Disk space allocated to the sandbox in GB |
@@ -175,6 +179,7 @@ __Flags__
 | `--public` |  | Make sandbox publicly accessible |
 | `--snapshot` |  | Snapshot to use for the sandbox |
 | `--target` |  | Target region (eu, us) |
+| `--ttl` |  | Maximum time to live in minutes, counted as wall-clock time since creation regardless of sandbox state (0 means disabled). When it elapses the sandbox is destroyed, even if it is stopped, paused, or archived |
 | `--user` |  | User associated with the sandbox |
 | `--volume` | `-v` | Volumes to mount (format: VOLUME_ID_OR_NAME:MOUNT_PATH) |
 | `--help` |  | help for daytona |
@@ -355,6 +360,7 @@ daytona organization create [ORGANIZATION_NAME] [flags]
 __Flags__
 | Long | Short | Description |
 | :--- | :---- | :---------- |
+| `--region` | `-r` | Default region (id or name) for the organization |
 | `--help` |  | help for daytona |
 
 
@@ -385,11 +391,38 @@ __Flags__
 | `--help` |  | help for daytona |
 
 
+## daytona organization members
+List members of an organization
+
+```shell
+daytona organization members [ORGANIZATION] [flags]
+```
+
+__Flags__
+| Long | Short | Description |
+| :--- | :---- | :---------- |
+| `--format` | `-f` | Output format. Must be one of (yaml, json) |
+| `--help` |  | help for daytona |
+
+
 ## daytona organization use
 Set active organization
 
 ```shell
 daytona organization use [ORGANIZATION] [flags]
+```
+
+__Flags__
+| Long | Short | Description |
+| :--- | :---- | :---------- |
+| `--help` |  | help for daytona |
+
+
+## daytona pause
+Pause a sandbox
+
+```shell
+daytona pause [SANDBOX_ID] | [SANDBOX_NAME] [flags]
 ```
 
 __Flags__
@@ -426,6 +459,19 @@ __Flags__
 | `--help` |  | help for daytona |
 
 
+## daytona snapshot activate
+Activate a snapshot
+
+```shell
+daytona snapshot activate [SNAPSHOT_ID | SNAPSHOT_NAME] [flags]
+```
+
+__Flags__
+| Long | Short | Description |
+| :--- | :---- | :---------- |
+| `--help` |  | help for daytona |
+
+
 ## daytona snapshot create
 Create a snapshot
 
@@ -444,6 +490,7 @@ __Flags__
 | `--image` | `-i` | The image name for the snapshot |
 | `--memory` |  | Memory that will be allocated to the underlying sandboxes in GB (default: 1) |
 | `--region` |  | ID of the region where the snapshot will be available (defaults to organization default region) |
+| `--sandbox-class` |  | Target sandbox class for the snapshot. One of: 'container' or 'linux-vm' (defaults to organization/server default) |
 | `--help` |  | help for daytona |
 
 
@@ -474,6 +521,7 @@ __Flags__
 | `--format` | `-f` | Output format. Must be one of (yaml, json) |
 | `--limit` | `-l` | Maximum number of items per page |
 | `--page` | `-p` | Page number for pagination (starting from 1) |
+| `--source-sandbox-id` |  | Filter by the ID of the sandbox the snapshot was created from |
 | `--help` |  | help for daytona |
 
 

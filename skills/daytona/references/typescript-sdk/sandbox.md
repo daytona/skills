@@ -29,6 +29,8 @@ Represents a Daytona Sandbox.
 - `computerUse` _ComputerUse_ - Computer use operations interface for desktop automation
 - `cpu` _number_ - Number of CPUs allocated to the Sandbox
 - `createdAt?` _string_ - When the Sandbox was created
+- `daemonVersion?` _string_ - The version of the daemon running in the Sandbox
+- `desiredState?` _SandboxDesiredState_ - The state the system is driving the Sandbox toward
 - `disk` _number_ - Amount of disk space allocated to the Sandbox in GiB
 - `domainAllowList?` _string_ - Comma-separated list of allowed domains for the Sandbox
     (not returned by list results; call `refreshData()` on each item to populate)
@@ -38,6 +40,7 @@ Represents a Daytona Sandbox.
 - `fs` _FileSystem_ - File system operations interface
 - `git` _Git_ - Git operations interface
 - `gpu` _number_ - Number of GPUs allocated to the Sandbox
+- `gpuType?` _GpuType_ - The GPU type assigned to the Sandbox
 - `id` _string_ - Unique identifier for the Sandbox
 - `labels` _Record\<string, string\>_ - Custom labels attached to the Sandbox
 - `lastActivityAt?` _string_ - When the Sandbox last had activity
@@ -50,11 +53,15 @@ Represents a Daytona Sandbox.
 - `networkBlockAll?` _boolean_ - Whether to block all network access for the Sandbox
     (not returned by list results; call `refreshData()` on each item to populate)
 - `organizationId` _string_ - Organization ID of the Sandbox
+- `otelEndpointOverride?` _string_ - OTel collector endpoint override for the Sandbox. When set, sandbox OTel
+    data is sent to this endpoint instead of the default collector and is not available in the Daytona analytics API or
+    dashboard. (not returned by list results; call `refreshData()` on each item to populate)
 - `outboundProxyUrl?` _string_ - Outbound proxy URL to route the Sandbox HTTP(S) traffic through. Applied via the HTTP(S)_PROXY environment variables (convenience routing, not a security boundary on its own); combine with domainAllowList for unbypassable network-layer enforcement.
     (not returned by list results; call `refreshData()` on each item to populate)
 - `process` _Process_ - Process execution interface
 - `public` _boolean_ - Whether the Sandbox is publicly accessible
 - `recoverable?` _boolean_ - Whether the Sandbox error is recoverable.
+- `sandboxClass?` _SandboxClass_ - The class of the Sandbox (e.g., "linux-vm", "container")
 - `snapshot?` _string_ - Daytona snapshot used to create the Sandbox
 - `spot?` _boolean_ - Whether this is a spot GPU Sandbox. Spot Sandboxes may be instantly terminated to free
     capacity for on-demand GPU Sandboxes
@@ -66,6 +73,7 @@ Represents a Daytona Sandbox.
 - `user` _string_ - OS user running in the Sandbox
 - `volumes?` _SandboxVolume\[\]_ - Volumes attached to the Sandbox (not returned by
     list results; call `refreshData()` on each item to populate)
+- `warmPoolId?` _string_ - ID of the warm pool this Sandbox waits in; set only while it is an unclaimed member
 
 
 

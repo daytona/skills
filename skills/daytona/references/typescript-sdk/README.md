@@ -5,6 +5,7 @@
 - Configuration
 - Real-time state updates
 - Multiple runtime support
+- Reference
 
 
 
@@ -137,3 +138,27 @@ export default defineConfig({
 The SDK uses Node's `Buffer` for binary data (downloaded files, multipart bodies). Browsers don't ship `Buffer`, so the polyfill provides it. Without it, basic operations like `Image.base()` and `daytona.list()` still work, but methods that handle binary payloads (`fs.downloadFile`, `fs.downloadFiles`) will throw.
 
 Some runtimes don't expose the full set of Node.js APIs (browsers and edge runtimes have no filesystem, no `crypto`, etc.). Methods that depend on those APIs throw a clear runtime error instead of silently producing wrong results.
+
+## Reference
+
+The TypeScript SDK reference documents the following modules:
+
+- [Charts](./charts.md)
+- [CodeInterpreter](./code-interpreter.md)
+- [ComputerUse](./computer-use.md)
+- [Daytona](./daytona.md)
+- [Errors](./errors.md)
+- [ExecuteResponse](./execute-response.md)
+- [FileSystem](./file-system.md)
+- [Git](./git.md)
+- [Image](./image.md)
+- [LspServer](./lsp-server.md)
+- [ObjectStorage](./object-storage.md)
+- [Process](./process.md)
+- [Pty](./pty.md)
+- [PtyHandle](./pty-handle.md)
+- [Sandbox](./sandbox.md)
+- [Secret](./secret.md)
+- [Snapshot](./snapshot.md)
+- [Volume](./volume.md)
+- [WarmPool](./warm-pool.md)

@@ -26,10 +26,6 @@ Computer Use is available for **Linux** and **Windows**. **macOS** support is cu
 > **Note: macOS access**
 > Computer Use for macOS is currently in private alpha and requires access. To request access, fill out the [macOS access request form](https://docs.google.com/forms/d/e/1FAIpQLSc9xlGZ49OjWNkyzDPC9Ip3InMRR0ZXY3tcoD-PFQj3ck6gzQ/viewform?usp=sharing&ouid=103304973264148733944). Our team will review your request and reach out with setup instructions.
 
-- **GUI application testing**: automate interactions with native applications, click buttons, fill forms, and validate UI behavior
-- **Visual testing & screenshots**: capture screenshots of applications, compare UI states, and perform visual regression testing
-- **Desktop automation**: automate repetitive desktop tasks, file management through GUI, and complex workflows
-
 ## Start Computer Use
 
 Start all computer use processes (Xvfb, xfce4, x11vnc, novnc) in the Sandbox.

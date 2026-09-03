@@ -4,6 +4,7 @@
 - Getting Started
 - Configuration
 - Real-time state updates
+- Reference
 
 
 
@@ -121,3 +122,12 @@ client, err := daytona.NewClientWithConfig(config)
 ```
 
 See the [**`DaytonaConfig`** reference](./types.md#type-daytonaconfig) for details.
+
+## Reference
+
+The Go SDK reference documents the following modules:
+
+- [daytona](./daytona.md)
+- [errors](./errors.md)
+- [options](./options.md)
+- [types](./types.md)
