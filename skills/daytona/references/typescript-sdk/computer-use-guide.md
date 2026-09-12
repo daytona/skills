@@ -22,9 +22,9 @@ Computer Use enables programmatic control of desktop environments within sandbox
 
 Computer Use and [VNC](./vnc-access.md) work together to enable both manual and automated desktop interactions. VNC provides the visual interface for users to manually interact with the desktop, while Computer Use provides the programmatic API for AI agents to automate operations.
 
-Computer Use is available for **Linux** and **Windows**. **macOS** support is currently in private alpha.
-> **Note: macOS access**
-> Computer Use for macOS is currently in private alpha and requires access. To request access, fill out the [macOS access request form](https://docs.google.com/forms/d/e/1FAIpQLSc9xlGZ49OjWNkyzDPC9Ip3InMRR0ZXY3tcoD-PFQj3ck6gzQ/viewform?usp=sharing&ouid=103304973264148733944). Our team will review your request and reach out with setup instructions.
+Computer Use is available for **Linux** and **Windows** through Daytona. For **macOS** sandboxes and Computer Use, use [use.computer ↗](https://use.computer).
+> **Note: macOS sandboxes**
+> macOS sandboxes are available at [use.computer ↗](https://use.computer). See the [use.computer API documentation ↗](https://use.computer/docs) to create and control a macOS sandbox.
 
 ## Start Computer Use
 

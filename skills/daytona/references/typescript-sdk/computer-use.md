@@ -633,7 +633,8 @@ click(
    x: number,
    y: number,
    button?: string,
-double?: boolean): Promise<MouseClickResponse>;
+   double?: boolean
+): Promise<MouseClickResponse>;
 ```
 
 Clicks the mouse at the specified coordinates
@@ -671,7 +672,8 @@ drag(
    startY: number,
    endX: number,
    endY: number,
-button?: string): Promise<MouseDragResponse>;
+   button?: string
+): Promise<MouseDragResponse>;
 ```
 
 Drags the mouse from start coordinates to end coordinates
@@ -747,7 +749,8 @@ scroll(
    x: number,
    y: number,
    direction: "up" | "down",
-amount?: number): Promise<boolean>;
+   amount?: number
+): Promise<boolean>;
 ```
 
 Scrolls the mouse wheel at the specified coordinates

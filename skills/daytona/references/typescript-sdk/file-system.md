@@ -126,7 +126,8 @@ console.log('File content:', fileBuffer.toString());
 downloadFile(
    remotePath: string,
    localPath: string,
-timeout?: number): Promise<void>;
+   timeout?: number
+): Promise<void>;
 ```
 
 Downloads a file from the Sandbox and saves it to a local file. This method uses streaming to download the file,
@@ -397,7 +398,8 @@ await fs.moveFiles('app/temp/data.json', 'app/data/data.json');
 replaceInFiles(
    files: string[],
    pattern: string,
-newValue: string): Promise<ReplaceResult[]>;
+   newValue: string
+): Promise<ReplaceResult[]>;
 ```
 
 Replaces text content in multiple files.
@@ -487,7 +489,8 @@ await fs.setFilePermissions('app/script.sh', {
 uploadFile(
    file: Buffer,
    remotePath: string,
-timeout?: number): Promise<void>;
+   timeout?: number
+): Promise<void>;
 ```
 
 Uploads a file to the Sandbox. This method loads the entire file into memory, so it is not recommended
@@ -517,7 +520,8 @@ await fs.uploadFile(Buffer.from('{"setting": "value"}'), 'tmp/config.json');
 uploadFile(
    localPath: string,
    remotePath: string,
-timeout?: number): Promise<void>;
+   timeout?: number
+): Promise<void>;
 ```
 
 Uploads a file from the local file system to the Sandbox. This method uses streaming to upload the file,
@@ -588,7 +592,8 @@ await fs.uploadFiles(files);
 uploadFileStream(
    source: UploadSource,
    remotePath: string,
-options?: UploadStreamOptions): Promise<void>;
+   options?: UploadStreamOptions
+): Promise<void>;
 ```
 
 Uploads a single file to the Sandbox using true streaming, with optional progress

@@ -94,7 +94,8 @@ When JWT token is provided without an organization ID
 _experimental_fork(
    sandbox: Sandbox,
    params?: ForkSandboxParams,
-timeout?: number): Promise<Sandbox>;
+   timeout?: number
+): Promise<Sandbox>;
 ```
 
 **Parameters**:
@@ -234,7 +235,8 @@ const sandbox = await daytona.create(params, { timeout: 100, onSnapshotCreateLog
 delete(
    sandbox: Sandbox,
    timeout?: number,
-wait?: boolean): Promise<void>;
+   wait?: boolean
+): Promise<void>;
 ```
 
 Deletes a Sandbox.
@@ -263,7 +265,8 @@ await daytona.delete(sandbox);
 fork(
    sandbox: Sandbox,
    params?: ForkSandboxParams,
-timeout?: number): Promise<Sandbox>;
+   timeout?: number
+): Promise<Sandbox>;
 ```
 
 Forks a Sandbox, creating a new Sandbox with an identical filesystem.

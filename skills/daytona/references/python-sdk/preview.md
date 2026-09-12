@@ -1,11 +1,19 @@
+## Contents
+
+- Authentication
+- Standard preview URL
+- Signed preview URL
+- Warning page
+
+
 
 
 Daytona provides preview URLs for accessing services running in your sandboxes. Any process listening for HTTP traffic on ports `1` - `65535` can be previewed through a generated URL.
 
 Daytona supports two types of preview URLs, each with a different authentication mechanism:
 
-- [Standard preview URL](#standard-preview-url) uses the sandbox ID in the URL and requires a separate token for authentication
-- [Signed preview URL](#signed-preview-url) embeds the authentication token directly in the URL, requiring no headers
+- [Standard preview URL](#standard-preview-url) uses the sandbox ID in the URL and requires a separate token for authentication. That token is sandbox-wide and cannot be revoked — use it for your own programmatic access, not for sharing
+- [Signed preview URL](#signed-preview-url) embeds the authentication token directly in the URL, requiring no headers. The token is bound to a single port, expires, and can be revoked — use it when sharing access with someone else
 
 ## Authentication
 
@@ -19,7 +27,13 @@ The standard preview URL includes your sandbox ID in the URL and provides a sepa
 
 URL structure: `https://{port}-{sandboxId}.{daytonaProxyDomain}`
 
-The token resets automatically when the sandbox restarts. Any previously issued standard preview tokens become invalid. Call the `get_preview_link()` method again after starting the sandbox to obtain a fresh token. Use standard preview URLs for programmatic access and API integrations where you control the HTTP headers.
+Use standard preview URLs for programmatic access and API integrations where you control the HTTP headers.
+> **Caution: The standard preview token is a sandbox-wide credential**
+> The token returned by `get_preview_link()` is not restricted to the port you requested it for. It authenticates any port of that sandbox, including the ports that control the sandbox itself: the web terminal on `22222`, the toolbox API on `2280`, and the screen recordings dashboard on `33333`. Anyone holding it can run commands in the sandbox and read or write its filesystem.
+>
+> Treat it like the sandbox's own credential rather than a per-port viewing token, and do not share it. To give someone access to a single port, use a [signed preview URL](#signed-preview-url), which is bound to one port, expires, and can be revoked.
+
+A sandbox that is **stopped and started again** gets a new token, and tokens issued before that stop no longer work — call `get_preview_link()` again to obtain a fresh one. A sandbox **resumed from a paused state keeps its existing token**, and there is no way to revoke a standard preview token. Once issued, assume it stays valid for as long as the sandbox runs.
 
 ```python
 preview_info = sandbox.get_preview_link(3000)

@@ -27,7 +27,8 @@ For other languages, use the `codeRun` method from the `Process` interface, or e
 new CodeInterpreter(
    clientConfig: Configuration,
    apiClient: InterpreterApi,
-   getPreviewToken: () => Promise<string>): CodeInterpreter;
+   getPreviewToken: () => Promise<string>
+): CodeInterpreter;
 ```
 
 **Parameters**:

@@ -78,7 +78,8 @@ new PtyHandle(
    handleResize: (cols: number, rows: number) => Promise<PtySessionInfo>,
    handleKill: () => Promise<void>,
    onPty: (data: Uint8Array) => void | Promise<void>,
-   sessionId: string): PtyHandle;
+   sessionId: string
+): PtyHandle;
 ```
 
 **Parameters**:

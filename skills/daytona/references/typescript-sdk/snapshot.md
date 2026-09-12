@@ -23,7 +23,8 @@ new SnapshotService(
    clientConfig: Configuration,
    snapshotsApi: SnapshotsApi,
    objectStorageApi: ObjectStorageApi,
-   defaultRegionId?: string): SnapshotService;
+   defaultRegionId?: string
+): SnapshotService;
 ```
 
 **Parameters**:

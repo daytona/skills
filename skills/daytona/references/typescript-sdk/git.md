@@ -120,7 +120,8 @@ clone(
    username?: string,
    password?: string,
    insecureSkipTls?: boolean,
-depth?: number): Promise<void>;
+   depth?: number
+): Promise<void>;
 ```
 
 Clones a Git repository into the specified path. It supports
@@ -181,7 +182,8 @@ commit(
    message: string,
    author: string,
    email: string,
-allowEmpty?: boolean): Promise<GitCommitResponse>;
+   allowEmpty?: boolean
+): Promise<GitCommitResponse>;
 ```
 
 Commits staged changes.
@@ -220,7 +222,8 @@ configureUser(
    name: string,
    email: string,
    scope?: string,
-path?: string): Promise<void>;
+   path?: string
+): Promise<void>;
 ```
 
 Configures the Git user name and email at the given scope.
@@ -274,7 +277,8 @@ dangerouslyAuthenticate(
    username: string,
    password: string,
    host?: string,
-protocol?: string): Promise<void>;
+   protocol?: string
+): Promise<void>;
 ```
 
 Persists Git credentials globally so that subsequent operations against the
@@ -332,7 +336,8 @@ await git.deleteBranch('workspace/repo', 'new-feature');
 getConfig(
    key: string,
    scope?: string,
-path?: string): Promise<string>;
+   path?: string
+): Promise<string>;
 ```
 
 Gets a Git config value at the given scope, or undefined when unset.
@@ -360,7 +365,8 @@ const name = await git.getConfig('user.name');
 init(
    path: string,
    bare?: boolean,
-initialBranch?: string): Promise<void>;
+   initialBranch?: string
+): Promise<void>;
 ```
 
 Initializes a new Git repository at the specified path.
@@ -390,7 +396,8 @@ pull(
    username?: string,
    password?: string,
    branch?: string,
-remote?: string): Promise<void>;
+   remote?: string
+): Promise<void>;
 ```
 
 Pulls changes from the remote repository.
@@ -438,7 +445,8 @@ push(
    password?: string,
    branch?: string,
    remote?: string,
-setUpstream?: boolean): Promise<void>;
+   setUpstream?: boolean
+): Promise<void>;
 ```
 
 Push local changes to the remote repository.
@@ -486,7 +494,8 @@ remoteAdd(
    name: string,
    url: string,
    fetch?: boolean,
-overwrite?: boolean): Promise<void>;
+   overwrite?: boolean
+): Promise<void>;
 ```
 
 Adds (or overwrites) a remote in the repository.
@@ -565,7 +574,8 @@ reset(
    path: string,
    mode?: string,
    target?: string,
-files?: string[]): Promise<void>;
+   files?: string[]
+): Promise<void>;
 ```
 
 Resets the current HEAD to the specified state.
@@ -602,7 +612,8 @@ restore(
    files: string[],
    staged?: boolean,
    worktree?: boolean,
-source?: string): Promise<void>;
+   source?: string
+): Promise<void>;
 ```
 
 Restores working tree files or unstages changes.
@@ -639,7 +650,8 @@ setConfig(
    key: string,
    value: string,
    scope?: string,
-path?: string): Promise<void>;
+   path?: string
+): Promise<void>;
 ```
 
 Sets a Git config value at the given scope.

@@ -35,7 +35,8 @@ new ObjectStorage(config: ObjectStorageConfig): ObjectStorage;
 upload(
    path: string,
    organizationId: string,
-archiveBasePath: string): Promise<string>;
+   archiveBasePath: string
+): Promise<string>;
 ```
 
 Upload a file or directory to object storage.

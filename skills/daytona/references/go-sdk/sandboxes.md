@@ -11,7 +11,7 @@
 
 Daytona provides **full composable computers** — **sandboxes** — for AI agents. Sandboxes are isolated runtime environments you can manage programmatically to run code. Each sandbox runs in isolation, giving it a dedicated kernel, filesystem, network stack, and allocated vCPU, RAM, and disk. Agents and developers get access to a full composable computer where they can install packages, run servers, compile code, and manage processes.
 
-Sandboxes run as **Linux containers** by default. Daytona also provides [VM sandboxes](#vm-sandboxes) with a dedicated **Linux VM** or **Windows** operating system, and [GPU sandboxes](#gpu-sandboxes) with **NVIDIA GPU** acceleration for model inference, fine-tuning, and CUDA-accelerated compute.
+Sandboxes run as **Linux containers** by default. Daytona also provides [VM sandboxes](#vm-sandboxes) with a dedicated **Linux VM** or **Windows** operating system, [GPU sandboxes](#gpu-sandboxes) with **NVIDIA** and **AMD GPU** acceleration for model inference, fine-tuning, and GPU-accelerated compute, and [macOS sandboxes](#macos-sandboxes) running on dedicated Apple silicon hardware.
 
 ## Create sandboxes
 
@@ -401,15 +401,35 @@ func main() {
 }
 ```
 
+### macOS sandboxes
+
+Daytona provides macOS sandboxes through the [use.computer](https://use.computer) platform.
+
+1. Go to [use.computer ↗](https://use.computer/)
+2. Obtain an API key
+3. Reserve a Mac
+4. Use the API key to create a macOS sandbox
+
+```bash
+curl 'https://api.use.computer/v1/sandboxes' \
+  --request POST \
+  --header 'Authorization: Bearer YOUR_USE_COMPUTER_API_KEY' \
+  --header 'Content-Type: application/json' \
+  --data '{"type":"macos"}'
+```
+
+See the [use.computer API documentation ↗](https://use.computer/docs) for Computer Use, VNC, SSH, screenshots, and other macOS sandbox operations.
+
 ### GPU sandboxes
 
-Daytona provides **GPU sandboxes** for workloads that require NVIDIA GPU acceleration, such as model inference, fine-tuning, and CUDA-accelerated compute. GPU sandboxes are ephemeral and support up to **8 GPUs**. Resource limits scale with the number of GPU units: each GPU adds up to **16 vCPUs**, **192GB RAM**, and **512GB disk**. Supported GPU types:
+Daytona provides **GPU sandboxes** for workloads that require GPU acceleration, such as model inference, fine-tuning, and GPU-accelerated compute. GPU sandboxes are ephemeral and support up to **8 GPUs**. Resource limits scale with the number of GPU units: each GPU adds up to **16 vCPUs**, **192GB RAM**, and **512GB disk**. Supported **NVIDIA** and **AMD** GPU types:
 
 - **NVIDIA H100**
 - **NVIDIA H200**
 - **NVIDIA RTX Pro 6000**
 - **NVIDIA RTX 4090**
 - **NVIDIA RTX 5090**
+- **AMD Instinct MI355X**
 
 GPU sandboxes are on-demand. See [spot GPU sandboxes](#spot-gpu-sandboxes) for preemptible GPU capacity.
 
@@ -423,7 +443,7 @@ Create a GPU sandbox with custom GPU resources: units and types.
 2. Click <Button>Create Sandbox</Button>
 3. Enter an <Button>Image</Button> (e.g. **`pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime`**)
 5. Set <Button>GPU</Button> to the number of GPU units (e.g. **`1`**)
-6. Select <Button>GPU Type</Button>: **`H100`**, **`H200`**, **`RTX-PRO-6000`**, **`RTX-4090`**, **`RTX-5090`**
+6. Select <Button>GPU Type</Button>: **`H100`**, **`H200`**, **`RTX-PRO-6000`**, **`RTX-4090`**, **`RTX-5090`**, **`MI355X`**
 
     The GPU type field accepts a single value or an ordered list of preferred types.
 

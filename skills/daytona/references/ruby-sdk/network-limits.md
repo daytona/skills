@@ -114,7 +114,7 @@ An outbound proxy sends a sandbox's HTTP(S) egress through a proxy you control. 
 
 1. Daytona stores the proxy URL on the sandbox (encrypted at rest) and sets **`HTTP_PROXY`** (and **`HTTPS_PROXY`**) inside the sandbox.
 2. HTTP(S) clients that respect those variables send traffic through Daytona's egress proxy, which chains to your upstream.
-3. Clients that do not respect **`HTTP_PROXY`** are blocked at egress.
+3. To prevent clients that do not respect **`HTTP_PROXY`** from bypassing your upstream proxy, also configure Daytona's [**`domainAllowList`**](#domain-allow-list-format).
 
 The URL may use `http` or `https` and may include credentials in the userinfo, for example `http://user:pass@proxy.example.com:3128`. Implement [domain allow listing](#domain-allow-list-format) on your own proxy to control which destinations the sandbox can reach.
 
@@ -162,7 +162,7 @@ The domain allow list is a comma-separated list of DNS domains. When a domain al
 
 - **Domains only**: use hostnames such as `example.com` or `api.openai.com`. Do not include protocols, paths, ports, or query strings
 - **Wildcards supported**: prefix a domain with `*.` to allow the base domain and its subdomains, for example `*.daytona.io`
-- **Max 20 entries**: the list cannot contain more than 20 comma-separated items
+- **Max 100 entries**: the list cannot contain more than 100 comma-separated items
 - **Whitespace is ignored**: entries are trimmed, so spaces around commas are ok
 - **Clear on update**: send `domainAllowList` as an empty string when updating network settings to clear a stored domain allow list
 - **No essential-services bypass**: GitHub, npm, PyPI, model providers, and other [essential services](#essential-services) are not auto-allowed. Add each domain you need.

@@ -102,7 +102,8 @@ new DaytonaA11yUnavailableError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaA11yUnavailableError;
+   source?: string
+): DaytonaA11yUnavailableError;
 ```
 
 **Parameters**:
@@ -177,7 +178,8 @@ new DaytonaAuthenticationError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaAuthenticationError;
+   source?: string
+): DaytonaAuthenticationError;
 ```
 
 **Parameters**:
@@ -250,7 +252,8 @@ new DaytonaAuthorizationError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaAuthorizationError;
+   source?: string
+): DaytonaAuthorizationError;
 ```
 
 **Parameters**:
@@ -325,7 +328,8 @@ new DaytonaBadGatewayError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaBadGatewayError;
+   source?: string
+): DaytonaBadGatewayError;
 ```
 
 **Parameters**:
@@ -402,7 +406,8 @@ new DaytonaBadRequestError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaBadRequestError;
+   source?: string
+): DaytonaBadRequestError;
 ```
 
 **Parameters**:
@@ -473,7 +478,8 @@ new DaytonaCommandAlreadyCompletedError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaCommandAlreadyCompletedError;
+   source?: string
+): DaytonaCommandAlreadyCompletedError;
 ```
 
 **Parameters**:
@@ -552,7 +558,8 @@ new DaytonaConflictError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaConflictError;
+   source?: string
+): DaytonaConflictError;
 ```
 
 **Parameters**:
@@ -627,7 +634,8 @@ new DaytonaConnectionError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaConnectionError;
+   source?: string
+): DaytonaConnectionError;
 ```
 
 **Parameters**:
@@ -698,7 +706,8 @@ new DaytonaConnectionTimeoutError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaConnectionTimeoutError;
+   source?: string
+): DaytonaConnectionTimeoutError;
 ```
 
 **Parameters**:
@@ -781,7 +790,8 @@ new DaytonaError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaError;
+   source?: string
+): DaytonaError;
 ```
 
 **Parameters**:
@@ -854,7 +864,8 @@ new DaytonaFileAccessDeniedError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaFileAccessDeniedError;
+   source?: string
+): DaytonaFileAccessDeniedError;
 ```
 
 **Parameters**:
@@ -925,7 +936,8 @@ new DaytonaFileNotFoundError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaFileNotFoundError;
+   source?: string
+): DaytonaFileNotFoundError;
 ```
 
 **Parameters**:
@@ -996,7 +1008,8 @@ new DaytonaFileReadFailedError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaFileReadFailedError;
+   source?: string
+): DaytonaFileReadFailedError;
 ```
 
 **Parameters**:
@@ -1072,7 +1085,8 @@ new DaytonaForbiddenError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaForbiddenError;
+   source?: string
+): DaytonaForbiddenError;
 ```
 
 **Parameters**:
@@ -1143,7 +1157,8 @@ new DaytonaGitAuthFailedError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaGitAuthFailedError;
+   source?: string
+): DaytonaGitAuthFailedError;
 ```
 
 **Parameters**:
@@ -1214,7 +1229,8 @@ new DaytonaGitBranchExistsError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaGitBranchExistsError;
+   source?: string
+): DaytonaGitBranchExistsError;
 ```
 
 **Parameters**:
@@ -1285,7 +1301,8 @@ new DaytonaGitBranchNotFoundError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaGitBranchNotFoundError;
+   source?: string
+): DaytonaGitBranchNotFoundError;
 ```
 
 **Parameters**:
@@ -1356,7 +1373,8 @@ new DaytonaGitDirtyWorktreeError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaGitDirtyWorktreeError;
+   source?: string
+): DaytonaGitDirtyWorktreeError;
 ```
 
 **Parameters**:
@@ -1427,7 +1445,8 @@ new DaytonaGitMergeConflictError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaGitMergeConflictError;
+   source?: string
+): DaytonaGitMergeConflictError;
 ```
 
 **Parameters**:
@@ -1498,7 +1517,8 @@ new DaytonaGitPushRejectedError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaGitPushRejectedError;
+   source?: string
+): DaytonaGitPushRejectedError;
 ```
 
 **Parameters**:
@@ -1569,7 +1589,8 @@ new DaytonaGitRemoteRejectedError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaGitRemoteRejectedError;
+   source?: string
+): DaytonaGitRemoteRejectedError;
 ```
 
 **Parameters**:
@@ -1640,7 +1661,8 @@ new DaytonaGitRepoNotFoundError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaGitRepoNotFoundError;
+   source?: string
+): DaytonaGitRepoNotFoundError;
 ```
 
 **Parameters**:
@@ -1711,7 +1733,8 @@ new DaytonaGitTransportFailedError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaGitTransportFailedError;
+   source?: string
+): DaytonaGitTransportFailedError;
 ```
 
 **Parameters**:
@@ -1787,7 +1810,8 @@ new DaytonaGoneError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaGoneError;
+   source?: string
+): DaytonaGoneError;
 ```
 
 **Parameters**:
@@ -1862,7 +1886,8 @@ new DaytonaInternalServerError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaInternalServerError;
+   source?: string
+): DaytonaInternalServerError;
 ```
 
 **Parameters**:
@@ -1951,7 +1976,8 @@ new DaytonaInvalidArgumentError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaInvalidArgumentError;
+   source?: string
+): DaytonaInvalidArgumentError;
 ```
 
 **Parameters**:
@@ -2022,7 +2048,8 @@ new DaytonaInvalidFilePathError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaInvalidFilePathError;
+   source?: string
+): DaytonaInvalidFilePathError;
 ```
 
 **Parameters**:
@@ -2093,7 +2120,8 @@ new DaytonaLspServerNotInitializedError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaLspServerNotInitializedError;
+   source?: string
+): DaytonaLspServerNotInitializedError;
 ```
 
 **Parameters**:
@@ -2171,7 +2199,8 @@ new DaytonaNotFoundError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaNotFoundError;
+   source?: string
+): DaytonaNotFoundError;
 ```
 
 **Parameters**:
@@ -2242,7 +2271,8 @@ new DaytonaProcessExecutionTimeoutError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaProcessExecutionTimeoutError;
+   source?: string
+): DaytonaProcessExecutionTimeoutError;
 ```
 
 **Parameters**:
@@ -2334,7 +2364,8 @@ new DaytonaProcessNotFoundError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaProcessNotFoundError;
+   source?: string
+): DaytonaProcessNotFoundError;
 ```
 
 **Parameters**:
@@ -2405,7 +2436,8 @@ new DaytonaRateLimitError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaRateLimitError;
+   source?: string
+): DaytonaRateLimitError;
 ```
 
 **Parameters**:
@@ -2476,7 +2508,8 @@ new DaytonaRecordingFfmpegNotFoundError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaRecordingFfmpegNotFoundError;
+   source?: string
+): DaytonaRecordingFfmpegNotFoundError;
 ```
 
 **Parameters**:
@@ -2547,7 +2580,8 @@ new DaytonaRecordingStillActiveError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaRecordingStillActiveError;
+   source?: string
+): DaytonaRecordingStillActiveError;
 ```
 
 **Parameters**:
@@ -2623,7 +2657,8 @@ new DaytonaServiceUnavailableError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaServiceUnavailableError;
+   source?: string
+): DaytonaServiceUnavailableError;
 ```
 
 **Parameters**:
@@ -2694,7 +2729,8 @@ new DaytonaSessionEndedError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaSessionEndedError;
+   source?: string
+): DaytonaSessionEndedError;
 ```
 
 **Parameters**:
@@ -2776,7 +2812,8 @@ new DaytonaTimeoutError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaTimeoutError;
+   source?: string
+): DaytonaTimeoutError;
 ```
 
 **Parameters**:
@@ -2868,7 +2905,8 @@ new DaytonaUnprocessableEntityError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaUnprocessableEntityError;
+   source?: string
+): DaytonaUnprocessableEntityError;
 ```
 
 **Parameters**:
@@ -2955,7 +2993,8 @@ new DaytonaValidationError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaValidationError;
+   source?: string
+): DaytonaValidationError;
 ```
 
 **Parameters**:
@@ -3005,7 +3044,8 @@ function createDaytonaError(
    statusCode?: number,
    headers?: AxiosHeaders,
    code?: string,
-   source?: string): DaytonaError;
+   source?: string
+): DaytonaError;
 ```
 
 Creates the appropriate Daytona error subclass from structured error metadata.

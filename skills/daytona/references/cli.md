@@ -554,7 +554,7 @@ daytona ssh [SANDBOX_ID] | [SANDBOX_NAME] [flags]
 __Flags__
 | Long | Short | Description |
 | :--- | :---- | :---------- |
-| `--expires` |  | SSH access token expiration time in minutes (defaults to 24 hours) |
+| `--expires` |  | SSH access token expiration time in minutes |
 | `--help` |  | help for daytona |
 
 

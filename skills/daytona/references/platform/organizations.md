@@ -130,6 +130,8 @@ Users within an organization can have one of two different roles:
 
 ### Role assignments
 
+Assignments govern what a member can do to the organization's resources: which ones they can create, delete, configure or read. They do not govern what a member can do inside a running sandbox. Every member of an organization can address that organization's running sandboxes — running processes, reading and writing files, opening preview URLs and using the web terminal and the Computer Use desktop — whatever assignments they hold, including none. The organization is the trust boundary for sandbox compute, and no assignment withholds sandbox runtime access.
+
 The list of available role assignments includes:
 
 | Assignment                 | Description                                                                                        |

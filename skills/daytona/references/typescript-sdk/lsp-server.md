@@ -21,7 +21,8 @@ IDE-like features such as code completion, symbol search, and more.
 new LspServer(
    languageId: LspLanguageId,
    pathToProject: string,
-   apiClient: LspApi): LspServer;
+   apiClient: LspApi
+): LspServer;
 ```
 
 **Parameters**:

@@ -89,7 +89,8 @@ new Sandbox(
    sandboxApi: SandboxApi,
    getAnalyticsApiUrl: () => Promise<string>,
    subscriptionManager: EventSubscriptionManager,
-   requestTimeoutMs?: number): Sandbox;
+   requestTimeoutMs?: number
+): Sandbox;
 ```
 
 Creates a new Sandbox instance.

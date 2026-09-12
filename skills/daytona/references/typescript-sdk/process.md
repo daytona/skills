@@ -48,7 +48,8 @@ new Process(
    apiClient: ProcessApi,
    getPreviewToken: () => Promise<string>,
    language?: string,
-   requestTimeoutMs?: number): Process;
+   requestTimeoutMs?: number
+): Process;
 ```
 
 **Parameters**:
@@ -72,7 +73,8 @@ new Process(
 codeRun(
    code: string,
    params?: CodeRunParams,
-timeout?: number): Promise<ExecuteResponse>;
+   timeout?: number
+): Promise<ExecuteResponse>;
 ```
 
 Executes code in the Sandbox using the appropriate language runtime.
@@ -309,7 +311,8 @@ executeCommand(
    command: string,
    cwd?: string,
    env?: Record<string, string>,
-timeout?: number): Promise<ExecuteResponse>;
+   timeout?: number
+): Promise<ExecuteResponse>;
 ```
 
 Executes a shell command in the Sandbox.
@@ -355,7 +358,8 @@ const result = await process.executeCommand('sleep 10', undefined, 5);
 executeSessionCommand(
    sessionId: string,
    req: SessionExecuteRequest,
-timeout?: number): Promise<SessionExecuteResponse>;
+   timeout?: number
+): Promise<SessionExecuteResponse>;
 ```
 
 Executes a command in an existing session.
@@ -602,7 +606,8 @@ getSessionCommandLogs(
    sessionId: string,
    commandId: string,
    onStdout: (chunk: string) => void,
-onStderr: (chunk: string) => void): Promise<void>;
+   onStderr: (chunk: string) => void
+): Promise<void>;
 ```
 
 Asynchronously retrieve and process the logs for a command executed in a session as they become available.
@@ -731,7 +736,8 @@ sessions.forEach(session => {
 resizePtySession(
    sessionId: string,
    cols: number,
-rows: number): Promise<PtySessionInfo>;
+   rows: number
+): Promise<PtySessionInfo>;
 ```
 
 Resize a PTY session's terminal dimensions.
@@ -777,7 +783,8 @@ await ptyHandle.resize(150, 40); // cols, rows
 sendSessionCommandInput(
    sessionId: string,
    commandId: string,
-data: string): Promise<void>;
+   data: string
+): Promise<void>;
 ```
 
 Sends input data to a command executed in a session.
