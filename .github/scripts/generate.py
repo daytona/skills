@@ -19,8 +19,8 @@ import yaml
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
-if len(sys.argv) < 2:
-    print("Usage: python generate.py <path-to-daytona-docs>")
+if len(sys.argv) < 3:
+    print("Usage: python generate.py <path-to-daytona-docs> <path-to-daytona-clients>")
     sys.exit(1)
 
 DOCS_ROOT = Path(sys.argv[1]).resolve()
@@ -28,11 +28,17 @@ if not DOCS_ROOT.is_dir():
     print(f"Error: docs directory not found: {DOCS_ROOT}")
     sys.exit(1)
 
+CLIENTS_ROOT = Path(sys.argv[2]).resolve()
+if not CLIENTS_ROOT.is_dir():
+    print(f"Error: clients directory not found: {CLIENTS_ROOT}")
+    sys.exit(1)
+
 OUTPUT_ROOT = REPO_ROOT / "skills" / "daytona" / "references"
 
 SDK_LANGUAGES = {
     "python-sdk": "Python",
     "typescript-sdk": "TypeScript",
+    "java-sdk": "Java",
     "go-sdk": "Go",
     "ruby-sdk": "Ruby",
 }
@@ -48,7 +54,7 @@ CORE_FEATURE_DOCS = [
     "ssh-access",
     "vnc-access",
     "computer-use",
-    "configuration",
+    "authentication",
     "declarative-builder",
     "log-streaming",
     "network-limits",
@@ -58,6 +64,16 @@ CORE_FEATURE_DOCS = [
     "regions",
     "vpn-connections",
     "getting-started",
+    "linux-sandboxes",
+    "windows-sandboxes",
+    "gpu-sandboxes",
+    "isolation",
+    "mount-external-storage",
+    "scale",
+    "secrets",
+    "warm-pools",
+    "troubleshooting",
+    "upgrade-to-v2",
 ]
 
 # Language-agnostic platform docs (no SDK-specific tabs, or only API/CLI tabs)
@@ -70,14 +86,27 @@ PLATFORM_DOCS = [
     "web-terminal",
     "webhooks",
     "mcp",
-    "runners",
-    "oss-deployment",
+    "api-keys",
+    "sso",
+    "architecture",
+    "persistence",
+    "bring-your-own-compute",
+    "custom-preview-proxy",
+    "otel-collection",
+    "agent-skills",
+    "playground",
+    "acceptable-use",
 ]
 
+# Docs whose source path (relative to DOCS_ROOT, without .mdx) differs from their name
+SOURCE_PATHS = {
+    "getting-started": "index",
+    "otel-collection": "observability/otel-collection",
+}
+
 # OpenAPI spec paths
-DAYTONA_REPO_ROOT = DOCS_ROOT.parent.parent.parent.parent.parent.parent
-MAIN_API_SPEC = DAYTONA_REPO_ROOT / "libs" / "api-client-go" / "api" / "openapi.yaml"
-TOOLBOX_API_SPEC = DAYTONA_REPO_ROOT / "libs" / "toolbox-api-client-go" / "api" / "openapi.yaml"
+MAIN_API_SPEC = CLIENTS_ROOT / "api-client-go" / "api" / "openapi.yaml"
+TOOLBOX_API_SPEC = CLIENTS_ROOT / "toolbox-api-client-go" / "api" / "openapi.yaml"
 API_OUTPUT = OUTPUT_ROOT / "api"
 PLATFORM_OUTPUT = OUTPUT_ROOT / "platform"
 
@@ -124,12 +153,14 @@ def strip_imports(content: str) -> str:
 
 def strip_components(content: str) -> str:
     """Remove visual-only components and artifacts."""
-    # <SandboxDiagram /> or <SandboxDiagram/>
-    content = re.sub(r"<SandboxDiagram\s*/>", "", content)
+    # <SandboxDiagram />, <ArchitectureDiagram />, <SandboxDiagram variant="gpu" />, ...
+    content = re.sub(r"<\w+Diagram\b[^>]*/>\s*", "", content)
     # <ExploreMore /> or <ExploreMore/>
     content = re.sub(r"<ExploreMore\s*/>", "", content)
     # <GuidesList ... />
     content = re.sub(r"<GuidesList[^/]*/>\s*", "", content)
+    # <ConceptVisual name="..." />
+    content = re.sub(r"<ConceptVisual[^>]*/>\s*", "", content)
     # {/* JSX comments */}
     content = re.sub(r"\{/\*.*?\*/\}", "", content)
     # HTML entities
@@ -144,6 +175,33 @@ def strip_components(content: str) -> str:
 def convert_label_component(content: str) -> str:
     """Convert <Label>text</Label> to **text**."""
     return re.sub(r"<Label>(.*?)</Label>", r"**\1**", content)
+
+
+def convert_collapsible_component(content: str) -> str:
+    """Convert <Collapsible title="X">content</Collapsible> to a bold-labeled section."""
+    return re.sub(
+        r'<Collapsible\s+title="([^"]*)"\s*>\s*\n?(.*?)\n?\s*</Collapsible>',
+        lambda m: f"**{m.group(1)}:**\n\n{m.group(2).strip()}",
+        content,
+        flags=re.DOTALL,
+    )
+
+
+def convert_doc_link_cards(content: str) -> str:
+    """Convert <DocLinkCardGrid> of <DocLinkCard .../> to a markdown link list."""
+    def _attr(attrs, name):
+        m = re.search(rf'{name}="([^"]*)"', attrs)
+        return m.group(1) if m else ""
+
+    def _replace_grid(m):
+        items = []
+        for card in re.finditer(r"<DocLinkCard\s(.*?)/>", m.group(1), re.DOTALL):
+            attrs = card.group(1)
+            title, href, desc = _attr(attrs, "title"), _attr(attrs, "href"), _attr(attrs, "description")
+            items.append(f"- [{title}]({href}): {desc}" if desc else f"- [{title}]({href})")
+        return "\n".join(items)
+
+    return re.sub(r"<DocLinkCardGrid>(.*?)</DocLinkCardGrid>", _replace_grid, content, flags=re.DOTALL)
 
 
 def convert_aside_component(content: str) -> str:
@@ -325,10 +383,11 @@ def extract_language_tab(content: str, language_label: str) -> str:
             replacement = ""
             for label, inner in items:
                 if label == language_label:
-                    replacement = inner
+                    replacement = extract_language_tab(inner, language_label)
                     break
         else:
             # Everything else (non-SDK tabs, non-language tabs): convert to markdown
+            items = [(label, extract_language_tab(inner, language_label)) for label, inner in items]
             replacement = convert_non_language_tabs(items)
         content = content[:start] + replacement + content[end:]
 
@@ -345,6 +404,7 @@ def keep_all_tabs_as_markdown(content: str) -> str:
         return content
 
     for start, end, sync_key, items in reversed(blocks):
+        items = [(label, keep_all_tabs_as_markdown(inner)) for label, inner in items]
         replacement = convert_non_language_tabs(items)
         content = content[:start] + replacement + content[end:]
 
@@ -391,6 +451,10 @@ def resolve_links(content: str, current_sdk: str = None, current_depth: str = "s
         # Remove trailing slash
         normalized = normalized.rstrip("/")
 
+        # Docs root (/docs, /docs/en) is the index page
+        if not normalized and path.startswith("/docs"):
+            normalized = "/index"
+
         # Now resolve based on the normalized path
         resolved = _resolve_path(normalized, anchor, current_sdk, current_depth)
         if resolved is not None:
@@ -414,16 +478,16 @@ def _resolve_path(normalized: str, anchor: str, current_sdk: str, current_depth:
     if not normalized or normalized == "/":
         return None
 
+    DAYTONA_DOCS_BASE = "https://www.daytona.io/docs/en"
+
+    # Skipped SDK pages are not generated, so link to the docs site
+    if normalized.rsplit("/", 1)[-1] in SDK_SKIP_FILES:
+        return f"{DAYTONA_DOCS_BASE}{normalized}{anchor}"
+
     # SDK index pages: /python-sdk, /typescript-sdk, etc.
     for sdk in SDK_LANGUAGES:
         if normalized == f"/{sdk}":
-            if current_depth == "sdk" and current_sdk:
-                if current_sdk == sdk:
-                    return f"./README.md{anchor}"
-                else:
-                    return f"../{sdk}/README.md{anchor}"
-            else:
-                return f"./{sdk}/README.md{anchor}"
+            return _relative(f"{sdk}/README.md", current_sdk, current_depth) + anchor
 
     # Python SDK sync: /python-sdk/sync/X
     m = re.match(r"^/python-sdk/sync/(.+)$", normalized)
@@ -446,8 +510,8 @@ def _resolve_path(normalized: str, anchor: str, current_sdk: str, current_depth:
         target = f"python-sdk/{name}.md"
         return _relative(target, current_sdk, current_depth) + anchor
 
-    # Other SDK pages: /typescript-sdk/X, /go-sdk/X, /ruby-sdk/X
-    for sdk in ["typescript-sdk", "go-sdk", "ruby-sdk"]:
+    # Other SDK pages: /typescript-sdk/X, /java-sdk/X, /go-sdk/X, /ruby-sdk/X
+    for sdk in [s for s in SDK_LANGUAGES if s != "python-sdk"]:
         m = re.match(rf"^/{sdk}/(.+)$", normalized)
         if m:
             name = m.group(1)
@@ -475,24 +539,9 @@ def _resolve_path(normalized: str, anchor: str, current_sdk: str, current_depth:
         else:
             return f"./api/README.md{anchor}"
 
-    # API keys -> SKILL.md#authentication
-    if normalized == "/api-keys":
-        if current_depth == "sdk-sub":
-            return f"../../../SKILL.md#authentication{anchor}"
-        elif current_depth == "sdk":
-            return f"../../SKILL.md#authentication{anchor}"
-        elif current_depth == "platform":
-            return f"../../SKILL.md#authentication{anchor}"
-        else:
-            return f"../SKILL.md#authentication{anchor}"
-
-    # Getting started -> SKILL.md or per-SDK
-    # (getting-started is a core feature doc, so it exists in SDK folders)
-
     # Platform docs (in platform/ subfolder)
-    platform_names = [d for d in PLATFORM_DOCS]
-    for name in platform_names:
-        if normalized == f"/{name}":
+    for name in PLATFORM_DOCS:
+        if normalized == f"/{SOURCE_PATHS.get(name, name)}":
             if current_depth == "sdk-sub":
                 return f"../../platform/{name}.md{anchor}"
             elif current_depth == "sdk":
@@ -504,7 +553,7 @@ def _resolve_path(normalized: str, anchor: str, current_sdk: str, current_depth:
 
     # Core feature docs -> per-SDK files
     for name in CORE_FEATURE_DOCS:
-        if normalized == f"/{name}":
+        if normalized == f"/{SOURCE_PATHS.get(name, name)}":
             output_name = OUTPUT_NAME_OVERRIDES.get(name, name)
             if current_depth in ("sdk", "sdk-sub") and current_sdk:
                 if current_depth == "sdk-sub":
@@ -517,7 +566,6 @@ def _resolve_path(normalized: str, anchor: str, current_sdk: str, current_depth:
             return None
 
     # Docs we don't convert -> link to external Daytona docs site
-    DAYTONA_DOCS_BASE = "https://www.daytona.io/docs/en"
     return f"{DAYTONA_DOCS_BASE}{normalized}{anchor}"
 
 
@@ -764,6 +812,8 @@ def process_content_common(content: str) -> str:
     content = strip_imports(content)
     content = strip_components(content)
     content = convert_label_component(content)
+    content = convert_collapsible_component(content)
+    content = convert_doc_link_cards(content)
     content = convert_aside_component(content)
     content = convert_callouts(content)
     return content
@@ -837,9 +887,9 @@ def generate_core_feature_docs():
     print("\n=== Core Feature Docs (per-SDK) ===")
 
     for feature in CORE_FEATURE_DOCS:
-        src_path = DOCS_ROOT / f"{feature}.mdx"
+        src_path = DOCS_ROOT / f"{SOURCE_PATHS.get(feature, feature)}.mdx"
         if not src_path.exists():
-            print(f"  WARNING: {feature}.mdx not found, skipping")
+            print(f"  WARNING: {src_path.name} not found, skipping")
             continue
 
         raw_content = read_mdx(src_path)
@@ -848,15 +898,9 @@ def generate_core_feature_docs():
 
         output_name = OUTPUT_NAME_OVERRIDES.get(feature, feature)
 
-        # Check if the file actually has SDK language tabs
-        has_sdk_tabs = False
-        blocks = parse_tabs_blocks(raw_content)
-        for _, _, sync_key, items in blocks:
-            if sync_key == "language":
-                labels = {label for label, _ in items}
-                if labels & {"Python", "TypeScript", "Go", "Ruby"}:
-                    has_sdk_tabs = True
-                    break
+        # Check if the file has SDK language tabs at any nesting level
+        labels = set(re.findall(r'<TabItem\s+label="([^"]*)"', raw_content))
+        has_sdk_tabs = bool(labels & set(SDK_LANGUAGES.values()))
 
         if not has_sdk_tabs:
             # This doc has syncKey="language" but no SDK tabs (e.g. Mac/Linux/Windows)
@@ -893,9 +937,9 @@ def generate_platform_docs():
     print("\n=== Platform Docs ===")
 
     for name in PLATFORM_DOCS:
-        src_path = DOCS_ROOT / f"{name}.mdx"
+        src_path = DOCS_ROOT / f"{SOURCE_PATHS.get(name, name)}.mdx"
         if not src_path.exists():
-            print(f"  WARNING: {name}.mdx not found, skipping")
+            print(f"  WARNING: {src_path.name} not found, skipping")
             continue
 
         content = read_mdx(src_path)
