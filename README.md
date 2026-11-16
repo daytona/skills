@@ -1,6 +1,13 @@
 # Daytona Skill
 
-An agent skill for creating and running sandboxes on the Daytona platform. Includes references and practical patterns for the Daytona API, CLI, Python, TypeScript, Java, Go, and Ruby SDKs.
+An agent skill for creating and running sandboxes on the Daytona platform. Includes references and practical patterns for two Daytona versions:
+
+| Version    | Covers                                                |
+| ---------- | ----------------------------------------------------- |
+| Daytona v2 | API, CLI, Python and TypeScript SDKs                  |
+| Daytona v0 | API, CLI, Python, TypeScript, Java, Go, and Ruby SDKs |
+
+The skill entrypoint identifies which version the code targets and routes the agent to the guide and references for that version.
 
 ## Installation
 
@@ -45,18 +52,29 @@ The agent skill loads automatically when a request involves Daytona platform or 
 
 ```text
 skills/daytona/
-├── SKILL.md                # Main entrypoint
-└── references/             # Reference directories
-    ├── api/                # API reference documentation
-    ├── platform/           # Platform reference documentation
-    ├── python-sdk/         # Python SDK reference documentation
-    │   ├── sync/           # Sync Python SDK reference documentation
-    │   └── async/          # Async Python SDK reference documentation
-    ├── typescript-sdk/     # TypeScript SDK reference documentation
-    ├── java-sdk/           # Java SDK reference documentation
-    ├── go-sdk/             # Go SDK reference documentation
-    ├── ruby-sdk/           # Ruby SDK reference documentation
-    └── cli.md              # CLI reference documentation
+├── SKILL.md                    # Entrypoint: version selection
+└── references/
+    ├── daytona-v2/
+    │   ├── README.md           # Daytona v2 guide
+    │   ├── api/                # API reference
+    │   ├── cli/                # CLI reference
+    │   ├── platform/           # Platform reference
+    │   ├── python-sdk/         # Python SDK feature guides
+    │   │   └── reference/      # Python SDK class and method reference
+    │   └── typescript-sdk/     # TypeScript SDK feature guides
+    │       └── reference/      # TypeScript SDK class and method reference
+    └── daytona-v0/
+        ├── README.md           # Daytona v0 guide
+        ├── api/                # API reference
+        ├── platform/           # Platform reference
+        ├── python-sdk/         # Python SDK reference
+        │   ├── sync/           # Sync Python SDK reference
+        │   └── async/          # Async Python SDK reference
+        ├── typescript-sdk/     # TypeScript SDK reference
+        ├── java-sdk/           # Java SDK reference
+        ├── go-sdk/             # Go SDK reference
+        ├── ruby-sdk/           # Ruby SDK reference
+        └── cli.md              # CLI reference
 ```
 
 ## License
