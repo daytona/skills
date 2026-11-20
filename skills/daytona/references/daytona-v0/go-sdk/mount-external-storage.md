@@ -546,7 +546,7 @@ const fork = forkSet.forks[0]
 
 // 2. Launch the sandbox with the fork's scoped credentials
 const daytona = new Daytona()
-const sandbox = await daytona.create({
+const sandbox = await daytona.v0.create({
   snapshot: 'fuse-tigris',
   envVars: {
     AWS_ACCESS_KEY_ID: fork.credentials!.accessKeyId,
@@ -565,7 +565,7 @@ try {
   const response = await sandbox.process.executeCommand(`ls ${mountPath}`)
   console.log(response.result)
 } finally {
-  await daytona.delete(sandbox)
+  await daytona.v0.delete(sandbox)
   await teardownForks(forkSet) // revokes the scoped key and deletes the fork bucket
 }
 ```
@@ -2080,7 +2080,7 @@ If the drain fails or times out, keep the sandbox running, resolve the error, an
 
 ## Unmount
 
-When a sandbox is deleted via `daytona.delete(sandbox)`, the container teardown automatically removes any active FUSE mounts and shuts down their daemons. For normal cleanup, this is all you need — no manual unmount required.
+When a sandbox is deleted via `daytona.v0.delete(sandbox)`, the container teardown automatically removes any active FUSE mounts and shuts down their daemons. For normal cleanup, this is all you need — no manual unmount required.
 
 To free a mount path **during** a sandbox's lifetime (for example, to remount with different credentials or before persisting a workspace archive), relocate the mount onto a throwaway path:
 

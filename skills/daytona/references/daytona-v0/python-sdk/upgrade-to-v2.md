@@ -71,10 +71,10 @@ The Python SDK includes the Daytona v0 namespace in an optional extra. Install t
 
 ```bash
 # Daytona v0 code, or Daytona v0 and Daytona v2 in the same project
-pip install "daytona[v0-sdk]==2.0.0a13"
+pip install "daytona[v0-sdk]>=2,<3"
 
 # Daytona v2 code only
-pip install "daytona==2.0.0a13"
+pip install "daytona>=2,<3"
 ```
 
 ### 1.1 Upgrade tool

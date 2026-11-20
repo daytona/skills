@@ -216,9 +216,9 @@ await sandbox.fs.uploadFile('large_dataset.csv', '/home/daytona/workspace/datase
 | --- | --- |
 | `localPath` | Sets the local file to upload.<br />**Required**<br />**Example:** `'large_dataset.csv'` |
 | `remotePath` | Sets the destination path in the sandbox.<br />**Required**<br />**Format:** an absolute path<br />**Example:** `'/home/daytona/workspace/dataset.csv'` |
+| `atomic` | Writes through a temporary file in the destination directory, then renames it into place.<br />**Default:** `false` |
 | `onProgress` | Reports upload progress.<br />**Format:** a callback that takes the bytes sent so far and the total size in bytes<br />**Example:** `(sent, total) => console.log(sent, total)` |
 | `signal` | Stops the upload when the signal is aborted.<br />**Format:** an AbortSignal<br />**Example:** `controller.signal` |
-| `atomic` | Writes through a temporary file in the destination directory, then renames it into place.<br />**Default:** `false` |
 
 > **Notes:**
 >
@@ -403,9 +403,9 @@ await sandbox.fs.chmod('/home/daytona/workspace/file.txt', { mode: '644' })
 | **Parameter** | **Description** |
 | --- | --- |
 | `path` | Sets the file or directory to change.<br />**Required**<br />**Format:** an absolute path<br />**Example:** `'/home/daytona/workspace/file.txt'` |
+| `group` | Sets the group.<br />**Format:** a numeric group ID or a group name<br />**Example:** `'1000'` |
 | `mode` | Sets the permission mode.<br />**Format:** an octal string<br />**Example:** `'644'` |
 | `owner` | Sets the owner.<br />**Format:** a numeric user ID or a user name<br />**Example:** `'1000'` |
-| `group` | Sets the group.<br />**Format:** a numeric group ID or a group name<br />**Example:** `'1000'` |
 
 > **Notes:**
 >
@@ -533,9 +533,9 @@ await handle.stop()
 | --- | --- |
 | `path` | Sets the directory to watch.<br />**Required**<br />**Format:** an absolute path<br />**Example:** `'/home/daytona/workspace/src'` |
 | `onEvent` | Receives each event.<br />**Required**<br />**Format:** a function or async function that takes one event<br />**Example:** `(event) => console.log(event.name)` |
-| `recursive` | Watches subdirectories of the directory.<br />**Default:** `false` |
-| `onOverflow` | Runs when the watch drops events.<br />**Format:** a function or async function without arguments |
 | `onExit` | Runs once when the watch ends.<br />**Format:** a function or async function that takes the error that ended the watch, or no argument after stop() |
+| `onOverflow` | Runs when the watch drops events.<br />**Format:** a function or async function without arguments |
+| `recursive` | Watches subdirectories of the directory.<br />**Default:** `false` |
 
 > **Notes:**
 >

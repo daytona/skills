@@ -79,8 +79,8 @@ const sandbox = await daytonaWithConfig.v2.create({ region: 'earth' })
 | `apiKey` | Sets the API key that authenticates the client.<br />**Default:** the DAYTONA_API_KEY environment variable |
 | `jwtToken` | Sets the OIDC token of a signed-in user in place of an API key.<br />**Default:** the DAYTONA_JWT_TOKEN environment variable |
 | `projectId` | Sets the project that the JWT is scoped to.<br />**Default:** the DAYTONA_PROJECT_ID environment variable |
+| `region` | Sets the region.<br />**Default:** the project's default region, then the organization's, then `earth`<br />**Value:** `earth`, `us`, `us-east`, `us-east-ash-1`, `us-east-bos-1`, `us-east-iad-1`, or the ID of a [BYOC region](./bring-your-own-compute.md) of the organization<br />**Example:** `'earth'` |
 | `requestTimeoutSeconds` | Sets the time limit of one request in seconds.<br />**Default:** `60`<br />**Value:** `0` for no limit<br />**Example:** `120` |
-| `region` | Sets the region.<br />**Default:** the project's default region, then the organization's, then `earth`<br />**Format:** a listed region ID<br />**Example:** `'earth'` |
 
 > **Notes:**
 >
@@ -141,11 +141,11 @@ daytona sandbox create --api-key YOUR_API_KEY --api-url https://api.daytona.com
 
 | **Flag** | **Description** |
 | --- | --- |
-| `--device` | Signs in with a device code on a host without a browser. |
-| `--token` | Stores a static credential in the profile in place of a sign-in. |
 | `--api-key` | Sends a static credential in place of the saved login.<br />**Default:** the DAYTONA_API_KEY environment variable |
 | `--api-url` | Sets the API base URL.<br />**Default:** the DAYTONA_V2_API_URL environment variable, then the URL saved in the profile, then `https://api.daytona.com` |
+| `--device` | Signs in with a device code on a host without a browser. |
 | `--profile` | Selects a saved profile other than the active one.<br />**Default:** the DAYTONA_PROFILE environment variable, then the active profile, then the profile named default<br />**Format:** 1 to 64 ASCII letters, digits, periods, underscores, and hyphens, other than a single or double period<br />**Example:** `work` |
+| `--token` | Stores a static credential in the profile in place of a sign-in. |
 
 > **Notes:**
 >
