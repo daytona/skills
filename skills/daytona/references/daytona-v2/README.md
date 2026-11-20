@@ -6,15 +6,15 @@ Daytona provides sandboxes for agents: hardware-isolated virtual machines, each 
 
 Every sandbox belongs to a **project**. A project API key reaches only the sandboxes, images, snapshots, volumes, and secrets of its own project.
 
-**Scope:** This guide covers Daytona v2 (`app.daytona.com`, `api.daytona.com`). The SDKs are pre-release: Python `daytona==2.0.0a13` and TypeScript `@daytona/sdk@2.0.0-alpha.13`.
+**Scope:** This guide covers Daytona v2 (`app.daytona.com`, `api.daytona.com`). The SDKs are Python `daytona==2.1.0` and TypeScript `@daytona/sdk@2.1.0`.
 
 ## Using v0 from the v2 SDK
 
-The v2 SDK also exposes the v0 API as `daytona.v0` (Python needs `pip install 'daytona[v0-sdk]==2.0.0a13'`). To move an organization's resources from v0, see [migrate-from-v0.md](./platform/migrate-from-v0.md).
+The v2 SDK also exposes the v0 API as `daytona.v0` (Python needs `pip install 'daytona[v0-sdk]==2.1.0'`). To move an organization's resources from v0, see [migrate-from-v0.md](./platform/migrate-from-v0.md).
 
 ## Before You Start
 
-1. **SDK installed?** Check that the v2 SDK is installed: `pip show daytona` reports `2.0.0a13` or a later `2.x` release, or `package.json` lists `@daytona/sdk` at `2.0.0-alpha.13` or later. A `0.x` version is the v0 SDK. Install with `pip install daytona==2.0.0a13` (Python 3.10 or later) or `npm install @daytona/sdk@2.0.0-alpha.13` (Node.js 22.4 or later).
+1. **SDK installed?** Check that the v2 SDK is installed: `pip show daytona` reports a `2.x` release, or `package.json` lists `@daytona/sdk` at `2.x`. A `0.x` version is the v0 SDK. Install with `pip install daytona==2.1.0` (Python 3.10 or later) or `npm install @daytona/sdk@2.1.0` (Node.js 22.15 or later).
 2. **API key set?** Check `DAYTONA_API_KEY` in the shell environment or in environment files. If it is not set, tell the user to create a project API key at [Daytona Dashboard > API Keys](https://app.daytona.com/dashboard/keys).
 
 ## Sandbox Lifetime
@@ -383,7 +383,7 @@ Python: [python-sdk/README.md](./python-sdk/README.md). TypeScript: [typescript-
 
 ## CLI Reference
 
-Install with `brew install daytonaio/cli/daytona-alpha` (macOS) or the install script in [cli/README.md](./cli/README.md), then run `daytona login --token "$DAYTONA_API_KEY" --api-url https://api.daytona.com`.
+Install with `brew install daytonaio/cli/daytona` (macOS) or the install script in [cli/README.md](./cli/README.md), then run `daytona login --token "$DAYTONA_API_KEY" --api-url https://api.daytona.com`.
 
 | File | Commands |
 |---|---|
