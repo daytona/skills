@@ -71,7 +71,7 @@ If you use the [upgrade tool](#11-upgrade-tool), run it before you install SDK 2
 The TypeScript SDK includes the Daytona v0 namespace in the package. No extra install is required. Projects that depend on the older package name replace it with the package of SDK 2.x. The TypeScript SDK requires Node.js 22.15 or later.
 
 ```bash
-npm install @daytona/sdk@2.0.0-alpha.13
+npm install @daytona/sdk@2
 ```
 
 | **Package**              | **SDK 2.x**                          |

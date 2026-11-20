@@ -45,6 +45,8 @@ Copy the `daytona` subdirectory into your agent's `skills` directory:
 
 The agent skill loads automatically when a request involves Daytona platform or sandbox management features. To use it manually, reference the skill directly in your prompt or code.
 
+The skill entrypoint is also served at [daytona.com/SKILL.md](https://www.daytona.com/SKILL.md) for agents that read it without installing the skill. This version links to the markdown version of each docs page instead of the reference files.
+
 ## Structure
 
 ```text

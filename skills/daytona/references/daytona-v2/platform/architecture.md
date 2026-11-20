@@ -68,7 +68,7 @@ A sandbox runs as a hardware-isolated virtual machine with its own kernel and de
 
 ##### Sandbox daemon
 
-The sandbox daemon is a Rust agent that runs as the init process inside each sandbox. It is injected by the runner as a read-only system layer, so it does not need to be part of your image. It exposes the [Toolbox API](../api/README.md#toolbox-api), providing direct access to the sandbox environment: [file system](../python-sdk/file-system-operations.md) and [Git](../python-sdk/git-operations.md) operations, [process](../python-sdk/process-execution.md) and [code execution](../python-sdk/code-execution.md), [PTY](../python-sdk/pty.md) and [log streaming](../python-sdk/log-streaming.md), [language servers](./language-server-protocol.md), and [computer use](../python-sdk/computer-use.md). It also runs the SSH server that the [SSH gateway](../python-sdk/ssh-access.md) connects to.
+The sandbox daemon is a Rust agent that runs as the init process inside each sandbox. It is injected by the runner as a read-only system layer, so it does not need to be part of your image. It exposes the [Toolbox API](../api/README.md#toolbox-api), providing direct access to the sandbox environment: [file system](../python-sdk/file-system-operations.md) and [Git](../python-sdk/git-operations.md) operations, [process](../python-sdk/process-execution.md) and [code execution](../python-sdk/code-execution.md), [PTY](../python-sdk/pty.md) and [log streaming](../python-sdk/log-streaming.md), and [computer use](../python-sdk/computer-use.md). It also runs the SSH server that the [SSH gateway](../python-sdk/ssh-access.md) connects to.
 
 ##### Proxy
 
@@ -78,7 +78,7 @@ The proxy is a stateless service serving the sandbox data plane. It authenticate
 | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Toolbox**                            | Path-based routing at `/toolbox/{sandboxId}/...`, with a project API key, a [sandbox access token](../python-sdk/sandboxes.md#create-an-access-token), or a platform token.               |
 | **Preview**                            | Host-based routing at `{port}-{sandboxId}.{preview-domain}`, authenticated with an API key, a preview token, or a signed URL unless the endpoint is [public](../python-sdk/preview.md). |
-| **[SSH gateway](../python-sdk/ssh-access.md)** | Port `2222`, authenticated with `<sandboxId>#<credential>` as the username, where the credential is a project API key or a sandbox token that allows SSH. For macOS sandboxes, use a sandbox token ([macOS SSH](../python-sdk/macos-sandboxes.md#ssh)). |
+| **[SSH gateway](../python-sdk/ssh-access.md)** | Port `2222`, authenticated with `<sandboxId>#<credential>` as the username, where the credential is a project API key or a sandbox token that allows SSH. |
 | **VNC**                                | WebSocket bridge to the sandbox desktop used by the dashboard and [VNC clients](../python-sdk/vnc-access.md).                                                                           |
 
 Authenticated Toolbox, preview, and SSH traffic also resets the [idle timeout](../python-sdk/linux-sandboxes.md#timeouts).

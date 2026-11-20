@@ -44,9 +44,9 @@ daytona key mint --project PROJECT_ID \
 
 | **Flag** | **Description** |
 | --- | --- |
-| `--name` | Sets the key name.<br />**Default:** `default`<br />**Example:** `my-api-key` |
 | `--permission` | Sets the permissions that the key holds.<br />**Required**<br />**Format:** a comma-separated list of permissions, repeatable<br />**Value:** the [project permissions](./api-keys.md#scopes)<br />**Example:** `write:sandboxes,delete:sandboxes` |
 | `--expires` | Sets when the key expires.<br />**Default:** no expiry<br />**Format:** an RFC 3339 timestamp, or a whole-second Go duration counted from now<br />**Example:** `720h` |
+| `--name` | Sets the key name.<br />**Default:** `default`<br />**Example:** `my-api-key` |
 
 > **Notes:**
 >
@@ -84,9 +84,9 @@ curl 'https://api.daytona.com/projects/PROJECT_ID/api-keys' \
 
 | **Field** | **Description** |
 | --- | --- |
-| `name` | Sets the key name.<br />**Default:** `"default"`<br />**Rules:** unique among the project's live keys, unless `default`<br />**Example:** `"my-api-key"` |
 | `project_permissions` | Sets the permissions that the key holds.<br />**Required**<br />**Minimum:** 1 permission<br />**Maximum:** the permissions that the caller holds<br />**Example:** `["write:sandboxes", "delete:sandboxes"]` |
 | `expires_at` | Sets when the key expires.<br />**Default:** no expiry<br />**Format:** an RFC 3339 timestamp<br />**Example:** `"2027-01-01T00:00:00Z"` |
+| `name` | Sets the key name.<br />**Default:** `"default"`<br />**Rules:** unique among the project's live keys, unless `default`<br />**Example:** `"my-api-key"` |
 | `service_account_id` | Sets the service account that owns the key.<br />**Default:** the signed-in user<br />**Format:** a service account ID |
 | `sync_to_v0` | Sets whether the v0 key sync copies the key to Daytona v0.<br />**Default:** `true` |
 
@@ -201,8 +201,8 @@ curl 'https://api.daytona.com/projects/PROJECT_ID/api-keys' \
 
 | **Field** | **Description** |
 | --- | --- |
-| `limit` | Sets the page size.<br />**Default:** `100`<br />**Minimum:** `1`<br />**Maximum:** `200` |
 | `cursor` | Continues from a previous page. |
+| `limit` | Sets the page size.<br />**Default:** `100`<br />**Minimum:** `1`<br />**Maximum:** `200` |
 
 > **Notes:**
 >
@@ -379,7 +379,7 @@ daytona service-account create my-service-account --role developer --org ORG_ID
 
 | **Flag** | **Description** |
 | --- | --- |
-| `<name>` | Sets the service account name.<br />**Required**<br />**Maximum:** 64 characters<br />**Format:** letters, digits, hyphens, and underscores<br />**Rules:** unique in the organization<br />**Example:** `my-service-account` |
+| `<name>` | Sets the service account name.<br />**Required**<br />**Minimum:** 1 character<br />**Maximum:** 64 characters<br />**Format:** letters, digits, hyphens, and underscores<br />**Rules:** unique in the organization<br />**Example:** `my-service-account` |
 | `--role` | Sets the roles of the service account.<br />**Required**<br />**Format:** a comma-separated list of role IDs, repeatable<br />**Value:** [built-in role](./organizations.md#roles) IDs or custom role UUIDs<br />**Example:** `developer` |
 
 > **Notes:**
@@ -402,9 +402,9 @@ curl 'https://api.daytona.com/orgs/ORG_ID/service-accounts' \
 
 | **Field** | **Description** |
 | --- | --- |
-| `name` | Sets the service account name.<br />**Required**<br />**Maximum:** 64 characters<br />**Format:** letters, digits, hyphens, and underscores<br />**Rules:** unique in the organization<br />**Example:** `"my-service-account"` |
-| `description` | Sets the purpose of the service account.<br />**Maximum:** 512 characters<br />**Example:** `"CI runner"` |
+| `name` | Sets the service account name.<br />**Required**<br />**Minimum:** 1 character<br />**Maximum:** 64 characters<br />**Format:** letters, digits, hyphens, and underscores<br />**Rules:** unique in the organization<br />**Example:** `"my-service-account"` |
 | `roles` | Sets the roles of the service account.<br />**Required**<br />**Minimum:** 1 role<br />**Maximum:** every built-in and custom role of the organization<br />**Format:** a list of role IDs<br />**Value:** [built-in role](./organizations.md#roles) IDs or custom role UUIDs<br />**Example:** `["developer"]` |
+| `description` | Sets the purpose of the service account.<br />**Maximum:** 512 characters<br />**Example:** `"CI runner"` |
 
 > **Notes:**
 >
@@ -491,8 +491,8 @@ curl 'https://api.daytona.com/orgs/ORG_ID/service-accounts' \
 
 | **Field** | **Description** |
 | --- | --- |
-| `limit` | Sets the page size.<br />**Default:** `100`<br />**Minimum:** `1`<br />**Maximum:** `200` |
 | `cursor` | Continues from a previous page. |
+| `limit` | Sets the page size.<br />**Default:** `100`<br />**Minimum:** `1`<br />**Maximum:** `200` |
 
 > **Notes:**
 >
@@ -544,7 +544,7 @@ daytona service-account update SERVICE_ACCOUNT_ID --role maintainer
 
 | **Flag** | **Description** |
 | --- | --- |
-| `--name` | Sets the new service account name.<br />**Maximum:** 64 characters<br />**Format:** letters, digits, hyphens, and underscores<br />**Rules:** at least one of --name or --role<br />**Example:** `ci-runner` |
+| `--name` | Sets the new service account name.<br />**Minimum:** 1 character<br />**Maximum:** 64 characters<br />**Format:** letters, digits, hyphens, and underscores<br />**Rules:** at least one of --name or --role<br />**Example:** `ci-runner` |
 | `--role` | Replaces the roles of the service account.<br />**Format:** a comma-separated list of role IDs, repeatable<br />**Rules:** at least one of --name or --role<br />**Value:** [built-in role](./organizations.md#roles) IDs or custom role UUIDs<br />**Example:** `maintainer` |
 
 > **Notes:**
@@ -575,8 +575,8 @@ curl 'https://api.daytona.com/orgs/ORG_ID/service-accounts/SERVICE_ACCOUNT_ID/up
 
 | **Field** | **Description** |
 | --- | --- |
-| `name` | Sets the new service account name.<br />**Maximum:** 64 characters<br />**Format:** letters, digits, hyphens, and underscores<br />**Rules:** at least one of name, description, or roles<br />**Example:** `"ci-runner"` |
 | `description` | Sets the new purpose of the service account.<br />**Maximum:** 512 characters<br />**Rules:** at least one of name, description, or roles<br />**Value:** `null` to clear the description<br />**Example:** `"CI runner"` |
+| `name` | Sets the new service account name.<br />**Minimum:** 1 character<br />**Maximum:** 64 characters<br />**Format:** letters, digits, hyphens, and underscores<br />**Rules:** at least one of name, description, or roles<br />**Example:** `"ci-runner"` |
 | `roles` | Replaces the roles of the service account.<br />**Minimum:** 1 role<br />**Maximum:** every built-in and custom role of the organization<br />**Format:** a list of role IDs<br />**Rules:** at least one of name, description, or roles<br />**Value:** [built-in role](./organizations.md#roles) IDs or custom role UUIDs<br />**Example:** `["maintainer"]` |
 
 > **Notes:**

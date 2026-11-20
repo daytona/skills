@@ -158,6 +158,7 @@ The TypeScript SDK reference documents the following modules:
 - [Pty](./pty.md)
 - [PtyHandle](./pty-handle.md)
 - [Sandbox](./sandbox.md)
+- [SandboxNode](./sandbox-node.md)
 - [Secret](./secret.md)
 - [Snapshot](./snapshot.md)
 - [Volume](./volume.md)

@@ -217,9 +217,9 @@ sandbox.fs.upload_file("large_dataset.csv", "/home/daytona/workspace/dataset.csv
 | --- | --- |
 | `local_path` | Sets the local file to upload.<br />**Required**<br />**Example:** `"large_dataset.csv"` |
 | `remote_path` | Sets the destination path in the sandbox.<br />**Required**<br />**Format:** an absolute path<br />**Example:** `"/home/daytona/workspace/dataset.csv"` |
-| `on_progress` | Reports upload progress.<br />**Format:** a callback that takes the bytes sent so far and the total size in bytes<br />**Example:** `on_progress` |
-| `cancel` | Stops the upload when the event is set.<br />**Format:** a threading.Event or an asyncio.Event<br />**Example:** `threading.Event()` |
 | `atomic` | Writes through a temporary file in the destination directory, then renames it into place.<br />**Default:** `False` |
+| `cancel` | Stops the upload when the event is set.<br />**Format:** a threading.Event or an asyncio.Event<br />**Example:** `threading.Event()` |
+| `on_progress` | Reports upload progress.<br />**Format:** a callback that takes the bytes sent so far and the total size in bytes<br />**Example:** `on_progress` |
 
 > **Notes:**
 >
@@ -347,8 +347,8 @@ sandbox.fs.download_file("/home/daytona/workspace/large-file.bin", "local_copy.b
 | --- | --- |
 | `remote_path` | Sets the file to download from the sandbox.<br />**Required**<br />**Format:** an absolute path<br />**Example:** `"/home/daytona/workspace/large-file.bin"` |
 | `local_path` | Sets the local destination.<br />**Required**<br />**Example:** `"local_copy.bin"` |
-| `on_progress` | Reports download progress.<br />**Format:** a callback that takes the bytes received so far and the total size in bytes, or None when the total is unknown<br />**Example:** `on_progress` |
 | `cancel` | Stops the download when the event is set.<br />**Format:** a threading.Event or an asyncio.Event<br />**Example:** `threading.Event()` |
+| `on_progress` | Reports download progress.<br />**Format:** a callback that takes the bytes received so far and the total size in bytes, or None when the total is unknown<br />**Example:** `on_progress` |
 
 > **Notes:**
 >
@@ -403,9 +403,9 @@ sandbox.fs.chmod("/home/daytona/workspace/file.txt", mode="644")
 | **Parameter** | **Description** |
 | --- | --- |
 | `path` | Sets the file or directory to change.<br />**Required**<br />**Format:** an absolute path<br />**Example:** `"/home/daytona/workspace/file.txt"` |
+| `group` | Sets the group.<br />**Format:** a numeric group ID or a group name<br />**Example:** `"1000"` |
 | `mode` | Sets the permission mode.<br />**Format:** an octal string<br />**Example:** `"644"` |
 | `owner` | Sets the owner.<br />**Format:** a numeric user ID or a user name<br />**Example:** `"1000"` |
-| `group` | Sets the group.<br />**Format:** a numeric group ID or a group name<br />**Example:** `"1000"` |
 
 > **Notes:**
 >
@@ -538,9 +538,9 @@ handle.stop()
 | --- | --- |
 | `path` | Sets the directory to watch.<br />**Required**<br />**Format:** an absolute path<br />**Example:** `"/home/daytona/workspace/src"` |
 | `on_event` | Receives each event.<br />**Required**<br />**Format:** a function or coroutine function that takes one event<br />**Example:** `lambda event: print(event.name)` |
-| `recursive` | Watches subdirectories of the directory.<br />**Default:** `False` |
-| `on_overflow` | Runs when the watch drops events.<br />**Format:** a function or coroutine function without arguments |
 | `on_exit` | Runs once when the watch ends.<br />**Format:** a function or coroutine function that takes the error that ended the watch, or None after stop() |
+| `on_overflow` | Runs when the watch drops events.<br />**Format:** a function or coroutine function without arguments |
+| `recursive` | Watches subdirectories of the directory.<br />**Default:** `False` |
 
 > **Notes:**
 >
