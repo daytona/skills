@@ -51,27 +51,27 @@ The skill entrypoint is also served at [daytona.com/SKILL.md](https://www.dayton
 
 ```text
 skills/daytona/
-├── SKILL.md                    # Entrypoint: version selection
-└── references/
-    ├── daytona-v2/
-    │   ├── README.md           # Daytona v2 guide
-    │   ├── api/                # API reference
-    │   ├── cli/                # CLI reference
-    │   ├── platform/           # Platform reference
-    │   ├── python-sdk/         # Python SDK feature guides
-    │   │   └── reference/      # Python SDK class and method reference
-    │   └── typescript-sdk/     # TypeScript SDK feature guides
-    │       └── reference/      # TypeScript SDK class and method reference
-    └── daytona-v0/
-        ├── README.md           # Daytona v0 guide
-        ├── api/                # API reference
-        ├── platform/           # Platform reference
-        ├── python-sdk/         # Python SDK reference
-        │   ├── sync/           # Sync Python SDK reference
-        │   └── async/          # Async Python SDK reference
-        ├── typescript-sdk/     # TypeScript SDK reference
-        ├── java-sdk/           # Java SDK reference
-        ├── go-sdk/             # Go SDK reference
-        ├── ruby-sdk/           # Ruby SDK reference
-        └── cli.md              # CLI reference
+├── references/
+│   ├── daytona-v0/
+│   │   ├── api/             # API reference
+│   │   ├── cli.md           # CLI reference
+│   │   ├── go-sdk/          # Go SDK reference
+│   │   ├── java-sdk/        # Java SDK reference
+│   │   ├── platform/        # Platform reference
+│   │   ├── python-sdk/      # Python SDK reference
+│   │   │   ├── async/       # Async Python SDK reference
+│   │   │   └── sync/        # Sync Python SDK reference
+│   │   ├── README.md        # Daytona v0 guide
+│   │   ├── ruby-sdk/        # Ruby SDK reference
+│   │   └── typescript-sdk/  # TypeScript SDK reference
+│   └── daytona-v2/
+│       ├── api/             # API reference
+│       ├── cli/             # CLI reference
+│       ├── platform/        # Platform reference
+│       ├── python-sdk/      # Python SDK feature guides
+│       │   └── reference/   # Python SDK class and method reference
+│       ├── README.md        # Daytona v2 guide
+│       └── typescript-sdk/  # TypeScript SDK feature guides
+│           └── reference/   # TypeScript SDK class and method reference
+└── SKILL.md                 # Entrypoint that selects the version
 ```

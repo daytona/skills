@@ -67,6 +67,8 @@ curl 'https://api.daytona.com/projects/PROJECT_ID/api-keys' \
 }'
 ```
 
+**Response:**
+
 ```json
 {
   "id": "KEY_ID",
@@ -177,6 +179,8 @@ curl 'https://api.daytona.com/projects/PROJECT_ID/api-keys' \
   --header 'Authorization: Bearer YOUR_OIDC_TOKEN'
 ```
 
+**Response:**
+
 ```json
 {
   "project_api_keys": [
@@ -270,6 +274,8 @@ curl 'https://api.daytona.com/auth/token' \
   "project_id": "PROJECT_ID"
 }'
 ```
+
+**Response:**
 
 ```json
 {

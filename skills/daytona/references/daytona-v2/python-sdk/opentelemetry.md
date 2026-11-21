@@ -60,6 +60,8 @@ curl 'https://api.daytona.com/orgs/ORGANIZATION_ID/otel-config' \
   --header 'Authorization: Bearer YOUR_OIDC_TOKEN'
 ```
 
+**Response:**
+
 ```json
 {
   "endpoint": "https://otel.example.com",
@@ -130,7 +132,7 @@ curl 'https://api.daytona.com/orgs/ORGANIZATION_ID/otel-config' \
 Turn on SDK tracing to emit a client span for each request the SDK sends to Daytona. Each span is named after the HTTP method and the route template, such as daytona.post /sandboxes for a create request, and the SDK adds W3C trace context headers to the request. The spans go to the tracer provider that your application registers; without one, they are not exported.
 
 ```bash
-pip install 'daytona[otel]==2.1.0' opentelemetry-sdk opentelemetry-exporter-otlp-proto-http
+pip install "daytona[otel]>=2,<3" opentelemetry-sdk opentelemetry-exporter-otlp-proto-http
 ```
 
 ```python

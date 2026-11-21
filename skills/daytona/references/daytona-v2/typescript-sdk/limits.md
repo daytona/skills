@@ -103,6 +103,8 @@ The error response is a JSON object with the following properties:
 | **`max`**              | The organization's value for `limit`. Present on `LIMIT_EXCEEDED` responses.                                                  |
 | **`trace_id`**         | The request trace ID.                                                                                                         |
 
+**Response:**
+
 ```json
 {
   "code": "RATE_LIMITED",

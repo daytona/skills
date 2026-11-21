@@ -62,7 +62,7 @@ Connect to the API to send the requests that create and manage sandboxes. A conn
 
 Linux sandboxes live behind the Daytona API, which the SDKs and the CLI connect to by default. It authenticates with a project API key.
 
-Connect before you create a Linux sandbox programmatically. [Create a project API key](./api-keys.md#create-an-api-key) from the dashboard, then set it in the [environment](./authentication.md#environment-variables). Install the exact SDK and CLI versions in the tabs.
+Connect before you create a Linux sandbox programmatically. [Create a project API key](./api-keys.md#create-an-api-key) from the dashboard, then set it in the [environment](./authentication.md#environment-variables). Install SDK 2.x and the latest CLI with the commands in the tabs.
 
 | **Service**     | **Address**                   |
 | --------------- | ----------------------------- |
@@ -77,7 +77,7 @@ daytona = Daytona()  # reads DAYTONA_API_KEY
 
 > **Notes:**
 >
-> - **Prerequisites:** The SDK must be installed with `pip install daytona==2.1.0`, on Python 3.10 or later. The environment must set DAYTONA_API_KEY to a project API key. DAYTONA_V2_API_URL can stay unset, because the SDK defaults to `https://api.daytona.com`.
+> - **Prerequisites:** The SDK must be installed with `pip install "daytona>=2,<3"`, on Python 3.10 or later. The environment must set DAYTONA_API_KEY to a project API key. DAYTONA_V2_API_URL can stay unset, because the SDK defaults to `https://api.daytona.com`.
 > - **Compatibility:** The SDK takes memory and disk in GiB and every timeout in seconds.
 > - **Clients:** AsyncDaytona has the same methods, called with await.
 
@@ -144,7 +144,7 @@ Resources are the processor cores, memory, and disk space that a sandbox reserve
 | --- | --- | --- | --- |
 | **CPU** | 0.5 cores | 0.125 cores | [Limits](./limits.md#sandbox-limits) |
 | **Memory** | 1 GiB (1024 MiB) | 0.5 GiB (512 MiB) | [Limits](./limits.md#sandbox-limits) |
-| **Disk** | 0.5 GiB (512 MiB), or 10 GiB (10240 MiB) when CPU or memory is set | 10 GiB (10240 MiB) | [Limits](./limits.md#sandbox-limits) |
+| **Disk** | 0.5 GiB (512 MiB)<br />or 10 GiB (10240 MiB) when CPU or memory is set | 10 GiB (10240 MiB) | [Limits](./limits.md#sandbox-limits) |
 
 ```python
 from daytona import Daytona

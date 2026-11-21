@@ -122,7 +122,7 @@ Resources are the processor cores, memory, and disk space that a sandbox reserve
 | --- | --- | --- | --- |
 | **CPU** | 0.5 cores | 0.125 cores | [Limits](./limits.md#sandbox-limits) |
 | **Memory** | 1 GiB (1024 MiB) | 0.5 GiB (512 MiB) | [Limits](./limits.md#sandbox-limits) |
-| **Disk** | 0.5 GiB (512 MiB), or 10 GiB (10240 MiB) when CPU or memory is set | 10 GiB (10240 MiB) | [Limits](./limits.md#sandbox-limits) |
+| **Disk** | 0.5 GiB (512 MiB)<br />or 10 GiB (10240 MiB) when CPU or memory is set | 10 GiB (10240 MiB) | [Limits](./limits.md#sandbox-limits) |
 | **GPU** | None | 1 | [Limits](./limits.md#sandbox-limits) |
 
 | [**macOS**](./macos-sandboxes.md#resources) | **ID** | **Default** | **Minimum** | **Maximum** |

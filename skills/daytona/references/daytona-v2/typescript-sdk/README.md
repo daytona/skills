@@ -33,10 +33,10 @@ Install the package with npm or yarn. The package requires Node.js 22.15 or late
 
 ```bash
 # npm
-npm install @daytona/sdk@2.1.0
+npm install @daytona/sdk@2
 
 # yarn
-yarn add @daytona/sdk@2.1.0
+yarn add @daytona/sdk@2
 ```
 
 > **Notes:**
