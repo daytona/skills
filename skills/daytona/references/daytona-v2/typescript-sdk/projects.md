@@ -71,6 +71,8 @@ curl 'https://api.daytona.com/orgs/ORG_ID/projects' \
   --data '{ "name": "my-project" }'
 ```
 
+**Response:**
+
 ```json
 {
   "id": "PROJECT_ID",
@@ -123,6 +125,8 @@ daytona project list --org ORG_ID
 curl 'https://api.daytona.com/orgs/ORG_ID/projects' \
   --header 'Authorization: Bearer YOUR_OIDC_TOKEN'
 ```
+
+**Response:**
 
 ```json
 {
@@ -430,6 +434,8 @@ curl 'https://api.daytona.com/projects/PROJECT_ID/lifecycle-policy' \
 
 The following response is abridged to the effective defaults of ephemeral Linux sandboxes and the platform defaults of macOS sandboxes. The full response also has the effective defaults of Windows and GPU sandboxes.
 
+**Response:**
+
 ```json
 {
   "policy": {
@@ -514,6 +520,8 @@ curl 'https://api.daytona.com/projects/PROJECT_ID/limits' \
   --header 'Authorization: Bearer YOUR_OIDC_TOKEN'
 ```
 
+**Response:**
+
 ```json
 {
   "sandboxes": {
@@ -595,6 +603,8 @@ curl 'https://api.daytona.com/projects/PROJECT_ID/members' \
   --header 'Authorization: Bearer YOUR_OIDC_TOKEN'
 ```
 
+**Response:**
+
 ```json
 {
   "members": [
@@ -652,6 +662,8 @@ curl 'https://api.daytona.com/projects/PROJECT_ID/members' \
   --header 'Content-Type: application/json' \
   --data '{ "user_ids": ["USER_ID_1", "USER_ID_2"] }'
 ```
+
+**Response:**
 
 ```json
 { "added_user_ids": ["USER_ID_1", "USER_ID_2"] }

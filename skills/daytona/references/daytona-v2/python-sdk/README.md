@@ -34,13 +34,13 @@ Install the package with pip into Python 3.10 or later. Add the otel extra to em
 
 ```bash
 # The SDK
-pip install daytona==2.1.0
+pip install "daytona>=2,<3"
 
 # With OpenTelemetry request spans
-pip install 'daytona[otel]==2.1.0'
+pip install "daytona[otel]>=2,<3"
 
 # With the v0 namespace
-pip install 'daytona[v0-sdk]==2.1.0'
+pip install "daytona[v0-sdk]>=2,<3"
 ```
 
 ## Configure the client

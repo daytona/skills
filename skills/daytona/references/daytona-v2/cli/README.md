@@ -47,7 +47,7 @@ brew upgrade daytonaio/cli/daytona
 **Linux and macOS:**
 
 ```bash
-curl -fsSL https://github.com/daytona/clients/releases/download/v2.1.0/install.sh | sh -s -- --version 2.1.0
+curl -fsSL https://github.com/daytona/clients/releases/latest/download/install.sh | sh
 ```
 
 | **Flag**    | **Description** |
@@ -62,7 +62,7 @@ curl -fsSL https://github.com/daytona/clients/releases/download/v2.1.0/install.s
 **Windows:**
 
 ```powershell
-$env:DAYTONA_VERSION = "2.1.0"; irm https://github.com/daytona/clients/releases/download/v2.1.0/install.ps1 | iex
+irm https://github.com/daytona/clients/releases/latest/download/install.ps1 | iex
 ```
 
 | **Variable**          | **Description** |

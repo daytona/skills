@@ -225,6 +225,8 @@ curl 'https://api.daytona.com/orgs/ORGANIZATION_ID/api-keys/current' \
   --header 'Authorization: Bearer YOUR_ORG_API_KEY'
 ```
 
+**Response:**
+
 ```json
 {
   "id": "KEY_ID",
@@ -1065,6 +1067,8 @@ Get the entitlements to check whether the plan includes a feature, such as turni
 curl 'https://api.daytona.com/orgs/ORGANIZATION_ID/entitlements' \
   --header 'Authorization: Bearer YOUR_OIDC_TOKEN'
 ```
+
+**Response:**
 
 ```json
 {

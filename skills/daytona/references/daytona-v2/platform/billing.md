@@ -189,6 +189,8 @@ curl 'https://api.daytona.com/orgs/ORGANIZATION_ID/billing/wallet' \
   --header 'Authorization: Bearer YOUR_OIDC_TOKEN'
 ```
 
+**Response:**
+
 ```json
 {
   "balance_cents": 12500,
@@ -732,6 +734,8 @@ daytona billing usage-periods --org ORGANIZATION_ID --limit 3
 curl 'https://api.daytona.com/orgs/ORGANIZATION_ID/billing/usage-periods?limit=3' \
   --header 'Authorization: Bearer YOUR_OIDC_TOKEN'
 ```
+
+**Response:**
 
 ```json
 {

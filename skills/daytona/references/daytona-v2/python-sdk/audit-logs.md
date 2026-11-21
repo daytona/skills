@@ -73,6 +73,8 @@ curl 'https://api.daytona.com/orgs/{organizationId}/audit-logs' \
   --header 'Authorization: Bearer YOUR_API_KEY'
 ```
 
+**Response:**
+
 ```json
 {
   "next_cursor": "MjAyNi0wOS0wOVQxMDoxMjozMy4xMjM0NTY3ODlafDAxOTliMmMx...",
@@ -340,6 +342,8 @@ curl 'https://api.daytona.com/orgs/{organizationId}/audit-logs/config' \
   --header 'Authorization: Bearer YOUR_OIDC_TOKEN' \
   --data '{ "disabled": true }'
 ```
+
+**Response:**
 
 ```json
 {

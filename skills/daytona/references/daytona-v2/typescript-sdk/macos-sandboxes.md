@@ -55,7 +55,7 @@ Connect to the API to send the requests that create and manage sandboxes. A conn
 
 macOS sandboxes and Mac reservations live behind the Daytona API, the same address as Linux sandboxes, which the SDKs and the CLI connect to by default. The API authenticates with a project API key.
 
-Connect before you reserve a Mac or create a macOS sandbox. [Create a project API key](./api-keys.md#create-an-api-key) from the dashboard, then set it in the [environment](./authentication.md#environment-variables). Install the exact SDK and CLI versions in the tabs, because pre-release and latest installs lack the macOS features. Give a [region with Macs](#regions) on each reservation and each macOS create.
+Connect before you reserve a Mac or create a macOS sandbox. [Create a project API key](./api-keys.md#create-an-api-key) from the dashboard, then set it in the [environment](./authentication.md#environment-variables). Install SDK 2.x and the latest CLI with the commands in the tabs. Give a [region with Macs](#regions) on each reservation and each macOS create.
 
 | **Service**     | **Address**                   |
 | --------------- | ----------------------------- |
@@ -70,7 +70,7 @@ const daytona = new Daytona() // reads DAYTONA_API_KEY
 
 > **Notes:**
 >
-> - **Prerequisites:** The SDK must be installed with `npm install @daytona/sdk@2.1.0`, on Node.js 22.15 or later. The environment must set DAYTONA_API_KEY to a project API key. DAYTONA_V2_API_URL can stay unset, because the SDK defaults to `https://api.daytona.com`. `npm install @daytona/sdk@latest` installs a version without the macOS features.
+> - **Prerequisites:** The SDK must be installed with `npm install @daytona/sdk@2`, on Node.js 22.15 or later. The environment must set DAYTONA_API_KEY to a project API key. DAYTONA_V2_API_URL can stay unset, because the SDK defaults to `https://api.daytona.com`.
 > - **Compatibility:** The SDK takes memory and disk in GiB and every timeout in seconds.
 
 ## Create a macOS sandbox

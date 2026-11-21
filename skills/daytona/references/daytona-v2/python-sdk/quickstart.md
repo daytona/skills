@@ -15,23 +15,22 @@ Sandboxes are the core component of the Daytona platform and provide compute for
 
 ## Get started
 
-<AgentPrompt
-  title="Agent Prompt"
-  prompt={`
+**Agent Prompt:**
+
+```text
 Set up Daytona in this project. Before writing any Daytona code, verify the setup:
 
 1. Check that the Daytona SDK is installed for the language used in this project. If not, install it.
 
-    Python: \`pip install daytona==2.1.0\`
-    TypeScript: \`npm install @daytona/sdk@2.1.0\`
+    Python: `pip install "daytona>=2,<3"`
+    TypeScript: `npm install @daytona/sdk@2`
 
 2. Check DAYTONA_API_KEY in the shell environment or in environment files. If not set, tell the user they need an API key and point them to https://app.daytona.com/dashboard/keys to create one.
 
-3. Write a script that initializes the Daytona client, creates a sandbox with the v2 API (\`daytona.v2.create()\`), runs a "Hello World" program inside it, captures the output, and deletes the sandbox. Follow https://www.daytona.com/docs/quickstart.md.
+3. Write a script that initializes the Daytona client, creates a sandbox with the v2 API (`daytona.v2.create()`), runs a "Hello World" program inside it, captures the output, and deletes the sandbox. Follow https://www.daytona.com/docs/quickstart.md.
 
 4. Run the script to verify the sandbox works.
-`}
-/>
+```
 
 1. **Create an account** → [app.daytona.com](https://app.daytona.com)
 2. **Get an API key** → [app.daytona.com/dashboard/keys](https://app.daytona.com/dashboard/keys)
@@ -39,7 +38,7 @@ Set up Daytona in this project. Before writing any Daytona code, verify the setu
 
 **.env:**
 
-```bash
+```dotenv
 DAYTONA_API_KEY=YOUR_API_KEY
 ```
 
@@ -61,7 +60,7 @@ $env:DAYTONA_API_KEY="YOUR_API_KEY"
 
 ```bash
 python3 -m venv .venv && . .venv/bin/activate
-pip install daytona==2.1.0
+pip install "daytona>=2,<3"
 ```
 
 **Windows PowerShell:**
@@ -69,7 +68,7 @@ pip install daytona==2.1.0
 ```powershell
 python -m venv .venv
 .venv\Scripts\Activate.ps1
-pip install daytona==2.1.0
+pip install "daytona>=2,<3"
 ```
 
 5. **Create a sandbox and run code**

@@ -33,6 +33,8 @@ curl 'https://api.daytona.com/migration/v0/summary' \
   --header 'Authorization: Bearer YOUR_API_KEY'
 ```
 
+**Response:**
+
 ```json
 {
   "from_v0": true,
@@ -69,6 +71,8 @@ curl 'https://api.daytona.com/migration/v0/sandboxes?limit=100' \
 curl 'https://api.daytona.com/migration/v0/sandboxes?limit=100&cursor={nextCursor}' \
   --header 'Authorization: Bearer YOUR_API_KEY'
 ```
+
+**Response:**
 
 ```json
 {
@@ -127,6 +131,8 @@ curl 'https://api.daytona.com/migration/v0/sandboxes/{v0Id}/import' \
   "force": true
 }'
 ```
+
+**Response:**
 
 ```json
 {

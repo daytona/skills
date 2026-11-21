@@ -35,15 +35,16 @@ Environment variables are named text values that a process inherits from the pro
 | **`DAYTONA_JWT_TOKEN`**   | The OIDC token of a signed-in user instead of an API key, [exchanged](./api-keys.md#exchange-a-token) for a project token. <br /> Optional; needs `DAYTONA_PROJECT_ID` |
 | **`DAYTONA_PROJECT_ID`**  | The project a JWT is scoped to. <br /> Required with `DAYTONA_JWT_TOKEN`                   |
 
-### .env file
+**.env:**
 
-The SDKs and the CLI read only the process environment, not `.env` files. Load the file into the process environment before the Daytona client starts, for example with the `python-dotenv` package in Python or with `node --env-file=.env` in Node.js.
-
-```bash
+```dotenv
 DAYTONA_API_KEY=YOUR_API_KEY
 ```
 
-### Shell
+> **Notes:**
+>
+> - **Compatibility:** The SDKs and the CLI read only the process environment, not `.env` files.
+> - **Order:** Load the file into the process environment before the Daytona client starts, for example with the `python-dotenv` package in Python or with `node --env-file=.env` in Node.js.
 
 **Bash/Zsh:**
 
